@@ -1,0 +1,54 @@
+<html>
+<head><title>.eunit/erlcount_counter.COVER.html</title></head><body bgcolor=white text=black>
+<pre>
+File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_counter.erl by COVER 2012-11-23 at 19:54:05
+
+****************************************************************************
+
+        |  -module(erlcount_counter).
+        |  -behaviour(gen_server).
+        |  -export([start_link/4]).
+        |  -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
+        |          terminate/2, code_change/3]).
+        |  
+        |  -record(state, {dispatcher, ref, file, re}).
+        |  
+        |  start_link(DispatcherPid, Ref, FileName, Regex) -&gt;
+<font color=red>     0..|      gen_server:start_link(?MODULE, [DispatcherPid, Ref, FileName, Regex], []).</font>
+        |  
+        |  %%============================================
+        |  %Comment 0
+        |  %%--------------------------------------------
+        |  init([DispatcherPid, Ref, FileName, Regex]) -&gt;
+<font color=red>     0..|      self() ! start,</font>
+<font color=red>     0..|      {ok, #state{dispatcher=DispatcherPid,</font>
+        |                  ref = Ref,
+        |                  file = FileName,
+        |                  re = Regex}}.
+        |  
+        |  %%-------------------------------------
+        |  handle_call(_Msg, _From, State) -&gt;
+<font color=red>     0..|      {noreply, State}.</font>
+        |  %%======================================
+        |  handle_cast(_Msg, State) -&gt;
+<font color=red>     0..|      {noreply, State}.</font>
+        |  
+        |  %%======================================
+        |  %Comment
+        |  handle_info(start, S = #state{re=Re, ref=Ref}) -&gt;
+<font color=red>     0..|      {ok, Bin} = file:read_file(S#state.file),</font>
+<font color=red>     0..|      Count = erlcount_lib:regex_count(Re, Bin),</font>
+<font color=red>     0..|      erlcount_dispatch:complete(S#state.dispatcher, Re, Ref, Count),</font>
+<font color=red>     0..|      {stop, normal, S}.</font>
+        |  
+        |  %%Comment2
+        |  %---------------------------------------
+        |  terminate(_Reason, _State) -&gt;
+<font color=red>     0..|      ok.</font>
+        |  	
+        |  %%Comment3
+        |  code_change(_OldVsn, State, _Extra) -&gt;
+<font color=red>     0..|      {ok, State}.</font>
+</pre>
+</body>
+</html>

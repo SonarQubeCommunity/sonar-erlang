@@ -1,0 +1,42 @@
+<html>
+<head><title>.eunit/erlcount_sup.COVER.html</title></head><body bgcolor=white text=black>
+<pre>
+File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_sup.erl by COVER 2012-11-23 at 19:54:05
+
+****************************************************************************
+
+        |  -module(erlcount_sup).
+        |  -compile(export_all).
+        |  -behaviour(supervisor).
+        |  
+        |  
+        |  %%------------------
+        |  %% VERY IMPORTANT COMMENT
+        |  %%===================
+        |  start_link() -&gt;
+<font color=red>     0..|      supervisor:start_link(?MODULE, []).</font>
+        |  
+        |  %Simple comment
+        |  init([]) -&gt;
+<font color=red>     0..|      MaxRestart = 5, %inline comment</font>
+<font color=red>     0..|      MaxTime = 100,</font>
+        |  	%%Another simple comment
+<font color=red>     0..|      {ok, {{one_for_one, MaxRestart, MaxTime},</font>
+        |       [{dispatch,
+        |         {erlcount_dispatch, start_link, []}, %%another inline comment
+        |          transient,
+        |          60000,
+        |          worker,
+        |          [erlcount_dispatch]}]}}.
+        |          
+        |  %% Specification defined, but it is also commented
+        |  -spec erlcount_sup:minus2(integer()) -&gt; integer(). %TODO
+        |  minus2(X) -&gt;
+<font color=red>     0..|      X-2.</font>
+        |  
+        |  -spec add(integer(),integer()) -&gt; integer(). %ToDo
+        |  add(Q, Z) -&gt;
+<font color=red>     0..|     minus2(Q+Z).    </font>
+</pre>
+</body>
+</html>
