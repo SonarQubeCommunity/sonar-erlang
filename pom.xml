@@ -96,16 +96,6 @@
         <version>${sslr.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-squid</artifactId>
-        <version>${sonar.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-check-api</artifactId>
-        <version>${sonar.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.codehaus.sonar.sslr</groupId>
         <artifactId>sslr-xpath</artifactId>
         <version>${sslr.version}</version>
@@ -124,16 +114,6 @@
         <groupId>org.codehaus.sonar.sslr-squid-bridge</groupId>
         <artifactId>sslr-squid-bridge</artifactId>
         <version>2.2</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.collections</groupId>
-        <artifactId>google-collections</artifactId>
-        <version>1.0</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>10.0.1</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
