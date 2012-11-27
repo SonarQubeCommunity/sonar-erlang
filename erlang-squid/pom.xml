@@ -9,6 +9,7 @@
   </parent>
 
   <artifactId>erlang-squid</artifactId>
+
   <name>Erlang :: Squid</name>
 
   <dependencies>
@@ -57,4 +58,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
 </project>

@@ -9,6 +9,7 @@
   </parent>
 
   <artifactId>sslr-erlang-toolkit</artifactId>
+
   <name>Erlang :: SSLR Toolkit</name>
 
   <dependencies>

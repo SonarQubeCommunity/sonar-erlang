@@ -10,6 +10,8 @@
   </parent>
 
   <artifactId>sonar-erlang-plugin</artifactId>
+  <packaging>sonar-plugin</packaging>
+
   <name>Erlang :: Sonar Plugin</name>
   <description>Provides support for Erlang projects.</description>
   <url>http://docs.codehaus.org/display/SONAR/Erlang+Plugin</url>

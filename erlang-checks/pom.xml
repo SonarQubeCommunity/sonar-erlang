@@ -9,6 +9,7 @@
   </parent>
 
   <artifactId>erlang-checks</artifactId>
+
   <name>Erlang :: Checks</name>
 
   <dependencies>
@@ -49,4 +50,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
 </project>
