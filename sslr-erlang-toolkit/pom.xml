@@ -69,7 +69,7 @@
             <configuration>
               <forceCreation>true</forceCreation>
               <includes>
-                <include>org.sonar.erlang:sslr-demo</include>
+                <include>${project.groupId}:erlang-squid</include>
                 <include>org.codehaus.sonar.sslr:sslr-core</include>
                 <include>org.codehaus.sonar.sslr:sslr-xpath</include>
                 <include>jaxen:jaxen</include>
