@@ -61,9 +61,9 @@
   <properties>
     <license.title>Sonar Erlang Plugin</license.title>
     <license.mailto>kende.tamas@gmail.com</license.mailto>
-    <email>kende.tamas@gmail.com</email>
-    <owner>Tamas Kende</owner>
+
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+
     <sonar.version>3.0</sonar.version>
     <sslr.version>1.16</sslr.version>
   </properties>
