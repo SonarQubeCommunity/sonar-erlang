@@ -49,6 +49,14 @@
     <url>https://github.com/kalidasya/sonar-erlang</url>
     <tag>HEAD</tag>
   </scm>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://jira.codehaus.org/browse/SONARPLUGINS/component/15774</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Cloudbees</system>
+    <url>http://sonarplugins.ci.cloudbees.com/job/erlang</url>
+  </ciManagement>
 
   <properties>
     <license.title>Sonar Erlang Plugin</license.title>
@@ -207,4 +215,3 @@
     </pluginManagement>
   </build>
 </project>
-

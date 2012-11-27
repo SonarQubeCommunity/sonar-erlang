@@ -11,6 +11,8 @@
 
   <artifactId>sonar-erlang-plugin</artifactId>
   <name>Erlang :: Sonar Plugin</name>
+  <description>Provides support for Erlang projects.</description>
+  <url>http://docs.codehaus.org/display/SONAR/Erlang+Plugin</url>
 
   <properties>
     <sonar.version>3.3.1</sonar.version>
@@ -80,4 +82,3 @@
   </build>
 
 </project>
-
