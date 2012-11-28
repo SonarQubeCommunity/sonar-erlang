@@ -54,8 +54,7 @@ import java.util.List;
     defaultValue = ErlangPlugin.DIALYZER_DEFAULT_FILENAME,
     name = "Dialyzer Default Filename",
     description = "Filename of the dialyzer output located in the eunit folder",
-    global = true, project = true),
-
+    global = true, project = true)
 })
 public class ErlangPlugin extends SonarPlugin {
 
