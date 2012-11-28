@@ -17,7 +17,6 @@
   <url>http://docs.codehaus.org/display/SONAR/Erlang+Plugin</url>
 
   <properties>
-    <sonar.runtimeVersion>3.3.1</sonar.runtimeVersion>
     <sonar.pluginKey>erl</sonar.pluginKey>
     <sonar.pluginName>Erlang</sonar.pluginName>
     <sonar.pluginClass>org.sonar.plugins.erlang.ErlangPlugin</sonar.pluginClass>
@@ -95,13 +94,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.sonar</groupId>
-        <artifactId>sonar-dev-maven-plugin</artifactId>
-        <configuration>
-          <clean>false</clean>
-        </configuration>
       </plugin>
     </plugins>
   </build>
