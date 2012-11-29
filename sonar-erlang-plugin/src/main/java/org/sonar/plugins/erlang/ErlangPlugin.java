@@ -64,10 +64,9 @@ public class ErlangPlugin extends SonarPlugin {
 
   public static final String DIALYZER_DEFAULT_FILENAME = EUNIT_DEFAULT_FOLDER + "dialyzer.log";
   public static final String NAME = "Erlang";
-  public static final String LANG_KEY = "erl";
-  public static final String EXTENSION = "." + LANG_KEY;
+  public static final String EXTENSION = ".erl";
   public static final String FILE_SUFFIXES_KEY = "sonar.erlang.file.suffixes";
-  public static final String FILE_SUFFIXES_DEFVALUE = LANG_KEY;
+  public static final String FILE_SUFFIXES_DEFVALUE = "erl";
   public static final String REBAR_CONFIG_URL = "rebar.config";
 
   public List<Class<? extends Extension>> getExtensions() {
