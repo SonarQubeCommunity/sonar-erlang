@@ -25,24 +25,23 @@ import java.util.List;
 
 public final class CheckList {
 
-  public static final String REPOSITORY_KEY = "erlang";
+    public static final String REPOSITORY_KEY = "erlang";
 
-  public static final String REPOSITORY_NAME = "Sonar";
+    public static final String REPOSITORY_NAME = "Sonar";
 
-  private CheckList() {
-  }
+    private CheckList() {
+    }
 
-  public static List<Class> getChecks() {
-    return ImmutableList.<Class> of(BlockSeparatorCharacterCheck.class,
-        BranchesOfRecursionCheck.class, CommentRegularExpressionCheck.class,
-        DepthOfCasesCheck.class, DoNotUseImportCheck.class, DoNotUseExportAllCheck.class,
-        ExportOneFunctionPerLineCheck.class, FunctionComplexityCheck.class,
-        FunctionDefAndClausesSeparationCheck.class, IndentionSizeCheck.class,
-        LineLengthCheck.class, MultipleBlankLinesCheck.class,
-        NoEmacsStyleLeadingCommasCheck.class, NoSpaceAfterBeforeBracketsCheck.class,
-        NoTabsForIndentionCheck.class, NoTrailingWhitespaceCheck.class,
-        NumberOfFunctionArgsCheck.class, NumOfFunctionClausesCheck.class,
-        SpaceAfterBeforeOperatorsCheck.class, XPathCheck.class);
-  }
+    public static List<Class> getChecks() {
+        return ImmutableList.<Class> of(BlockSeparatorCharacterCheck.class,
+                BranchesOfRecursionCheck.class, CommentRegularExpressionCheck.class,
+                DepthOfCasesCheck.class, DoNotUseImportCheck.class, DoNotUseExportAllCheck.class,
+                ExportOneFunctionPerLineCheck.class, FunctionComplexityCheck.class,
+                FunctionDefAndClausesSeparationCheck.class, IndentionSizeCheck.class,
+                LineLengthCheck.class, MultipleBlankLinesCheck.class,
+                NoEmacsStyleLeadingCommasCheck.class, NoSpaceAfterBeforeBracketsCheck.class,
+                NoTabsForIndentionCheck.class, NoTrailingWhitespaceCheck.class,
+                NumberOfFunctionArgsCheck.class, SpaceAfterBeforeOperatorsCheck.class, XPathCheck.class);
+    }
 
 }
