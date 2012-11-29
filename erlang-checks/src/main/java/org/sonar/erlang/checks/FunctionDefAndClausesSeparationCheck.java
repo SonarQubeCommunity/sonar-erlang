@@ -37,7 +37,7 @@ import java.util.List;
 @Rule(key = "FunctionDefAndClausesSeparation", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE, name = "FunctionDefAndClausesSeparation",
   description = "Rule for function declaration and clause separation")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class FunctionDefAndClausesSeparationCheck extends SquidCheck<ErlangGrammar> {
 
   @RuleProperty(key = "allowedBlankLinesBetweenClauses", defaultValue = "0")

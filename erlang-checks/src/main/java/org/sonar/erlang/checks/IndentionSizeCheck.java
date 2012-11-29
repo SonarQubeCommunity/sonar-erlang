@@ -33,7 +33,7 @@ import org.sonar.check.RuleProperty;
 
 @Rule(key = "IndentionSize", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "IndentionSize", description = "Allowed indention size")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class IndentionSizeCheck extends SquidCheck<ErlangGrammar> implements AstAndTokenVisitor {
 
   private Token previousToken;

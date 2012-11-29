@@ -34,7 +34,7 @@ import org.sonar.squid.api.SourceFunction;
 @Rule(key = "FunctionClauses", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "FunctionClauses",
   description = "Check the maximum allowed number of function clauses")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NumOfFunctionClausesCheck extends SquidCheck<ErlangGrammar> {
 
   private static final int DEFAULT_MAXIMUM_FUNCTION_CLAUSES_THRESHOLD = 10;

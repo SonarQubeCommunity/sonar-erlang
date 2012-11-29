@@ -78,8 +78,6 @@ public class ErlangPlugin extends SonarPlugin {
         ErlangSquidSensor.class,
 
         ErlangChecksRuleRepository.class, DialyzerRuleRepository.class,
-        // ErlangChecksProfile.class,
-        // DialyzerProfile.class,
         ErlangProfile.class,
 
         ErlangCommonRulesEngineProvider.class,

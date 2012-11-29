@@ -34,7 +34,7 @@ import org.sonar.squid.api.SourceFunction;
 @Rule(key = "BranchesOfRecursion", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "BranchesOfRecursion",
   description = "Check the maximum allowed branches of recursion")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class BranchesOfRecursionCheck extends SquidCheck<ErlangGrammar> {
 
   private static final int DEFAULT_MAXIMUM_BOR_THRESHOLD = 10;

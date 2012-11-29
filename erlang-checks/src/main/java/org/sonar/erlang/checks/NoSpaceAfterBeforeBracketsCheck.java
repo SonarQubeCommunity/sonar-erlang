@@ -37,7 +37,7 @@ import java.util.List;
 @Rule(key = "NoSpaceAfterBeforeBrackets", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE, name = "NoSpaceAfterBeforeBrackets",
   description = "No space after and before bracklets")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<ErlangGrammar> {
 
   List<ErlangPunctuator> noSpaceBefore = ImmutableList.of(ErlangPunctuator.RBRACKET,

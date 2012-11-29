@@ -31,7 +31,7 @@ import org.sonar.check.RuleProperty;
 @Rule(key = "CommentRegularExpression", priority = Priority.MAJOR,
   cardinality = Cardinality.MULTIPLE, name = "CommentRegularExpression",
   description = "Create regular expression based check on comments")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class CommentRegularExpressionCheck extends
     AbstractCommentRegularExpressionCheck<ErlangGrammar> {
 

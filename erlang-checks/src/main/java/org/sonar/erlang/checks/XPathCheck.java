@@ -30,7 +30,7 @@ import org.sonar.check.RuleProperty;
 
 @Rule(key = "XPath", priority = Priority.MAJOR, cardinality = Cardinality.MULTIPLE, name = "XPath",
   description = "AST based xPath check")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class XPathCheck extends AbstractXPathCheck<ErlangGrammar> {
 
   private static final String DEFAULT_XPATH_QUERY = "";

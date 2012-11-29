@@ -48,7 +48,7 @@ public class ErlangChecksProfileTest {
     RulesProfile profile = definition.createProfile(validation);
 
     assertThat(profile.getLanguage()).isEqualTo(Erlang.KEY);
-    assertThat(profile.getName()).isEqualTo(CheckList.SONAR_WAY_PROFILE);
+    assertThat(profile.getName()).isEqualTo(CheckList.REPOSITORY_NAME);
     assertThat(profile.getActiveRulesByRepository(CheckList.REPOSITORY_KEY)).hasSize(19);
     assertThat(validation.hasErrors()).isFalse();
   }

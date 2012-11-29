@@ -26,12 +26,12 @@ import org.sonar.plugins.erlang.ErlangPlugin;
 
 public class Erlang extends AbstractLanguage {
 
-  public static final String KEY = "erl";
+  public static final String KEY = "erlang";
 
   private Configuration configuration;
 
   public Erlang(Configuration configuration) {
-    super(KEY, "erl");
+    super(KEY, "erlang");
     this.configuration = configuration;
   }
 

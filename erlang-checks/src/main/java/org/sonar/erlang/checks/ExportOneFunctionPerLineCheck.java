@@ -33,7 +33,7 @@ import java.util.List;
 @Rule(key = "ExportOneFunctionPerLine", priority = Priority.MINOR,
   cardinality = Cardinality.SINGLE, name = "ExportOneFunctionPerLine",
   description = "Export each method in separate line.")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class ExportOneFunctionPerLineCheck extends SquidCheck<ErlangGrammar> {
 
   private int previousLineNum;

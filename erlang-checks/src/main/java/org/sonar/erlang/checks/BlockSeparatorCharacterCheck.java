@@ -31,7 +31,7 @@ import org.sonar.check.RuleProperty;
 @Rule(key = "BlockSeparatorCharacter", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "BlockSeparatorCharacter",
   description = "Only the specified character is allowed as block separator")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class BlockSeparatorCharacterCheck extends
     AbstractCommentRegularExpressionCheck<ErlangGrammar> {
 

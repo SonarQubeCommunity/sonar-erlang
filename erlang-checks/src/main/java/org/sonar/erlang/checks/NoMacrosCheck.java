@@ -31,7 +31,7 @@ import org.sonar.check.RuleProperty;
 
 @Rule(key = "NoMacros", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "NoMacros", description = "Avoid using macros")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
 
   @RuleProperty(key = "skipDefineInFlowControl", defaultValue = "true",

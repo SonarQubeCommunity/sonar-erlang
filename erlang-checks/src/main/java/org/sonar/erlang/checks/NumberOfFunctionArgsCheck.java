@@ -33,7 +33,7 @@ import org.sonar.squid.api.SourceFunction;
 
 @Rule(key = "NumberOfFunctionArgs", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "NumberOfFunctionArgs", description = "The maximum number of function arguments")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NumberOfFunctionArgsCheck extends SquidCheck<ErlangGrammar> {
 
   private static final int DEFAULT_MAXIMUM_FUNCTION_ARGUMENT_THRESHOLD = 6;

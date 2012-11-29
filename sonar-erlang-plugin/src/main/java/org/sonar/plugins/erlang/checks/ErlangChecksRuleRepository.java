@@ -34,7 +34,7 @@ public class ErlangChecksRuleRepository extends RuleRepository {
 
   public ErlangChecksRuleRepository(AnnotationRuleParser annotationRuleParser) {
     super(CheckList.REPOSITORY_KEY, Erlang.KEY);
-    setName(CheckList.SONAR_WAY_PROFILE);
+    setName(CheckList.REPOSITORY_NAME);
     this.annotationRuleParser = annotationRuleParser;
   }
 

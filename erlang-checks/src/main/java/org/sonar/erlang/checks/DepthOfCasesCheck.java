@@ -31,7 +31,7 @@ import org.sonar.check.RuleProperty;
 
 @Rule(key = "DepthOfCases", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "DepthOfCases", description = "Allowed maximum number of nested case statements")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DepthOfCasesCheck extends SquidCheck<ErlangGrammar> {
 
   private static final int DEFAULT_MAXIMUM_CASE_DEPTH_THRESHOLD = 4;

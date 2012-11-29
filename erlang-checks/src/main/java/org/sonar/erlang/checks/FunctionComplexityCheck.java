@@ -33,7 +33,7 @@ import org.sonar.squid.api.SourceFunction;
 
 @Rule(key = "FunctionComplexity", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "FunctionComplexity", description = "Check the maximum allowed complexity")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class FunctionComplexityCheck extends SquidCheck<ErlangGrammar> {
 
   private static final int DEFAULT_MAXIMUM_FUNCTION_COMPLEXITY_THRESHOLD = 10;

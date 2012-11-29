@@ -35,7 +35,7 @@ import java.util.Scanner;
 
 @Rule(key = "NoTabsForIndention", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "NoTabsForIndention", description = "Do not use tabs for indention")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoTabsForIndentionCheck extends SquidCheck<ErlangGrammar> {
 
   private int numOfViolations = 0;

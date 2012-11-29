@@ -35,7 +35,7 @@ import java.util.Scanner;
 
 @Rule(key = "NoTrailingWhiteSpace", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "NoTrailingWhiteSpace", description = "No trailing white space is allowed")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoTrailingWhitespaceCheck extends SquidCheck<ErlangGrammar> {
 
   @Override

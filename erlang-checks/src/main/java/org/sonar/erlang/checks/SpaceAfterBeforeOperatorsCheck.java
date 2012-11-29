@@ -36,7 +36,7 @@ import java.util.List;
 @Rule(key = "SpaceAfterBeforeOperators", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE, name = "SpaceAfterBeforeOperators",
   description = "Space after and before operators")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<ErlangGrammar> {
 
   List<ErlangPunctuator> operators = ImmutableList.of(ErlangPunctuator.MATCHOP,

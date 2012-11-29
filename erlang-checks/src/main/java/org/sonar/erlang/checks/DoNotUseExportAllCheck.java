@@ -30,7 +30,7 @@ import org.sonar.check.Rule;
 
 @Rule(key = "DoNotUseExportAll", priority = Priority.MINOR, cardinality = Cardinality.SINGLE,
   name = "DoNotUseExportAll", description = "Do not use export_all")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DoNotUseExportAllCheck extends SquidCheck<ErlangGrammar> {
 
   @Override

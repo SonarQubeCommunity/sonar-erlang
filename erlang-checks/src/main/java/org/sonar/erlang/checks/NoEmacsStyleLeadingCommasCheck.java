@@ -34,7 +34,7 @@ import org.sonar.check.Rule;
 @Rule(key = "NoEmacsStyleLeadingComma", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE, name = "NoEmacsStyleLeadingComma",
   description = "No Emacs style leading comma")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoEmacsStyleLeadingCommasCheck extends SquidCheck<ErlangGrammar> implements
     AstAndTokenVisitor {
 

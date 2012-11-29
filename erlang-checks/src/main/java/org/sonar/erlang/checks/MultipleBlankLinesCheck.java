@@ -34,7 +34,7 @@ import org.sonar.check.RuleProperty;
 
 @Rule(key = "MultipleBlankLines", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
   name = "MultipleBlankLines", description = "No more blank lines than specified")
-@BelongsToProfile(title = CheckList.SONAR_WAY_PROFILE, priority = Priority.MAJOR)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
 
   @RuleProperty(key = "maxBlankLinesInsideFunctions", defaultValue = "1")
