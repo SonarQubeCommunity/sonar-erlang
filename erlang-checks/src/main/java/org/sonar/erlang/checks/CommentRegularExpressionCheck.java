@@ -2,17 +2,17 @@
  * Sonar Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
@@ -29,29 +29,34 @@ import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
 @Rule(key = "CommentRegularExpression", priority = Priority.MAJOR,
-  cardinality = Cardinality.MULTIPLE, name = "CommentRegularExpression",
-  description = "Create regular expression based check on comments")
+    cardinality = Cardinality.MULTIPLE, name = "Regular expression on comment",
+    description = "<p>This rule template can be used to create rules which will be " +
+        "triggered when a comment matches a given regular expression." +
+        "For example, one can create a rule with the regular expression \".*TODO.*\" to " +
+        "match all comment containing \"TODO\".</p>" +
+        "<p>Note that, in order to match TODO regardless of the case, the \"(?i)\" " +
+        "modifier can be prepended to the expression, as in \"(?i).*TODO.*\".</p>")
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class CommentRegularExpressionCheck extends
-    AbstractCommentRegularExpressionCheck<ErlangGrammar> {
+        AbstractCommentRegularExpressionCheck<ErlangGrammar> {
 
-  private static final String DEFAULT_REGULAR_EXPRESSION = "";
-  private static final String DEFAULT_MESSAGE = "The regular expression matches this comment";
+    private static final String DEFAULT_REGULAR_EXPRESSION = "";
+    private static final String DEFAULT_MESSAGE = "The violation message";
 
-  @RuleProperty(key = "regularExpression", defaultValue = "" + DEFAULT_REGULAR_EXPRESSION)
-  public String regularExpression = DEFAULT_REGULAR_EXPRESSION;
+    @RuleProperty(key = "regularExpression", defaultValue = "" + DEFAULT_REGULAR_EXPRESSION)
+    public String regularExpression = DEFAULT_REGULAR_EXPRESSION;
 
-  @RuleProperty(key = "message", defaultValue = "" + DEFAULT_MESSAGE)
-  public String message = DEFAULT_MESSAGE;
+    @RuleProperty(key = "message", defaultValue = "" + DEFAULT_MESSAGE)
+    public String message = DEFAULT_MESSAGE;
 
-  @Override
-  public String getRegularExpression() {
-    return regularExpression;
-  }
+    @Override
+    public String getRegularExpression() {
+        return regularExpression;
+    }
 
-  @Override
-  public String getMessage() {
-    return message;
-  }
+    @Override
+    public String getMessage() {
+        return message;
+    }
 
 }
