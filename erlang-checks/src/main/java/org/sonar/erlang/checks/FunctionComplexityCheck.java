@@ -2,17 +2,17 @@
  * Sonar Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
@@ -32,36 +32,39 @@ import org.sonar.check.RuleProperty;
 import org.sonar.squid.api.SourceFunction;
 
 @Rule(key = "FunctionComplexity", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
-  name = "FunctionComplexity", description = "Check the maximum allowed complexity")
+    name = "Avoid too complex function",
+    description = "<p>The cyclomatic complexity of a function should not exceed a " +
+            "defined threshold. Complex code can perform poorly and will in any case " +
+            "be difficult to understand and therefore to maintain.</p>")
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class FunctionComplexityCheck extends SquidCheck<ErlangGrammar> {
 
-  private static final int DEFAULT_MAXIMUM_FUNCTION_COMPLEXITY_THRESHOLD = 10;
+    private static final int DEFAULT_MAXIMUM_FUNCTION_COMPLEXITY_THRESHOLD = 10;
 
-  @RuleProperty(key = "maximumFunctionComplexityThreshold", defaultValue = ""
-    + DEFAULT_MAXIMUM_FUNCTION_COMPLEXITY_THRESHOLD)
-  private int maximumFunctionComplexityThreshold = DEFAULT_MAXIMUM_FUNCTION_COMPLEXITY_THRESHOLD;
+    @RuleProperty(key = "maximumFunctionComplexityThreshold", defaultValue = ""
+        + DEFAULT_MAXIMUM_FUNCTION_COMPLEXITY_THRESHOLD)
+    private int maximumFunctionComplexityThreshold = DEFAULT_MAXIMUM_FUNCTION_COMPLEXITY_THRESHOLD;
 
-  @Override
-  public void init() {
-    subscribeTo(getContext().getGrammar().functionClause);
-  }
-
-  @Override
-  public void leaveNode(AstNode node) {
-    SourceFunction function = (SourceFunction) getContext().peekSourceCode();
-    if (function.getInt(ErlangMetric.COMPLEXITY) > maximumFunctionComplexityThreshold) {
-      getContext()
-          .createLineViolation(
-              this,
-              "Function has a complexity of {0,number,integer} which is greater than {1,number,integer} authorized.",
-              node, function.getInt(ErlangMetric.COMPLEXITY),
-              maximumFunctionComplexityThreshold);
+    @Override
+    public void init() {
+        subscribeTo(getContext().getGrammar().functionClause);
     }
-  }
 
-  public void setMaximumFunctionComplexityThreshold(int threshold) {
-    this.maximumFunctionComplexityThreshold = threshold;
-  }
+    @Override
+    public void leaveNode(AstNode node) {
+        SourceFunction function = (SourceFunction) getContext().peekSourceCode();
+        if (function.getInt(ErlangMetric.COMPLEXITY) > maximumFunctionComplexityThreshold) {
+            getContext()
+                    .createLineViolation(
+                            this,
+                            "Function has a complexity of {0,number,integer} which is greater than {1,number,integer} authorized.",
+                            node, function.getInt(ErlangMetric.COMPLEXITY),
+                            maximumFunctionComplexityThreshold);
+        }
+    }
+
+    public void setMaximumFunctionComplexityThreshold(int threshold) {
+        this.maximumFunctionComplexityThreshold = threshold;
+    }
 
 }
