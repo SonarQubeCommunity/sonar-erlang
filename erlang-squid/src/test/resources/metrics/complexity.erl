@@ -1,7 +1,7 @@
 -module(statements).
 sayHello(A) -> 				%+1 complexity (function clause)
 
-    lists:foreach(fun(Name) -> call(Name, stop) end, %+1 complexity fun expression --> do we need it?
+    lists:foreach(fun(Name) -> call(Name, stop) end, %+0 complexity fun expression --> do we need it?
 		  checkpoints()), 
     Name = Cp#checkpoint_args.name, 
 
@@ -35,4 +35,7 @@ sayHello(A) -> 				%+1 complexity (function clause)
     
 	begin 
     	start_servers()
-	end.
+	end;
+
+sayHello([]) ->
+	Code.

@@ -21,7 +21,7 @@ package org.sonar.erlang.checks;
 
 import org.sonar.erlang.ErlangAstScanner;
 
-import org.sonar.erlang.checks.NumOfFunctionClausesCheck;
+import org.sonar.erlang.checks.NoMacrosCheck;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
@@ -33,20 +33,22 @@ public class NoMacrosTest {
 
   @Test
   public void test() {
-    NumOfFunctionClausesCheck check = new NumOfFunctionClausesCheck();
+    NoMacrosCheck check = new NoMacrosCheck();
 
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
-        "src/test/resources/checks/funargs.erl"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+        "src/test/resources/checks/nomacros.erl"), check);
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
+        "Do not use macros.").next().atLine(10).noMore();
   }
 
   @Test
   public void test2() {
-    NumOfFunctionClausesCheck check = new NumOfFunctionClausesCheck();
-    check.setMaximumFunctionClausesThreshold(1);
+    NoMacrosCheck check = new NoMacrosCheck();
+    check.setSkipDefineInFlowControl(false);
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
-        "src/test/resources/checks/funargs.erl"), check);
+        "src/test/resources/checks/nomacros.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
-        "Function has 2 clauses which is greater than 1 authorized.").noMore();
+        "Do not use macros.").next().atLine(4).withMessage("Do not use macros.").next()
+        .atLine(6).withMessage("Do not use macros.").next().atLine(10).noMore();
   }
 }
