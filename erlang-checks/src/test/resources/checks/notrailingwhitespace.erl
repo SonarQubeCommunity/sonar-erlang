@@ -1,5 +1,5 @@
 -module(a).
--export(hello/0).	
+-export([hello/0]).	
 
 hello()->
 	Code,

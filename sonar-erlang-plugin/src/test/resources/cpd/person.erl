@@ -1,5 +1,5 @@
 -module(quickshort).
--export(quicksort/1).
+-export([quicksort/1]).
 
 quicksort([H|T]) ->
     {Smaller_Ones,Larger_Ones} = a:split(H,T,{[],[]}),

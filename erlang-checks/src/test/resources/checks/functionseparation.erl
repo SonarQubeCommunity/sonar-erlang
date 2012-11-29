@@ -1,5 +1,5 @@
 -module(a).
--export(int/0).
+-export([int/0]).
 
 -spec int(value()) -> ConvertedValue::term().
 int(Var) -> to_type(int, Var).

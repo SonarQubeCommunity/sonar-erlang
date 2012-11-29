@@ -88,7 +88,7 @@ public class ErlangSquidSensorTest {
     verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FILES),
         Matchers.eq(1.0));
     verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.LINES),
-        Matchers.eq(18.0));
+        Matchers.eq(19.0));
     verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.NCLOC),
         Matchers.eq(14.0));
     verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FUNCTIONS),
