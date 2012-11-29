@@ -2,17 +2,17 @@
  * Sonar Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
@@ -32,7 +32,23 @@ import java.util.List;
 
 @Rule(key = "ExportOneFunctionPerLine", priority = Priority.MINOR,
   cardinality = Cardinality.SINGLE, name = "ExportOneFunctionPerLine",
-  description = "Export each method in separate line.")
+  description =
+      "<p>For readablity reasons logically group your -export(..) declarations.<br/>" +
+      "At most one -export(..) block per group, where group can be (in this order):<br/>"+
+      "<ul><li>the public API of a module</li>"+
+      "<li>callbacks for behaviour (gen_server, etc)</li>"+
+      "<li>extra exports for tests (ifdef(TEST)&lt;..&gt;)</li>"+
+      "</ul><br/>" +
+      "Export one function per line at least for the public API (except for same name function" +
+      "of different arities)<br/>" +
+      "%% API<br/>"+
+      "-export([<br/>"+
+      "add/2,<br/>"+
+      "divide/2,<br/>"+
+      "increment/1, increment/2,<br/>"+
+      "mult/2,<br/>"+
+      "substract/2<br/>"+
+      "]).</p>")
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class ExportOneFunctionPerLineCheck extends SquidCheck<ErlangGrammar> {
 
