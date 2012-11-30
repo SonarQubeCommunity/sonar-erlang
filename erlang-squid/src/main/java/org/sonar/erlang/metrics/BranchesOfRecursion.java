@@ -79,7 +79,7 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
             }
             return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
         } else {
-            return ast.findFirstDirectChild(grammar.literal).getTokenOriginalValue() + "/" + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
+            return ast.findFirstDirectChild(grammar.primaryExpression).findFirstDirectChild(grammar.literal).getTokenOriginalValue() + "/" + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
         }
     }
 

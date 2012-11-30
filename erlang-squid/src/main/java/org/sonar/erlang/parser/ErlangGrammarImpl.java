@@ -216,7 +216,7 @@ public class ErlangGrammarImpl extends ErlangGrammar {
                 // "asasd" ?MACRO "asdasd"
                 and(LITERAL, o2n(firstOf(LITERAL, macroLiteral)))));
         primaryExpression.is(firstOf(literal, listLiteral, tupleLiteral, binaryLiteral, and(
-                LPARENTHESIS, expression, RPARENTHESIS))).skipIfOneChild();
+                LPARENTHESIS, expression, RPARENTHESIS)));
 
         listLiteral.is(LBRACKET, opt(firstOf(and(assignmentExpression, LISTCOMP, qualifier, o2n(
                 COMMA, qualifier)), and(assignmentExpression, o2n(firstOf(COMMA,
