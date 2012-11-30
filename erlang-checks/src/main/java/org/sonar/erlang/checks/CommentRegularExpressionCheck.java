@@ -36,7 +36,6 @@ import org.sonar.check.RuleProperty;
         "match all comment containing \"TODO\".</p>" +
         "<p>Note that, in order to match TODO regardless of the case, the \"(?i)\" " +
         "modifier can be prepended to the expression, as in \"(?i).*TODO.*\".</p>")
-@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class CommentRegularExpressionCheck extends
         AbstractCommentRegularExpressionCheck<ErlangGrammar> {
 

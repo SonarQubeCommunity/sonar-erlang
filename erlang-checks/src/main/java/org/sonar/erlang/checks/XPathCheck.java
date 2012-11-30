@@ -37,7 +37,6 @@ import org.sonar.check.RuleProperty;
         "  <li>anything else, no violation is created</li>" +
         "</ul>" +
         "<p>Here is an example of an XPath expression to log a violation on each if expression : //ifExpression</p>")
-@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class XPathCheck extends AbstractXPathCheck<ErlangGrammar> {
 
     private static final String DEFAULT_XPATH_QUERY = "";
