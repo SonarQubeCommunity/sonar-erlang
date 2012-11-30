@@ -41,7 +41,7 @@ public final class CheckList {
                 LineLengthCheck.class, MultipleBlankLinesCheck.class,
                 NoEmacsStyleLeadingCommasCheck.class, NoSpaceAfterBeforeBracketsCheck.class,
                 NoTabsForIndentionCheck.class, NoTrailingWhitespaceCheck.class,
-                NumberOfFunctionArgsCheck.class, SpaceAfterBeforeOperatorsCheck.class, XPathCheck.class);
+                NumberOfFunctionArgsCheck.class, ParsingErrorCheck.class, SpaceAfterBeforeOperatorsCheck.class, XPathCheck.class);
     }
 
 }
