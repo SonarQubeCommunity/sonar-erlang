@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import org.sonar.erlang.api.ErlangMetric;
+
 import org.sonar.erlang.ErlangAstScanner;
 
 import org.sonar.erlang.checks.BranchesOfRecursionCheck;
@@ -46,6 +48,7 @@ public class BranchesOfRecursionCheckTest {
     check.setMaximumBORThreshold(1);
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
         "src/test/resources/checks/branchesofrecursion.erl"), check);
+
     CheckMessagesVerifier.verify(file.getCheckMessages())
 
         .noMore();

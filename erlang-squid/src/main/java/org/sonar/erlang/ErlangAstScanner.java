@@ -127,7 +127,7 @@ public final class ErlangAstScanner {
             }
             String functionName = clause.findFirstDirectChild(grammar.clauseHead)
                 .getTokenValue();
-            return functionName + "/" + ((!isDec) ? "c" : "") + getArity(clause) + ":"
+            return functionName + "/" + getArity(clause) + ((!isDec) ? "c" : "") + ":"
               + clause.getTokenLine();
           }
 
