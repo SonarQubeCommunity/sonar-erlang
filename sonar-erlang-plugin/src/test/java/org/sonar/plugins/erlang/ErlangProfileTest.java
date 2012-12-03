@@ -51,7 +51,7 @@ public class ErlangProfileTest {
 
     assertThat(profile.getLanguage()).isEqualTo(Erlang.KEY);
     assertThat(profile.getName()).isEqualTo(ErlangProfile.PROFILE_NAME);
-    assertThat(profile.getActiveRulesByRepository(CheckList.REPOSITORY_KEY)).hasSize(17);
+    assertThat(profile.getActiveRulesByRepository(CheckList.REPOSITORY_KEY)).hasSize(18);
     assertThat(profile.getActiveRulesByRepository(DialyzerRuleRepository.REPOSITORY_KEY))
         .hasSize(41);
     assertThat(validation.hasErrors()).isFalse();

@@ -17,30 +17,31 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.erlang.metrics;
-
-import org.sonar.erlang.api.ErlangPunctuator;
-
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangMetric;
+package org.sonar.erlang.checks;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.squid.checks.SquidCheck;
+import org.sonar.check.BelongsToProfile;
+import org.sonar.check.Cardinality;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangPunctuator;
 
-import java.util.List;
+@Rule(key = "IsTailRecursive", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
+@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
+public class IsTailRecursiveCheck extends SquidCheck<ErlangGrammar> {
 
-public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
-
-    private ErlangGrammar grammar;
     private String actualArity;
     private String actualModule;
+    private ErlangGrammar grammar;
+    private int lastClauseLine;
 
     @Override
     public void init() {
         grammar = getContext().getGrammar();
-        subscribeTo(grammar.functionDeclaration, grammar.callExpression);
-
+        subscribeTo(getContext().getGrammar().callExpression, getContext().getGrammar().functionDeclaration);
     }
 
     @Override
@@ -48,26 +49,48 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
         actualArity = "";
         actualModule = astNode.findFirstDirectChild(grammar.moduleHeadAttr).findFirstDirectChild(grammar.moduleAttr)
                 .findDirectChildren(GenericTokenType.IDENTIFIER).get(1).getTokenOriginalValue();
+        lastClauseLine = 0;
     }
 
     @Override
-    public void leaveFile(AstNode astNode) {
-    }
-
-    @Override
-    public void leaveNode(AstNode ast) {
-    }
-
-    @Override
-    public void visitNode(AstNode ast) {
-        if (ast.getType().equals(grammar.functionDeclaration)) {
-            actualArity = getArity(ast.findFirstDirectChild(grammar.functionClause));
+    public void visitNode(AstNode node) {
+        if (node.getType().equals(grammar.functionDeclaration)) {
+            actualArity = getArity(node.findFirstDirectChild(grammar.functionClause));
         }
-        if (ast.getType().equals(grammar.callExpression)) {
-            if (getArityFromCall(ast).equals(actualArity)) {
-                getContext().peekSourceCode().add(ErlangMetric.BRANCHES_OF_RECURSION, 1);
+        if (node.getType().equals(grammar.callExpression)) {
+            /**
+             * Recursive call
+             */
+            if (getArityFromCall(node).equals(actualArity) && node.findFirstParent(grammar.functionClause).getTokenLine()!=lastClauseLine) {
+                /**
+                 * Not a standalone statement
+                 */
+                if (!node.getParent().getType().equals(grammar.expression)) {
+                    getContext().createLineViolation(this, "Function is not tail recursive.", node);
+                    lastClauseLine = node.findFirstParent(grammar.functionClause).getTokenLine();
+                }
+
+                /**
+                 * Not last call
+                 */
+                if (!checkIsLastStatement(node.findFirstParent(grammar.statement))) {
+                    getContext().createLineViolation(this, "Function is not tail recursive.", node);
+                    lastClauseLine = node.findFirstParent(grammar.functionClause).getTokenLine();
+                }
+
             }
         }
+    }
+
+    private boolean checkIsLastStatement(AstNode node) {
+        if (node == null) {
+            return true;
+        }
+        AstNode sibling = node.nextSibling();
+        if (sibling != null) {
+            return false;
+        }
+        return checkIsLastStatement(node.findFirstParent(grammar.statement));
     }
 
     private String getArityFromCall(AstNode ast) {
@@ -78,7 +101,8 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
             }
             return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
         } else {
-            return ast.findFirstDirectChild(grammar.primaryExpression).findFirstDirectChild(grammar.literal).getTokenOriginalValue() + "/" + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
+            return ast.findFirstDirectChild(grammar.primaryExpression).findFirstDirectChild(grammar.literal).getTokenOriginalValue() + "/"
+                + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
         }
     }
 
@@ -94,4 +118,5 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
                 ErlangPunctuator.COMMA).size() + 1 : args.getNumberOfChildren() - 2;
         return String.valueOf(num);
     }
+
 }
