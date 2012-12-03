@@ -19,14 +19,12 @@
  */
 package org.sonar.erlang.checks;
 
-import org.sonar.erlang.api.ErlangGrammar;
-
 import com.sonar.sslr.squid.checks.AbstractCommentRegularExpressionCheck;
-import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.erlang.api.ErlangGrammar;
 
 @Rule(key = "CommentRegularExpression", priority = Priority.MAJOR,
     cardinality = Cardinality.MULTIPLE, name = "Regular expression on comment",

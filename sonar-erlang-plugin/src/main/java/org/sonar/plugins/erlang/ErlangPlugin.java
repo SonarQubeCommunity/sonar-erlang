@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.erlang;
 
+import org.sonar.plugins.erlang.libraries.ErlangLibrarySensor;
+
 import com.google.common.collect.ImmutableList;
 import org.sonar.api.Extension;
 import org.sonar.api.Properties;
@@ -54,7 +56,13 @@ import java.util.List;
     defaultValue = ErlangPlugin.DIALYZER_DEFAULT_FILENAME,
     name = "Dialyzer Default Filename",
     description = "Filename of the dialyzer output located in the eunit folder",
-    global = true, project = true)
+    global = true, project = true),
+
+    @Property(key = ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
+      defaultValue = ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME,
+      name = "Rebar configfile name",
+      description = "Filename of the rebar config file",
+      global = true, project = true)
 })
 public class ErlangPlugin extends SonarPlugin {
 
@@ -67,7 +75,8 @@ public class ErlangPlugin extends SonarPlugin {
   public static final String EXTENSION = ".erl";
   public static final String FILE_SUFFIXES_KEY = "sonar.erlang.file.suffixes";
   public static final String FILE_SUFFIXES_DEFVALUE = "erl";
-  public static final String REBAR_CONFIG_URL = "rebar.config";
+  public static final String REBAR_CONFIG_FILENAME_KEY = "sonar.erlang.rebar.config";
+  public static final String REBAR_DEFAULT_CONFIG_FILENAME = "rebar.config";
 
   public List<Class<? extends Extension>> getExtensions() {
     return ImmutableList.of(Erlang.class, ErlangSourceImporter.class,
@@ -84,7 +93,9 @@ public class ErlangPlugin extends SonarPlugin {
 
         CoverCoverageSensor.class,
 
-        DialyzerSensor.class);
+        DialyzerSensor.class,
+
+        ErlangLibrarySensor.class);
   }
 
 }
