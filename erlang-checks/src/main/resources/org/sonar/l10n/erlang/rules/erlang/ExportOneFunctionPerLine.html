@@ -1,0 +1,23 @@
+<p>For readablity reasons logically group your -export(..) declarations.<br/>
+At most one -export(..) block per group, where group can be (in this order):</p>
+<p>
+  <ul>
+    <li>the public API of a module</li>
+    <li>callbacks for behaviour (gen_server, etc)</li>
+    <li>extra exports for tests (ifdef(TEST)&lt;..&gt;)</li>
+  </ul>
+</p>
+<p>
+Export one function per line at least for the public API (except for same name function
+of different arities)
+  <pre>
+    %% API
+    -export([
+      add/2,
+      divide/2,
+      increment/1, increment/2,
+      mult/2,
+      substract/2
+    ]).
+  </pre>
+</p>

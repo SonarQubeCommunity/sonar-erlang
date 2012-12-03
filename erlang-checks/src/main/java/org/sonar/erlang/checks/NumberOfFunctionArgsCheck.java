@@ -31,8 +31,7 @@ import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.squid.api.SourceFunction;
 
-@Rule(key = "NumberOfFunctionArgs", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
-  name = "Avoid too many function arguments", description = "Functions should not take more than 6 arguments, 8 being the hard limit.")
+@Rule(key = "NumberOfFunctionArgs", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NumberOfFunctionArgsCheck extends SquidCheck<ErlangGrammar> {
 

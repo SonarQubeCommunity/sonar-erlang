@@ -1,0 +1,42 @@
+<p>
+Try to separate your code blocks for readability.
+  <ul>
+    <li>Always use 1 blank line to separate function definitions</li>
+    <li>Do not use blank lines to separate function clauses</li>
+  </ul>
+</p>
+<p>
+Like:
+<pre>
+-module(a).
+-export([int/0]).
+
+-spec int(value()) -> ConvertedValue::term().
+  int(Var) -> to_type(int, Var).
+
+-spec hello() -> atom().
+hello([])->
+  Code;
+hello(A) ->
+  Code.
+bello([])-> %issue, no blank line before declaration
+  code;
+bello(A) ->
+  {A, code}.
+
+%comment is
+%not an issue
+hello2()->
+  Code;
+
+hello2(A) -> %issue, blank line before function clause
+  Code.
+
+
+bello2([])-> %issue, two blank lines before declaration
+  code;
+%not an issue
+bello2(A) ->
+  {A, code}.
+</pre>
+</p>

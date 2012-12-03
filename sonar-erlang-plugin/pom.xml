@@ -17,7 +17,7 @@
   <url>http://docs.codehaus.org/display/SONAR/Erlang+Plugin</url>
 
   <properties>
-    <sonar.pluginKey>erl</sonar.pluginKey>
+    <sonar.pluginKey>erlang</sonar.pluginKey>
     <sonar.pluginName>Erlang</sonar.pluginName>
     <sonar.pluginClass>org.sonar.plugins.erlang.ErlangPlugin</sonar.pluginClass>
     <sonar.runtimeVersion>3.3.2</sonar.runtimeVersion>

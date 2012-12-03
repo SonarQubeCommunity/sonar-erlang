@@ -27,13 +27,7 @@ import org.sonar.check.RuleProperty;
 import org.sonar.erlang.api.ErlangGrammar;
 
 @Rule(key = "CommentRegularExpression", priority = Priority.MAJOR,
-    cardinality = Cardinality.MULTIPLE, name = "Regular expression on comment",
-    description = "<p>This rule template can be used to create rules which will be " +
-        "triggered when a comment matches a given regular expression." +
-        "For example, one can create a rule with the regular expression \".*TODO.*\" to " +
-        "match all comment containing \"TODO\".</p>" +
-        "<p>Note that, in order to match TODO regardless of the case, the \"(?i)\" " +
-        "modifier can be prepended to the expression, as in \"(?i).*TODO.*\".</p>")
+    cardinality = Cardinality.MULTIPLE)
 public class CommentRegularExpressionCheck extends
         AbstractCommentRegularExpressionCheck<ErlangGrammar> {
 

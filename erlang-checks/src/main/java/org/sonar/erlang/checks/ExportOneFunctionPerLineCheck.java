@@ -31,24 +31,7 @@ import org.sonar.check.Rule;
 import java.util.List;
 
 @Rule(key = "ExportOneFunctionPerLine", priority = Priority.MINOR,
-  cardinality = Cardinality.SINGLE, name = "ExportOneFunctionPerLine",
-  description =
-      "<p>For readablity reasons logically group your -export(..) declarations.<br/>" +
-      "At most one -export(..) block per group, where group can be (in this order):<br/>"+
-      "<ul><li>the public API of a module</li>"+
-      "<li>callbacks for behaviour (gen_server, etc)</li>"+
-      "<li>extra exports for tests (ifdef(TEST)&lt;..&gt;)</li>"+
-      "</ul><br/>" +
-      "Export one function per line at least for the public API (except for same name function" +
-      "of different arities)<br/>" +
-      "%% API<br/>"+
-      "-export([<br/>"+
-      "add/2,<br/>"+
-      "divide/2,<br/>"+
-      "increment/1, increment/2,<br/>"+
-      "mult/2,<br/>"+
-      "substract/2<br/>"+
-      "]).</p>")
+  cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class ExportOneFunctionPerLineCheck extends SquidCheck<ErlangGrammar> {
 

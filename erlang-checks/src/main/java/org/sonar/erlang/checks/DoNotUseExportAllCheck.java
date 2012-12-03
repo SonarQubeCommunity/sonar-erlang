@@ -28,26 +28,20 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 
-@Rule(key = "DoNotUseExportAll", priority = Priority.MINOR, cardinality = Cardinality.SINGLE,
-  name = "DoNotUseExportAll",
-  description = "<p>Never use -compile(export_all) for several reasons:<br/><ul>" +
-          "<li>Clarity: it's easier to see which functions are intended to be used outside the module.</li>" +
-          "<li>Code smell: you get warnings for unused functions.</li>" +
-          "<li>Optimization: the compiler might be able to make more aggressive optimizations knowing that " +
-          "not all functions have to be exported.</li></ul></p>")
+@Rule(key = "DoNotUseExportAll", priority = Priority.MINOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DoNotUseExportAllCheck extends SquidCheck<ErlangGrammar> {
 
-  @Override
-  public void init() {
-    subscribeTo(getContext().getGrammar().compileAttr);
-  }
-
-  @Override
-  public void visitNode(AstNode node) {
-    if ("export_all".equalsIgnoreCase(node.getChild(3).getTokenOriginalValue())) {
-      getContext().createLineViolation(this, "Do not use export_all", node);
+    @Override
+    public void init() {
+        subscribeTo(getContext().getGrammar().compileAttr);
     }
-  }
+
+    @Override
+    public void visitNode(AstNode node) {
+        if ("export_all".equalsIgnoreCase(node.getChild(3).getTokenOriginalValue())) {
+            getContext().createLineViolation(this, "Do not use export_all", node);
+        }
+    }
 
 }

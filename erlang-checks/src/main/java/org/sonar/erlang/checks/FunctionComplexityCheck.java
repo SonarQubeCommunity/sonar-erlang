@@ -31,11 +31,7 @@ import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.squid.api.SourceFunction;
 
-@Rule(key = "FunctionComplexity", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
-    name = "Avoid too complex function",
-    description = "<p>The cyclomatic complexity of a function should not exceed a " +
-            "defined threshold. Complex code can perform poorly and will in any case " +
-            "be difficult to understand and therefore to maintain.</p>")
+@Rule(key = "FunctionComplexity", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class FunctionComplexityCheck extends SquidCheck<ErlangGrammar> {
 

@@ -1,0 +1,32 @@
+<p>
+Check if the function is tail recursive or not. Currently it check for direct recursion. A function is tail recursive
+if the recursive call is a stand alone statement and it is not flowed by other statements:
+</p>
+<p>
+The following snippets are not tail recursive:
+<pre>
+function([H|T], Acc) ->
+   case H of
+       1 -> function(T, Acc+1);
+       2 -> function(T, Acc-2);
+       _ -> 1+function(T, Acc)
+   end.
+</pre>
+<pre>
+function([H|T], Acc) ->
+   case H of
+       1 -> function(T, Acc+1);
+       2 -> function(T, Acc-2);
+       _ -> function(T, Acc)
+   end
+   Code.
+</pre>
+<pre>
+quicksort([H|T]) ->
+    {Smaller_Ones,Larger_Ones} = a:split(H,T,{[],[]}),
+    lists:append( quicksort(Smaller_Ones),
+                  [H | quicksort(Larger_Ones)]
+                );
+quicksort([]) -> [].
+</pre>
+</p>

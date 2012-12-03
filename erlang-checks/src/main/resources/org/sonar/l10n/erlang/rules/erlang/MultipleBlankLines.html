@@ -1,0 +1,40 @@
+<p>
+For better readability try to avoid too many blank lines.
+You can set up the threshold for inside and outside of the functions.
+The comments handled as code lines.
+</p>
+<p>
+By default the settings are:
+<ul>
+<li>at most 2 blank-lines between functions</li>
+<li>at most 1 blank-line inside a function body</li>
+</ul>
+<pre>
+  -module(a).
+
+
+
+  -export([hello/0]). %% issue, too many bank lines
+
+
+  hello()->
+    Code,
+
+
+    Code, %% issue, too many bank lines
+
+     %comment
+
+    DifferentBlock, %% not an issue, the comment does no matter
+
+
+    %comment
+
+    Whatever1, %% issue, too many bank lines before the comment
+
+    %comment
+
+
+    Whatever2. %% issue, too many bank lines after the comment
+  </pre>
+</p>

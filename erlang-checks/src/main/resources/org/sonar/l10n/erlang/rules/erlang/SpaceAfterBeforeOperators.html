@@ -1,0 +1,9 @@
+<p>
+Always add a space before/after an operator such as =, +, * etc. Exception: pattern matching in function heads.
+  <pre>
+    modify_tuple({A, B}=Tuple, X, Y) ->
+      IncreasedA = A + X,
+      NewTuple = do_something(Tuple, IncreasedA, Y),
+      {ok, NewTuple}.
+  </pre>
+</p>

@@ -33,8 +33,7 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
-@Rule(key = "LineLength", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE,
-  name = "LineLength", description = "Allowed line length")
+@Rule(key = "LineLength", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class LineLengthCheck extends SquidCheck<ErlangGrammar> implements AstAndTokenVisitor {
 

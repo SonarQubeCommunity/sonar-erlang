@@ -28,15 +28,7 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 
-@Rule(key = "XPath", priority = Priority.MAJOR, cardinality = Cardinality.MULTIPLE, name = "XPath",
-    description = "<p>This rule allows to define some homemade Erlang rules with help of an XPath expression.</p>" +
-        "<p>Violations are created depending on the return value of the XPath expression. If the XPath expression returns:</p>" +
-        "<ul>" +
-        "  <li>a single or list of AST nodes, then a line violation with the given message is created for each node</li>" +
-        "  <li>a boolean, then a file violation with the given message is created only if the boolean is true</li>" +
-        "  <li>anything else, no violation is created</li>" +
-        "</ul>" +
-        "<p>Here is an example of an XPath expression to log a violation on each if expression : //ifExpression</p>")
+@Rule(key = "XPath", priority = Priority.MAJOR, cardinality = Cardinality.MULTIPLE)
 public class XPathCheck extends AbstractXPathCheck<ErlangGrammar> {
 
     private static final String DEFAULT_XPATH_QUERY = "";

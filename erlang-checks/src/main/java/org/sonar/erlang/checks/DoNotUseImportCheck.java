@@ -28,11 +28,7 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 
-@Rule(key = "DoNotUseImport", priority = Priority.MINOR, cardinality = Cardinality.SINGLE,
-    name = "DoNotUseImport",
-    description = "<p>Don't use -import, using it makes the code harder to read since " +
-        "you cannot directly see in what module a function is defined. Use exref " +
-        "(Cross Reference Tool) to find module dependencies.</p>")
+@Rule(key = "DoNotUseImport", priority = Priority.MINOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DoNotUseImportCheck extends SquidCheck<ErlangGrammar> {
 
