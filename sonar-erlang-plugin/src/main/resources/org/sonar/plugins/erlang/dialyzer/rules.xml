@@ -3,11 +3,11 @@
 <rules>
   <rule>
     <key>D001</key>
-<!--		<name><![CDATA[Function that will never return a value]]></name>-->
+    <name><![CDATA[Function that will never return a value]]></name>
     <configKey>apply</configKey>
-<!--		<description>
+  <description>
       <![CDATA[Functions that will never return a value.]]>
-    </description>-->
+    </description>
     <messages>
       <message>Fun application with arguments ~s</message>
     </messages>
