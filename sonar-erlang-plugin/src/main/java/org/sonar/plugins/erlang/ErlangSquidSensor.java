@@ -19,13 +19,6 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.sonar.erlang.ErlangAstScanner;
-import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangMetric;
-
-import org.sonar.erlang.checks.CheckList;
-
 import com.google.common.collect.Lists;
 import com.sonar.sslr.squid.AstScanner;
 import com.sonar.sslr.squid.SquidAstVisitor;
@@ -41,6 +34,11 @@ import org.sonar.api.resources.File;
 import org.sonar.api.resources.InputFileUtils;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rules.Violation;
+import org.sonar.erlang.ErlangAstScanner;
+import org.sonar.erlang.ErlangConfiguration;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.checks.CheckList;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.squid.api.CheckMessage;
 import org.sonar.squid.api.SourceCode;

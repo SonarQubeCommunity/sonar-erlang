@@ -19,11 +19,10 @@
  */
 package org.sonar.erlang.metrics;
 
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangMetric;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.SquidAstVisitor;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangMetric;
 
 public class ErlangStatementVisitor extends SquidAstVisitor<ErlangGrammar> {
 

@@ -19,11 +19,10 @@
  */
 package org.sonar.plugins.erlang.checks;
 
-import org.sonar.erlang.checks.CheckList;
-
 import org.junit.Test;
 import org.sonar.api.rules.AnnotationRuleParser;
 import org.sonar.api.rules.Rule;
+import org.sonar.erlang.checks.CheckList;
 
 import java.util.List;
 

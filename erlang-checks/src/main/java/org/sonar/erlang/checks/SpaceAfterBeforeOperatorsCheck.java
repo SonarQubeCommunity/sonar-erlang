@@ -19,9 +19,6 @@
  */
 package org.sonar.erlang.checks;
 
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangPunctuator;
-
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
@@ -29,6 +26,8 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangPunctuator;
 
 import java.util.ArrayList;
 import java.util.List;

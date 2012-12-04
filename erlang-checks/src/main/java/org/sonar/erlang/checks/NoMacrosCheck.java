@@ -19,29 +19,21 @@
  */
 package org.sonar.erlang.checks;
 
-import com.sonar.sslr.api.GenericTokenType;
-
-import com.google.common.collect.Lists;
-
 import com.google.common.base.Function;
-
-import org.apache.commons.lang.ArrayUtils;
-
-import org.apache.commons.collections.ListUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.sonar.erlang.api.ErlangGrammar;
-
+import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.erlang.api.ErlangGrammar;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Rule(key = "NoMacros", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)

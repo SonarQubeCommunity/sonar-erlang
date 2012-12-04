@@ -19,8 +19,6 @@
  */
 package org.sonar.erlang;
 
-import org.sonar.erlang.ErlangCommentAnalyser;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.sonar.erlang.checks.CheckList;
-
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -30,6 +28,7 @@ import org.sonar.api.profiles.XMLProfileParser;
 import org.sonar.api.rules.Rule;
 import org.sonar.api.rules.RuleFinder;
 import org.sonar.api.utils.ValidationMessages;
+import org.sonar.erlang.checks.CheckList;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleRepository;
 

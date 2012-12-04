@@ -19,9 +19,6 @@
  */
 package org.sonar.plugins.erlang.cpd;
 
-import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.lexer.ErlangLexer;
-
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.impl.Lexer;
@@ -29,6 +26,8 @@ import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
+import org.sonar.erlang.ErlangConfiguration;
+import org.sonar.erlang.lexer.ErlangLexer;
 
 import java.io.File;
 import java.nio.charset.Charset;

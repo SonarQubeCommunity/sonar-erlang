@@ -19,15 +19,12 @@
  */
 package org.sonar.erlang;
 
-import org.sonar.erlang.ErlangAstScanner;
-import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangMetric;
-
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.squid.AstScanner;
 import org.junit.Test;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.squid.api.SourceClass;
 import org.sonar.squid.api.SourceCode;
 import org.sonar.squid.api.SourceFile;

@@ -19,22 +19,20 @@
  */
 package org.sonar.erlang.lexer;
 
-import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.api.ErlangKeyword;
-import org.sonar.erlang.api.ErlangPunctuator;
-
-import static org.sonar.erlang.api.ErlangTokenType.NUMERIC_LITERAL;
-
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.IdentifierAndKeywordChannel;
 import com.sonar.sslr.impl.channel.PunctuatorChannel;
 import com.sonar.sslr.impl.channel.UnknownCharacterChannel;
+import org.sonar.erlang.ErlangConfiguration;
+import org.sonar.erlang.api.ErlangKeyword;
+import org.sonar.erlang.api.ErlangPunctuator;
 
 import static com.sonar.sslr.api.GenericTokenType.LITERAL;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.commentRegexp;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.or;
 import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
+import static org.sonar.erlang.api.ErlangTokenType.NUMERIC_LITERAL;
 
 public final class ErlangLexer {
 

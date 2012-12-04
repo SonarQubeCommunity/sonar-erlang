@@ -19,18 +19,16 @@
  */
 package org.sonar.erlang.lexer;
 
-import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.api.ErlangKeyword;
-import org.sonar.erlang.api.ErlangPunctuator;
-import org.sonar.erlang.api.ErlangTokenType;
-import org.sonar.erlang.lexer.ErlangLexer;
-
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.channel.UnknownCharacterChannel;
 import org.hamcrest.Matchers;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.sonar.erlang.ErlangConfiguration;
+import org.sonar.erlang.api.ErlangKeyword;
+import org.sonar.erlang.api.ErlangPunctuator;
+import org.sonar.erlang.api.ErlangTokenType;
 
 import java.nio.charset.Charset;
 

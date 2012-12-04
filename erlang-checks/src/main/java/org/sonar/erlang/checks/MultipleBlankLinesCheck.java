@@ -19,8 +19,6 @@
  */
 package org.sonar.erlang.checks;
 
-import org.sonar.erlang.api.ErlangGrammar;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -31,6 +29,7 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.erlang.api.ErlangGrammar;
 
 @Rule(key = "MultipleBlankLines", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)

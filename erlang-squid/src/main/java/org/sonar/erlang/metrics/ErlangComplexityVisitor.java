@@ -19,12 +19,11 @@
  */
 package org.sonar.erlang.metrics;
 
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangMetric;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.squid.SquidAstVisitor;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangMetric;
 
 /**
  * Erlang complexity calculation +1 for every function clause over 1 +1 for

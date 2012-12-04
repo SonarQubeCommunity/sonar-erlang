@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang.libraries;
 
-import org.sonar.plugins.erlang.ErlangPlugin;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +28,7 @@ import org.sonar.api.design.Dependency;
 import org.sonar.api.resources.Library;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
+import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;

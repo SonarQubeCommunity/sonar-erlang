@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.sonar.plugins.erlang.libraries.ErlangLibrarySensor;
-
 import com.google.common.collect.ImmutableList;
 import org.sonar.api.Extension;
 import org.sonar.api.Properties;
@@ -35,6 +33,7 @@ import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleRepository;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
 import org.sonar.plugins.erlang.eunit.EunitSensor;
+import org.sonar.plugins.erlang.libraries.ErlangLibrarySensor;
 
 import java.util.List;
 

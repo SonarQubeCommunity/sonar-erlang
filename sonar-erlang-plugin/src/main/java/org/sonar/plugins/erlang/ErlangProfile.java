@@ -19,14 +19,13 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.sonar.erlang.checks.CheckList;
-
 import org.sonar.api.profiles.AnnotationProfileParser;
 import org.sonar.api.profiles.ProfileDefinition;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.profiles.XMLProfileParser;
 import org.sonar.api.rules.ActiveRule;
 import org.sonar.api.utils.ValidationMessages;
+import org.sonar.erlang.checks.CheckList;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.util.List;

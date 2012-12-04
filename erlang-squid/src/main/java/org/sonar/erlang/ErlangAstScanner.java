@@ -19,16 +19,6 @@
  */
 package org.sonar.erlang;
 
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangMetric;
-import org.sonar.erlang.api.ErlangPunctuator;
-import org.sonar.erlang.metrics.BranchesOfRecursion;
-import org.sonar.erlang.metrics.ErlangComplexityVisitor;
-import org.sonar.erlang.metrics.ErlangStatementVisitor;
-import org.sonar.erlang.metrics.NumberOfFunctionArgument;
-import org.sonar.erlang.metrics.PublicDocumentedApiCounter;
-import org.sonar.erlang.parser.ErlangParser;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.squid.AstScanner;
@@ -41,6 +31,15 @@ import com.sonar.sslr.squid.metrics.ComplexityVisitor;
 import com.sonar.sslr.squid.metrics.CounterVisitor;
 import com.sonar.sslr.squid.metrics.LinesOfCodeVisitor;
 import com.sonar.sslr.squid.metrics.LinesVisitor;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.api.ErlangPunctuator;
+import org.sonar.erlang.metrics.BranchesOfRecursion;
+import org.sonar.erlang.metrics.ErlangComplexityVisitor;
+import org.sonar.erlang.metrics.ErlangStatementVisitor;
+import org.sonar.erlang.metrics.NumberOfFunctionArgument;
+import org.sonar.erlang.metrics.PublicDocumentedApiCounter;
+import org.sonar.erlang.parser.ErlangParser;
 import org.sonar.squid.api.SourceClass;
 import org.sonar.squid.api.SourceCode;
 import org.sonar.squid.api.SourceFile;

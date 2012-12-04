@@ -19,10 +19,6 @@
  */
 package org.sonar.erlang.parser;
 
-import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.parser.ErlangParser;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.sonar.sslr.impl.Parser;
@@ -31,6 +27,8 @@ import com.sonar.sslr.impl.events.ExtendedStackTraceStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.sonar.erlang.ErlangConfiguration;
+import org.sonar.erlang.api.ErlangGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 

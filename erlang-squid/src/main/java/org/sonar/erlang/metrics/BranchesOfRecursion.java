@@ -19,16 +19,12 @@
  */
 package org.sonar.erlang.metrics;
 
-import org.sonar.erlang.api.ErlangPunctuator;
-
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangMetric;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.squid.checks.SquidCheck;
-
-import java.util.List;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.api.ErlangPunctuator;
 
 public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
 

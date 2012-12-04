@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang.colorizer;
 
-import org.sonar.erlang.api.ErlangKeyword;
-
 import com.google.common.collect.ImmutableList;
 import org.sonar.api.web.CodeColorizerFormat;
 import org.sonar.colorizer.CDocTokenizer;
@@ -29,6 +27,7 @@ import org.sonar.colorizer.JavadocTokenizer;
 import org.sonar.colorizer.KeywordsTokenizer;
 import org.sonar.colorizer.StringTokenizer;
 import org.sonar.colorizer.Tokenizer;
+import org.sonar.erlang.api.ErlangKeyword;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.util.List;

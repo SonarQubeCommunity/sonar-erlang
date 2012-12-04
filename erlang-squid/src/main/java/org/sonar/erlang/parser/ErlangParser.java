@@ -19,12 +19,11 @@
  */
 package org.sonar.erlang.parser;
 
+import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.impl.events.ParsingEventListener;
 import org.sonar.erlang.ErlangConfiguration;
 import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.lexer.ErlangLexer;
-
-import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.events.ParsingEventListener;
 
 public final class ErlangParser {
   private ErlangParser() {

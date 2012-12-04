@@ -19,14 +19,13 @@
  */
 package org.sonar.erlang.metrics;
 
-import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangMetric;
-import org.sonar.erlang.api.ErlangPunctuator;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.squid.SquidAstVisitor;
+import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.api.ErlangPunctuator;
 
 import java.util.List;
 

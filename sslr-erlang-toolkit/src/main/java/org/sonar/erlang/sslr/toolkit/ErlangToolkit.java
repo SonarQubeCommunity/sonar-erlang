@@ -19,10 +19,6 @@
  */
 package org.sonar.erlang.sslr.toolkit;
 
-import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.api.ErlangKeyword;
-import org.sonar.erlang.parser.ErlangParser;
-
 import com.google.common.collect.ImmutableList;
 import org.sonar.colorizer.CDocTokenizer;
 import org.sonar.colorizer.CppDocTokenizer;
@@ -30,6 +26,9 @@ import org.sonar.colorizer.JavadocTokenizer;
 import org.sonar.colorizer.KeywordsTokenizer;
 import org.sonar.colorizer.StringTokenizer;
 import org.sonar.colorizer.Tokenizer;
+import org.sonar.erlang.ErlangConfiguration;
+import org.sonar.erlang.api.ErlangKeyword;
+import org.sonar.erlang.parser.ErlangParser;
 import org.sonar.sslr.toolkit.Toolkit;
 
 import java.nio.charset.Charset;
