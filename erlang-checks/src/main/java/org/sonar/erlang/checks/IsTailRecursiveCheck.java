@@ -59,7 +59,7 @@ public class IsTailRecursiveCheck extends SquidCheck<ErlangGrammar> {
         }
         if (node.getType().equals(grammar.callExpression)) {
             /**
-             * Recursive call
+             * Recursive call where we have not record a non tail recursive call
              */
             if (getArityFromCall(node).equals(actualArity) && node.findFirstParent(grammar.functionClause).getTokenLine()!=lastClauseLine) {
                 /**
