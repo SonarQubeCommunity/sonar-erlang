@@ -2,17 +2,17 @@
  * Sonar Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
@@ -86,7 +86,7 @@ public class ModuleAttributesTest {
 
   @Test
   public void defineTest() {
-    assertThat(p).matches((code("-define(PARAM_TOKEN_TIMEOUT,                    60*15).")));
+
 
     assertThat(p).matches(
         (code("-define(TC_AWAIT_CANCEL_EVENT(),",
@@ -95,6 +95,8 @@ public class ModuleAttributesTest {
             "receive", "{Tag, Pid} ->", "ok", "end;",
             "{value, {sleep, To}} when is_integer(To) andalso (To > 0) ->",
             "receive after To -> ok end;", "_ ->", "ok", "end).")));
+
+    assertThat(p).matches((code("-define(PARAM_TOKEN_TIMEOUT,                    60*15).")));
   }
 
   @Test

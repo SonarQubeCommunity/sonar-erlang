@@ -22,7 +22,6 @@ package org.sonar.erlang.parser;
 import com.sonar.sslr.impl.matcher.GrammarFunctions;
 import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangKeyword;
-import org.sonar.erlang.api.ErlangPunctuator;
 
 import static com.sonar.sslr.api.GenericTokenType.EOF;
 import static com.sonar.sslr.api.GenericTokenType.IDENTIFIER;
@@ -138,7 +137,7 @@ public class ErlangGrammarImpl extends ErlangGrammar {
         compileAttr.is(MINUS, "compile", LPARENTHESIS, primaryExpression, RPARENTHESIS, DOT);
 
         defineAttr.is(MINUS, "define", LPARENTHESIS, firstOf(and(IDENTIFIER, COMMA,
-                assignmentExpression), and(funcDecl, COMMA, statement)), RPARENTHESIS, DOT);
+                statement), and(funcDecl, COMMA, statement)), RPARENTHESIS, DOT);
 
         importAttr.is(MINUS, "import", LPARENTHESIS, firstOf(macroLiteral, IDENTIFIER), COMMA,
                 LBRACKET, funcArity, o2n(COMMA, funcArity), RBRACKET, RPARENTHESIS, DOT);
