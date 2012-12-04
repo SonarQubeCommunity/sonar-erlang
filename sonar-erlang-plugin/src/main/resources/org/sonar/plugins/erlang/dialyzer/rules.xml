@@ -1,501 +1,501 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copied from dialyzer.erl -->
 <rules>
-	<rule>
-		<key>D001</key>
-		<name><![CDATA[Function that will never return a value]]></name>
-		<configKey>apply</configKey>
-		<description>
+  <rule>
+    <key>D001</key>
+<!--		<name><![CDATA[Function that will never return a value]]></name>-->
+    <configKey>apply</configKey>
+<!--		<description>
       <![CDATA[Functions that will never return a value.]]>
-		</description>
-		<messages>
-			<message>Fun application with arguments ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D002</key>
-		<name><![CDATA[app_call]]></name>
-		<configKey>app_call</configKey>
-		<description>
+    </description>-->
+    <messages>
+      <message>Fun application with arguments ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D002</key>
+    <name><![CDATA[app_call]]></name>
+    <configKey>app_call</configKey>
+    <description>
       <![CDATA[app_call]]>
-		</description>
-		<messages>
-			<message>The call ~s:~s~s requires that ~s is of type ~s not ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D003</key>
-		<name><![CDATA[bin_construction]]></name>
-		<configKey>bin_construction</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The call ~s:~s~s requires that ~s is of type ~s not ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D003</key>
+    <name><![CDATA[bin_construction]]></name>
+    <configKey>bin_construction</configKey>
+    <description>
       <![CDATA[bin_construction]]>
-		</description>
-		<messages>
-			<message>Binary construction will fail since the ~s field ~s in
-				segment ~s has type ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D004</key>
-		<name><![CDATA[call]]></name>
-		<configKey>call</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Binary construction will fail since the ~s field ~s in
+        segment ~s has type ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D004</key>
+    <name><![CDATA[call]]></name>
+    <configKey>call</configKey>
+    <description>
       <![CDATA[call]]>
-		</description>
-		<messages>
-			<message>The call ~w:~w~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D005</key>
-		<name><![CDATA[call_to_missing]]></name>
-		<configKey>call_to_missing</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The call ~w:~w~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D005</key>
+    <name><![CDATA[call_to_missing]]></name>
+    <configKey>call_to_missing</configKey>
+    <description>
       <![CDATA[call_to_missing]]>
-		</description>
-		<messages>
-			<message>Call to missing or unexported function ~w:~w/~w</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D006</key>
-		<name><![CDATA[exact_eq]]></name>
-		<configKey>exact_eq</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Call to missing or unexported function ~w:~w/~w</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D006</key>
+    <name><![CDATA[exact_eq]]></name>
+    <configKey>exact_eq</configKey>
+    <description>
       <![CDATA[exact_eq]]>
-		</description>
-		<messages>
-			<message>The test ~s ~s ~s can never evaluate to 'true'</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D007</key>
-		<name><![CDATA[fun_app_args]]></name>
-		<configKey>fun_app_args</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The test ~s ~s ~s can never evaluate to 'true'</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D007</key>
+    <name><![CDATA[fun_app_args]]></name>
+    <configKey>fun_app_args</configKey>
+    <description>
       <![CDATA[fun_app_args]]>
-		</description>
-		<messages>
-			<message>Fun application with arguments ~s will fail since the
-				function has type ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D008</key>
-		<name><![CDATA[fun_app_no_fun]]></name>
-		<configKey>fun_app_no_fun</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Fun application with arguments ~s will fail since the
+        function has type ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D008</key>
+    <name><![CDATA[fun_app_no_fun]]></name>
+    <configKey>fun_app_no_fun</configKey>
+    <description>
       <![CDATA[fun_app_no_fun]]>
-		</description>
-		<messages>
-			<message>Fun application will fail since ~s :: ~s is not a function
-				of arity ~w</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D009</key>
-		<name><![CDATA[guard_fail]]>
-		</name>
-		<configKey>guard_fail</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Fun application will fail since ~s :: ~s is not a function
+        of arity ~w</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D009</key>
+    <name><![CDATA[guard_fail]]>
+    </name>
+    <configKey>guard_fail</configKey>
+    <description>
       <![CDATA[Clause guard cannot succeed.]]>
-		</description>
-		<messages>
-			<message>Clause guard cannot succeed.</message>
-			<message>Guard test ~s ~s ~s can never succeed</message>
-			<message>Guard test ~w~s can never succeed</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D010</key>
-		<name><![CDATA[neg_guard_fail]]></name>
-		<configKey>neg_guard_fail</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Clause guard cannot succeed.</message>
+      <message>Guard test ~s ~s ~s can never succeed</message>
+      <message>Guard test ~w~s can never succeed</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D010</key>
+    <name><![CDATA[neg_guard_fail]]></name>
+    <configKey>neg_guard_fail</configKey>
+    <description>
       <![CDATA[neg_guard_fail]]>
-		</description>
-		<messages>
-			<message>Guard test not(~s ~s ~s) can never succeed</message>
-			<message>Guard test not(~w~s) can never succeed</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D011</key>
-		<name><![CDATA[guard_fail_pat]]></name>
-		<configKey>guard_fail_pat</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Guard test not(~s ~s ~s) can never succeed</message>
+      <message>Guard test not(~w~s) can never succeed</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D011</key>
+    <name><![CDATA[guard_fail_pat]]></name>
+    <configKey>guard_fail_pat</configKey>
+    <description>
       <![CDATA[guard_fail_pat]]>
-		</description>
-		<messages>
-			<message>Clause guard cannot succeed. The ~s was matched against the
-				type ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D012</key>
-		<name><![CDATA[improper_list_constr]]></name>
-		<configKey>improper_list_constr</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Clause guard cannot succeed. The ~s was matched against the
+        type ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D012</key>
+    <name><![CDATA[improper_list_constr]]></name>
+    <configKey>improper_list_constr</configKey>
+    <description>
       <![CDATA[improper_list_constr]]>
-		</description>
-		<messages>
-			<message>Cons will produce an improper list since its 2nd argument is
-				~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D013</key>
-		<name><![CDATA[no_return]]></name>
-		<configKey>no_return</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Cons will produce an improper list since its 2nd argument is
+        ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D013</key>
+    <name><![CDATA[no_return]]></name>
+    <configKey>no_return</configKey>
+    <description>
       <![CDATA[no_return]]>
-		</description>
-		<messages>
-			<message>The created fun has no clauses that will ever match</message>
-			<message>The created fun only terminates with explicit exception</message>
-			<message>The created fun has no local return</message>
-			<message>The created fun has no local return</message>
-			<message>Function ~w/~w has no clauses that will ever match</message>
-			<message>Function ~w/~w only terminates with explicit exception</message>
-			<message>Function ~w/~w has no local return</message>
-			<message>Function ~w/~w has no local return</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D014</key>
-		<name><![CDATA[record_constr]]></name>
-		<configKey>record_constr</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The created fun has no clauses that will ever match</message>
+      <message>The created fun only terminates with explicit exception</message>
+      <message>The created fun has no local return</message>
+      <message>The created fun has no local return</message>
+      <message>Function ~w/~w has no clauses that will ever match</message>
+      <message>Function ~w/~w only terminates with explicit exception</message>
+      <message>Function ~w/~w has no local return</message>
+      <message>Function ~w/~w has no local return</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D014</key>
+    <name><![CDATA[record_constr]]></name>
+    <configKey>record_constr</configKey>
+    <description>
       <![CDATA[record_constr]]>
-		</description>
-		<messages>
-			<message>Record construction ~s violates the declared type of field
-				~s</message>
-			<message>Record construction violates the declared type for #~w{}
-				since ~s cannot be of type ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D015</key>
-		<name><![CDATA[record_matching]]></name>
-		<configKey>record_matching</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Record construction ~s violates the declared type of field
+        ~s</message>
+      <message>Record construction violates the declared type for #~w{}
+        since ~s cannot be of type ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D015</key>
+    <name><![CDATA[record_matching]]></name>
+    <configKey>record_matching</configKey>
+    <description>
       <![CDATA[record_matching]]>
-		</description>
-		<messages>
-			<message>The ~s violates the declared type for #~w{}</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D016</key>
-		<name><![CDATA[record_match]]></name>
-		<configKey>record_match</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The ~s violates the declared type for #~w{}</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D016</key>
+    <name><![CDATA[record_match]]></name>
+    <configKey>record_match</configKey>
+    <description>
       <![CDATA[record_match]]>
-		</description>
-		<messages>
-			<message>Matching of ~s tagged with a record name violates the
-				declared type of ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D017</key>
-		<name><![CDATA[pattern_match]]></name>
-		<configKey>pattern_match</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Matching of ~s tagged with a record name violates the
+        declared type of ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D017</key>
+    <name><![CDATA[pattern_match]]></name>
+    <configKey>pattern_match</configKey>
+    <description>
       <![CDATA[pattern_match]]>
-		</description>
-		<messages>
-			<message>The ~s can never match the type ~s</message>
-			<message>The ~s can never match since previous clauses completely
-				covered the type ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D018</key>
-		<name><![CDATA[unmatched_return]]></name>
-		<configKey>unmatched_return</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The ~s can never match the type ~s</message>
+      <message>The ~s can never match since previous clauses completely
+        covered the type ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D018</key>
+    <name><![CDATA[unmatched_return]]></name>
+    <configKey>unmatched_return</configKey>
+    <description>
       <![CDATA[unmatched_return]]>
-		</description>
-		<messages>
-			<message>Expression produces a value of type ~s, but this value is
-				unmatched</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D019</key>
-		<name><![CDATA[unused_fun]]></name>
-		<configKey>unused_fun</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Expression produces a value of type ~s, but this value is
+        unmatched</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D019</key>
+    <name><![CDATA[unused_fun]]></name>
+    <configKey>unused_fun</configKey>
+    <description>
       <![CDATA[unused_fun]]>
-		</description>
-		<messages>
-			<message>Function will never be called</message>
-			<message>Function ~w/~w will never be called</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D021</key>
-		<name><![CDATA[contract_diff]]></name>
-		<configKey>contract_diff</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Function will never be called</message>
+      <message>Function ~w/~w will never be called</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D021</key>
+    <name><![CDATA[contract_diff]]></name>
+    <configKey>contract_diff</configKey>
+    <description>
       <![CDATA[contract_diff]]>
-		</description>
-		<messages>
-			<message>Type specification ~w:~w~s is not equal to the success
-				typing: ~w:~w~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D022</key>
-		<name><![CDATA[contract_subtype]]></name>
-		<configKey>contract_subtype</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Type specification ~w:~w~s is not equal to the success
+        typing: ~w:~w~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D022</key>
+    <name><![CDATA[contract_subtype]]></name>
+    <configKey>contract_subtype</configKey>
+    <description>
       <![CDATA[contract_subtype]]>
-		</description>
-		<messages>
-			<message>Type specification ~w:~w~s is a subtype of the success
-				typing: ~w:~w~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D023</key>
-		<name><![CDATA[contract_supertype]]></name>
-		<configKey>contract_supertype</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Type specification ~w:~w~s is a subtype of the success
+        typing: ~w:~w~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D023</key>
+    <name><![CDATA[contract_supertype]]></name>
+    <configKey>contract_supertype</configKey>
+    <description>
       <![CDATA[contract_supertype]]>
-		</description>
-		<messages>
-			<message>Type specification ~w:~w~s is a supertype of the success
-				typing: ~w:~w~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D024</key>
-		<name><![CDATA[contract_range]]></name>
-		<configKey>contract_range</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Type specification ~w:~w~s is a supertype of the success
+        typing: ~w:~w~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D024</key>
+    <name><![CDATA[contract_range]]></name>
+    <configKey>contract_range</configKey>
+    <description>
       <![CDATA[contract_range]]>
-		</description>
-		<messages>
-			<message>The contract ~w:~w~s cannot be right because the inferred
-				return for ~w~s on line ~w is ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D025</key>
-		<name><![CDATA[invalid_contract]]></name>
-		<configKey>invalid_contract</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The contract ~w:~w~s cannot be right because the inferred
+        return for ~w~s on line ~w is ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D025</key>
+    <name><![CDATA[invalid_contract]]></name>
+    <configKey>invalid_contract</configKey>
+    <description>
       <![CDATA[invalid_contract]]>
-		</description>
-		<messages>
-			<message>Invalid type specification for function ~w:~w/~w. The
-				success typing is ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D026</key>
-		<name><![CDATA[extra_range]]></name>
-		<configKey>extra_range</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Invalid type specification for function ~w:~w/~w. The
+        success typing is ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D026</key>
+    <name><![CDATA[extra_range]]></name>
+    <configKey>extra_range</configKey>
+    <description>
       <![CDATA[extra_range]]>
-		</description>
-		<messages>
-			<message>The specification for ~w:~w/~w states that the function
-				might also return ~s but the inferred return
-				is ~s
-			</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D027</key>
-		<name><![CDATA[overlapping_contract]]></name>
-		<configKey>overlapping_contract</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The specification for ~w:~w/~w states that the function
+        might also return ~s but the inferred return
+        is ~s
+      </message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D027</key>
+    <name><![CDATA[overlapping_contract]]></name>
+    <configKey>overlapping_contract</configKey>
+    <description>
       <![CDATA[overlapping_contract]]>
-		</description>
-		<messages>
-			<message>Overloaded contract has overlapping domains; such contracts
-				are currently unsupported and are simply
-				ignored
-			</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D028</key>
-		<name><![CDATA[spec_missing_fun]]></name>
-		<configKey>spec_missing_fun</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Overloaded contract has overlapping domains; such contracts
+        are currently unsupported and are simply
+        ignored
+      </message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D028</key>
+    <name><![CDATA[spec_missing_fun]]></name>
+    <configKey>spec_missing_fun</configKey>
+    <description>
       <![CDATA[spec_missing_fun]]>
-		</description>
-		<messages>
-			<message>Contract for function that does not exist: ~w:~w/~w</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D029</key>
-		<name><![CDATA[call_with_opaque]]></name>
-		<configKey>call_with_opaque</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Contract for function that does not exist: ~w:~w/~w</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D029</key>
+    <name><![CDATA[call_with_opaque]]></name>
+    <configKey>call_with_opaque</configKey>
+    <description>
       <![CDATA[call_with_opaque]]>
-		</description>
-		<messages>
-			<message>The call ~w:~w~s contains ~s when ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D030</key>
-		<name><![CDATA[call_without_opaque]]></name>
-		<configKey>call_without_opaque</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The call ~w:~w~s contains ~s when ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D030</key>
+    <name><![CDATA[call_without_opaque]]></name>
+    <configKey>call_without_opaque</configKey>
+    <description>
       <![CDATA[call_without_opaque]]>
-		</description>
-		<messages>
-			<message>The call ~w:~w~s does not have ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D031</key>
-		<name><![CDATA[opaque_eq]]></name>
-		<configKey>opaque_eq</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The call ~w:~w~s does not have ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D031</key>
+    <name><![CDATA[opaque_eq]]></name>
+    <configKey>opaque_eq</configKey>
+    <description>
       <![CDATA[opaque_eq]]>
-		</description>
-		<messages>
-			<message>Attempt to test for equality between a term of type ~s and a
-				term of opaque type ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D032</key>
-		<name><![CDATA[opaque_guard]]></name>
-		<configKey>opaque_guard</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Attempt to test for equality between a term of type ~s and a
+        term of opaque type ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D032</key>
+    <name><![CDATA[opaque_guard]]></name>
+    <configKey>opaque_guard</configKey>
+    <description>
       <![CDATA[opaque_guard]]>
-		</description>
-		<messages>
-			<message>Guard test ~w~s breaks the opaqueness of its argument</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D033</key>
-		<name><![CDATA[opaque_match]]></name>
-		<configKey>opaque_match</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Guard test ~w~s breaks the opaqueness of its argument</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D033</key>
+    <name><![CDATA[opaque_match]]></name>
+    <configKey>opaque_match</configKey>
+    <description>
       <![CDATA[opaque_match]]>
-		</description>
-		<messages>
-			<message>The attempt to match a term of type ~s against the ~s breaks
-				the opaqueness of ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D034</key>
-		<name><![CDATA[opaque_neq]]></name>
-		<configKey>opaque_neq</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The attempt to match a term of type ~s against the ~s breaks
+        the opaqueness of ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D034</key>
+    <name><![CDATA[opaque_neq]]></name>
+    <configKey>opaque_neq</configKey>
+    <description>
       <![CDATA[opaque_neq]]>
-		</description>
-		<messages>
-			<message>Attempt to test for inequality between a term of type ~s and
-				a term of opaque type ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D035</key>
-		<name><![CDATA[opaque_type_test]]></name>
-		<configKey>opaque_type_test</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Attempt to test for inequality between a term of type ~s and
+        a term of opaque type ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D035</key>
+    <name><![CDATA[opaque_type_test]]></name>
+    <configKey>opaque_type_test</configKey>
+    <description>
       <![CDATA[opaque_type_test]]>
-		</description>
-		<messages>
-			<message>The type test ~s(~s) breaks the opaqueness of the term ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D036</key>
-		<name><![CDATA[race_condition]]></name>
-		<configKey>race_condition</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The type test ~s(~s) breaks the opaqueness of the term ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D036</key>
+    <name><![CDATA[race_condition]]></name>
+    <configKey>race_condition</configKey>
+    <description>
       <![CDATA[race_condition]]>
-		</description>
-		<messages>
-			<message>The call ~w:~w~s ~s</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D037</key>
-		<name><![CDATA[callback_type_mismatch]]></name>
-		<configKey>callback_type_mismatch</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The call ~w:~w~s ~s</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D037</key>
+    <name><![CDATA[callback_type_mismatch]]></name>
+    <configKey>callback_type_mismatch</configKey>
+    <description>
       <![CDATA[callback_type_mismatch]]>
-		</description>
-		<messages>
-			<message>The inferred return type of ~w/~w (~s) has nothing in common
-				with ~s, which is the expected return
-				type for the callback of ~w behaviour</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D038</key>
-		<name><![CDATA[callback_arg_type_mismatch]]></name>
-		<configKey>callback_arg_type_mismatch</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The inferred return type of ~w/~w (~s) has nothing in common
+        with ~s, which is the expected return
+        type for the callback of ~w behaviour</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D038</key>
+    <name><![CDATA[callback_arg_type_mismatch]]></name>
+    <configKey>callback_arg_type_mismatch</configKey>
+    <description>
       <![CDATA[callback_arg_type_mismatch]]>
-		</description>
-		<messages>
-			<message>The inferred type for the ~s argument of ~w/~w (~s) is not a
-				supertype of ~s, which is expected type
-				for this argument in the callback of the ~w behaviour</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D039</key>
-		<name><![CDATA[callback_spec_type_mismatch]]></name>
-		<configKey>callback_spec_type_mismatch</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The inferred type for the ~s argument of ~w/~w (~s) is not a
+        supertype of ~s, which is expected type
+        for this argument in the callback of the ~w behaviour</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D039</key>
+    <name><![CDATA[callback_spec_type_mismatch]]></name>
+    <configKey>callback_spec_type_mismatch</configKey>
+    <description>
       <![CDATA[callback_spec_type_mismatch]]>
-		</description>
-		<messages>
-			<message>The return type ~s in the specification of ~w/~w is not a
-				subtype of ~s, which is the expected return type for the callback of
-				~w behaviour</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D040</key>
-		<name><![CDATA[callback_spec_arg_type_mismatch]]></name>
-		<configKey>callback_spec_arg_type_mismatch</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The return type ~s in the specification of ~w/~w is not a
+        subtype of ~s, which is the expected return type for the callback of
+        ~w behaviour</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D040</key>
+    <name><![CDATA[callback_spec_arg_type_mismatch]]></name>
+    <configKey>callback_spec_arg_type_mismatch</configKey>
+    <description>
       <![CDATA[callback_spec_arg_type_mismatch]]>
-		</description>
-		<messages>
-			<message>The specified type for the ~s argument of ~w/~w (~s) is not
-				a supertype of ~s, which is expected type for this argument in the
-				callback of the ~w behaviour</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D041</key>
-		<name><![CDATA[callback_missing]]></name>
-		<configKey>callback_missing</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>The specified type for the ~s argument of ~w/~w (~s) is not
+        a supertype of ~s, which is expected type for this argument in the
+        callback of the ~w behaviour</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D041</key>
+    <name><![CDATA[callback_missing]]></name>
+    <configKey>callback_missing</configKey>
+    <description>
       <![CDATA[callback_missing]]>
-		</description>
-		<messages>
-			<message>Undefined callback function ~w/~w (behaviour '~w')</message>
-		</messages>
-	</rule>
-	<rule>
-		<key>D042</key>
-		<name><![CDATA[callback_info_missing]]></name>
-		<configKey>callback_info_missing</configKey>
-		<description>
+    </description>
+    <messages>
+      <message>Undefined callback function ~w/~w (behaviour '~w')</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>D042</key>
+    <name><![CDATA[callback_info_missing]]></name>
+    <configKey>callback_info_missing</configKey>
+    <description>
       <![CDATA[callback_info_missing]]>
-		</description>
-		<messages>
-			<message>Callback info about the ~w behaviour is not available</message>
-		</messages>
-	</rule>
+    </description>
+    <messages>
+      <message>Callback info about the ~w behaviour is not available</message>
+    </messages>
+  </rule>
 </rules>
