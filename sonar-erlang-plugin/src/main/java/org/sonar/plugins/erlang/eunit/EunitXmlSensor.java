@@ -51,10 +51,10 @@ public class EunitXmlSensor implements Sensor {
   }
 
   public void analyse(Project project, SensorContext context) {
-    String jsTestDriverFolder = erlang.getConfiguration().getString(
+    String eunitFolder = erlang.getConfiguration().getString(
         ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     collect(project, context,
-        new File(project.getFileSystem().getBasedir(), jsTestDriverFolder));
+        new File(project.getFileSystem().getBasedir(), eunitFolder));
   }
 
   protected void collect(final Project project, final SensorContext context, File reportsDir) {
