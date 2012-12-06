@@ -41,7 +41,7 @@ public class ModuleAttributesTest {
 
   @Before
   public void init() {
-    p.setRootRule(g.moduleHeadAttr);
+    p.setRootRule(g.module);
   }
 
   @Test

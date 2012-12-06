@@ -47,7 +47,7 @@ public class IsTailRecursiveCheck extends SquidCheck<ErlangGrammar> {
     @Override
     public void visitFile(AstNode astNode) {
         actualArity = "";
-        actualModule = astNode.findFirstDirectChild(grammar.moduleHeadAttr).findFirstDirectChild(grammar.moduleAttr)
+        actualModule = astNode.findFirstDirectChild(grammar.moduleAttr)
                 .findDirectChildren(GenericTokenType.IDENTIFIER).get(1).getTokenOriginalValue();
         lastClauseLine = 0;
     }

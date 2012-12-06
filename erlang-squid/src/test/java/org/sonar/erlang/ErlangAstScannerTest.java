@@ -143,19 +143,19 @@ public class ErlangAstScannerTest {
         "src/test/resources/metrics/funargs.erl"));
     assertThat(file.getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(21);
     Set<SourceCode> children = file.getChildren();
-    SourceCode[] childrenArray = children.toArray(new SourceCode[children.size()]);
-
-    assertThat(childrenArray[0].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(0);
-    assertThat(childrenArray[1].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(6);
-    assertThat(childrenArray[2].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(1);
-    assertThat(childrenArray[3].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(14);
+    SourceCode[] classes = children.toArray(new SourceCode[children.size()]);
+    SourceCode[] functions = classes[0].getChildren().toArray(new SourceCode[classes[0].getChildren().size()]);
+    assertThat(functions[0].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(0);
+    assertThat(functions[1].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(6);
+    assertThat(functions[2].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(1);
+    assertThat(functions[3].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(14);
     assertThat(
-        childrenArray[3].getChildren().toArray(
-            new SourceCode[childrenArray[3].getChildren().size()])[0]
+            functions[3].getChildren().toArray(
+            new SourceCode[functions[3].getChildren().size()])[0]
             .getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(7);
     assertThat(
-        childrenArray[3].getChildren().toArray(
-            new SourceCode[childrenArray[3].getChildren().size()])[1]
+            functions[3].getChildren().toArray(
+            new SourceCode[functions[3].getChildren().size()])[1]
             .getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(7);
 
   }

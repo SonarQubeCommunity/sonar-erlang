@@ -110,7 +110,7 @@ public class ErlangGrammarImpl extends ErlangGrammar {
                 firstOf(moduleHeadAttr, and(macroLiteral, DOT), functionDeclaration)), EOF);
 
         moduleHeadAttr.is(firstOf(moduleAttr, fileAttr, exportAttr, compileAttr, defineAttr,
-                importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr));
+                importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr)).skipIfOneChild();
 
         recordAttr.is(MINUS, "record", LPARENTHESIS, IDENTIFIER, COMMA, LCURLYBRACE, opt(and(
                 recordField, opt(MATCHOP, recordField)), o2n(firstOf(COMMA, PIPE), and(recordField,
