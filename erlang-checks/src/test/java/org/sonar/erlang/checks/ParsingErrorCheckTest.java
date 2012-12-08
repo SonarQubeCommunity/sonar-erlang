@@ -29,7 +29,7 @@ import java.io.File;
 
 import static org.hamcrest.Matchers.containsString;
 
-@Ignore
+//@Ignore
 public class ParsingErrorCheckTest {
 
   @Test
