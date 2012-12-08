@@ -27,27 +27,27 @@ import org.sonar.check.RuleProperty;
 import org.sonar.erlang.api.ErlangGrammar;
 
 @Rule(key = "CommentRegularExpression", priority = Priority.MAJOR,
-    cardinality = Cardinality.MULTIPLE)
+  cardinality = Cardinality.MULTIPLE)
 public class CommentRegularExpressionCheck extends
-        AbstractCommentRegularExpressionCheck<ErlangGrammar> {
+    AbstractCommentRegularExpressionCheck<ErlangGrammar> {
 
-    private static final String DEFAULT_REGULAR_EXPRESSION = "";
-    private static final String DEFAULT_MESSAGE = "The violation message";
+  private static final String DEFAULT_REGULAR_EXPRESSION = "";
+  private static final String DEFAULT_MESSAGE = "The violation message";
 
-    @RuleProperty(key = "regularExpression", defaultValue = "" + DEFAULT_REGULAR_EXPRESSION)
-    public String regularExpression = DEFAULT_REGULAR_EXPRESSION;
+  @RuleProperty(key = "regularExpression", defaultValue = "" + DEFAULT_REGULAR_EXPRESSION)
+  public String regularExpression = DEFAULT_REGULAR_EXPRESSION;
 
-    @RuleProperty(key = "message", defaultValue = "" + DEFAULT_MESSAGE)
-    public String message = DEFAULT_MESSAGE;
+  @RuleProperty(key = "message", defaultValue = "" + DEFAULT_MESSAGE)
+  public String message = DEFAULT_MESSAGE;
 
-    @Override
-    public String getRegularExpression() {
-        return regularExpression;
-    }
+  @Override
+  public String getRegularExpression() {
+    return regularExpression;
+  }
 
-    @Override
-    public String getMessage() {
-        return message;
-    }
+  @Override
+  public String getMessage() {
+    return message;
+  }
 
 }

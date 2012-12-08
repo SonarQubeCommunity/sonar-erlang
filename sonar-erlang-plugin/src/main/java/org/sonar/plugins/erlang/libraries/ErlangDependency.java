@@ -25,53 +25,51 @@ import java.util.regex.Pattern;
 
 public class ErlangDependency {
 
-    private static final Pattern depNamePattern = Pattern.compile("(^\\{)([A-Za-z_0-9]*?)(\\,.*)", Pattern.DOTALL
-            + Pattern.MULTILINE);
-    private static final Pattern depVersionInTagPattern = Pattern.compile("(.*tag.*?\\\")(.*?)(\\\".*)", Pattern.DOTALL
-            + Pattern.MULTILINE);
-    private static final Pattern depVersionInBranchPattern = Pattern.compile("(.*branch.*?\\\")(.*?)(\\\".*)",
-            Pattern.DOTALL + Pattern.MULTILINE);
+  private static final Pattern depNamePattern = Pattern.compile("(^\\{)([A-Za-z_0-9]*?)(\\,.*)", Pattern.DOTALL
+    + Pattern.MULTILINE);
+  private static final Pattern depVersionInTagPattern = Pattern.compile("(.*tag.*?\\\")(.*?)(\\\".*)", Pattern.DOTALL
+    + Pattern.MULTILINE);
+  private static final Pattern depVersionInBranchPattern = Pattern.compile("(.*branch.*?\\\")(.*?)(\\\".*)",
+      Pattern.DOTALL + Pattern.MULTILINE);
 
+  String name;
+  String version;
+  String key;
 
-    String name;
-    String version;
-    String key;
-
-    public ErlangDependency(String oneDependency){
-        name = depNamePattern.matcher(oneDependency).replaceFirst("$2");
-        version = depVersionInTagPattern.matcher(oneDependency).replaceFirst("$2");
-        if (version.length() == oneDependency.length()) {
-            version = depVersionInBranchPattern.matcher(oneDependency).replaceFirst("$2");
-            if (version.length() == oneDependency.length()) {
-                if(oneDependency.contains("HEAD")){
-                    version = "HEAD";
-                } else {
-                    version = "UNKOWN";
-                }
-            }
+  public ErlangDependency(String oneDependency) {
+    name = depNamePattern.matcher(oneDependency).replaceFirst("$2");
+    version = depVersionInTagPattern.matcher(oneDependency).replaceFirst("$2");
+    if (version.length() == oneDependency.length()) {
+      version = depVersionInBranchPattern.matcher(oneDependency).replaceFirst("$2");
+      if (version.length() == oneDependency.length()) {
+        if (oneDependency.contains("HEAD")) {
+          version = "HEAD";
+        } else {
+          version = "UNKOWN";
         }
-        String[] parts = oneDependency.split(",");
-        key = parts[3].replaceFirst("(.*:)(.*?)(\\\")", "$2").replaceAll("[\\\\/]", ":")
-                .replaceAll("\\.git", "");
+      }
     }
+    String[] parts = oneDependency.split(",");
+    key = parts[3].replaceFirst("(.*:)(.*?)(\\\")", "$2").replaceAll("[\\\\/]", ":")
+        .replaceAll("\\.git", "");
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public String getVersion() {
-        return version;
-    }
+  public String getVersion() {
+    return version;
+  }
 
+  public String getKey() {
+    return key;
+  }
 
-    public String getKey() {
-        return key;
-    }
-
-    public Library getAsLibrary(){
-        Library lib = new Library(getKey(), getVersion());
-        lib.setName(getName());
-        return lib;
-    }
+  public Library getAsLibrary() {
+    Library lib = new Library(getKey(), getVersion());
+    lib.setName(getName());
+    return lib;
+  }
 
 }

@@ -34,32 +34,32 @@ import org.sonar.squid.api.SourceFunction;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class FunExpressionComplexityCheck extends SquidCheck<ErlangGrammar> {
 
-    private static final int DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD = 4;
+  private static final int DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD = 4;
 
-    @RuleProperty(key = "maximumFunExpressionComplexityThreshold", defaultValue = ""
-        + DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD)
-    private int maximumFunExpressionComplexityThreshold = DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD;
+  @RuleProperty(key = "maximumFunExpressionComplexityThreshold", defaultValue = ""
+    + DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD)
+  private int maximumFunExpressionComplexityThreshold = DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD;
 
-    @Override
-    public void init() {
-        subscribeTo(getContext().getGrammar().funExpression);
+  @Override
+  public void init() {
+    subscribeTo(getContext().getGrammar().funExpression);
+  }
+
+  @Override
+  public void leaveNode(AstNode node) {
+    SourceFunction function = (SourceFunction) getContext().peekSourceCode();
+    if (function.getInt(ErlangMetric.COMPLEXITY) > maximumFunExpressionComplexityThreshold) {
+      getContext()
+          .createLineViolation(
+              this,
+              "Function has a complexity of {0,number,integer} which is greater than {1,number,integer} authorized.",
+              node, function.getInt(ErlangMetric.COMPLEXITY),
+              maximumFunExpressionComplexityThreshold);
     }
+  }
 
-    @Override
-    public void leaveNode(AstNode node) {
-        SourceFunction function = (SourceFunction) getContext().peekSourceCode();
-        if (function.getInt(ErlangMetric.COMPLEXITY) > maximumFunExpressionComplexityThreshold) {
-            getContext()
-                    .createLineViolation(
-                            this,
-                            "Function has a complexity of {0,number,integer} which is greater than {1,number,integer} authorized.",
-                            node, function.getInt(ErlangMetric.COMPLEXITY),
-                            maximumFunExpressionComplexityThreshold);
-        }
-    }
-
-    public void setMaximumFunExpressionComplexityThreshold(int threshold) {
-        this.maximumFunExpressionComplexityThreshold = threshold;
-    }
+  public void setMaximumFunExpressionComplexityThreshold(int threshold) {
+    this.maximumFunExpressionComplexityThreshold = threshold;
+  }
 
 }

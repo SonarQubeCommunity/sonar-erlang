@@ -58,7 +58,7 @@ public class ErlangComplexityVisitor extends SquidAstVisitor<ErlangGrammar> {
 
   @Override
   public void visitNode(AstNode astNode) {
-      increaseComplexity(1);
+    increaseComplexity(1);
   }
 
   private void increaseComplexity(int i) {

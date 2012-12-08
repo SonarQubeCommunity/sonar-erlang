@@ -28,24 +28,24 @@ import java.io.File;
 
 public class IsTailRecursiveCheckTest {
 
-    @Test
-    public void test() {
-        IsTailRecursiveCheck check = new IsTailRecursiveCheck();
+  @Test
+  public void test() {
+    IsTailRecursiveCheck check = new IsTailRecursiveCheck();
 
-        SourceFile file = ErlangAstScanner.scanSingleFile(new File(
-                "src/test/resources/checks/branchesofrecursion.erl"), check);
-        CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).noMore();
-    }
+    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+        "src/test/resources/checks/branchesofrecursion.erl"), check);
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).noMore();
+  }
 
-    @Test
-    public void test2() {
-        IsTailRecursiveCheck check = new IsTailRecursiveCheck();
-        SourceFile file = ErlangAstScanner.scanSingleFile(new File(
-                "src/test/resources/checks/istailrecursive.erl"), check);
+  @Test
+  public void test2() {
+    IsTailRecursiveCheck check = new IsTailRecursiveCheck();
+    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+        "src/test/resources/checks/istailrecursive.erl"), check);
 
-        CheckMessagesVerifier.verify(file.getCheckMessages())
-                .next().atLine(7)
-                .next().atLine(12)
-                .noMore();
-    }
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+        .next().atLine(7)
+        .next().atLine(12)
+        .noMore();
+  }
 }

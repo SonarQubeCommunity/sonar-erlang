@@ -19,12 +19,9 @@
  */
 package org.sonar.erlang.checks;
 
-import org.sonar.erlang.ErlangAstScanner;
-
-import org.sonar.erlang.checks.FunctionComplexityCheck;
-
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
+import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;

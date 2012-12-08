@@ -85,7 +85,6 @@ public class ModuleAttributesTest {
   @Test
   public void defineTest() {
 
-
     assertThat(p).matches(
         (code("-define(TC_AWAIT_CANCEL_EVENT(),",
             "case megaco_tc_controller:lookup(block_on_cancel) of",

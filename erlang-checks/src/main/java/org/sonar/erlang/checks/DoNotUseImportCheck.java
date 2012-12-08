@@ -31,14 +31,14 @@ import org.sonar.erlang.api.ErlangGrammar;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DoNotUseImportCheck extends SquidCheck<ErlangGrammar> {
 
-    @Override
-    public void init() {
-        subscribeTo(getContext().getGrammar().importAttr);
-    }
+  @Override
+  public void init() {
+    subscribeTo(getContext().getGrammar().importAttr);
+  }
 
-    @Override
-    public void visitNode(AstNode node) {
-        getContext().createLineViolation(this, "Do not use import", node);
-    }
+  @Override
+  public void visitNode(AstNode node) {
+    getContext().createLineViolation(this, "Do not use import", node);
+  }
 
 }

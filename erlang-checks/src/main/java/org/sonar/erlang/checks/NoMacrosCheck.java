@@ -39,64 +39,64 @@ import java.util.List;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
 
-    @RuleProperty(key = "skipDefineInFlowControl", defaultValue = "true",
-        description = "Set it false if you want to check macros in flow controls.")
-    private boolean skipDefineInFlowControl = true;
+  @RuleProperty(key = "skipDefineInFlowControl", defaultValue = "true",
+    description = "Set it false if you want to check macros in flow controls.")
+  private boolean skipDefineInFlowControl = true;
 
-    @RuleProperty(key = "allowLiteralMacros", defaultValue = "true",
-        description = "Set it to false if you want to have warnings on macros like: -define(TIMEOUT, 1000).")
-    private boolean allowLiteralMacros = true;
+  @RuleProperty(key = "allowLiteralMacros", defaultValue = "true",
+    description = "Set it to false if you want to have warnings on macros like: -define(TIMEOUT, 1000).")
+  private boolean allowLiteralMacros = true;
 
-    @RuleProperty(key = "ignoredMacroNames", defaultValue = "",
-        description = "Comma separated list of ignored macro names.")
-    private String ignoredMacroNames = "";
+  @RuleProperty(key = "ignoredMacroNames", defaultValue = "",
+    description = "Comma separated list of ignored macro names.")
+  private String ignoredMacroNames = "";
 
-    private List<String> ignoreList = new ArrayList<String>();
+  private List<String> ignoreList = new ArrayList<String>();
 
-    Function<String, String> trimItems = new Function<String, String>() {
-        public String apply(String arg0) {
-            return arg0.trim();
-        };
+  Function<String, String> trimItems = new Function<String, String>() {
+    public String apply(String arg0) {
+      return arg0.trim();
     };
+  };
 
-    private ErlangGrammar g;
+  private ErlangGrammar g;
 
-    @Override
-    public void init() {
-        g = getContext().getGrammar();
-        subscribeTo(g.defineAttr);
-        ignoreList.addAll(Lists.transform(Arrays.asList(ignoredMacroNames.split(",")), trimItems));
-    }
+  @Override
+  public void init() {
+    g = getContext().getGrammar();
+    subscribeTo(g.defineAttr);
+    ignoreList.addAll(Lists.transform(Arrays.asList(ignoredMacroNames.split(",")), trimItems));
+  }
 
-    @Override
-    public void visitNode(AstNode astNode) {
-        if (!astNode.hasParents(g.flowControlAttr) || !skipDefineInFlowControl) {
-            if ((astNode.hasChildren(g.funcDecl) && allowLiteralMacros) || (!allowLiteralMacros)) {
-                if (!ignoreList.contains(getMacroName(astNode))) {
-                    getContext().createLineViolation(this, "Do not use macros.", astNode.getTokenLine());
-                }
-            }
+  @Override
+  public void visitNode(AstNode astNode) {
+    if (!astNode.hasParents(g.flowControlAttr) || !skipDefineInFlowControl) {
+      if ((astNode.hasChildren(g.funcDecl) && allowLiteralMacros) || (!allowLiteralMacros)) {
+        if (!ignoreList.contains(getMacroName(astNode))) {
+          getContext().createLineViolation(this, "Do not use macros.", astNode.getTokenLine());
         }
+      }
     }
+  }
 
-    private String getMacroName(AstNode astNode) {
-        AstNode token = (astNode.findDirectChildren(GenericTokenType.IDENTIFIER).size() > 1) ? astNode.findDirectChildren(GenericTokenType.IDENTIFIER).get(1) : null;
-        if (token == null) {
-            token = astNode.findFirstDirectChild(g.funcDecl).findFirstDirectChild(GenericTokenType.IDENTIFIER);
-        }
-        return token.getTokenOriginalValue();
+  private String getMacroName(AstNode astNode) {
+    AstNode token = (astNode.findDirectChildren(GenericTokenType.IDENTIFIER).size() > 1) ? astNode.findDirectChildren(GenericTokenType.IDENTIFIER).get(1) : null;
+    if (token == null) {
+      token = astNode.findFirstDirectChild(g.funcDecl).findFirstDirectChild(GenericTokenType.IDENTIFIER);
     }
+    return token.getTokenOriginalValue();
+  }
 
-    public void setSkipDefineInFlowControl(boolean skipDefineInFlowControl) {
-        this.skipDefineInFlowControl = skipDefineInFlowControl;
-    }
+  public void setSkipDefineInFlowControl(boolean skipDefineInFlowControl) {
+    this.skipDefineInFlowControl = skipDefineInFlowControl;
+  }
 
-    public void setAllowLiteralMacros(boolean allowLiteralMacros) {
-        this.allowLiteralMacros = allowLiteralMacros;
-    }
+  public void setAllowLiteralMacros(boolean allowLiteralMacros) {
+    this.allowLiteralMacros = allowLiteralMacros;
+  }
 
-    public void setIgnoredMacroNames(String ignoredMacroNames) {
-        this.ignoredMacroNames = ignoredMacroNames;
-    }
+  public void setIgnoredMacroNames(String ignoredMacroNames) {
+    this.ignoredMacroNames = ignoredMacroNames;
+  }
 
 }

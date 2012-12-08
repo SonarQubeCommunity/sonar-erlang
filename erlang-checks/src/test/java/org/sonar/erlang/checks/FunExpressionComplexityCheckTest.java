@@ -19,7 +19,6 @@
  */
 package org.sonar.erlang.checks;
 
-import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
 import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
@@ -34,8 +33,8 @@ public class FunExpressionComplexityCheckTest {
 
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
         "src/test/resources/checks/funcomplexity.erl"), check);
-    //cannot check now, the numbers are not cumulated when the check is executed
-   // CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
-   //     "Function has a complexity of 5 which is greater than 4 authorized.").noMore();
+    // cannot check now, the numbers are not cumulated when the check is executed
+    // CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
+    // "Function has a complexity of 5 which is greater than 4 authorized.").noMore();
   }
 }

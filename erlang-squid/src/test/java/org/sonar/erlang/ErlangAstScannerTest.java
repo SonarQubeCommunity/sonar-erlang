@@ -150,11 +150,11 @@ public class ErlangAstScannerTest {
     assertThat(functions[2].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(1);
     assertThat(functions[3].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(14);
     assertThat(
-            functions[3].getChildren().toArray(
+        functions[3].getChildren().toArray(
             new SourceCode[functions[3].getChildren().size()])[0]
             .getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(7);
     assertThat(
-            functions[3].getChildren().toArray(
+        functions[3].getChildren().toArray(
             new SourceCode[functions[3].getChildren().size()])[1]
             .getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(7);
 

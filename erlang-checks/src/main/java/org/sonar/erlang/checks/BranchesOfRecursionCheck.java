@@ -34,31 +34,31 @@ import org.sonar.squid.api.SourceFunction;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class BranchesOfRecursionCheck extends SquidCheck<ErlangGrammar> {
 
-    private static final int DEFAULT_MAXIMUM_BOR_THRESHOLD = 10;
+  private static final int DEFAULT_MAXIMUM_BOR_THRESHOLD = 10;
 
-    @RuleProperty(key = "maximumBORThreshold", defaultValue = "" + DEFAULT_MAXIMUM_BOR_THRESHOLD)
-    private int maximumBORThreshold = DEFAULT_MAXIMUM_BOR_THRESHOLD;
+  @RuleProperty(key = "maximumBORThreshold", defaultValue = "" + DEFAULT_MAXIMUM_BOR_THRESHOLD)
+  private int maximumBORThreshold = DEFAULT_MAXIMUM_BOR_THRESHOLD;
 
-    @Override
-    public void init() {
-        subscribeTo(getContext().getGrammar().functionDeclaration);
+  @Override
+  public void init() {
+    subscribeTo(getContext().getGrammar().functionDeclaration);
+  }
+
+  @Override
+  public void leaveNode(AstNode node) {
+    SourceFunction function = (SourceFunction) getContext().peekSourceCode();
+    if (function.getInt(ErlangMetric.BRANCHES_OF_RECURSION) > maximumBORThreshold) {
+      getContext()
+          .createLineViolation(
+              this,
+              "Function has {0,number,integer} branches of recursion which is greater than {1,number,integer} authorized.",
+              node, function.getInt(ErlangMetric.BRANCHES_OF_RECURSION),
+              maximumBORThreshold);
     }
+  }
 
-    @Override
-    public void leaveNode(AstNode node) {
-        SourceFunction function = (SourceFunction) getContext().peekSourceCode();
-        if (function.getInt(ErlangMetric.BRANCHES_OF_RECURSION) > maximumBORThreshold) {
-            getContext()
-                    .createLineViolation(
-                            this,
-                            "Function has {0,number,integer} branches of recursion which is greater than {1,number,integer} authorized.",
-                            node, function.getInt(ErlangMetric.BRANCHES_OF_RECURSION),
-                            maximumBORThreshold);
-        }
-    }
-
-    public void setMaximumBORThreshold(int threshold) {
-        this.maximumBORThreshold = threshold;
-    }
+  public void setMaximumBORThreshold(int threshold) {
+    this.maximumBORThreshold = threshold;
+  }
 
 }

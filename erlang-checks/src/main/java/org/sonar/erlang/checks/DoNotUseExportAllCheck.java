@@ -31,16 +31,16 @@ import org.sonar.erlang.api.ErlangGrammar;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DoNotUseExportAllCheck extends SquidCheck<ErlangGrammar> {
 
-    @Override
-    public void init() {
-        subscribeTo(getContext().getGrammar().compileAttr);
-    }
+  @Override
+  public void init() {
+    subscribeTo(getContext().getGrammar().compileAttr);
+  }
 
-    @Override
-    public void visitNode(AstNode node) {
-        if ("export_all".equalsIgnoreCase(node.getChild(3).getTokenOriginalValue())) {
-            getContext().createLineViolation(this, "Do not use export_all", node);
-        }
+  @Override
+  public void visitNode(AstNode node) {
+    if ("export_all".equalsIgnoreCase(node.getChild(3).getTokenOriginalValue())) {
+      getContext().createLineViolation(this, "Do not use export_all", node);
     }
+  }
 
 }

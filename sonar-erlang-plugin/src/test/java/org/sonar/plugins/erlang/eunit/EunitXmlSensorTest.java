@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.sonar.plugins.erlang.ErlangPlugin;
-
 import org.apache.commons.configuration.Configuration;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,19 +26,18 @@ import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.resources.InputFile;
 import org.sonar.api.resources.Resource;
+import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.plugins.erlang.dialyzer.ProjectUtil;
 
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-
-import static org.mockito.Mockito.when;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class EunitXmlSensorTest {
 
@@ -57,13 +54,13 @@ public class EunitXmlSensorTest {
     otherFiles.add(ProjectUtil.getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/TEST-erlcount_eunit.xml"));
 
     when(
-            configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-                    ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-            ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
+            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
+        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     when(
-            configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
-                    ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
-            ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
+        configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
+            ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
+        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
 
     new EunitXmlSensor(new Erlang(configuration)).analyse(ProjectUtil.getProject(srcFiles, otherFiles, configuration), context);
   }

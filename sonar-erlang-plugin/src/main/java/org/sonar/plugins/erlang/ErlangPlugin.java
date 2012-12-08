@@ -57,11 +57,11 @@ import java.util.List;
     description = "Filename of the dialyzer output located in the eunit folder",
     global = true, project = true),
 
-    @Property(key = ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
-      defaultValue = ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME,
-      name = "Rebar configfile name",
-      description = "Filename of the rebar config file",
-      global = true, project = true)
+  @Property(key = ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
+    defaultValue = ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME,
+    name = "Rebar configfile name",
+    description = "Filename of the rebar config file",
+    global = true, project = true)
 })
 public class ErlangPlugin extends SonarPlugin {
 

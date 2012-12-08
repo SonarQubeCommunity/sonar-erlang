@@ -47,82 +47,82 @@ import static org.mockito.Mockito.when;
 
 public class ErlangLibrarySensorTest {
 
-    private SensorContext context;
+  private SensorContext context;
 
-    @Before
-    public void setup() throws URISyntaxException {
-        context = ProjectUtil.mockContext();
-        Configuration configuration = mock(Configuration.class);
-        ArrayList<InputFile> srcFiles = new ArrayList<InputFile>();
-        ArrayList<InputFile> otherFiles = new ArrayList<InputFile>();
-        when(context.getResource(any(Library.class))).thenAnswer(new Answer<Library>() {
-            public Library answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                return (Library) args[0];
-            }
-        });
-        configuration = mock(Configuration.class);
-        when(
-                configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-                        ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-                ErlangPlugin.EUNIT_DEFAULT_FOLDER);
-        when(
-                configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
-                        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
-                ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
-        srcFiles.add(ProjectUtil.getInputFileByPath("/org/sonar/plugins/erlang/erlcount/rebar.config"));
-        new ErlangLibrarySensor(new Erlang(configuration)).analyse(ProjectUtil.getProject(srcFiles, otherFiles, configuration), context);
-    }
+  @Before
+  public void setup() throws URISyntaxException {
+    context = ProjectUtil.mockContext();
+    Configuration configuration = mock(Configuration.class);
+    ArrayList<InputFile> srcFiles = new ArrayList<InputFile>();
+    ArrayList<InputFile> otherFiles = new ArrayList<InputFile>();
+    when(context.getResource(any(Library.class))).thenAnswer(new Answer<Library>() {
+      public Library answer(InvocationOnMock invocation) {
+        Object[] args = invocation.getArguments();
+        return (Library) args[0];
+      }
+    });
+    configuration = mock(Configuration.class);
+    when(
+        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
+            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
+        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    when(
+        configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
+            ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
+        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
+    srcFiles.add(ProjectUtil.getInputFileByPath("/org/sonar/plugins/erlang/erlcount/rebar.config"));
+    new ErlangLibrarySensor(new Erlang(configuration)).analyse(ProjectUtil.getProject(srcFiles, otherFiles, configuration), context);
+  }
 
-    @Test
-    public void erlangLibrariesTest() throws URISyntaxException {
-        ArgumentCaptor<Dependency> argument = ArgumentCaptor.forClass(Dependency.class);
-        verify(context, times(7)).saveDependency(argument.capture());
-        List<Dependency> capturedDependencies = argument.getAllValues();
-        assertThat(((Library) capturedDependencies.get(0).getTo()).getKey(),
-                Matchers.equalTo("fake:elibs"));
-        assertThat(((Library) capturedDependencies.get(1).getTo()).getKey(),
-                Matchers.equalTo("kake:estat"));
-        assertThat(((Library) capturedDependencies.get(2).getTo()).getKey(),
-                Matchers.equalTo("lake:malle"));
-        assertThat(((Library) capturedDependencies.get(3).getTo()).getKey(),
-                Matchers.equalTo("hola:moke_ads"));
-        assertThat(((Library) capturedDependencies.get(4).getTo()).getKey(),
-                Matchers.equalTo("malna:eper"));
-        assertThat(((Library) capturedDependencies.get(5).getTo()).getKey(),
-                Matchers.equalTo("should:meck"));
-        assertThat(((Library) capturedDependencies.get(6).getTo()).getKey(),
-                Matchers.equalTo("should:meck"));
+  @Test
+  public void erlangLibrariesTest() throws URISyntaxException {
+    ArgumentCaptor<Dependency> argument = ArgumentCaptor.forClass(Dependency.class);
+    verify(context, times(7)).saveDependency(argument.capture());
+    List<Dependency> capturedDependencies = argument.getAllValues();
+    assertThat(((Library) capturedDependencies.get(0).getTo()).getKey(),
+        Matchers.equalTo("fake:elibs"));
+    assertThat(((Library) capturedDependencies.get(1).getTo()).getKey(),
+        Matchers.equalTo("kake:estat"));
+    assertThat(((Library) capturedDependencies.get(2).getTo()).getKey(),
+        Matchers.equalTo("lake:malle"));
+    assertThat(((Library) capturedDependencies.get(3).getTo()).getKey(),
+        Matchers.equalTo("hola:moke_ads"));
+    assertThat(((Library) capturedDependencies.get(4).getTo()).getKey(),
+        Matchers.equalTo("malna:eper"));
+    assertThat(((Library) capturedDependencies.get(5).getTo()).getKey(),
+        Matchers.equalTo("should:meck"));
+    assertThat(((Library) capturedDependencies.get(6).getTo()).getKey(),
+        Matchers.equalTo("should:meck"));
 
-        assertThat(((Library) capturedDependencies.get(0).getTo()).getName(),
-                Matchers.equalTo("elibs"));
-        assertThat(((Library) capturedDependencies.get(1).getTo()).getName(),
-                Matchers.equalTo("estat"));
-        assertThat(((Library) capturedDependencies.get(2).getTo()).getName(),
-                Matchers.equalTo("malle"));
-        assertThat(((Library) capturedDependencies.get(3).getTo()).getName(),
-                Matchers.equalTo("moke_ads"));
-        assertThat(((Library) capturedDependencies.get(4).getTo()).getName(),
-                Matchers.equalTo("eper"));
-        assertThat(((Library) capturedDependencies.get(5).getTo()).getName(),
-                Matchers.equalTo("meck"));
-        assertThat(((Library) capturedDependencies.get(6).getTo()).getName(),
-                Matchers.equalTo("meck"));
+    assertThat(((Library) capturedDependencies.get(0).getTo()).getName(),
+        Matchers.equalTo("elibs"));
+    assertThat(((Library) capturedDependencies.get(1).getTo()).getName(),
+        Matchers.equalTo("estat"));
+    assertThat(((Library) capturedDependencies.get(2).getTo()).getName(),
+        Matchers.equalTo("malle"));
+    assertThat(((Library) capturedDependencies.get(3).getTo()).getName(),
+        Matchers.equalTo("moke_ads"));
+    assertThat(((Library) capturedDependencies.get(4).getTo()).getName(),
+        Matchers.equalTo("eper"));
+    assertThat(((Library) capturedDependencies.get(5).getTo()).getName(),
+        Matchers.equalTo("meck"));
+    assertThat(((Library) capturedDependencies.get(6).getTo()).getName(),
+        Matchers.equalTo("meck"));
 
-        assertThat(((Library) capturedDependencies.get(0).getTo()).getVersion(),
-                Matchers.equalTo("1.1.0"));
-        assertThat(((Library) capturedDependencies.get(1).getTo()).getVersion(),
-                Matchers.equalTo("0.0.1"));
-        assertThat(((Library) capturedDependencies.get(2).getTo()).getVersion(),
-                Matchers.equalTo("0.7.2-0"));
-        assertThat(((Library) capturedDependencies.get(3).getTo()).getVersion(),
-                Matchers.equalTo("19840221-3"));
-        assertThat(((Library) capturedDependencies.get(4).getTo()).getVersion(),
-                Matchers.equalTo("HEAD"));
-        assertThat(((Library) capturedDependencies.get(5).getTo()).getVersion(),
-                Matchers.equalTo("0.7.2-0"));
-        assertThat(((Library) capturedDependencies.get(6).getTo()).getVersion(),
-                Matchers.equalTo("0.7.2-0"));
-    }
+    assertThat(((Library) capturedDependencies.get(0).getTo()).getVersion(),
+        Matchers.equalTo("1.1.0"));
+    assertThat(((Library) capturedDependencies.get(1).getTo()).getVersion(),
+        Matchers.equalTo("0.0.1"));
+    assertThat(((Library) capturedDependencies.get(2).getTo()).getVersion(),
+        Matchers.equalTo("0.7.2-0"));
+    assertThat(((Library) capturedDependencies.get(3).getTo()).getVersion(),
+        Matchers.equalTo("19840221-3"));
+    assertThat(((Library) capturedDependencies.get(4).getTo()).getVersion(),
+        Matchers.equalTo("HEAD"));
+    assertThat(((Library) capturedDependencies.get(5).getTo()).getVersion(),
+        Matchers.equalTo("0.7.2-0"));
+    assertThat(((Library) capturedDependencies.get(6).getTo()).getVersion(),
+        Matchers.equalTo("0.7.2-0"));
+  }
 
 }

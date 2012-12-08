@@ -29,23 +29,23 @@ import org.sonar.erlang.api.ErlangGrammar;
 @Rule(key = "XPath", priority = Priority.MAJOR, cardinality = Cardinality.MULTIPLE)
 public class XPathCheck extends AbstractXPathCheck<ErlangGrammar> {
 
-    private static final String DEFAULT_XPATH_QUERY = "";
-    private static final String DEFAULT_MESSAGE = "The XPath expression matches this piece of code";
+  private static final String DEFAULT_XPATH_QUERY = "";
+  private static final String DEFAULT_MESSAGE = "The XPath expression matches this piece of code";
 
-    @RuleProperty(key = "xpathQuery", defaultValue = "" + DEFAULT_XPATH_QUERY)
-    public String xpathQuery = DEFAULT_XPATH_QUERY;
+  @RuleProperty(key = "xpathQuery", defaultValue = "" + DEFAULT_XPATH_QUERY)
+  public String xpathQuery = DEFAULT_XPATH_QUERY;
 
-    @RuleProperty(key = "message", defaultValue = "" + DEFAULT_MESSAGE)
-    public String message = DEFAULT_MESSAGE;
+  @RuleProperty(key = "message", defaultValue = "" + DEFAULT_MESSAGE)
+  public String message = DEFAULT_MESSAGE;
 
-    @Override
-    public String getXPathQuery() {
-        return xpathQuery;
-    }
+  @Override
+  public String getXPathQuery() {
+    return xpathQuery;
+  }
 
-    @Override
-    public String getMessage() {
-        return message;
-    }
+  @Override
+  public String getMessage() {
+    return message;
+  }
 
 }

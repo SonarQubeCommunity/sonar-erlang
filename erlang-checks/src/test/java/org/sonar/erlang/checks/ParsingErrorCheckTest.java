@@ -19,9 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
-import org.junit.Ignore;
-
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
@@ -33,12 +32,12 @@ import static org.hamcrest.Matchers.containsString;
 @Ignore
 public class ParsingErrorCheckTest {
 
-    @Test
-    public void check() {
-        SourceFile file = ErlangAstScanner.scanSingleFile(new File(
-                "src/test/resources/checks/invaliderlangfile.erl"), new ParsingErrorCheck());
-        CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(5).withMessageThat(containsString("IDENTIFIER expected but \"EOF\" [EOF] found"))
-                .noMore();
-    }
+  @Test
+  public void check() {
+    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+        "src/test/resources/checks/invaliderlangfile.erl"), new ParsingErrorCheck());
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(5).withMessageThat(containsString("IDENTIFIER expected but \"EOF\" [EOF] found"))
+        .noMore();
+  }
 
 }

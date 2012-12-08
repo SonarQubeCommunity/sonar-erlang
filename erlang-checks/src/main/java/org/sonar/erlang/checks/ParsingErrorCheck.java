@@ -30,18 +30,18 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @Rule(
-    key = "ParsingError",
-    priority = Priority.MAJOR)
+  key = "ParsingError",
+  priority = Priority.MAJOR)
 public class ParsingErrorCheck extends SquidCheck<ErlangGrammar> implements AuditListener {
 
-    public void processRecognitionException(RecognitionException e) {
-        getContext().createLineViolation(this, e.getMessage(), e.getLine());
-    }
+  public void processRecognitionException(RecognitionException e) {
+    getContext().createLineViolation(this, e.getMessage(), e.getLine());
+  }
 
-    public void processException(Exception e) {
-        StringWriter exception = new StringWriter();
-        e.printStackTrace(new PrintWriter(exception));
-        getContext().createFileViolation(this, exception.toString());
-    }
+  public void processException(Exception e) {
+    StringWriter exception = new StringWriter();
+    e.printStackTrace(new PrintWriter(exception));
+    getContext().createFileViolation(this, exception.toString());
+  }
 
 }
