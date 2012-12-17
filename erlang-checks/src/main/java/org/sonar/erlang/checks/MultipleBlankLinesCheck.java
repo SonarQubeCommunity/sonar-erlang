@@ -45,7 +45,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(getContext().getGrammar().primaryExpression, GenericTokenType.IDENTIFIER);
+    subscribeTo(GenericTokenType.IDENTIFIER);
   }
 
   @Override
@@ -70,7 +70,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
               ast.getToken().getLine(), getMaxFor(ast));
         }
       }
-      previousToken = ast.getToken();
+      previousToken = ast.getLastToken();
     }
 
   }

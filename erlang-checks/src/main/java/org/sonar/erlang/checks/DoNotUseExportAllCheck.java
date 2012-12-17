@@ -38,7 +38,7 @@ public class DoNotUseExportAllCheck extends SquidCheck<ErlangGrammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    if ("export_all".equalsIgnoreCase(node.getChild(3).getTokenOriginalValue())) {
+    if ("export_all".equalsIgnoreCase(node.findFirstDirectChild(getContext().getGrammar().primaryExpression).getTokenOriginalValue())) {
       getContext().createLineViolation(this, "Do not use export_all", node);
     }
   }

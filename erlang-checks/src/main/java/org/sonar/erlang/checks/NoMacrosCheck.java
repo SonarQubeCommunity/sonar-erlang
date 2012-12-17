@@ -80,7 +80,8 @@ public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private String getMacroName(AstNode astNode) {
-    AstNode token = (astNode.findDirectChildren(GenericTokenType.IDENTIFIER).size() == 1) ? astNode.findFirstDirectChild(GenericTokenType.IDENTIFIER) : null;
+    //TODO: these kind of addressing are ugly... is there any better way?
+    AstNode token = (astNode.findDirectChildren(GenericTokenType.IDENTIFIER).size() > 1) ? astNode.findDirectChildren(GenericTokenType.IDENTIFIER).get(1) : null;
     if (token == null) {
       token = astNode.findFirstDirectChild(g.funcDecl).findFirstDirectChild(GenericTokenType.IDENTIFIER);
     }

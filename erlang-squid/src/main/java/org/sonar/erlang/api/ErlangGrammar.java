@@ -197,6 +197,7 @@ public class ErlangGrammar extends LexerlessGrammar {
     public Rule fileAttr;
     public Rule behaviourAttr;
     public Rule moduleElements;
+    public Rule moduleElement;
 
     @Override
     public Rule getRootRule() {
