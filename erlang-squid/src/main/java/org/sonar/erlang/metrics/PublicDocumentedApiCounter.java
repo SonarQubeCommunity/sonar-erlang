@@ -85,7 +85,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
   @Override
   public void visitFile(AstNode astNode) {
     if (astNode != null) {
-      functions = astNode.findDirectChildren(g.functionDeclaration);
+      functions = astNode.findFirstDirectChild(g.moduleElements).findDirectChildren(g.functionDeclaration);
     }
   }
 
