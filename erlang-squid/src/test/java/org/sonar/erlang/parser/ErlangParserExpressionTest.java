@@ -2,47 +2,35 @@
  * Sonar Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
 package org.sonar.erlang.parser;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
-import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.impl.events.ExtendedStackTrace;
-import com.sonar.sslr.impl.events.ExtendedStackTraceStream;
-import org.junit.After;
-import org.junit.Before;
+import com.sonar.sslr.api.Rule;
 import org.junit.Test;
-import org.sonar.erlang.ErlangConfiguration;
 import org.sonar.erlang.api.ErlangGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserExpressionTest {
-  ExtendedStackTrace listener = new ExtendedStackTrace();
-  Parser<ErlangGrammar> p = ErlangParser
-      .create(new ErlangConfiguration(Charsets.UTF_8), listener);
 
-  ErlangGrammar g = p.getGrammar();
+  ErlangGrammar g = new ErlangGrammarImpl();
+  Rule p = g.expression;
 
-  @Before
-  public void init() {
-    p.setRootRule(g.expression);
-  }
 
   @Test
   public void simpleExpression() {
@@ -149,7 +137,7 @@ public class ErlangParserExpressionTest {
 
   @Test
   public void recordCreate() {
-    p.setRootRule(g.expression);
+    Rule p = g.expression;
     assertThat(p).matches((code("#Name{Field1=Expr1,Field2=Expr2,FieldK=ExprK}")));
     assertThat(p).matches((code("#person{name=Name, _='_'}")));
     assertThat(p).matches((code("A = #Name{Field1=Expr1,Field2=Expr2,FieldK=ExprK}")));
@@ -194,7 +182,7 @@ public class ErlangParserExpressionTest {
   private static String code(String... lines) {
     return Joiner.on("\n").join(lines);
   }
-
+/*
   @After
   public void log() {
     try {
@@ -202,5 +190,5 @@ public class ErlangParserExpressionTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
-  }
+  }*/
 }

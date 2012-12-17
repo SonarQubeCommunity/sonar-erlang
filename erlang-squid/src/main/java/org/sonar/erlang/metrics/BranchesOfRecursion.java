@@ -43,8 +43,8 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
   public void visitFile(AstNode astNode) {
     if (astNode != null) {
       actualArity = "";
-      actualModule = astNode.findFirstDirectChild(grammar.moduleAttr)
-          .findDirectChildren(GenericTokenType.IDENTIFIER).get(1).getTokenOriginalValue();
+      actualModule = astNode.findFirstChild(grammar.moduleAttr)
+          .findFirstDirectChild(GenericTokenType.IDENTIFIER).getTokenOriginalValue();
     }
   }
 

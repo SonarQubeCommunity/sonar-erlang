@@ -36,7 +36,7 @@ public class ParsingErrorCheckTest {
   public void check() {
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
         "src/test/resources/checks/invaliderlangfile.erl"), new ParsingErrorCheck());
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(5).withMessageThat(containsString("IDENTIFIER expected but \"EOF\" [EOF] found"))
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(5).withMessageThat(containsString("Parse error"))
         .noMore();
   }
 

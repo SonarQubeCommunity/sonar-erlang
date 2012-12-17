@@ -80,7 +80,7 @@ public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private String getMacroName(AstNode astNode) {
-    AstNode token = (astNode.findDirectChildren(GenericTokenType.IDENTIFIER).size() > 1) ? astNode.findDirectChildren(GenericTokenType.IDENTIFIER).get(1) : null;
+    AstNode token = (astNode.findDirectChildren(GenericTokenType.IDENTIFIER).size() == 1) ? astNode.findFirstDirectChild(GenericTokenType.IDENTIFIER) : null;
     if (token == null) {
       token = astNode.findFirstDirectChild(g.funcDecl).findFirstDirectChild(GenericTokenType.IDENTIFIER);
     }
