@@ -202,7 +202,6 @@ public final class ErlangAstScanner {
         for (SquidAstVisitor<ErlangGrammar> visitor : visitors) {
             builder.withSquidAstVisitor(visitor);
         }
-
         return builder.build();
     }
 }
