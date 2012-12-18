@@ -181,4 +181,10 @@ public class ErlangAstScannerTest {
     assertThat(file.getInt(ErlangMetric.NUM_OF_MACROS)).isEqualTo(2);
   }
 
+  @Test
+  public void megaco() {
+    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+        "src/test/resources/megaco_ber_media_gateway_control_v1.erl"));
+  }
+
 }
