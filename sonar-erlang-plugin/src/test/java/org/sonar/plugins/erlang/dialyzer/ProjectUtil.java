@@ -54,11 +54,16 @@ public class ProjectUtil {
     when(fileSystem.getBasedir()).thenReturn(folder);
     when(fileSystem.getSourceDirs()).thenReturn(new ArrayList<File>() {
       {
-        add(new File(folder, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+        add(new File(folder, "/src/"));
       }
     });
-
+    when(fileSystem.getTestDirs()).thenReturn(new ArrayList<File>() {
+        {
+            add(new File(folder, "/test/"));
+          }
+        });
     when(fileSystem.testFiles(any(String.class))).thenReturn(otherFiles);
+
     when(fileSystem.mainFiles(Erlang.KEY)).thenReturn(srcFiles);
     Project project = new Project("dummy") {
 
