@@ -85,21 +85,13 @@ public class ErlangSquidSensorTest {
 
     sensor.analyse(project, context);
 
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FILES),
-        Matchers.eq(1.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.LINES),
-        Matchers.eq(19.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.NCLOC),
-        Matchers.eq(14.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FUNCTIONS),
-        Matchers.eq(2.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class),
-        Matchers.eq(CoreMetrics.STATEMENTS), Matchers.eq(8.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class),
-        Matchers.eq(CoreMetrics.COMPLEXITY), Matchers.eq(6.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class),
-        Matchers.eq(CoreMetrics.COMMENT_LINES), Matchers.eq(1.0));
-
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FILES), Matchers.eq(1.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.LINES), Matchers.eq(19.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.NCLOC), Matchers.eq(14.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FUNCTIONS), Matchers.eq(2.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.STATEMENTS), Matchers.eq(8.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.COMPLEXITY), Matchers.eq(6.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.COMMENT_LINES), Matchers.eq(1.0));
   }
 
   @Test
@@ -115,24 +107,13 @@ public class ErlangSquidSensorTest {
 
     sensor.analyse(project, context);
 
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FILES),
-        Matchers.eq(1.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.LINES),
-        Matchers.eq(717.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.NCLOC),
-        Matchers.eq(371.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FUNCTIONS),
-        Matchers.eq(10.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class),
-        Matchers.eq(CoreMetrics.STATEMENTS), Matchers.eq(210.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class),
-        Matchers.eq(CoreMetrics.COMPLEXITY), Matchers.eq(90.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class),
-        Matchers.eq(CoreMetrics.COMMENT_LINES), Matchers.eq(261.0));
-
-    verify(context).saveMeasure(Matchers.any(Resource.class),
-        Matchers.eq(CoreMetrics.COMMENT_LINES_DENSITY), Matchers.eq(70.35040431266847));
-
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FILES), Matchers.eq(1.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.LINES), Matchers.eq(717.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.NCLOC), Matchers.eq(371.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FUNCTIONS), Matchers.eq(10.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.STATEMENTS), Matchers.eq(210.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.COMPLEXITY), Matchers.eq(90.0));
+    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.COMMENT_LINES), Matchers.eq(261.0));
   }
 
 }
