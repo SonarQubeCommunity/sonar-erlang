@@ -84,13 +84,19 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
 
   @Override
   public void visitFile(AstNode astNode) {
-    if (astNode != null) {
-      functions = astNode.findFirstDirectChild(g.moduleElements).findDirectChildren(g.functionDeclaration);
+    if (astNode == null) {
+      // file wasn't parsed
+      return;
     }
+    functions = astNode.findFirstDirectChild(g.moduleElements).findDirectChildren(g.functionDeclaration);
   }
 
   @Override
   public void leaveFile(AstNode astNode) {
+    if (astNode == null) {
+      // file wasn't parsed
+      return;
+    }
     getContext().peekSourceCode().add(ErlangMetric.PUBLIC_API, numOfPublicAPIs);
     getContext().peekSourceCode().add(ErlangMetric.PUBLIC_DOC_API, numOfPublicDocAPIs);
     double density = (numOfPublicAPIs > 0) ? numOfPublicDocAPIs / numOfPublicAPIs : 0;
