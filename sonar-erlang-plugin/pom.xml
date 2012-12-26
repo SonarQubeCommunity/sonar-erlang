@@ -16,6 +16,13 @@
   <description>Provides support for Erlang projects.</description>
   <url>http://docs.codehaus.org/display/SONAR/Erlang+Plugin</url>
 
+  <scm>
+    <connection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</developerConnection>
+    <url>https://github.com/SonarCommunity/sonar-erlang</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <properties>
     <sonar.pluginKey>erlang</sonar.pluginKey>
     <sonar.pluginName>Erlang</sonar.pluginName>
