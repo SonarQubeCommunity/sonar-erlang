@@ -86,7 +86,7 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private String getFuncName(String arity) {
-    return arity.substring(0, arity.lastIndexOf("/"));
+    return arity.substring(0, arity.lastIndexOf('/'));
   }
 
   private String getArity(AstNode arityNode) {

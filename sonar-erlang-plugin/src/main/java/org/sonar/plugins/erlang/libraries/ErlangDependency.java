@@ -25,22 +25,19 @@ import java.util.regex.Pattern;
 
 public class ErlangDependency {
 
-  private static final Pattern depNamePattern = Pattern.compile("(^\\{)([A-Za-z_0-9]*?)(\\,.*)", Pattern.DOTALL
-    + Pattern.MULTILINE);
-  private static final Pattern depVersionInTagPattern = Pattern.compile("(.*tag.*?\\\")(.*?)(\\\".*)", Pattern.DOTALL
-    + Pattern.MULTILINE);
-  private static final Pattern depVersionInBranchPattern = Pattern.compile("(.*branch.*?\\\")(.*?)(\\\".*)",
-      Pattern.DOTALL + Pattern.MULTILINE);
+  private static final Pattern DEP_NAME_PATTERN = Pattern.compile("(^\\{)([A-Za-z_0-9]*?)(\\,.*)", Pattern.DOTALL + Pattern.MULTILINE);
+  private static final Pattern DEP_VERSION_IN_TAG_PATTERN = Pattern.compile("(.*tag.*?\\\")(.*?)(\\\".*)", Pattern.DOTALL + Pattern.MULTILINE);
+  private static final Pattern DEP_VERSION_IN_BRANCH_PATTERN = Pattern.compile("(.*branch.*?\\\")(.*?)(\\\".*)", Pattern.DOTALL + Pattern.MULTILINE);
 
   String name;
   String version;
   String key;
 
   public ErlangDependency(String oneDependency) {
-    name = depNamePattern.matcher(oneDependency).replaceFirst("$2");
-    version = depVersionInTagPattern.matcher(oneDependency).replaceFirst("$2");
+    name = DEP_NAME_PATTERN.matcher(oneDependency).replaceFirst("$2");
+    version = DEP_VERSION_IN_TAG_PATTERN.matcher(oneDependency).replaceFirst("$2");
     if (version.length() == oneDependency.length()) {
-      version = depVersionInBranchPattern.matcher(oneDependency).replaceFirst("$2");
+      version = DEP_VERSION_IN_BRANCH_PATTERN.matcher(oneDependency).replaceFirst("$2");
       if (version.length() == oneDependency.length()) {
         if (oneDependency.contains("HEAD")) {
           version = "HEAD";

@@ -19,7 +19,6 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.dom4j.DocumentException;
 import org.sonar.api.ServerComponent;
 import org.xml.sax.SAXException;
 

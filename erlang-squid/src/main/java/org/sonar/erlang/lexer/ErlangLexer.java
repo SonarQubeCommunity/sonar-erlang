@@ -36,7 +36,7 @@ import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
 public final class ErlangLexer {
 
     private static final String EXP = "([Ee][-]?+[0-9_]++)";
-    private static final String escapeSequence = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
+    private static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
         + "|(\\$\\\\\\^[A-Za-z])"
         + "|(\\$\\\\x\\{[A-F0-9]+\\})"
         + "|(\\$\\\\x[A-F0-9]{1,2})"
@@ -46,7 +46,7 @@ public final class ErlangLexer {
         + "[0-9]++\\.([0-9]++)" + EXP + "?"
         + "|[0-9]++\\#([0-9A-Fa-f]++)?+"
         + "|[0-9]++"
-        + "|" + escapeSequence
+        + "|" + ESCAPE_SEQUENCE
         + "|\\$[\\x00-\\x7F]"
         + ")";
 

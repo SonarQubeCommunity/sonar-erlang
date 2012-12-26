@@ -31,6 +31,6 @@ public class GenericExtFilter implements FilenameFilter {
   }
 
   public boolean accept(File dir, String name) {
-    return (name.endsWith(ext));
+    return name.endsWith(ext);
   }
 }

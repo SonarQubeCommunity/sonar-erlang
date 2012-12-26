@@ -47,7 +47,7 @@ public class EunitXmlSensor implements Sensor {
   private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
 
   public boolean shouldExecuteOnProject(Project project) {
-    return (erlang.equals(project.getLanguage()));
+    return erlang.equals(project.getLanguage());
   }
 
   public void analyse(Project project, SensorContext context) {
