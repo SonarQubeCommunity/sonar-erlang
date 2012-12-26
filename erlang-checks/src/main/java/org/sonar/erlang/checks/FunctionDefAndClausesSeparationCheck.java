@@ -52,14 +52,6 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<ErlangGramm
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
-  }
-
-  @Override
-  public void leaveFile(AstNode astNode) {
-  }
-
-  @Override
   public void visitNode(AstNode ast) {
     if (!ast.getToken().isGeneratedCode()) {
       /**

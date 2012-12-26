@@ -49,14 +49,6 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
   }
 
   @Override
-  public void leaveFile(AstNode astNode) {
-  }
-
-  @Override
-  public void leaveNode(AstNode ast) {
-  }
-
-  @Override
   public void visitNode(AstNode ast) {
     if (ast.getType().equals(grammar.functionDeclaration)) {
       actualArity = getArity(ast.findFirstDirectChild(grammar.functionClause));
@@ -93,4 +85,5 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
         ErlangPunctuator.COMMA).size() + 1 : args.getNumberOfChildren() - 2;
     return String.valueOf(num);
   }
+
 }

@@ -38,14 +38,6 @@ public class NoEmacsStyleLeadingCommasCheck extends SquidCheck<ErlangGrammar> im
 
   private Token previousToken;
 
-  @Override
-  public void visitFile(AstNode astNode) {
-  }
-
-  @Override
-  public void leaveFile(AstNode astNode) {
-  }
-
   public void visitToken(Token token) {
     if (previousToken == null || (previousToken.getLine() != token.getLine())) {
       if (token.getType().equals(ErlangPunctuator.COMMA)) {

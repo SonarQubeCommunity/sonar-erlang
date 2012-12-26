@@ -49,14 +49,6 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
-  }
-
-  @Override
-  public void leaveFile(AstNode astNode) {
-  }
-
-  @Override
   public void visitNode(AstNode ast) {
     if (!ast.getToken().isGeneratedCode()) {
       if (previousToken == null

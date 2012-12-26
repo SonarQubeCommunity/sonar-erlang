@@ -46,10 +46,6 @@ public class NoTabsForIndentionCheck extends SquidCheck<ErlangGrammar> {
     }
   }
 
-  @Override
-  public void leaveFile(AstNode astNode) {
-  }
-
   private void checkFileIndention(File source) throws FileNotFoundException {
     Scanner scanner = new Scanner(new FileInputStream(source));
     try {
