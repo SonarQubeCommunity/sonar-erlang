@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import com.sonar.sslr.squid.checks.ChecksHelper;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
@@ -47,12 +49,14 @@ public class BranchesOfRecursionCheck extends SquidCheck<ErlangGrammar> {
   @Override
   public void leaveNode(AstNode node) {
     SourceFunction function = (SourceFunction) getContext().peekSourceCode();
-    if (function.getInt(ErlangMetric.BRANCHES_OF_RECURSION) > maximumBORThreshold) {
+
+    int measuredBOR = ChecksHelper.getRecursiveMeasureInt(function, ErlangMetric.BRANCHES_OF_RECURSION);
+    if (measuredBOR > maximumBORThreshold) {
       getContext()
           .createLineViolation(
               this,
               "Function has {0,number,integer} branches of recursion which is greater than {1,number,integer} authorized.",
-              node, function.getInt(ErlangMetric.BRANCHES_OF_RECURSION),
+              node, measuredBOR,
               maximumBORThreshold);
     }
   }
