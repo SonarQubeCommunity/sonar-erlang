@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
+import org.sonar.plugins.erlang.ProjectUtil;
+
 import org.apache.commons.configuration.Configuration;
 import org.hamcrest.Matchers;
 import org.junit.Before;

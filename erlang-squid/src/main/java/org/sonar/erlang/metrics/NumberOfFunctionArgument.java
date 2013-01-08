@@ -42,14 +42,6 @@ public class NumberOfFunctionArgument extends SquidCheck<ErlangGrammar> {
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
-  }
-
-  @Override
-  public void leaveFile(AstNode astNode) {
-  }
-
-  @Override
   public void visitNode(AstNode ast) {
     AstNode args = ast.findFirstDirectChild(grammar.funcDecl).findFirstDirectChild(
         grammar.arguments);
@@ -62,4 +54,5 @@ public class NumberOfFunctionArgument extends SquidCheck<ErlangGrammar> {
     getContext().peekSourceCode().add(ErlangMetric.NUM_OF_FUNC_ARGS, numOfArgs);
 
   }
+
 }

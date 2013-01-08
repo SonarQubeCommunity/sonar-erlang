@@ -20,7 +20,6 @@
 package org.sonar.erlang.checks;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
@@ -37,14 +36,6 @@ public class NoEmacsStyleLeadingCommasCheck extends SquidCheck<ErlangGrammar> im
     AstAndTokenVisitor {
 
   private Token previousToken;
-
-  @Override
-  public void visitFile(AstNode astNode) {
-  }
-
-  @Override
-  public void leaveFile(AstNode astNode) {
-  }
 
   public void visitToken(Token token) {
     if (previousToken == null || (previousToken.getLine() != token.getLine())) {

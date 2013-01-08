@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.erlang.cover;
 
+import org.sonar.plugins.erlang.ProjectUtil;
+
 import org.apache.commons.configuration.Configuration;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +32,6 @@ import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
-import org.sonar.plugins.erlang.dialyzer.ProjectUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

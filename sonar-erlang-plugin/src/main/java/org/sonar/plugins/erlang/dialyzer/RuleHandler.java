@@ -72,7 +72,7 @@ public class RuleHandler extends DefaultHandler {
     } else if (StringUtils.equalsIgnoreCase("key", element)) {
       ((ErlangRule) tmpRule).getRule().setKey(StringUtils.trim(tmpValue));
     } else if (StringUtils.equalsIgnoreCase("configKey", element)) {
-      ((ErlangRule) tmpRule).getRule().setConfigKey((StringUtils.trim(tmpValue)));
+      ((ErlangRule) tmpRule).getRule().setConfigKey(StringUtils.trim(tmpValue));
     } else if (StringUtils.equalsIgnoreCase("priority", element)) {
       ((ErlangRule) tmpRule).getRule().setSeverity(
           RulePriority.valueOf(StringUtils.trim(tmpValue)));

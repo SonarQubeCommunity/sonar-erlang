@@ -54,14 +54,6 @@ public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<ErlangGrammar> {
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
-  }
-
-  @Override
-  public void leaveFile(AstNode astNode) {
-  }
-
-  @Override
   public void visitNode(AstNode ast) {
     Token compTo;
     if (numOfViolations < 100 && !failedLines.contains(ast.getTokenLine())) {

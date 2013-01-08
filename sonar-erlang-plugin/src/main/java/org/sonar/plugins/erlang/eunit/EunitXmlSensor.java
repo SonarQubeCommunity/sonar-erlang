@@ -38,32 +38,33 @@ import java.util.List;
 
 public class EunitXmlSensor implements Sensor {
 
-    protected Erlang erlang;
+  protected Erlang erlang;
 
-    public EunitXmlSensor(Erlang erlang) {
-        this.erlang = erlang;
-    }
+  public EunitXmlSensor(Erlang erlang) {
+    this.erlang = erlang;
+  }
 
-    private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
 
-    public boolean shouldExecuteOnProject(Project project) {
-        return (erlang.equals(project.getLanguage()));
-    }
+  public boolean shouldExecuteOnProject(Project project) {
+    return erlang.equals(project.getLanguage());
+  }
 
-    public void analyse(Project project, SensorContext context) {
-        String eunitFolder = erlang.getConfiguration().getString(
-                ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
-        collect(project, context,
-                new File(project.getFileSystem().getBasedir(), eunitFolder));
-    }
+  public void analyse(Project project, SensorContext context) {
+    String eunitFolder = erlang.getConfiguration().getString(
+        ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    collect(project, context,
+        new File(project.getFileSystem().getBasedir(), eunitFolder));
+  }
 
-    protected void collect(final Project project, final SensorContext context, File reportsDir) {
-        LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
+  protected void collect(final Project project, final SensorContext context, File reportsDir) {
+    LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
 
-        new AbstractSurefireParser() {
+    new AbstractSurefireParser() {
 
-            @Override
-            protected Resource<?> getUnitTestResource(String classKey) {
+      @Override
+      protected Resource<?> getUnitTestResource(String classKey) {
+
                 List<File> testDirectories = project.getFileSystem().getTestDirs();
 
                 File unitTestFile = getUnitTestFile(testDirectories, classKey);
@@ -74,20 +75,21 @@ public class EunitXmlSensor implements Sensor {
 
                 LOG.debug("Adding unittest resource: {}", unitTestFileResource.toString());
 
-                String source = "";
+        String source = "";
 
-                try {
-                    source = FileUtils.readFileToString(unitTestFile, project.getFileSystem()
-                            .getSourceCharset().name());
-                } catch (IOException e) {
-                    source = "Could not find source for unit test: " + classKey
-                        + " in any of test directories";
-                    Log.debug(source, e);
-                }
+        try {
+          source = FileUtils.readFileToString(unitTestFile, project.getFileSystem()
+              .getSourceCharset().name());
+        } catch (IOException e) {
+          source = "Could not find source for unit test: " + classKey
+            + " in any of test directories";
+          Log.debug(source, e);
+        }
 
-                context.saveSource(unitTestFileResource, source);
+        context.saveSource(unitTestFileResource, source);
 
                 return unitTestFileResource;
+
             }
         }.collect(project, context, reportsDir);
 
@@ -123,8 +125,9 @@ public class EunitXmlSensor implements Sensor {
         return unitTestFile;
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 }

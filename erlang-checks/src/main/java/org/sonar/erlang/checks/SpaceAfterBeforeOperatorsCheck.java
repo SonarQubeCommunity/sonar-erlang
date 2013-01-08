@@ -50,14 +50,6 @@ public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<ErlangGrammar> {
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
-  }
-
-  @Override
-  public void leaveFile(AstNode astNode) {
-  }
-
-  @Override
   public void visitNode(AstNode ast) {
     AstNode compTo;
     if (numOfViolations < 100 && !failedLines.contains(ast.getTokenLine())) {

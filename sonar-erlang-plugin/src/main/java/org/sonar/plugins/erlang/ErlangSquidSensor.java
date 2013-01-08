@@ -108,27 +108,14 @@ public class ErlangSquidSensor implements Sensor {
   private void saveMeasures(File sonarFile, SourceFile squidFile) {
     context.saveMeasure(sonarFile, CoreMetrics.FILES, squidFile.getDouble(ErlangMetric.FILES));
     context.saveMeasure(sonarFile, CoreMetrics.LINES, squidFile.getDouble(ErlangMetric.LINES));
-    context.saveMeasure(sonarFile, CoreMetrics.NCLOC, squidFile
-        .getDouble(ErlangMetric.LINES_OF_CODE));
-    context.saveMeasure(sonarFile, CoreMetrics.FUNCTIONS, squidFile
-        .getDouble(ErlangMetric.FUNCTIONS));
-    context.saveMeasure(sonarFile, CoreMetrics.STATEMENTS, squidFile
-        .getDouble(ErlangMetric.STATEMENTS));
-    context.saveMeasure(sonarFile, CoreMetrics.COMPLEXITY, squidFile
-        .getDouble(ErlangMetric.COMPLEXITY));
-    context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile
-        .getDouble(ErlangMetric.COMMENT_LINES));
-    context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES_DENSITY, squidFile
-        .getDouble(ErlangMetric.COMMENT_LINES)
-      / squidFile.getDouble(ErlangMetric.LINES_OF_CODE) * 100);
-    context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_API, squidFile
-        .getDouble(ErlangMetric.PUBLIC_API));
-    context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_UNDOCUMENTED_API, squidFile
-        .getDouble(ErlangMetric.PUBLIC_API)
-      - squidFile.getDouble(ErlangMetric.PUBLIC_DOC_API));
-    context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_DOCUMENTED_API_DENSITY, squidFile
-        .getDouble(ErlangMetric.PUBLIC_DOCUMENTED_API_DENSITY));
-
+    context.saveMeasure(sonarFile, CoreMetrics.NCLOC, squidFile.getDouble(ErlangMetric.LINES_OF_CODE));
+    context.saveMeasure(sonarFile, CoreMetrics.FUNCTIONS, squidFile.getDouble(ErlangMetric.FUNCTIONS));
+    context.saveMeasure(sonarFile, CoreMetrics.STATEMENTS, squidFile.getDouble(ErlangMetric.STATEMENTS));
+    context.saveMeasure(sonarFile, CoreMetrics.COMPLEXITY, squidFile.getDouble(ErlangMetric.COMPLEXITY));
+    context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile.getDouble(ErlangMetric.COMMENT_LINES));
+    context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_API, squidFile.getDouble(ErlangMetric.PUBLIC_API));
+    double publicUndocApi = squidFile.getDouble(ErlangMetric.PUBLIC_API) - squidFile.getDouble(ErlangMetric.PUBLIC_DOC_API);
+    context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_UNDOCUMENTED_API, publicUndocApi);
   }
 
   private void saveFunctionsComplexityDistribution(File sonarFile, SourceFile squidFile) {

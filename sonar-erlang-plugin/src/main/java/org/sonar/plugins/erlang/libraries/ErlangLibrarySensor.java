@@ -38,15 +38,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ErlangLibrarySensor implements Sensor {
-  private static final Pattern depsDirPattern = Pattern.compile("\\{deps_dir, ?\\[.*?\\]\\}\\.", Pattern.DOTALL
-    + Pattern.MULTILINE);
-  private static final Pattern allDepPattern = Pattern.compile("\\{deps, ?\\[.*?\\]\\}\\.", Pattern.DOTALL
-    + Pattern.MULTILINE);
-  private static final Pattern emptyDepPattern = Pattern.compile("\\{deps, *\\[[ \t\n\r]*?\\]\\}\\.", Pattern.DOTALL
-    + Pattern.MULTILINE);
-  private static final Pattern oneDepPattern = Pattern.compile("\\{[^\\[]+?\\}", Pattern.DOTALL + Pattern.MULTILINE);
-  private static final Pattern depsGetDirPattern = Pattern.compile("(\\{deps_dir, ?\\[\\\")(.*?)(\\\"\\]\\}\\.)",
-      Pattern.DOTALL + Pattern.MULTILINE);
+
+  private static final Pattern DEPS_DIR_PATTERN = Pattern.compile("\\{deps_dir, ?\\[.*?\\]\\}\\.", Pattern.DOTALL + Pattern.MULTILINE);
+  private static final Pattern ALL_DEP_PATTERN = Pattern.compile("\\{deps, ?\\[.*?\\]\\}\\.", Pattern.DOTALL + Pattern.MULTILINE);
+  private static final Pattern EMPTY_DEP_PATTERN = Pattern.compile("\\{deps, *\\[[ \t\n\r]*?\\]\\}\\.", Pattern.DOTALL + Pattern.MULTILINE);
+  private static final Pattern ONE_DEP_PATTERN = Pattern.compile("\\{[^\\[]+?\\}", Pattern.DOTALL + Pattern.MULTILINE);
+  private static final Pattern DEPS_GET_DIR_PATTERN = Pattern.compile("(\\{deps_dir, ?\\[\\\")(.*?)(\\\"\\]\\}\\.)", Pattern.DOTALL + Pattern.MULTILINE);
 
   private final static Logger LOG = LoggerFactory.getLogger(ErlangLibrarySensor.class);
   private Erlang erlang;
@@ -68,13 +65,13 @@ public class ErlangLibrarySensor implements Sensor {
       String rebarConfigContent = FileUtils.readFileToString(rebarConfigFile, "UTF-8");
 
       String depsDir = getDepsDir(rebarConfigContent);
-      Matcher allDepMatcher = allDepPattern.matcher(rebarConfigContent);
-      if (emptyDepPattern.matcher(rebarConfigContent).find()) {
+      Matcher allDepMatcher = ALL_DEP_PATTERN.matcher(rebarConfigContent);
+      if (EMPTY_DEP_PATTERN.matcher(rebarConfigContent).find()) {
         return;
       }
       while (allDepMatcher.find()) {
         String dependencies = rebarConfigContent.substring(allDepMatcher.start(), allDepMatcher.end() - 1).replaceAll("[\\n\\r\\t ]", "").replaceAll("\\[\\]", "");
-        Matcher deps = oneDepPattern.matcher(dependencies.trim());
+        Matcher deps = ONE_DEP_PATTERN.matcher(dependencies.trim());
         while (deps.find()) {
           String dep = dependencies.substring(deps.start(), deps.end());
           ErlangDependency erlangDep = new ErlangDependency(dep);
@@ -112,11 +109,11 @@ public class ErlangLibrarySensor implements Sensor {
 
   private String getDepsDir(String rebarConfigContent) {
     // find lib dir: {lib_dirs,["deps"]}. or deps_dir?
-    Matcher depsDirMatcher = depsDirPattern.matcher(rebarConfigContent);
+    Matcher depsDirMatcher = DEPS_DIR_PATTERN.matcher(rebarConfigContent);
     String depDir = "deps";
     if (depsDirMatcher.matches()) {
       depsDirMatcher.find();
-      depDir = depsGetDirPattern.matcher(rebarConfigContent.substring(depsDirMatcher.start(), depsDirMatcher.end() - 1)).replaceAll("$2");
+      depDir = DEPS_GET_DIR_PATTERN.matcher(rebarConfigContent.substring(depsDirMatcher.start(), depsDirMatcher.end() - 1)).replaceAll("$2");
     }
     return depDir;
   }
@@ -124,4 +121,5 @@ public class ErlangLibrarySensor implements Sensor {
   public final boolean shouldExecuteOnProject(Project project) {
     return project.getLanguage().equals(erlang);
   }
+
 }
