@@ -112,6 +112,7 @@ public class ErlangGrammar extends LexerlessGrammar {
     public Rule defineAttr;
     public Rule typeSpec;
     public Rule genericAttr;
+    public Rule anyAttr;
     public Rule funcExport;
     public Rule expression;
     public Rule funcArity;

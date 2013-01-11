@@ -177,15 +177,13 @@ public class ErlangGrammarImpl extends ErlangGrammar {
   private void module() {
     module.is(spacing, optional(moduleElements), eof);
     moduleElements.is(oneOrMore(
-        // TODO: does the -module mandatory? maybe we should move it one level
-        // up
         moduleElement
         ));
 
     moduleElement.is(firstOf(moduleHeadAttr, sequence(macroLiteral, dot), functionDeclaration)).skipIfOneChild();
 
     moduleHeadAttr.is(firstOf(moduleAttr, fileAttr, exportAttr, compileAttr, defineAttr,
-        importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr)).skipIfOneChild();
+        importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr, anyAttr)).skipIfOneChild();
 
     recordAttr.is(minus, semiKeyword("record"), lparenthesis, identifier, comma, lcurlybrace, optional(sequence(
         recordField, optional(matchop, recordField)), zeroOrMore(firstOf(comma, pipe), sequence(recordField,
@@ -225,6 +223,9 @@ public class ErlangGrammarImpl extends ErlangGrammar {
     genericAttr.is(minus, firstOf(semiKeyword("vsn"), semiKeyword("on_load"), semiKeyword("include"), semiKeyword("file"),
         semiKeyword("ignore_xref"), semiKeyword("include_lib"), semiKeyword("author"), semiKeyword("export_type"), semiKeyword("deprecated"), semiKeyword("asn1_info")),
         lparenthesis, firstOf(funcArity, primaryExpression), rparenthesis, dot);
+
+    anyAttr.is(minus, identifier, lparenthesis, primaryExpression, rparenthesis, dot);
+
     // TODO: is it possible to have something like: -export().?
     funcExport.is(lbracket, zeroOrMore(funcArity, zeroOrMore(comma, funcArity)), rbracket);
   }

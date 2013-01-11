@@ -244,6 +244,13 @@ public class ModuleAttributesTest {
                         "{stop, Reason :: term()} | ignore.")));
     }
 
+    @Test
+    public void customAttriutesTest() {
+        assertThat(p).matches((code("-company({name, \"Dynamic Programmer\"}).")));
+        assertThat(p).matches((code("-author(\"Hernan Garcia\").")));
+        assertThat(p).matches((code("-awesome_module(true).")));
+    }
+
     private static String code(String... lines) {
         return Joiner.on("\n").join(lines);
     }
