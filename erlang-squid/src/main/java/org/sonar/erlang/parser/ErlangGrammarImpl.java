@@ -193,8 +193,8 @@ public class ErlangGrammarImpl extends ErlangGrammar {
         recordField), firstOf(rcurlybrace, rbracket)),
         sequence(firstOf(specFun, callExpression))), optional(colon, colon, recordField));
 
-    flowControlAttr.is(firstOf(ifdefAttr, ifndefAttr), oneOrMore(firstOf(moduleHeadAttr,
-        functionDeclaration)), optional(elseAttr, oneOrMore(firstOf(moduleHeadAttr,
+    flowControlAttr.is(firstOf(ifdefAttr, ifndefAttr), zeroOrMore(firstOf(moduleHeadAttr,
+        functionDeclaration)), optional(elseAttr, zeroOrMore(firstOf(moduleHeadAttr,
         functionDeclaration))), endifAttr);
 
     ifdefAttr.is(minus, semiKeyword("ifdef"), lparenthesis, identifier, rparenthesis, dot);

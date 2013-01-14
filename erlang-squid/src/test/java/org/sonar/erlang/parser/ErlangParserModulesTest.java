@@ -326,6 +326,25 @@ public class ErlangParserModulesTest {
                         "a() -> error.")));
     }
 
+    @Test
+    public void ifdef() {
+        assertThat(p).matches(
+                (code("-module(m).", "-ifdef('TEST').", "-export([]).","-define(A,1).", "-endif.",
+                        "a() -> error.")));
+        assertThat(p).matches(
+                (code("-module(m).", "-ifdef('TEST').", "%-export([]).", "%-endif.",
+                        "a() -> error.")));
+        assertThat(p).matches(
+                (code("-module(m).", "-ifdef('TEST').", "-export([]).","-else.","-export([]).", "-endif.",
+                        "a() -> error.")));
+        assertThat(p).matches(
+                (code("-module(m).", "-ifdef('TEST').", "%-export([]).","-else.","-export([]).", "-endif.",
+                        "a() -> error.")));
+        assertThat(p).matches(
+                (code("-module(m).", "-ifdef('TEST').", "-export([]).","-else.","%-export([]).", "-endif.",
+                        "a() -> error.")));
+    }
+
     private static String code(String... lines) {
         return Joiner.on("\n").join(lines);
     }
