@@ -1,0 +1,16 @@
+<p>Do not use empty flow control blocks like:
+<pre>
+-ifdef(debug).
+%-define(LOG(X), io:format("{~p,~p}: ~p~n", [?MODULE,?LINE,X])).
+-else.
+-define(LOG(X), true).
+-endif.
+</pre>
+or
+<pre>
+-ifdef(debug).
+-define(LOG(X), io:format("{~p,~p}: ~p~n", [?MODULE,?LINE,X])).
+-else.
+-endif.
+</pre>
+</p>
