@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,12 +10,12 @@
 
   <groupId>org.codehaus.sonar-plugins.erlang</groupId>
   <artifactId>erlang</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <packaging>pom</packaging>
 
   <name>Erlang</name>
   <description>Parent pom of Sonar erlang plugin</description>
-  <url></url>
+  <url />
   <inceptionYear>2012</inceptionYear>
   <organization>
     <name>Tamas Kende</name>
@@ -47,7 +46,7 @@
     <connection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</connection>
     <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</developerConnection>
     <url>https://github.com/SonarCommunity/sonar-erlang</url>
-    <tag>HEAD</tag>
+    <tag>0.1</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
@@ -189,7 +188,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore></ignore>
+                    <ignore />
                   </action>
                 </pluginExecution>
               </pluginExecutions>
