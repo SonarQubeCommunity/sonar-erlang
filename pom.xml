@@ -44,9 +44,9 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git@github.com:kalidasya/sonar-erlang.git</connection>
-    <developerConnection>scm:git:git@github.com:kalidasya/sonar-erlang.git</developerConnection>
-    <url>https://github.com/kalidasya/sonar-erlang</url>
+    <connection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</developerConnection>
+    <url>https://github.com/SonarCommunity/sonar-erlang</url>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
