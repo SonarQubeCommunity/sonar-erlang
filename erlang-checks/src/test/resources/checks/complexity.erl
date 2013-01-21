@@ -40,3 +40,6 @@ sayHello(A) -> 				%+1 complexity (function clause)
 	begin 
     	start_servers()
 	end.
+
+saySomething() ->
+    {error, empty}.

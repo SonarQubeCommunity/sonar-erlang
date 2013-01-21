@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import com.sonar.sslr.squid.checks.ChecksHelper;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
@@ -34,32 +36,33 @@ import org.sonar.squid.api.SourceFunction;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class FunExpressionComplexityCheck extends SquidCheck<ErlangGrammar> {
 
-  private static final int DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD = 4;
+    private static final int DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD = 4;
 
-  @RuleProperty(key = "maximumFunExpressionComplexityThreshold", defaultValue = ""
-    + DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD)
-  private int maximumFunExpressionComplexityThreshold = DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD;
+    @RuleProperty(key = "maximumFunExpressionComplexityThreshold", defaultValue = ""
+        + DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD)
+    private int maximumFunExpressionComplexityThreshold = DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD;
 
-  @Override
-  public void init() {
-    subscribeTo(getContext().getGrammar().funExpression);
-  }
-
-  @Override
-  public void leaveNode(AstNode node) {
-    SourceFunction function = (SourceFunction) getContext().peekSourceCode();
-    if (function.getInt(ErlangMetric.COMPLEXITY) > maximumFunExpressionComplexityThreshold) {
-      getContext()
-          .createLineViolation(
-              this,
-              "Function has a complexity of {0,number,integer} which is greater than {1,number,integer} authorized.",
-              node, function.getInt(ErlangMetric.COMPLEXITY),
-              maximumFunExpressionComplexityThreshold);
+    @Override
+    public void init() {
+        subscribeTo(getContext().getGrammar().funExpression);
     }
-  }
 
-  public void setMaximumFunExpressionComplexityThreshold(int threshold) {
-    this.maximumFunExpressionComplexityThreshold = threshold;
-  }
+    @Override
+    public void leaveNode(AstNode node) {
+        SourceFunction function = (SourceFunction) getContext().peekSourceCode();
+        int measuredComp = ChecksHelper.getRecursiveMeasureInt(function, ErlangMetric.COMPLEXITY);
+        if (measuredComp > maximumFunExpressionComplexityThreshold) {
+            getContext()
+                    .createLineViolation(
+                            this,
+                            "Function has a complexity of {0,number,integer} which is greater than {1,number,integer} authorized.",
+                            node, measuredComp,
+                            maximumFunExpressionComplexityThreshold);
+        }
+    }
+
+    public void setMaximumFunExpressionComplexityThreshold(int threshold) {
+        this.maximumFunExpressionComplexityThreshold = threshold;
+    }
 
 }

@@ -36,7 +36,7 @@ public final class CheckList {
     return ImmutableList.<Class> of(BlockSeparatorCharacterCheck.class,
         BranchesOfRecursionCheck.class, CommentRegularExpressionCheck.class,
         DepthOfCasesCheck.class, DoNotUseEmptyFlowControlCheck.class, DoNotUseImportCheck.class, DoNotUseExportAllCheck.class,
-        ExportOneFunctionPerLineCheck.class, FunctionComplexityCheck.class,
+        ExportOneFunctionPerLineCheck.class, FunctionComplexityCheck.class, FunExpressionComplexityCheck.class,
         FunctionDefAndClausesSeparationCheck.class, IndentionSizeCheck.class,
         LineLengthCheck.class, MultipleBlankLinesCheck.class,
         NoEmacsStyleLeadingCommasCheck.class, NoSpaceAfterBeforeBracketsCheck.class,
