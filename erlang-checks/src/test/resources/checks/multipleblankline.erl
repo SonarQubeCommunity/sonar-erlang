@@ -25,6 +25,13 @@ hello()->
 
 	Whatever2.
 
+hello([])->
+	[
+		error,
+		berror
+	].
+
+
 -ifdef(TEST).
     -export([
                 get_config_file/0,

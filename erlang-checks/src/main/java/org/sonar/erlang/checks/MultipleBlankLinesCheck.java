@@ -19,6 +19,9 @@
  */
 package org.sonar.erlang.checks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
@@ -35,73 +38,84 @@ import org.sonar.erlang.api.ErlangGrammar;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
 
-  @RuleProperty(key = "maxBlankLinesInsideFunctions", defaultValue = "1")
-  public int maxBlankLinesInsideFunctions = 1;
+    @RuleProperty(key = "maxBlankLinesInsideFunctions", defaultValue = "1")
+    public int maxBlankLinesInsideFunctions = 1;
 
-  @RuleProperty(key = "maxBlankLinesOutsideFunctions", defaultValue = "2")
-  public int maxBlankLinesOutsideFunctions = 2;
+    @RuleProperty(key = "maxBlankLinesOutsideFunctions", defaultValue = "2")
+    public int maxBlankLinesOutsideFunctions = 2;
 
-  private Token previousToken;
 
-  @Override
-  public void init() {
-    subscribeTo(GenericTokenType.IDENTIFIER);
-  }
+    private List<Integer> checkedLines = new ArrayList<Integer>();
 
-  @Override
-  public void visitNode(AstNode ast) {
-    if (!ast.getToken().isGeneratedCode()) {
-      if (previousToken == null
-        || (previousToken != null && previousToken.getLine() != ast.getToken()
-            .getLine())) {
-        int previousLine = (previousToken != null) ? previousToken.getLine() : 0;
+    @Override
+    public void init() {
+        subscribeTo(GenericTokenType.IDENTIFIER);
+    }
 
-        if (checkBlankLines(ast, previousLine)) {
-          getContext().createLineViolation(this,
-              "Too many blank lines found, the threshold is {0}.",
-              ast.getToken().getLine(), getMaxFor(ast));
+    @Override
+    public void visitNode(AstNode ast) {
+        if (!ast.getToken().isGeneratedCode() && !checkedLines.contains(ast.getToken().getLine())) {
+            Token previousToken = getPreviousToken(ast);
+            if (previousToken != null) {
+                int previousLine = previousToken.getLine();
+                if (checkBlankLines(ast, previousLine)) {
+                    getContext().createLineViolation(this,
+                            "Too many blank lines found, the threshold is {0}.",
+                            ast.getToken().getLine(), getMaxFor(ast));
+                }
+            }
+            checkedLines.add(ast.getToken().getLine());
         }
-      }
-      previousToken = ast.getLastToken();
+
     }
 
-  }
-
-  private boolean compare(int line1, int line2, int comp) {
-    return (line1 - line2 - 1 > comp);
-  }
-
-  private int getMaxFor(AstNode ast) {
-    if (ast.findFirstParent(getContext().getGrammar().clauseBody) != null) {
-      return maxBlankLinesInsideFunctions;
-    } else {
-      return maxBlankLinesOutsideFunctions;
+    private Token getPreviousToken(AstNode ast) {
+        AstNode node = ast.previousAstNode();
+        while (node != null && ast.getTokenLine() == node.getLastToken().getLine()) {
+            node = node.previousAstNode();
+        }
+        if(node!=null){
+            return node.getLastToken();
+        } else {
+            return null;
+        }
     }
-  }
 
-  private boolean checkTrivias(int previousLine, Token token, int compTo) {
-    int prevLine = previousLine;
-    for (Trivia trivias : token.getTrivia()) {
-      if (compare(trivias.getToken().getLine(), prevLine, compTo)) {
-        return true;
-      }
-      prevLine = trivias.getToken().getLine();
+    private boolean compare(int line1, int line2, int comp) {
+        return (line1 - line2 - 1 > comp);
     }
-    return compare(token.getLine(), prevLine, compTo);
-  }
 
-  private boolean checkBlankLines(AstNode ast, int previousLine) {
-    int compTo = getMaxFor(ast);
-
-    boolean check = compare(ast.getToken().getLine(), previousLine, compTo);
-    if (check) {
-      Token tokenWithTrivias = (ast.getToken().hasTrivia()) ? ast.getToken() : ast
-          .previousAstNode().getToken();
-      if (tokenWithTrivias.hasTrivia()) {
-        return checkTrivias(previousLine, tokenWithTrivias, compTo);
-      }
+    private int getMaxFor(AstNode ast) {
+        if (ast.findFirstParent(getContext().getGrammar().clauseBody) != null) {
+            return maxBlankLinesInsideFunctions;
+        } else {
+            return maxBlankLinesOutsideFunctions;
+        }
     }
-    return check;
-  }
+
+    private boolean checkTrivias(int previousLine, Token token, int compTo) {
+        int prevLine = previousLine;
+        for (Trivia trivias : token.getTrivia()) {
+            if (compare(trivias.getToken().getLine(), prevLine, compTo)) {
+                return true;
+            }
+            prevLine = trivias.getToken().getLine();
+        }
+        return compare(token.getLine(), prevLine, compTo);
+    }
+
+    private boolean checkBlankLines(AstNode ast, int previousLine) {
+        int compTo = getMaxFor(ast);
+
+        boolean check = compare(ast.getToken().getLine(), previousLine, compTo);
+        if (check) {
+            Token tokenWithTrivias = (ast.getToken().hasTrivia()) ? ast.getToken() : ast
+                    .previousAstNode().getToken();
+            if (tokenWithTrivias.hasTrivia()) {
+                return checkTrivias(previousLine, tokenWithTrivias, compTo);
+            }
+        }
+        return check;
+    }
 
 }
