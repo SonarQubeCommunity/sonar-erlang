@@ -10,7 +10,7 @@
 
   <groupId>org.codehaus.sonar-plugins.erlang</groupId>
   <artifactId>erlang</artifactId>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.2</version>
   <packaging>pom</packaging>
 
   <name>Erlang</name>
@@ -46,7 +46,7 @@
     <connection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</connection>
     <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</developerConnection>
     <url>https://github.com/SonarCommunity/sonar-erlang</url>
-    <tag>HEAD</tag>
+    <tag>0.2</tag>
   </scm>
   <issueManagement>
     <system>JIRA</system>
