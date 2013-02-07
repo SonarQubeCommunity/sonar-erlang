@@ -68,9 +68,9 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<ErlangGramm
       /**
        * Check the clauses
        */
-      if (ast.findDirectChildren(getContext().getGrammar().functionClause).size() > 1) {
+      if (ast.getChildren(getContext().getGrammar().functionClause).size() > 1) {
         List<AstNode> funcClauses = ast
-            .findDirectChildren(getContext().getGrammar().functionClause);
+            .getChildren(getContext().getGrammar().functionClause);
         Iterator<AstNode> clauses = funcClauses.iterator();
         AstNode previousClause = clauses.next();
         while (clauses.hasNext()) {
@@ -89,8 +89,8 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<ErlangGramm
       if ((hasTrivias && checkTrivias(ast.getToken(), previous.getToken(), threshold))
         || !hasTrivias) {
         if (ast.getTokenLine() - previous.getLastToken().getLine() - 1 >= 0) {
-          if (!ast.previousAstNode().equals(previous)) {
-            check(ast, ast.previousAstNode(), 0);
+          if (!ast.getPreviousAstNode().equals(previous)) {
+            check(ast, ast.getPreviousAstNode(), 0);
           } else {
             getContext().createLineViolation(this,
                 "The line has {0} precending blank line and it should be: {1}.",

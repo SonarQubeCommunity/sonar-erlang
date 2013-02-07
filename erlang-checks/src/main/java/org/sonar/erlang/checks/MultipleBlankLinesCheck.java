@@ -69,9 +69,9 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private Token getPreviousToken(AstNode ast) {
-    AstNode node = ast.previousAstNode();
+    AstNode node = ast.getPreviousAstNode();
     while (node != null && ast.getTokenLine() == node.getLastToken().getLine()) {
-      node = node.previousAstNode();
+      node = node.getPreviousAstNode();
     }
     if (node != null) {
       return node.getLastToken();
@@ -85,7 +85,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private int getMaxFor(AstNode ast) {
-    if (ast.findFirstParent(getContext().getGrammar().clauseBody) != null) {
+    if (ast.getFirstAncestor(getContext().getGrammar().clauseBody) != null) {
       return maxBlankLinesInsideFunctions;
     } else {
       return maxBlankLinesOutsideFunctions;
@@ -109,7 +109,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
     boolean check = compare(ast.getToken().getLine(), previousLine, compTo);
     if (check) {
       Token tokenWithTrivias = (ast.getToken().hasTrivia()) ? ast.getToken() : ast
-          .previousAstNode().getToken();
+          .getPreviousAstNode().getToken();
       if (tokenWithTrivias.hasTrivia()) {
         return checkTrivias(previousLine, tokenWithTrivias, compTo);
       }

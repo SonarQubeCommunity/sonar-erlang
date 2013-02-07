@@ -95,7 +95,7 @@ public final class ErlangAstScanner {
     builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<ErlangGrammar>(
         new SourceCodeBuilderCallback() {
           public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
-            String className = astNode.findFirstChild(grammar.moduleAttr).getChild(3).getTokenValue();
+            String className = astNode.getFirstDescendant(grammar.moduleAttr).getChild(3).getTokenValue();
             SourceClass cls = new SourceClass(className + ":"
               + astNode.getToken().getLine());
             cls.setStartAtLine(astNode.getTokenLine());
@@ -118,25 +118,25 @@ public final class ErlangAstScanner {
 
           private String getFunctionKey(AstNode ast) {
             if (ast.getType().equals(grammar.funExpression)) {
-              AstNode funcArity = ast.findFirstDirectChild(grammar.funcArity);
+              AstNode funcArity = ast.getFirstChild(grammar.funcArity);
               if (funcArity == null) {
-                AstNode args = ast.findFirstChild(grammar.functionDeclarationNoName).findFirstDirectChild(grammar.arguments);
+                AstNode args = ast.getFirstDescendant(grammar.functionDeclarationNoName).getFirstChild(grammar.arguments);
                 return "FUN/" + countArgs(args) + ":"
                   + ast.getTokenLine() + "," + ast.getToken().getColumn();
               } else {
                 return "FUN/" + funcArity.getTokenOriginalValue() + "/"
-                  + funcArity.findDirectChildren(grammar.literal).get(1).getTokenOriginalValue();
+                  + funcArity.getChildren(grammar.literal).get(1).getTokenOriginalValue();
               }
             } else {
               AstNode clause = null;
               boolean isDec = false;
               if (ast.getType().equals(grammar.functionDeclaration)) {
-                clause = ast.findFirstChild(grammar.functionClause);
+                clause = ast.getFirstDescendant(grammar.functionClause);
                 isDec = true;
               } else {
                 clause = ast;
               }
-              String functionName = clause.findFirstDirectChild(grammar.clauseHead)
+              String functionName = clause.getFirstChild(grammar.clauseHead)
                   .getTokenValue();
               return functionName + "/" + getArity(clause) + ((!isDec) ? "c" : "") + ":"
                 + clause.getTokenLine();
@@ -144,14 +144,14 @@ public final class ErlangAstScanner {
           }
 
           private String getArity(AstNode ast) {
-            AstNode args = ast.findFirstDirectChild(grammar.clauseHead)
-                .findFirstDirectChild(grammar.funcDecl).findFirstDirectChild(
+            AstNode args = ast.getFirstChild(grammar.clauseHead)
+                .getFirstChild(grammar.funcDecl).getFirstChild(
                     grammar.arguments);
             return countArgs(args);
           }
 
           private String countArgs(AstNode args) {
-            int num = args.getNumberOfChildren() > 3 ? args.findDirectChildren(
+            int num = args.getNumberOfChildren() > 3 ? args.getChildren(
                 ErlangPunctuator.COMMA).size() + 1 : args.getNumberOfChildren() - 2;
             return String.valueOf(num);
           }

@@ -53,12 +53,12 @@ public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<ErlangGrammar> {
   public void visitNode(AstNode ast) {
     AstNode compTo;
     if (numOfViolations < 100 && !failedLines.contains(ast.getTokenLine())) {
-      if (ast.nextSibling() != null && operators.contains(ast.nextSibling().getType())) {
-        compTo = ast.nextSibling();
+      if (ast.getNextSibling() != null && operators.contains(ast.getNextSibling().getType())) {
+        compTo = ast.getNextSibling();
         failedLines.add(check(ast, compTo, false));
-      } else if (ast.previousSibling() != null
-        && operators.contains(ast.previousSibling().getType())) {
-        compTo = ast.previousSibling();
+      } else if (ast.getPreviousSibling() != null
+        && operators.contains(ast.getPreviousSibling().getType())) {
+        compTo = ast.getPreviousSibling();
         failedLines.add(check(ast, compTo, true));
       }
     }

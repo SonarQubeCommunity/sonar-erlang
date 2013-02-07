@@ -53,14 +53,14 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
      * Ignore all exports in flow control (we cannot decide what to do TODO:
      * analyse common export related flow controls
      */
-    if (astNode.findFirstParent(g.flowControlAttr) == null) {
-      List<AstNode> exports = astNode.findFirstDirectChild(g.funcExport).findDirectChildren(
+    if (astNode.getFirstAncestor(g.flowControlAttr) == null) {
+      List<AstNode> exports = astNode.getFirstChild(g.funcExport).getChildren(
           g.funcArity);
       numOfPublicAPIs += exports.size();
       for (AstNode export : exports) {
         AstNode func = findFunctionByArity(getArity(export));
         if (func != null) {
-          List<Trivia> comments = func.findFirstChild(GenericTokenType.IDENTIFIER)
+          List<Trivia> comments = func.getFirstDescendant(GenericTokenType.IDENTIFIER)
               .getToken().getTrivia();
           if (comments.size() > 0) {
             for (Trivia trivia : comments) {
@@ -88,7 +88,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
       // file wasn't parsed
       return;
     }
-    functions = astNode.findFirstDirectChild(g.moduleElements).findDirectChildren(g.functionDeclaration);
+    functions = astNode.getFirstChild(g.moduleElements).getChildren(g.functionDeclaration);
   }
 
   @Override
@@ -120,9 +120,9 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
         ret.append(arity.getTokenOriginalValue());
       }
     } else if ("functionDeclaration".equalsIgnoreCase(node.getName())) {
-      ret.append(node.findFirstChild(g.funcDecl).getTokenOriginalValue());
+      ret.append(node.getFirstDescendant(g.funcDecl).getTokenOriginalValue());
       ret.append("/");
-      ret.append(node.findFirstChild(g.arguments).findDirectChildren(ErlangPunctuator.COMMA)
+      ret.append(node.getFirstDescendant(g.arguments).getChildren(ErlangPunctuator.COMMA)
           .size() + 1);
     }
     return ret.toString();

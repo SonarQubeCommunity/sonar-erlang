@@ -34,6 +34,8 @@ import static org.sonar.sslr.parser.GrammarOperators.optional;
 import static org.sonar.sslr.parser.GrammarOperators.regexp;
 import static org.sonar.sslr.parser.GrammarOperators.sequence;
 import static org.sonar.sslr.parser.GrammarOperators.token;
+import static org.sonar.sslr.parser.GrammarOperators.commentTrivia;
+import static org.sonar.sslr.parser.GrammarOperators.skippedTrivia;
 import static org.sonar.sslr.parser.GrammarOperators.zeroOrMore;
 
 public class ErlangGrammarImpl extends ErlangGrammar {
@@ -96,11 +98,10 @@ public class ErlangGrammarImpl extends ErlangGrammar {
         "when",
         "xor"), nextNot(letterOrDigit));
     letterOrDigit.is(regexp("\\p{javaJavaIdentifierPart}"));
-
-    spacing.is(regexp(ErlangLexer.WHITESPACE + "*+"),
+    spacing.is(skippedTrivia(regexp(ErlangLexer.WHITESPACE + "*+")),
         zeroOrMore(
-            token(GenericTokenType.COMMENT, regexp(ErlangLexer.COMMENT)),
-            regexp(ErlangLexer.WHITESPACE + "*+"))).skip();
+            commentTrivia(regexp(ErlangLexer.COMMENT)),
+            skippedTrivia(regexp(ErlangLexer.WHITESPACE + "*+")))).skip();
   }
 
   private void punctuators() {

@@ -51,8 +51,8 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<ErlangGrammar> {
     /**
      * Get exported func arities in this export
      */
-    List<AstNode> funcArities = node.findFirstDirectChild(grammar.funcExport)
-        .findDirectChildren(grammar.funcArity);
+    List<AstNode> funcArities = node.getFirstChild(grammar.funcExport)
+        .getChildren(grammar.funcArity);
     for (AstNode arityNode : funcArities) {
       String funcArity = getArity(arityNode);
       if (previousFuncArity != null) {

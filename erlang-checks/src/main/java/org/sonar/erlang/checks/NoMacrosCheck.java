@@ -80,18 +80,18 @@ public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private boolean isNotLiteralMacro(AstNode astNode) {
-    return (astNode.hasChildren(g.funcDecl) && allowLiteralMacros) || (!allowLiteralMacros);
+    return (astNode.hasDescendant(g.funcDecl) && allowLiteralMacros) || (!allowLiteralMacros);
   }
 
   private boolean hasFlowControlParent(AstNode astNode) {
-    return (!astNode.hasParents(g.flowControlAttr) || !skipDefineInFlowControl);
+    return (!astNode.hasAncestor(g.flowControlAttr) || !skipDefineInFlowControl);
   }
 
   private String getMacroName(AstNode astNode) {
     // TODO: these kind of addressing are ugly... is there any better way?
-    AstNode token = (astNode.findDirectChildren(GenericTokenType.IDENTIFIER).size() > 1) ? astNode.findDirectChildren(GenericTokenType.IDENTIFIER).get(1) : null;
+    AstNode token = (astNode.getChildren(GenericTokenType.IDENTIFIER).size() > 1) ? astNode.getChildren(GenericTokenType.IDENTIFIER).get(1) : null;
     if (token == null) {
-      token = astNode.findFirstDirectChild(g.funcDecl).findFirstDirectChild(GenericTokenType.IDENTIFIER);
+      token = astNode.getFirstChild(g.funcDecl).getFirstChild(GenericTokenType.IDENTIFIER);
     }
     return token.getTokenOriginalValue();
   }

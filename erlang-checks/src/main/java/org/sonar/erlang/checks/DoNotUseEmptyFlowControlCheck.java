@@ -19,11 +19,6 @@
  */
 package org.sonar.erlang.checks;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
@@ -31,6 +26,9 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.erlang.api.ErlangGrammar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Rule(key = "DoNotUseEmptyFlowControl", priority = Priority.MINOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
@@ -50,7 +48,7 @@ public class DoNotUseEmptyFlowControlCheck extends SquidCheck<ErlangGrammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    if (flowControls.contains(node.nextSibling().getType())) {
+    if (flowControls.contains(node.getNextSibling().getType())) {
       getContext().createLineViolation(this, "Do not use empty flow control.", node);
     }
 

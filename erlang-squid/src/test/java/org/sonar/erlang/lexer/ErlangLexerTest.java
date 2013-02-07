@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.lexer;
 
+import com.sonar.sslr.impl.channel.BomCharacterChannel;
+
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.channel.UnknownCharacterChannel;
@@ -155,7 +157,7 @@ public class ErlangLexerTest {
 
   @Test
   public void bom() {
-    assertThat(lexer.lex(Character.toString(UnknownCharacterChannel.BOM_CHAR)),
+    assertThat(lexer.lex(String.valueOf(Character.toChars(BomCharacterChannel.BOM_CHAR))),
         hasTokens("EOF"));
   }
 

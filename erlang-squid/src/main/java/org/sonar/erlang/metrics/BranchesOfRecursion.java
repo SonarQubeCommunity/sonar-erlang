@@ -46,14 +46,14 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
       return;
     }
     actualArity = "";
-    actualModule = astNode.findFirstChild(grammar.moduleAttr)
-        .findFirstDirectChild(GenericTokenType.IDENTIFIER).getTokenOriginalValue();
+    actualModule = astNode.getFirstDescendant(grammar.moduleAttr)
+        .getFirstChild(GenericTokenType.IDENTIFIER).getTokenOriginalValue();
   }
 
   @Override
   public void visitNode(AstNode ast) {
     if (ast.getType().equals(grammar.functionDeclaration)) {
-      actualArity = getArity(ast.findFirstDirectChild(grammar.functionClause));
+      actualArity = getArity(ast.getFirstChild(grammar.functionClause));
     }
     if (ast.getType().equals(grammar.callExpression) && getArityFromCall(ast).equals(actualArity)) {
       getContext().peekSourceCode().add(ErlangMetric.BRANCHES_OF_RECURSION, 1);
@@ -64,24 +64,24 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
     // It has a colon, so it is a module:function call
     if (ast.hasDirectChildren(ErlangPunctuator.COLON)) {
       if (actualModule.equals(ast.getChild(0).getTokenOriginalValue())) {
-        return ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
+        return ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(grammar.arguments));
       }
-      return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
+      return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(grammar.arguments));
     } else {
-      return ast.findFirstDirectChild(grammar.primaryExpression).findFirstDirectChild(grammar.literal).getTokenOriginalValue() + "/"
-        + getNumOfArgs(ast.findFirstDirectChild(grammar.arguments));
+      return ast.getFirstChild(grammar.primaryExpression).getFirstChild(grammar.literal).getTokenOriginalValue() + "/"
+        + getNumOfArgs(ast.getFirstChild(grammar.arguments));
     }
   }
 
   private String getArity(AstNode ast) {
-    AstNode args = ast.findFirstDirectChild(grammar.clauseHead)
-        .findFirstDirectChild(grammar.funcDecl).findFirstDirectChild(
+    AstNode args = ast.getFirstChild(grammar.clauseHead)
+        .getFirstChild(grammar.funcDecl).getFirstChild(
             grammar.arguments);
     return ast.getTokenOriginalValue() + "/" + getNumOfArgs(args);
   }
 
   private String getNumOfArgs(AstNode args) {
-    int num = args.getNumberOfChildren() > 3 ? args.findDirectChildren(
+    int num = args.getNumberOfChildren() > 3 ? args.getChildren(
         ErlangPunctuator.COMMA).size() + 1 : args.getNumberOfChildren() - 2;
     return String.valueOf(num);
   }

@@ -60,11 +60,11 @@ public class DepthOfCasesCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private boolean isTopLevelCase(AstNode astNode) {
-    return !astNode.hasParents(g.caseExpression);
+    return !astNode.hasAncestor(g.caseExpression);
   }
 
   private int countChild(AstNode astNode) {
-    return astNode.findChildren(g.caseExpression).size() - 1;
+    return  astNode.getDescendants(g.caseExpression).size();
   }
 
 }
