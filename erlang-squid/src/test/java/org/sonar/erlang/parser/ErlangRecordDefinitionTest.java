@@ -27,8 +27,8 @@ import org.sonar.erlang.api.ErlangGrammar;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangRecordDefinitionTest {
-    ErlangGrammar g = new ErlangGrammarImpl();
-    Rule p = g.recordAttr;
+  ErlangGrammar g = new ErlangGrammarImpl();
+  Rule p = g.recordAttr;
 
   @Test
   public void recordDefinitions() {

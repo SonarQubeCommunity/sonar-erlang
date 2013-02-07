@@ -33,44 +33,44 @@ import java.net.URISyntaxException;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangRealCodeTest {
-    ErlangGrammar g = new ErlangGrammarImpl();
-    Rule p = g.getRootRule();
+  ErlangGrammar g = new ErlangGrammarImpl();
+  Rule p = g.getRootRule();
 
-    @Test
-    public void realLife2() throws IOException, URISyntaxException {
-        assertThat(p).matches((readFromFile("user_auth_mnesia.erl")));
-    }
+  @Test
+  public void realLife2() throws IOException, URISyntaxException {
+    assertThat(p).matches((readFromFile("user_auth_mnesia.erl")));
+  }
 
-    @Test
-    public void realLife3() throws IOException, URISyntaxException {
-        assertThat(p).matches((readFromFile("agner_main_sub.erl")));
-    }
+  @Test
+  public void realLife3() throws IOException, URISyntaxException {
+    assertThat(p).matches((readFromFile("agner_main_sub.erl")));
+  }
 
-    @Test
-    public void realLife4() throws IOException, URISyntaxException {
-        assertThat(p).matches((readFromFile("erl_img.erl")));
-    }
+  @Test
+  public void realLife4() throws IOException, URISyntaxException {
+    assertThat(p).matches((readFromFile("erl_img.erl")));
+  }
 
-    @Test
-    public void realLife5() throws IOException, URISyntaxException {
-        assertThat(p).matches((readFromFile("egs_proto.erl")));
-    }
+  @Test
+  public void realLife5() throws IOException, URISyntaxException {
+    assertThat(p).matches((readFromFile("egs_proto.erl")));
+  }
 
-    @Test
-    public void realLife6() throws IOException, URISyntaxException {
-        assertThat(p).matches((readFromFile("megaco.erl")));
-    }
+  @Test
+  public void realLife6() throws IOException, URISyntaxException {
+    assertThat(p).matches((readFromFile("megaco.erl")));
+  }
 
-    private String readFromFile(String fileName) throws IOException, URISyntaxException {
-        StringBuilder text = new StringBuilder();
-        File file = new File(ErlangRealCodeTest.class.getClassLoader().getResource(fileName)
-                .toURI());
-        BufferedReader reader = Files.newReader(file, Charsets.UTF_8);
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            text.append(line).append("\n");
-        }
-        return text.toString();
+  private String readFromFile(String fileName) throws IOException, URISyntaxException {
+    StringBuilder text = new StringBuilder();
+    File file = new File(ErlangRealCodeTest.class.getClassLoader().getResource(fileName)
+        .toURI());
+    BufferedReader reader = Files.newReader(file, Charsets.UTF_8);
+    String line = null;
+    while ((line = reader.readLine()) != null) {
+      text.append(line).append("\n");
     }
+    return text.toString();
+  }
 
 }

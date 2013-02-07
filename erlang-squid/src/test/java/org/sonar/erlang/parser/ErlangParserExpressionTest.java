@@ -31,7 +31,6 @@ public class ErlangParserExpressionTest {
   ErlangGrammar g = new ErlangGrammarImpl();
   Rule p = g.expression;
 
-
   @Test
   public void simpleExpression() {
     assertThat(p).matches((code("1+3")));
@@ -182,13 +181,14 @@ public class ErlangParserExpressionTest {
   private static String code(String... lines) {
     return Joiner.on("\n").join(lines);
   }
-/*
-  @After
-  public void log() {
-    try {
-      ExtendedStackTraceStream.print(listener, System.out);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }*/
+  /*
+   * @After
+   * public void log() {
+   * try {
+   * ExtendedStackTraceStream.print(listener, System.out);
+   * } catch (Exception e) {
+   * e.printStackTrace();
+   * }
+   * }
+   */
 }

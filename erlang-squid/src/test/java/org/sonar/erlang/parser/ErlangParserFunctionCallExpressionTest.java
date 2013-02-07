@@ -27,8 +27,8 @@ import org.sonar.erlang.api.ErlangGrammar;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserFunctionCallExpressionTest {
-    ErlangGrammar g = new ErlangGrammarImpl();
-    Rule p = g.statement;
+  ErlangGrammar g = new ErlangGrammarImpl();
+  Rule p = g.statement;
 
   @Test
   public void functionCallExpressions() {

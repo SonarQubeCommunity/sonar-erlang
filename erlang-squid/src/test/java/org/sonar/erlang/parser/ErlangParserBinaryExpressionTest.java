@@ -28,30 +28,30 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserBinaryExpressionTest {
 
-    ErlangGrammar g = new ErlangGrammarImpl();
+  ErlangGrammar g = new ErlangGrammarImpl();
 
-    Rule p = g.binaryLiteral;
+  Rule p = g.binaryLiteral;
 
-    @Test
-    public void binaryExpressions() {
-        assertThat(p).matches(code("<<1,17,42>>"));
-        assertThat(p).matches(code("<<1,17,42:16>>"));
-        assertThat(p).matches(code("<<1024/utf8>>"));
-        assertThat(p).matches(code("<<1024:16/utf8>>"));
-        assertThat(p).matches(code("<<$a,$b,$c>>"));
-        assertThat(p).matches(code("<<\"hello\">>"));
-        assertThat(p).matches(code("<<A,B,C:16>>"));
-        assertThat(p).matches(code("<<G,H/binary>>"));
-        assertThat(p).matches(code("<<G,H:16/bitstring>>"));
-        assertThat(p).matches(code("<< << X:8, 0:8/utf8 >> || << X >> <= << 1, A, 3 >> >>"));
-        assertThat(p).matches(code("<<", "?MAGIC,", "Version:?BYTE,", "Type:?BYTE,", ">>"));
-        assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= << 1,2,3 >> >>")));
-        assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= method1() >>")));
-        assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= method1(), method2() >>")));
-    }
+  @Test
+  public void binaryExpressions() {
+    assertThat(p).matches(code("<<1,17,42>>"));
+    assertThat(p).matches(code("<<1,17,42:16>>"));
+    assertThat(p).matches(code("<<1024/utf8>>"));
+    assertThat(p).matches(code("<<1024:16/utf8>>"));
+    assertThat(p).matches(code("<<$a,$b,$c>>"));
+    assertThat(p).matches(code("<<\"hello\">>"));
+    assertThat(p).matches(code("<<A,B,C:16>>"));
+    assertThat(p).matches(code("<<G,H/binary>>"));
+    assertThat(p).matches(code("<<G,H:16/bitstring>>"));
+    assertThat(p).matches(code("<< << X:8, 0:8/utf8 >> || << X >> <= << 1, A, 3 >> >>"));
+    assertThat(p).matches(code("<<", "?MAGIC,", "Version:?BYTE,", "Type:?BYTE,", ">>"));
+    assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= << 1,2,3 >> >>")));
+    assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= method1() >>")));
+    assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= method1(), method2() >>")));
+  }
 
-    private static String code(String... lines) {
-        return Joiner.on("\n").join(lines);
-    }
+  private static String code(String... lines) {
+    return Joiner.on("\n").join(lines);
+  }
 
 }

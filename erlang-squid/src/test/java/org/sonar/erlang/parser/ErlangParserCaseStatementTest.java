@@ -28,42 +28,40 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserCaseStatementTest {
 
+  @Test
+  public void caseSimple1() {
+    ErlangGrammar g = new ErlangGrammarImpl();
+    Rule p = g.caseExpression;
 
-    @Test
-    public void caseSimple1() {
-        ErlangGrammar g = new ErlangGrammarImpl();
-        Rule p = g.caseExpression;
+    g.assignmentExpression.mock();
+    g.patternStatements.mock();
+    assertThat(p).matches((code("case assignmentExpression of patternStatements end")));
+  }
 
-        g.assignmentExpression.mock();
-        g.patternStatements.mock();
-        assertThat(p).matches((code("case assignmentExpression of patternStatements end")));
-    }
+  @Test
+  public void caseSimple2() {
+    ErlangGrammar g = new ErlangGrammarImpl();
+    Rule p = g.caseExpression;
 
-    @Test
-    public void caseSimple2() {
-        ErlangGrammar g = new ErlangGrammarImpl();
-        Rule p = g.caseExpression;
+    g.assignmentExpression.mock();
+    g.patternStatement.mock();
+    assertThat(p).matches((code("case assignmentExpression of patternStatement end")));
+    assertThat(p).matches(
+        (code("case assignmentExpression of patternStatement ; patternStatement end")));
+  }
 
-        g.assignmentExpression.mock();
-        g.patternStatement.mock();
-        assertThat(p).matches((code("case assignmentExpression of patternStatement end")));
-        assertThat(p).matches(
-                (code("case assignmentExpression of patternStatement ; patternStatement end")));
-    }
+  @Test
+  public void caseReal1() {
+    ErlangGrammar g = new ErlangGrammarImpl();
+    Rule p = g.caseExpression;
 
-    @Test
-    public void caseReal1() {
-        ErlangGrammar g = new ErlangGrammarImpl();
-        Rule p = g.caseExpression;
+    assertThat(p).matches(
+        (code("case cerl:is_c_var(PosVar) andalso (cerl:var_name(PosVar) =/= '') of",
+            "true -> \"variable \"++String;", "false -> \"pattern \"++String", "end")));
+  }
 
-        assertThat(p).matches(
-                (code("case cerl:is_c_var(PosVar) andalso (cerl:var_name(PosVar) =/= '') of",
-                        "true -> \"variable \"++String;", "false -> \"pattern \"++String", "end")));
-    }
-
-    private static String code(String... lines) {
-        return Joiner.on("\n").join(lines);
-    }
-
+  private static String code(String... lines) {
+    return Joiner.on("\n").join(lines);
+  }
 
 }

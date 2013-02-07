@@ -36,24 +36,24 @@ import org.sonar.erlang.api.ErlangGrammar;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DoNotUseEmptyFlowControlCheck extends SquidCheck<ErlangGrammar> {
 
-    List<com.sonar.sslr.api.Rule> flowControls = new ArrayList<com.sonar.sslr.api.Rule>();
+  List<com.sonar.sslr.api.Rule> flowControls = new ArrayList<com.sonar.sslr.api.Rule>();
 
-    @Override
-    public void init() {
-        ErlangGrammar grammar = getContext().getGrammar();
-        flowControls.add(grammar.ifdefAttr);
-        flowControls.add(grammar.ifndefAttr);
-        flowControls.add(grammar.elseAttr);
-        subscribeTo(flowControls.toArray(new com.sonar.sslr.api.Rule[flowControls.size()]));
-        flowControls.add(grammar.endifAttr);
+  @Override
+  public void init() {
+    ErlangGrammar grammar = getContext().getGrammar();
+    flowControls.add(grammar.ifdefAttr);
+    flowControls.add(grammar.ifndefAttr);
+    flowControls.add(grammar.elseAttr);
+    subscribeTo(flowControls.toArray(new com.sonar.sslr.api.Rule[flowControls.size()]));
+    flowControls.add(grammar.endifAttr);
+  }
+
+  @Override
+  public void visitNode(AstNode node) {
+    if (flowControls.contains(node.nextSibling().getType())) {
+      getContext().createLineViolation(this, "Do not use empty flow control.", node);
     }
 
-    @Override
-    public void visitNode(AstNode node) {
-        if(flowControls.contains(node.nextSibling().getType())){
-            getContext().createLineViolation(this, "Do not use empty flow control.", node);
-        }
-
-    }
+  }
 
 }

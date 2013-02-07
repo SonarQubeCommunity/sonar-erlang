@@ -35,46 +35,46 @@ import static com.sonar.sslr.impl.channel.RegexpChannelBuilder.regexp;
 
 public final class ErlangLexer {
 
-    private static final String EXP = "([Ee][-]?+[0-9_]++)";
-    private static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
-        + "|(\\$\\\\\\^[A-Za-z])"
-        + "|(\\$\\\\x\\{[A-F0-9]+\\})"
-        + "|(\\$\\\\x[A-F0-9]{1,2})"
-        + "|(\\$\\\\[0-7]{1,3})";
+  private static final String EXP = "([Ee][-]?+[0-9_]++)";
+  private static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
+    + "|(\\$\\\\\\^[A-Za-z])"
+    + "|(\\$\\\\x\\{[A-F0-9]+\\})"
+    + "|(\\$\\\\x[A-F0-9]{1,2})"
+    + "|(\\$\\\\[0-7]{1,3})";
 
-    public static final String NUMERIC_LITERAL = "(?:"
-        + "[0-9]++\\.([0-9]++)" + EXP + "?"
-        + "|[0-9]++\\#([0-9A-Fa-f]++)?+"
-        + "|[0-9]++"
-        + "|" + ESCAPE_SEQUENCE
-        + "|\\$[\\x00-\\x7F]"
-        + ")";
+  public static final String NUMERIC_LITERAL = "(?:"
+    + "[0-9]++\\.([0-9]++)" + EXP + "?"
+    + "|[0-9]++\\#([0-9A-Fa-f]++)?+"
+    + "|[0-9]++"
+    + "|" + ESCAPE_SEQUENCE
+    + "|\\$[\\x00-\\x7F]"
+    + ")";
 
-    public static final String LITERAL = "(?:"
-        + "\"([^\"\\\\]*+(\\\\[\\s\\S])?+)*+\")";
+  public static final String LITERAL = "(?:"
+    + "\"([^\"\\\\]*+(\\\\[\\s\\S])?+)*+\")";
 
-    public static final String COMMENT = "(?:"
-        + "%[^\\n\\r]*+)";
+  public static final String COMMENT = "(?:"
+    + "%[^\\n\\r]*+)";
 
-    public static final String WHITESPACE = "[\\n\\r\\t\\u000B\\f\\u0020\\u00A0\\uFEFF\\p{Zs}]";
+  public static final String WHITESPACE = "[\\n\\r\\t\\u000B\\f\\u0020\\u00A0\\uFEFF\\p{Zs}]";
 
-    public static final String IDENTIFIER = "('[^'\n\r]*')"
-        + "|^(?!\\$)(\\p{javaJavaIdentifierStart}++[\\p{javaJavaIdentifierPart}@]*+)";
+  public static final String IDENTIFIER = "('[^'\n\r]*')"
+    + "|^(?!\\$)(\\p{javaJavaIdentifierStart}++[\\p{javaJavaIdentifierPart}@]*+)";
 
-    private ErlangLexer() {
-    }
+  private ErlangLexer() {
+  }
 
-    public static Lexer create(ErlangConfiguration conf) {
-        return Lexer
-                .builder()
-                .withChannel(regexp(GenericTokenType.LITERAL, LITERAL))
-                .withChannel(new BlackHoleChannel(WHITESPACE))
-                .withChannel(commentRegexp(COMMENT))
-                .withChannel(regexp(ErlangTokenType.NUMERIC_LITERAL, NUMERIC_LITERAL))
-                .withChannel(new IdentifierAndKeywordChannel(IDENTIFIER,
-                        true, ErlangKeyword.values()))
-                .withChannel(new PunctuatorChannel(ErlangPunctuator.values()))
-                .withChannel(new UnknownCharacterChannel(true))
-                .build();
-    }
+  public static Lexer create(ErlangConfiguration conf) {
+    return Lexer
+        .builder()
+        .withChannel(regexp(GenericTokenType.LITERAL, LITERAL))
+        .withChannel(new BlackHoleChannel(WHITESPACE))
+        .withChannel(commentRegexp(COMMENT))
+        .withChannel(regexp(ErlangTokenType.NUMERIC_LITERAL, NUMERIC_LITERAL))
+        .withChannel(new IdentifierAndKeywordChannel(IDENTIFIER,
+            true, ErlangKeyword.values()))
+        .withChannel(new PunctuatorChannel(ErlangPunctuator.values()))
+        .withChannel(new UnknownCharacterChannel(true))
+        .build();
+  }
 }

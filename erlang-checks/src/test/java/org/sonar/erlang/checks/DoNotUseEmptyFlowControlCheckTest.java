@@ -35,11 +35,11 @@ public class DoNotUseEmptyFlowControlCheckTest {
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
         "src/test/resources/checks/emptyflowcontrol.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-    .next().atLine(6).withMessage("Do not use empty flow control.")
-    .next().atLine(10).withMessage("Do not use empty flow control.")
-    .next().atLine(16).withMessage("Do not use empty flow control.")
-    .next().atLine(17).withMessage("Do not use empty flow control.")
-    .noMore();
+        .next().atLine(6).withMessage("Do not use empty flow control.")
+        .next().atLine(10).withMessage("Do not use empty flow control.")
+        .next().atLine(16).withMessage("Do not use empty flow control.")
+        .next().atLine(17).withMessage("Do not use empty flow control.")
+        .noMore();
   }
 
 }

@@ -58,10 +58,10 @@ public class ProjectUtil {
       }
     });
     when(fileSystem.getTestDirs()).thenReturn(new ArrayList<File>() {
-        {
-            add(new File(folder, "/test/"));
-          }
-        });
+      {
+        add(new File(folder, "/test/"));
+      }
+    });
     when(fileSystem.testFiles(any(String.class))).thenReturn(otherFiles);
 
     when(fileSystem.mainFiles(Erlang.KEY)).thenReturn(srcFiles);

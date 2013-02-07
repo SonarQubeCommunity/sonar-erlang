@@ -19,7 +19,6 @@
  */
 package org.sonar.erlang.parser;
 
-
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import org.sonar.erlang.ErlangConfiguration;

@@ -65,15 +65,15 @@ public class EunitXmlSensor implements Sensor {
       @Override
       protected Resource<?> getUnitTestResource(String classKey) {
 
-                List<File> testDirectories = project.getFileSystem().getTestDirs();
+        List<File> testDirectories = project.getFileSystem().getTestDirs();
 
-                File unitTestFile = getUnitTestFile(testDirectories, classKey);
+        File unitTestFile = getUnitTestFile(testDirectories, classKey);
 
-                org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
-                unitTestFileResource.setLanguage(erlang);
-                unitTestFileResource.setQualifier(Qualifiers.UNIT_TEST_FILE);
+        org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
+        unitTestFileResource.setLanguage(erlang);
+        unitTestFileResource.setQualifier(Qualifiers.UNIT_TEST_FILE);
 
-                LOG.debug("Adding unittest resource: {}", unitTestFileResource.toString());
+        LOG.debug("Adding unittest resource: {}", unitTestFileResource.toString());
 
         String source = "";
 
@@ -88,43 +88,42 @@ public class EunitXmlSensor implements Sensor {
 
         context.saveSource(unitTestFileResource, source);
 
-                return unitTestFileResource;
+        return unitTestFileResource;
 
-            }
-        }.collect(project, context, reportsDir);
+      }
+    }.collect(project, context, reportsDir);
 
+  }
+
+  protected String cleanName(String name) {
+    return name.replaceFirst("(.*?')(.*?)('.*)", "$2");
+  }
+
+  protected org.sonar.api.resources.File getUnitTestFileResource(String classKey) {
+    return new org.sonar.api.resources.File(classKey);
+  }
+
+  protected String getUnitTestFileName(String className) {
+    String fileName = cleanName(className);
+    fileName = fileName.replace('.', '/');
+    if (fileName.endsWith("eunit") || fileName.endsWith("tests")) {
+      return fileName + ".erl";
+    } else {
+      return fileName + "_tests.erl";
     }
+  }
 
-    protected String cleanName(String name) {
-        return name.replaceFirst("(.*?')(.*?)('.*)", "$2");
+  protected File getUnitTestFile(List<File> testDirectories, String name) {
+    String fileName = getUnitTestFileName(name);
+    File unitTestFile = new File("");
+    for (File dir : testDirectories) {
+      unitTestFile = new File(dir, fileName);
+      if (unitTestFile.exists()) {
+        break;
+      }
     }
-
-    protected org.sonar.api.resources.File getUnitTestFileResource(String classKey) {
-        return new org.sonar.api.resources.File(classKey);
-    }
-
-    protected String getUnitTestFileName(String className) {
-        String fileName = cleanName(className);
-        fileName = fileName.replace('.', '/');
-        if (fileName.endsWith("eunit") || fileName.endsWith("tests")) {
-            return fileName + ".erl";
-        } else {
-            return fileName + "_tests.erl";
-        }
-    }
-
-    protected File getUnitTestFile(List<File> testDirectories, String name) {
-        String fileName = getUnitTestFileName(name);
-        File unitTestFile = new File("");
-        for (File dir : testDirectories) {
-            unitTestFile = new File(dir, fileName);
-            if (unitTestFile.exists()) {
-                break;
-            }
-        }
-        return unitTestFile;
-    }
-
+    return unitTestFile;
+  }
 
   @Override
   public String toString() {

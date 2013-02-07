@@ -29,13 +29,13 @@ import java.io.File;
 
 public class FunExpressionComplexityCheckTest {
 
-    @Test
-    public void test() {
-        FunExpressionComplexityCheck check = new FunExpressionComplexityCheck();
+  @Test
+  public void test() {
+    FunExpressionComplexityCheck check = new FunExpressionComplexityCheck();
 
-        SourceFile file = ErlangAstScanner.scanSingleFile(new File(
-                "src/test/resources/checks/funcomplexity.erl"), check);
-        CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).withMessage(
-                "Function has a complexity of 5 which is greater than 4 authorized.").noMore();
-    }
+    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+        "src/test/resources/checks/funcomplexity.erl"), check);
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).withMessage(
+        "Function has a complexity of 5 which is greater than 4 authorized.").noMore();
+  }
 }
