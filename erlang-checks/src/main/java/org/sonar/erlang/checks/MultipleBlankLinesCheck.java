@@ -19,11 +19,7 @@
  */
 package org.sonar.erlang.checks;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.squid.checks.SquidCheck;
@@ -33,6 +29,9 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.erlang.api.ErlangGrammar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Rule(key = "MultipleBlankLines", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
@@ -48,7 +47,8 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(GenericTokenType.IDENTIFIER);
+
+    subscribeTo(getContext().getGrammar().identifier);
   }
 
   @Override
@@ -109,7 +109,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
     boolean check = compare(ast.getToken().getLine(), previousLine, compTo);
     if (check) {
       Token tokenWithTrivias = (ast.getToken().hasTrivia()) ? ast.getToken() : ast
-          .getPreviousAstNode().getToken();
+          .getParent().getToken();
       if (tokenWithTrivias.hasTrivia()) {
         return checkTrivias(previousLine, tokenWithTrivias, compTo);
       }

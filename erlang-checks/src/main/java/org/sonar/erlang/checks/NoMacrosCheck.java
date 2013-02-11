@@ -22,7 +22,6 @@ package org.sonar.erlang.checks;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
@@ -88,11 +87,7 @@ public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private String getMacroName(AstNode astNode) {
-    // TODO: these kind of addressing are ugly... is there any better way?
-    AstNode token = (astNode.getChildren(GenericTokenType.IDENTIFIER).size() > 1) ? astNode.getChildren(GenericTokenType.IDENTIFIER).get(1) : null;
-    if (token == null) {
-      token = astNode.getFirstChild(g.funcDecl).getFirstChild(GenericTokenType.IDENTIFIER);
-    }
+    AstNode token = (astNode.getFirstChild(g.funcDecl)!= null) ? astNode.getFirstChild(g.funcDecl).getFirstChild(g.identifier) : astNode.getFirstChild(g.identifier);
     return token.getTokenOriginalValue();
   }
 

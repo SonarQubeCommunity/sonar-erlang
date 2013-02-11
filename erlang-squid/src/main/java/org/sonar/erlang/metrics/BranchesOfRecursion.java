@@ -20,11 +20,9 @@
 package org.sonar.erlang.metrics;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
-import org.sonar.erlang.api.ErlangPunctuator;
 
 public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
 
@@ -47,7 +45,7 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
     }
     actualArity = "";
     actualModule = astNode.getFirstDescendant(grammar.moduleAttr)
-        .getFirstChild(GenericTokenType.IDENTIFIER).getTokenOriginalValue();
+        .getFirstChild(grammar.identifier).getTokenOriginalValue();
   }
 
   @Override
@@ -62,7 +60,7 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
 
   private String getArityFromCall(AstNode ast) {
     // It has a colon, so it is a module:function call
-    if (ast.hasDirectChildren(ErlangPunctuator.COLON)) {
+    if (ast.hasDirectChildren(grammar.colon)) {
       if (actualModule.equals(ast.getChild(0).getTokenOriginalValue())) {
         return ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(grammar.arguments));
       }
@@ -82,7 +80,7 @@ public class BranchesOfRecursion extends SquidCheck<ErlangGrammar> {
 
   private String getNumOfArgs(AstNode args) {
     int num = args.getNumberOfChildren() > 3 ? args.getChildren(
-        ErlangPunctuator.COMMA).size() + 1 : args.getNumberOfChildren() - 2;
+        grammar.comma).size() + 1 : args.getNumberOfChildren() - 2;
     return String.valueOf(num);
   }
 

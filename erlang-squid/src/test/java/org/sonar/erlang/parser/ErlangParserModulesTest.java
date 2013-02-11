@@ -332,7 +332,7 @@ public class ErlangParserModulesTest {
         (code("-module(m).", "-ifdef('TEST').", "-export([]).", "-define(A,1).", "-endif.",
             "a() -> error.")));
     assertThat(p).matches(
-        (code("-module(m).", "-ifdef('TEST').", "%-export([]).", "%-endif.",
+        (code("-module(m).", "-ifdef('TEST').", "%-export([]).", "-endif.",
             "a() -> error.")));
     assertThat(p).matches(
         (code("-module(m).", "-ifdef('TEST').", "-export([]).", "-else.", "-export([]).", "-endif.",

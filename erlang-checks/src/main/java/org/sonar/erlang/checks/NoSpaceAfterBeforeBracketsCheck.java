@@ -28,7 +28,6 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangPunctuator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,19 +37,25 @@ import java.util.List;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<ErlangGrammar> {
 
-  List<ErlangPunctuator> noSpaceBefore = ImmutableList.of(ErlangPunctuator.RBRACKET,
-      ErlangPunctuator.RCURLYBRACE, ErlangPunctuator.RPARENTHESIS);
-  List<ErlangPunctuator> noSpaceAfter = ImmutableList.of(ErlangPunctuator.LBRACKET,
-      ErlangPunctuator.LCURLYBRACE, ErlangPunctuator.LPARENTHESIS);
+  List<com.sonar.sslr.api.Rule> noSpaceBefore;
+  List<com.sonar.sslr.api.Rule> noSpaceAfter;
   List<Integer> failedLines = new ArrayList<Integer>();
 
   private int numOfViolations = 0;
+  private ErlangGrammar grammar;
 
   @Override
   public void init() {
-    subscribeTo(ErlangPunctuator.RBRACKET, ErlangPunctuator.RCURLYBRACE,
-        ErlangPunctuator.RPARENTHESIS, ErlangPunctuator.LBRACKET,
-        ErlangPunctuator.LCURLYBRACE, ErlangPunctuator.LPARENTHESIS);
+    grammar = getContext().getGrammar();
+    subscribeTo(grammar.rbracket, grammar.rcurlybrace,
+        grammar.rparenthesis, grammar.lbracket,
+        grammar.lcurlybrace, grammar.lparenthesis);
+
+    noSpaceBefore = ImmutableList.of(grammar.rbracket,
+        grammar.rcurlybrace, grammar.rparenthesis);
+
+    noSpaceAfter = ImmutableList.of(grammar.lbracket,
+        grammar.lcurlybrace, grammar.lparenthesis);
   }
 
   @Override

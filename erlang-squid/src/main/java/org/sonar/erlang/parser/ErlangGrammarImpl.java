@@ -21,11 +21,8 @@ package org.sonar.erlang.parser;
 
 import com.sonar.sslr.api.GenericTokenType;
 import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangKeyword;
-import org.sonar.erlang.api.ErlangPunctuator;
-import org.sonar.erlang.api.ErlangTokenType;
-import org.sonar.erlang.lexer.ErlangLexer;
 
+import static org.sonar.sslr.parser.GrammarOperators.commentTrivia;
 import static org.sonar.sslr.parser.GrammarOperators.endOfInput;
 import static org.sonar.sslr.parser.GrammarOperators.firstOf;
 import static org.sonar.sslr.parser.GrammarOperators.nextNot;
@@ -33,12 +30,37 @@ import static org.sonar.sslr.parser.GrammarOperators.oneOrMore;
 import static org.sonar.sslr.parser.GrammarOperators.optional;
 import static org.sonar.sslr.parser.GrammarOperators.regexp;
 import static org.sonar.sslr.parser.GrammarOperators.sequence;
-import static org.sonar.sslr.parser.GrammarOperators.token;
-import static org.sonar.sslr.parser.GrammarOperators.commentTrivia;
 import static org.sonar.sslr.parser.GrammarOperators.skippedTrivia;
+import static org.sonar.sslr.parser.GrammarOperators.token;
 import static org.sonar.sslr.parser.GrammarOperators.zeroOrMore;
 
 public class ErlangGrammarImpl extends ErlangGrammar {
+
+  public static final String EXP = "([Ee][-]?+[0-9_]++)";
+  public static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
+    + "|(\\$\\\\\\^[A-Za-z])"
+    + "|(\\$\\\\x\\{[A-F0-9]+\\})"
+    + "|(\\$\\\\x[A-F0-9]{1,2})"
+    + "|(\\$\\\\[0-7]{1,3})";
+
+  public static final String NUMERIC_LITERAL = "(?:"
+    + "[0-9]++\\.([0-9]++)" + EXP + "?"
+    + "|[0-9]++\\#([0-9A-Fa-f]++)?+"
+    + "|[0-9]++"
+    + "|" + ESCAPE_SEQUENCE
+    + "|\\$[\\x00-\\x7F]"
+    + ")";
+
+  public static final String LITERAL = "(?:"
+    + "\"([^\"\\\\]*+(\\\\[\\s\\S])?+)*+\")";
+
+  public static final String COMMENT = "(?:"
+    + "%[^\\n\\r]*+)";
+
+  public static final String WHITESPACE = "[\\n\\r\\t\\u000B\\f\\u0020\\u00A0\\uFEFF\\p{Zs}]";
+
+  public static final String IDENTIFIER = "('[^'\n\r]*')"
+    + "|^(?!\\$)(\\p{javaJavaIdentifierStart}++[\\p{javaJavaIdentifierPart}@]*+)";
 
   public ErlangGrammarImpl() {
     lexical();
@@ -58,20 +80,24 @@ public class ErlangGrammarImpl extends ErlangGrammar {
 
   private void lexical() {
     eof.is(token(GenericTokenType.EOF, endOfInput())).skip();
+
     identifier.is(
         nextNot(keyword),
-        token(GenericTokenType.IDENTIFIER, regexp(ErlangLexer.IDENTIFIER)), spacing).skip();
-    numericLiteral.is(
-        token(ErlangTokenType.NUMERIC_LITERAL,
-            regexp(ErlangLexer.NUMERIC_LITERAL)), spacing);
-    stringLiteral.is(
-        token(GenericTokenType.LITERAL,
-            regexp(ErlangLexer.LITERAL)), spacing);
+        regexp(IDENTIFIER), spacing);
 
+    numericLiteral.is(
+        regexp(NUMERIC_LITERAL), spacing);
+
+    stringLiteral.is(
+        regexp(LITERAL), spacing);
+
+    /*
+     * TODO use the keywords directly
+     */
     keyword.is(firstOf(
         "after",
-        "and",
         "andalso",
+        "and",
         "band",
         "begin",
         "bnot",
@@ -89,90 +115,92 @@ public class ErlangGrammarImpl extends ErlangGrammar {
         "let",
         "not",
         "of",
-        "or",
         "orelse",
+        "or",
         "query",
         "receive",
         "rem",
         "try",
         "when",
         "xor"), nextNot(letterOrDigit));
+
     letterOrDigit.is(regexp("\\p{javaJavaIdentifierPart}"));
-    spacing.is(skippedTrivia(regexp(ErlangLexer.WHITESPACE + "*+")),
-        zeroOrMore(
-            commentTrivia(regexp(ErlangLexer.COMMENT)),
-            skippedTrivia(regexp(ErlangLexer.WHITESPACE + "*+")))).skip();
+
+    spacing.is(
+        skippedTrivia(regexp(WHITESPACE + "*+")),
+        zeroOrMore(commentTrivia(regexp(COMMENT)), skippedTrivia(regexp(WHITESPACE + "*+")))
+        ).skip();
   }
 
   private void punctuators() {
-    arrow.is(punctuator("->")).skip();
-    arrowback.is(punctuator("<-")).skip();
-    doublearrowback.is(punctuator("<=")).skip();
-    lcurlybrace.is(punctuator("{")).skip();
-    rcurlybrace.is(punctuator("}")).skip();
-    lparenthesis.is(punctuator("(")).skip();
-    rparenthesis.is(punctuator(")")).skip();
-    lbracket.is(punctuator("[")).skip();
-    rbracket.is(punctuator("]")).skip();
-    dot.is(punctuator(".")).skip();
-    semi.is(punctuator(";")).skip();
-    comma.is(punctuator(",")).skip();
-    colon.is(punctuator(":")).skip();
-    matchop.is(punctuator("=", nextNot(firstOf("=", "<", ":", "/")))).skip();
-    plus.is(punctuator("+", nextNot("+"))).skip();
-    minus.is(punctuator("-", nextNot(firstOf(">", "-")))).skip();
-    star.is(punctuator("*")).skip();
-    div.is(punctuator("/", nextNot("="))).skip();
-    lt.is(punctuator("<", nextNot(firstOf("=", "<")))).skip();
-    gt.is(punctuator(">", nextNot(firstOf("=", ">")))).skip();
-    le.is(punctuator("=<")).skip();
-    ge.is(punctuator(">=")).skip();
-    equal.is(punctuator("==")).skip();
-    notequal.is(punctuator("/=")).skip();
-    equal2.is(punctuator("=:=")).skip();
-    notequal2.is(punctuator("=/=")).skip();
-    binstart.is(punctuator("<<")).skip();
-    binend.is(punctuator(">>")).skip();
-    listcomp.is(punctuator("||")).skip();
-    pipe.is(punctuator("|", nextNot("|"))).skip();
-    dollar.is(punctuator("$")).skip();
-    apostrophe.is(punctuator("'")).skip();
-    plusplus.is(punctuator("++")).skip();
-    minusminus.is(punctuator("--")).skip();
-    numbersign.is(punctuator("#")).skip();
-    exclamation.is(punctuator("!")).skip();
-    questionmark.is(punctuator("?")).skip();
+    arrow.is(punctuator("->"));
+    arrowback.is(punctuator("<-"));
+    doublearrowback.is(punctuator("<="));
+    lcurlybrace.is(punctuator("{"));
+    rcurlybrace.is(punctuator("}"));
+    lparenthesis.is(punctuator("("));
+    rparenthesis.is(punctuator(")"));
+    lbracket.is(punctuator("["));
+    rbracket.is(punctuator("]"));
+    dot.is(punctuator("."));
+    semi.is(punctuator(";"));
+    comma.is(punctuator(","));
+    colon.is(punctuator(":"));
+    matchop.is(punctuator("=", nextNot(firstOf("=", "<", ":", "/"))));
+    plus.is(punctuator("+", nextNot("+")));
+    minus.is(punctuator("-", nextNot(firstOf(">", "-"))));
+    star.is(punctuator("*"));
+    div.is(punctuator("/", nextNot("=")));
+    lt.is(punctuator("<", nextNot(firstOf("=", "<"))));
+    gt.is(punctuator(">", nextNot(firstOf("=", ">"))));
+    le.is(punctuator("=<"));
+    ge.is(punctuator(">="));
+    equal.is(punctuator("=="));
+    notequal.is(punctuator("/="));
+    equal2.is(punctuator("=:="));
+    notequal2.is(punctuator("=/="));
+    binstart.is(punctuator("<<"));
+    binend.is(punctuator(">>"));
+    listcomp.is(punctuator("||"));
+    pipe.is(punctuator("|", nextNot("|")));
+    dollar.is(punctuator("$"));
+    apostrophe.is(punctuator("'"));
+    plusplus.is(punctuator("++"));
+    minusminus.is(punctuator("--"));
+    numbersign.is(punctuator("#"));
+    exclamation.is(punctuator("!"));
+    questionmark.is(punctuator("?"));
   }
 
   private void keywords() {
-    afterKeyword.is(keyword("after")).skip();
-    andKeyword.is(keyword("and")).skip();
-    andalsoKeyword.is(keyword("andalso")).skip();
-    bandKeyword.is(keyword("band")).skip();
-    beginKeyword.is(keyword("begin")).skip();
-    bnotKeyword.is(keyword("bnot")).skip();
-    borKeyword.is(keyword("bor")).skip();
-    bslKeyword.is(keyword("bsl")).skip();
-    bsrKeyword.is(keyword("bsr")).skip();
-    bxorKeyword.is(keyword("bxor")).skip();
-    caseKeyword.is(keyword("case")).skip();
-    catchKeyword.is(keyword("catch")).skip();
-    condKeyword.is(keyword("cond")).skip();
-    divKeyword.is(keyword("div")).skip();
-    endKeyword.is(keyword("end")).skip();
-    funKeyword.is(keyword("fun")).skip();
-    ifKeyword.is(keyword("if")).skip();
-    letKeyword.is(keyword("let")).skip();
-    notKeyword.is(keyword("not")).skip();
-    ofKeyword.is(keyword("of")).skip();
-    orKeyword.is(keyword("or")).skip();
-    orelseKeyword.is(keyword("orelse")).skip();
-    queryKeyword.is(keyword("query")).skip();
-    receiveKeyword.is(keyword("receive")).skip();
-    remKeyword.is(keyword("rem")).skip();
-    tryKeyword.is(keyword("try")).skip();
-    whenKeyword.is(keyword("when")).skip();
-    xorKeyword.is(keyword("xor")).skip();
+    afterKeyword.is(keyword("after"));
+    andKeyword.is(keyword("and"));
+    andalsoKeyword.is(keyword("andalso"));
+    bandKeyword.is(keyword("band"));
+    beginKeyword.is(keyword("begin"));
+    bnotKeyword.is(keyword("bnot"));
+    borKeyword.is(keyword("bor"));
+    bslKeyword.is(keyword("bsl"));
+    bsrKeyword.is(keyword("bsr"));
+    bxorKeyword.is(keyword("bxor"));
+    caseKeyword.is(keyword("case"));
+    catchKeyword.is(keyword("catch"));
+    condKeyword.is(keyword("cond"));
+    divKeyword.is(keyword("div"));
+    endKeyword.is(keyword("end"));
+    funKeyword.is(keyword("fun"));
+    ifKeyword.is(keyword("if"));
+    letKeyword.is(keyword("let"));
+    notKeyword.is(keyword("not"));
+    ofKeyword.is(keyword("of"));
+    orKeyword.is(keyword("or"));
+    orelseKeyword.is(keyword("orelse"));
+    queryKeyword.is(keyword("query"));
+    receiveKeyword.is(keyword("receive"));
+    remKeyword.is(keyword("rem"));
+    tryKeyword.is(keyword("try"));
+    whenKeyword.is(keyword("when"));
+    xorKeyword.is(keyword("xor"));
   }
 
   private void module() {
@@ -438,33 +466,18 @@ public class ErlangGrammarImpl extends ErlangGrammar {
   }
 
   private Object punctuator(String value) {
-    for (ErlangPunctuator tokenType : ErlangPunctuator.values()) {
-      if (value.equals(tokenType.getValue())) {
-        return sequence(token(tokenType, value), spacing);
-      }
-    }
-    throw new IllegalStateException(value);
+    return sequence(value, spacing);
   }
 
   private Object punctuator(String value, Object element) {
-    for (ErlangPunctuator tokenType : ErlangPunctuator.values()) {
-      if (value.equals(tokenType.getValue())) {
-        return sequence(token(tokenType, value), element, spacing);
-      }
-    }
-    throw new IllegalStateException(value);
+    return sequence(value, element, spacing);
   }
 
   private Object keyword(String value) {
-    for (ErlangKeyword tokenType : ErlangKeyword.values()) {
-      if (value.equals(tokenType.getValue())) {
-        return sequence(token(tokenType, value), nextNot(letterOrDigit), spacing);
-      }
-    }
-    throw new IllegalStateException(value);
+    return sequence(value, nextNot(letterOrDigit), spacing);
   }
 
   private Object semiKeyword(String value) {
-    return sequence(token(GenericTokenType.IDENTIFIER, value), nextNot(letterOrDigit), spacing);
+    return sequence(value, nextNot(letterOrDigit), spacing);
   }
 }

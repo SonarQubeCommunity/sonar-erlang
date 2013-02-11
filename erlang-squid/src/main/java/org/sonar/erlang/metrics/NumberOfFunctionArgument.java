@@ -21,22 +21,25 @@ package org.sonar.erlang.metrics;
 
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
-import org.sonar.erlang.api.ErlangPunctuator;
 
 import java.util.List;
 
 public class NumberOfFunctionArgument extends SquidCheck<ErlangGrammar> {
 
-  List<ErlangPunctuator> nonArg = ImmutableList.of(ErlangPunctuator.LPARENTHESIS,
-      ErlangPunctuator.RPARENTHESIS, ErlangPunctuator.COMMA);
+  List<Rule> nonArg;
   private ErlangGrammar grammar;
 
   @Override
   public void init() {
     grammar = getContext().getGrammar();
+
+    nonArg = ImmutableList.of(grammar.lparenthesis,
+        grammar.rparenthesis, grammar.comma);
+
     subscribeTo(grammar.clauseHead);
 
   }

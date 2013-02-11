@@ -27,7 +27,6 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangPunctuator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,16 +36,18 @@ import java.util.List;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<ErlangGrammar> {
 
-  List<ErlangPunctuator> operators = ImmutableList.of(ErlangPunctuator.MATCHOP,
-      ErlangPunctuator.STAR, ErlangPunctuator.DIV, ErlangPunctuator.PLUS,
-      ErlangPunctuator.MINUS);
+  List<com.sonar.sslr.api.Rule> operators;
   List<Integer> failedLines = new ArrayList<Integer>();
 
   private int numOfViolations = 0;
 
   @Override
   public void init() {
-    subscribeTo(getContext().getGrammar().primaryExpression);
+    ErlangGrammar grammar = getContext().getGrammar();
+    subscribeTo(grammar.primaryExpression);
+    operators = ImmutableList.of(grammar.matchop,
+        grammar.star, grammar.div, grammar.plus,
+        grammar.minus);
   }
 
   @Override

@@ -19,31 +19,36 @@
  */
 package org.sonar.erlang.checks;
 
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.Token;
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.erlang.api.ErlangGrammar;
-import org.sonar.erlang.api.ErlangPunctuator;
 
 @Rule(key = "NoEmacsStyleLeadingComma", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class NoEmacsStyleLeadingCommasCheck extends SquidCheck<ErlangGrammar> implements
-    AstAndTokenVisitor {
+public class NoEmacsStyleLeadingCommasCheck extends SquidCheck<ErlangGrammar> {
 
-  private Token previousToken;
+  private ErlangGrammar grammar;
 
-  public void visitToken(Token token) {
-    if (previousToken == null || (previousToken.getLine() != token.getLine())) {
-      if (token.getType().equals(ErlangPunctuator.COMMA)) {
+  @Override
+  public void init() {
+    grammar = getContext().getGrammar();
+    subscribeTo(grammar.comma);
+  }
+
+  @Override
+  public void visitNode(AstNode ast) {
+    AstNode previousNode = ast.getPreviousSibling();
+    int astTokenLine = ast.getToken().getLine();
+    if ((previousNode.getToken().getLine() != astTokenLine)) {
+      if(previousNode.getLastToken().getLine() != astTokenLine){
         getContext().createLineViolation(this, "No Emacs-style leading commas.",
-            token.getLine());
+            astTokenLine);
       }
-      previousToken = token;
     }
 
   }

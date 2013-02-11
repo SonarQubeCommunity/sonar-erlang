@@ -20,12 +20,10 @@
 package org.sonar.erlang.metrics;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Trivia;
 import com.sonar.sslr.squid.SquidAstVisitor;
 import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
-import org.sonar.erlang.api.ErlangPunctuator;
 
 import java.util.List;
 
@@ -33,7 +31,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
 
   private int numOfPublicAPIs;
   private int numOfPublicDocAPIs;
-  private ErlangGrammar g;
+  private ErlangGrammar grammar;
   private List<AstNode> functions;
 
   public PublicDocumentedApiCounter() {
@@ -43,8 +41,8 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
 
   @Override
   public void init() {
-    this.g = getContext().getGrammar();
-    subscribeTo(g.exportAttr);
+    this.grammar = getContext().getGrammar();
+    subscribeTo(grammar.exportAttr);
   }
 
   @Override
@@ -53,14 +51,14 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
      * Ignore all exports in flow control (we cannot decide what to do TODO:
      * analyse common export related flow controls
      */
-    if (astNode.getFirstAncestor(g.flowControlAttr) == null) {
-      List<AstNode> exports = astNode.getFirstChild(g.funcExport).getChildren(
-          g.funcArity);
+    if (astNode.getFirstAncestor(grammar.flowControlAttr) == null) {
+      List<AstNode> exports = astNode.getFirstChild(grammar.funcExport).getChildren(
+          grammar.funcArity);
       numOfPublicAPIs += exports.size();
       for (AstNode export : exports) {
         AstNode func = findFunctionByArity(getArity(export));
         if (func != null) {
-          List<Trivia> comments = func.getFirstDescendant(GenericTokenType.IDENTIFIER)
+          List<Trivia> comments = func.getFirstDescendant(grammar.identifier)
               .getToken().getTrivia();
           if (comments.size() > 0) {
             for (Trivia trivia : comments) {
@@ -88,7 +86,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
       // file wasn't parsed
       return;
     }
-    functions = astNode.getFirstChild(g.moduleElements).getChildren(g.functionDeclaration);
+    functions = astNode.getFirstChild(grammar.moduleElements).getChildren(grammar.functionDeclaration);
   }
 
   @Override
@@ -120,9 +118,9 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<ErlangGrammar> {
         ret.append(arity.getTokenOriginalValue());
       }
     } else if ("functionDeclaration".equalsIgnoreCase(node.getName())) {
-      ret.append(node.getFirstDescendant(g.funcDecl).getTokenOriginalValue());
+      ret.append(node.getFirstDescendant(grammar.funcDecl).getTokenOriginalValue());
       ret.append("/");
-      ret.append(node.getFirstDescendant(g.arguments).getChildren(ErlangPunctuator.COMMA)
+      ret.append(node.getFirstDescendant(grammar.arguments).getChildren(grammar.comma)
           .size() + 1);
     }
     return ret.toString();

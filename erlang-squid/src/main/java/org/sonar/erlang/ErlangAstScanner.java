@@ -19,6 +19,7 @@
  */
 package org.sonar.erlang;
 
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.squid.AstScanner;
@@ -33,7 +34,6 @@ import com.sonar.sslr.squid.metrics.LinesOfCodeVisitor;
 import com.sonar.sslr.squid.metrics.LinesVisitor;
 import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
-import org.sonar.erlang.api.ErlangPunctuator;
 import org.sonar.erlang.metrics.BranchesOfRecursion;
 import org.sonar.erlang.metrics.ErlangComplexityVisitor;
 import org.sonar.erlang.metrics.ErlangStatementVisitor;
@@ -152,7 +152,7 @@ public final class ErlangAstScanner {
 
           private String countArgs(AstNode args) {
             int num = args.getNumberOfChildren() > 3 ? args.getChildren(
-                ErlangPunctuator.COMMA).size() + 1 : args.getNumberOfChildren() - 2;
+                grammar.comma).size() + 1 : args.getNumberOfChildren() - 2;
             return String.valueOf(num);
           }
         }, grammar.functionDeclaration, grammar.functionClause, grammar.funExpression));
