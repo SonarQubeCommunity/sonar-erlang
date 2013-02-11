@@ -19,9 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
-import com.sonar.sslr.squid.checks.ChecksHelper;
-
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.squid.checks.ChecksHelper;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;

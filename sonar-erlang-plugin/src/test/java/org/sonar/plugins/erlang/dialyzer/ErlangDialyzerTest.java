@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.sonar.plugins.erlang.ProjectUtil;
-
 import org.apache.commons.configuration.Configuration;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -34,6 +32,7 @@ import org.sonar.api.resources.Project;
 import org.sonar.api.rules.ActiveRule;
 import org.sonar.api.rules.Violation;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.ProjectUtil;
 
 import java.io.File;
 import java.io.IOException;

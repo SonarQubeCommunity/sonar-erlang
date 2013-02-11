@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang.libraries;
 
-import org.sonar.plugins.erlang.ProjectUtil;
-
 import org.apache.commons.configuration.Configuration;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -33,6 +31,7 @@ import org.sonar.api.design.Dependency;
 import org.sonar.api.resources.InputFile;
 import org.sonar.api.resources.Library;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.ProjectUtil;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.net.URISyntaxException;

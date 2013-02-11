@@ -20,7 +20,6 @@
 package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;

@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.sonar.plugins.erlang.ProjectUtil;
-
 import org.apache.commons.configuration.Configuration;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +27,7 @@ import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.resources.InputFile;
 import org.sonar.api.resources.Resource;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.ProjectUtil;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.net.URISyntaxException;
@@ -38,9 +37,9 @@ import java.util.List;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
 
 public class EunitXmlSensorTest {
 
