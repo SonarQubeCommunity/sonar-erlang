@@ -317,10 +317,7 @@ public class ErlangGrammarImpl extends ErlangGrammar {
     // handle string concetanation ("..."\n[\r\t]"..." is one literal as
     // well this:
     // "asasd" ?MACRO "asdasd"
-    literal.is(oneOrMore(firstOf(stringLiteral, numericLiteral, identifier, macroLiteral)/*
-                                                                                          * ,
-                                                                                          * zeroOrMore(firstOf(literal, macroLiteral))
-                                                                                          */));
+    literal.is(oneOrMore(firstOf(stringLiteral, numericLiteral, identifier, macroLiteral)));
     primaryExpression.is(firstOf(sequence(lparenthesis, expression, rparenthesis), literal, listLiteral, tupleLiteral, binaryLiteral));
 
     listLiteral.is(lbracket, optional(firstOf(sequence(assignmentExpression, listcomp, qualifier, zeroOrMore(
@@ -363,7 +360,7 @@ public class ErlangGrammarImpl extends ErlangGrammar {
         rparenthesis);
     unaryExpression.is(firstOf(
         // handle things like: -12, -A, -func(A), -(6+3)
-        sequence(optional(minus), callExpression), sequence(notKeyword, unaryExpression))).skipIfOneChild();
+        sequence(optional(minus), callExpression), sequence(notKeyword, callExpression))).skipIfOneChild();
     otherArithmeticExpression.is(unaryExpression,
         zeroOrMore(firstOf(bnotKeyword, divKeyword, remKeyword), unaryExpression)).skipIfOneChild();
     multiplicativeExpression.is(otherArithmeticExpression,
