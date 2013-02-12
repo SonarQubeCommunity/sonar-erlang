@@ -20,42 +20,35 @@
 package org.sonar.erlang.parser;
 
 import com.google.common.base.Joiner;
-import com.sonar.sslr.api.Rule;
 import org.junit.Test;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserCaseStatementTest {
 
+  private LexerlessGrammar g = ErlangGrammarImpl.createGrammar();
+
   @Test
   public void caseSimple1() {
-    ErlangGrammar g = new ErlangGrammarImpl();
-    Rule p = g.caseExpression;
-
-    g.assignmentExpression.mock();
-    g.patternStatements.mock();
-    assertThat(p).matches((code("case assignmentExpression of patternStatements end")));
+    g.rule(ErlangGrammarImpl.expression).mock();
+    g.rule(ErlangGrammarImpl.patternStatements).mock();
+    assertThat(g.rule(ErlangGrammarImpl.caseExpression))
+    .matches((code("case expression of patternStatements end")));
   }
 
   @Test
   public void caseSimple2() {
-    ErlangGrammar g = new ErlangGrammarImpl();
-    Rule p = g.caseExpression;
-
-    g.assignmentExpression.mock();
-    g.patternStatement.mock();
-    assertThat(p).matches((code("case assignmentExpression of patternStatement end")));
-    assertThat(p).matches(
-        (code("case assignmentExpression of patternStatement ; patternStatement end")));
+    g.rule(ErlangGrammarImpl.expression).mock();
+    g.rule(ErlangGrammarImpl.patternStatement).mock();
+    assertThat(g.rule(ErlangGrammarImpl.caseExpression))
+    .matches("case expression of patternStatement end")
+    .matches("case expression of patternStatement ; patternStatement end");
   }
 
   @Test
   public void caseReal1() {
-    ErlangGrammar g = new ErlangGrammarImpl();
-    Rule p = g.caseExpression;
-
-    assertThat(p).matches(
+    assertThat(g.rule(ErlangGrammarImpl.caseExpression)).matches(
         (code("case cerl:is_c_var(PosVar) andalso (cerl:var_name(PosVar) =/= '') of",
             "true -> \"variable \"++String;", "false -> \"pattern \"++String", "end")));
   }

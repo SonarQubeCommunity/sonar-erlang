@@ -25,12 +25,12 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "BlockSeparatorCharacter", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class BlockSeparatorCharacterCheck extends
-    AbstractCommentRegularExpressionCheck<ErlangGrammar> {
+    AbstractCommentRegularExpressionCheck<LexerlessGrammar> {
 
   private static final String REGULAR_EXPRESSION = "^%%+ *([^%s])\\1+ *$";
   private static final String DEFAULT_MESSAGE = "only use '%s' sign(s) for block separators in comments (case sensitive)";

@@ -26,11 +26,12 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "DepthOfCases", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class DepthOfCasesCheck extends SquidCheck<ErlangGrammar> {
+public class DepthOfCasesCheck extends SquidCheck<LexerlessGrammar> {
 
   private static final int DEFAULT_MAXIMUM_CASE_DEPTH_THRESHOLD = 4;
 
@@ -38,12 +39,9 @@ public class DepthOfCasesCheck extends SquidCheck<ErlangGrammar> {
     + DEFAULT_MAXIMUM_CASE_DEPTH_THRESHOLD)
   private int maximumCaseDepthThreshold = DEFAULT_MAXIMUM_CASE_DEPTH_THRESHOLD;
 
-  private ErlangGrammar g;
-
   @Override
   public void init() {
-    g = getContext().getGrammar();
-    subscribeTo(g.caseExpression);
+    subscribeTo(ErlangGrammarImpl.caseExpression);
   }
 
   @Override
@@ -60,11 +58,11 @@ public class DepthOfCasesCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private boolean isTopLevelCase(AstNode astNode) {
-    return !astNode.hasAncestor(g.caseExpression);
+    return !astNode.hasAncestor(ErlangGrammarImpl.caseExpression);
   }
 
   private int countChild(AstNode astNode) {
-    return  astNode.getDescendants(g.caseExpression).size();
+    return astNode.getDescendants(ErlangGrammarImpl.caseExpression).size();
   }
 
 }

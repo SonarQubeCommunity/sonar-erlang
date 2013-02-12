@@ -19,20 +19,27 @@
  */
 package org.sonar.erlang.parser;
 
+
+import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
+
+import java.nio.charset.Charset;
 
 public final class ErlangParser {
   private ErlangParser() {
-
   }
 
-  public static Parser<ErlangGrammar> create(ErlangConfiguration conf,
-      ParsingEventListener... parsingEventListeners) {
-    return new ParserAdapter<ErlangGrammar>(conf.getCharset(), new ErlangGrammarImpl());
+  @VisibleForTesting
+  public static Parser<LexerlessGrammar> create(ParsingEventListener... parsingEventListeners) {
+    return create(new ErlangConfiguration(Charset.forName("UTF-8")), parsingEventListeners);
+  }
+
+  public static Parser<LexerlessGrammar> create(ErlangConfiguration conf, ParsingEventListener... parsingEventListeners) {
+    return new ParserAdapter<LexerlessGrammar>(conf.getCharset(), ErlangGrammarImpl.createGrammar());
   }
 
 }

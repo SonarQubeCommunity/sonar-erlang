@@ -25,21 +25,20 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "IsTailRecursive", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class IsTailRecursiveCheck extends SquidCheck<ErlangGrammar> {
+public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
 
   private String actualArity;
   private String actualModule;
-  private ErlangGrammar grammar;
   private int lastClauseLine;
 
   @Override
   public void init() {
-    grammar = getContext().getGrammar();
-    subscribeTo(getContext().getGrammar().callExpression, getContext().getGrammar().functionDeclaration);
+    subscribeTo(ErlangGrammarImpl.callExpression, ErlangGrammarImpl.functionDeclaration);
   }
 
   @Override
@@ -49,36 +48,36 @@ public class IsTailRecursiveCheck extends SquidCheck<ErlangGrammar> {
       return;
     }
     actualArity = "";
-    actualModule = astNode.getFirstDescendant(grammar.moduleAttr)
-        .getFirstChild(grammar.identifier).getTokenOriginalValue();
+    actualModule = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr)
+        .getFirstChild(ErlangGrammarImpl.identifier).getTokenOriginalValue();
     lastClauseLine = 0;
   }
 
   @Override
   public void visitNode(AstNode node) {
-    if (node.getType().equals(grammar.functionDeclaration)) {
-      actualArity = getArity(node.getFirstChild(grammar.functionClause));
+    if (node.getType().equals(ErlangGrammarImpl.functionDeclaration)) {
+      actualArity = getArity(node.getFirstChild(ErlangGrammarImpl.functionClause));
     }
-    if (node.getType().equals(grammar.callExpression)
+    if (node.getType().equals(ErlangGrammarImpl.callExpression)
       /**
        * Recursive call where we have not record a non tail recursive call
        */
-      && (getArityFromCall(node).equals(actualArity) && node.getFirstAncestor(grammar.functionClause).getTokenLine() != lastClauseLine)) {
+      && (getArityFromCall(node).equals(actualArity) && node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine() != lastClauseLine)) {
       /**
        * Not a standalone statement
        */
-      if (!node.getParent().getType().equals(grammar.expression)) {
+      if (!node.getParent().getType().equals(ErlangGrammarImpl.expression)) {
         getContext().createLineViolation(this, "Function is not tail recursive.", node);
-        lastClauseLine = node.getFirstAncestor(grammar.functionClause).getTokenLine();
+        lastClauseLine = node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine();
         return;
       }
 
       /**
        * Not last call
        */
-      if (!checkIsLastStatement(node.getFirstAncestor(grammar.statement))) {
+      if (!checkIsLastStatement(node.getFirstAncestor(ErlangGrammarImpl.statement))) {
         getContext().createLineViolation(this, "Function is not tail recursive.", node);
-        lastClauseLine = node.getFirstAncestor(grammar.functionClause).getTokenLine();
+        lastClauseLine = node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine();
         return;
       }
 
@@ -93,32 +92,32 @@ public class IsTailRecursiveCheck extends SquidCheck<ErlangGrammar> {
     if (sibling != null) {
       return false;
     }
-    return checkIsLastStatement(node.getFirstAncestor(grammar.statement));
+    return checkIsLastStatement(node.getFirstAncestor(ErlangGrammarImpl.statement));
   }
 
   private String getArityFromCall(AstNode ast) {
     // It has a colon, so it is a module:function call
-    if (ast.hasDirectChildren(grammar.colon)) {
+    if (ast.hasDirectChildren(ErlangGrammarImpl.colon)) {
       if (actualModule.equals(ast.getChild(0).getTokenOriginalValue())) {
-        return ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(grammar.arguments));
+        return ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       }
-      return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(grammar.arguments));
+      return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
     } else {
-      return ast.getFirstChild(grammar.primaryExpression).getFirstChild(grammar.literal).getTokenOriginalValue() + "/"
-        + getNumOfArgs(ast.getFirstChild(grammar.arguments));
+      return ast.getFirstChild(ErlangGrammarImpl.primaryExpression).getFirstChild(ErlangGrammarImpl.literal).getTokenOriginalValue() + "/"
+        + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
     }
   }
 
   private String getArity(AstNode ast) {
-    AstNode args = ast.getFirstChild(grammar.clauseHead)
-        .getFirstChild(grammar.funcDecl).getFirstChild(
-            grammar.arguments);
+    AstNode args = ast.getFirstChild(ErlangGrammarImpl.clauseHead)
+        .getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(
+            ErlangGrammarImpl.arguments);
     return ast.getTokenOriginalValue() + "/" + getNumOfArgs(args);
   }
 
   private String getNumOfArgs(AstNode args) {
     int num = args.getNumberOfChildren() > 3 ? args.getChildren(
-        grammar.comma).size() + 1 : args.getNumberOfChildren() - 2;
+        ErlangGrammarImpl.comma).size() + 1 : args.getNumberOfChildren() - 2;
     return String.valueOf(num);
   }
 

@@ -19,73 +19,60 @@
  */
 package org.sonar.erlang.parser;
 
-import com.google.common.base.Joiner;
-import com.sonar.sslr.api.Rule;
-import org.junit.Before;
 import org.junit.Test;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 //TODO: why do I have to add a whitespace before+after: ,; when I mock?
 public class ErlangParserIfExpressionTest {
-  ErlangGrammar g = new ErlangGrammarImpl();
-  Rule p = g.memberExpression;
-
-  @Before
-  public void setup() {
-    g = new ErlangGrammarImpl();
-    p = g.memberExpression;
-  }
+  private LexerlessGrammar g = ErlangGrammarImpl.createGrammar();
 
   @Test
   public void ifSimple() {
-    g.branchExps.mock();
-    assertThat(p).matches((code("if branchExps end")));
+    g.rule(ErlangGrammarImpl.branchExps).mock();
+    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
+        .matches("if branchExps end");
   }
 
   @Test
   public void ifSimple2() {
-    g.branchExp.mock();
-    assertThat(p).matches((code("if branchExp ; branchExp end")));
+    g.rule(ErlangGrammarImpl.branchExp).mock();
+    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
+        .matches("if branchExp ; branchExp end");
   }
 
   @Test
   public void ifSimple3() {
-    g.guardSequence.mock();
-    g.assignmentExpression.mock();
-    assertThat(p).matches(
-        code("if guardSequence -> assignmentExpression , assignmentExpression end"));
-    assertThat(p)
+    g.rule(ErlangGrammarImpl.guardSequence).mock();
+    g.rule(ErlangGrammarImpl.assignmentExpression).mock();
+    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
         .matches(
-            code("if guardSequence -> assignmentExpression , assignmentExpression ; guardSequence -> assignmentExpression end"));
+            "if guardSequence -> assignmentExpression , assignmentExpression end")
+        .matches(
+            "if guardSequence -> assignmentExpression , assignmentExpression ; guardSequence -> assignmentExpression end");
   }
 
   @Test
   public void ifSimple4() {
-    g.guard.mock();
-    g.assignmentExpression.mock();
-    assertThat(p).matches(
-        code("if guard ; guard ; guard -> assignmentExpression , assignmentExpression end"));
-    assertThat(p)
+    g.rule(ErlangGrammarImpl.guard).mock();
+    g.rule(ErlangGrammarImpl.assignmentExpression).mock();
+    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
         .matches(
-            code("if guard ; guard -> assignmentExpression , assignmentExpression ; guard ; guard -> assignmentExpression end"));
+            "if guard ; guard ; guard -> assignmentExpression , assignmentExpression end")
+        .matches(
+            "if guard ; guard -> assignmentExpression , assignmentExpression ; guard ; guard -> assignmentExpression end");
   }
 
   @Test
   public void ifSimple5() {
-    g.guardExpression.mock();
-    g.assignmentExpression.mock();
-    assertThat(p)
+    g.rule(ErlangGrammarImpl.guardExpression).mock();
+    g.rule(ErlangGrammarImpl.assignmentExpression).mock();
+    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
         .matches(
-            (code("if guardExpression , guardExpression ; guardExpression ; guardExpression , guardExpression , guardExpression -> assignmentExpression , assignmentExpression end")));
-    assertThat(p)
+            "if guardExpression , guardExpression ; guardExpression ; guardExpression , guardExpression , guardExpression -> assignmentExpression , assignmentExpression end")
         .matches(
-            (code("if guardExpression ; guardExpression , guardExpression -> assignmentExpression , assignmentExpression ; guardExpression , guardExpression ; guardExpression -> assignmentExpression end")));
-  }
-
-  private static String code(String... lines) {
-    return Joiner.on("\n").join(lines);
+            "if guardExpression ; guardExpression , guardExpression -> assignmentExpression , assignmentExpression ; guardExpression , guardExpression ; guardExpression -> assignmentExpression end");
   }
 
 }

@@ -25,15 +25,16 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "DoNotUseImport", priority = Priority.MINOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class DoNotUseImportCheck extends SquidCheck<ErlangGrammar> {
+public class DoNotUseImportCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(getContext().getGrammar().importAttr);
+    subscribeTo(ErlangGrammarImpl.importAttr);
   }
 
   @Override

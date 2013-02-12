@@ -25,20 +25,21 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "DoNotUseExportAll", priority = Priority.MINOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class DoNotUseExportAllCheck extends SquidCheck<ErlangGrammar> {
+public class DoNotUseExportAllCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(getContext().getGrammar().compileAttr);
+    subscribeTo(ErlangGrammarImpl.compileAttr);
   }
 
   @Override
   public void visitNode(AstNode node) {
-    if ("export_all".equalsIgnoreCase(node.getFirstChild(getContext().getGrammar().primaryExpression).getTokenOriginalValue())) {
+    if ("export_all".equalsIgnoreCase(node.getFirstChild(ErlangGrammarImpl.primaryExpression).getTokenOriginalValue())) {
       getContext().createLineViolation(this, "Do not use export_all", node);
     }
   }

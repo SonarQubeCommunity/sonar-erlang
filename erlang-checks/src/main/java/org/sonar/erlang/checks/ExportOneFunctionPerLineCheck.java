@@ -25,23 +25,22 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.List;
 
 @Rule(key = "ExportOneFunctionPerLine", priority = Priority.MINOR,
   cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class ExportOneFunctionPerLineCheck extends SquidCheck<ErlangGrammar> {
+public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> {
 
   private int previousLineNum;
   private String previousFuncArity;
-  private ErlangGrammar grammar;
 
   @Override
   public void init() {
-    grammar = getContext().getGrammar();
-    subscribeTo(grammar.exportAttr);
+    subscribeTo(ErlangGrammarImpl.exportAttr);
     previousLineNum = 0;
     previousFuncArity = null;
   }
@@ -51,8 +50,8 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<ErlangGrammar> {
     /**
      * Get exported func arities in this export
      */
-    List<AstNode> funcArities = node.getFirstChild(grammar.funcExport)
-        .getChildren(grammar.funcArity);
+    List<AstNode> funcArities = node.getFirstChild(ErlangGrammarImpl.funcExport)
+        .getChildren(ErlangGrammarImpl.funcArity);
     for (AstNode arityNode : funcArities) {
       String funcArity = getArity(arityNode);
       if (previousFuncArity != null) {

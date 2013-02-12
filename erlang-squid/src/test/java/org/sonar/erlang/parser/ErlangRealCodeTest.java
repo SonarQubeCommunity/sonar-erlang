@@ -21,9 +21,8 @@ package org.sonar.erlang.parser;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.sonar.sslr.api.Rule;
 import org.junit.Test;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,32 +32,31 @@ import java.net.URISyntaxException;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangRealCodeTest {
-  ErlangGrammar g = new ErlangGrammarImpl();
-  Rule p = g.getRootRule();
+  private LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
 
   @Test
   public void realLife2() throws IOException, URISyntaxException {
-    assertThat(p).matches((readFromFile("user_auth_mnesia.erl")));
+    assertThat(b.getRootRule()).matches((readFromFile("user_auth_mnesia.erl")));
   }
 
   @Test
   public void realLife3() throws IOException, URISyntaxException {
-    assertThat(p).matches((readFromFile("agner_main_sub.erl")));
+    assertThat(b.getRootRule()).matches((readFromFile("agner_main_sub.erl")));
   }
 
   @Test
   public void realLife4() throws IOException, URISyntaxException {
-    assertThat(p).matches((readFromFile("erl_img.erl")));
+    assertThat(b.getRootRule()).matches((readFromFile("erl_img.erl")));
   }
 
   @Test
   public void realLife5() throws IOException, URISyntaxException {
-    assertThat(p).matches((readFromFile("egs_proto.erl")));
+    assertThat(b.getRootRule()).matches((readFromFile("egs_proto.erl")));
   }
 
   @Test
   public void realLife6() throws IOException, URISyntaxException {
-    assertThat(p).matches((readFromFile("megaco.erl")));
+    assertThat(b.getRootRule()).matches((readFromFile("megaco.erl")));
   }
 
   private String readFromFile(String fileName) throws IOException, URISyntaxException {

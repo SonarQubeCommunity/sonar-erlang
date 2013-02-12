@@ -19,39 +19,31 @@
  */
 package org.sonar.erlang.parser;
 
-import com.google.common.base.Joiner;
-import com.sonar.sslr.api.Rule;
 import org.junit.Test;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserBinaryExpressionTest {
 
-  ErlangGrammar g = new ErlangGrammarImpl();
-
-  Rule p = g.binaryLiteral;
+  private LexerlessGrammarBuilder b = ErlangGrammarImpl.createGrammarBuilder();
 
   @Test
   public void binaryExpressions() {
-    assertThat(p).matches(code("<<1,17,42>>"));
-    assertThat(p).matches(code("<<1,17,42:16>>"));
-    assertThat(p).matches(code("<<1024/utf8>>"));
-    assertThat(p).matches(code("<<1024:16/utf8>>"));
-    assertThat(p).matches(code("<<$a,$b,$c>>"));
-    assertThat(p).matches(code("<<\"hello\">>"));
-    assertThat(p).matches(code("<<A,B,C:16>>"));
-    assertThat(p).matches(code("<<G,H/binary>>"));
-    assertThat(p).matches(code("<<G,H:16/bitstring>>"));
-    assertThat(p).matches(code("<< << X:8, 0:8/utf8 >> || << X >> <= << 1, A, 3 >> >>"));
-    assertThat(p).matches(code("<<", "?MAGIC,", "Version:?BYTE,", "Type:?BYTE,", ">>"));
-    assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= << 1,2,3 >> >>")));
-    assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= method1() >>")));
-    assertThat(p).matches((code("<< << (X*2) >> || <<X>> <= method1(), method2() >>")));
+    assertThat(b.build().rule(ErlangGrammarImpl.binaryLiteral))
+        .matches("<<1,17,42>>")
+        .matches("<<1,17,42:16>>")
+        .matches("<<1024/utf8>>")
+        .matches("<<1024:16/utf8>>")
+        .matches("<<$a,$b,$c>>")
+        .matches("<<\"hello\">>")
+        .matches("<<A,B,C:16>>")
+        .matches("<<G,H/binary>>")
+        .matches("<<G,H:16/bitstring>>")
+        .matches("<< << X:8, 0:8/utf8 >> || << X >> <= << 1, A, 3 >> >>")
+        .matches("<<\n?MAGIC,\nVersion:?BYTE,\nType:?BYTE,\n>>")
+        .matches("<< << (X*2) >> || <<X>> <= << 1,2,3 >> >>")
+        .matches("<< << (X*2) >> || <<X>> <= method1() >>")
+        .matches("<< << (X*2) >> || <<X>> <= method1(), method2() >>");
   }
-
-  private static String code(String... lines) {
-    return Joiner.on("\n").join(lines);
-  }
-
 }

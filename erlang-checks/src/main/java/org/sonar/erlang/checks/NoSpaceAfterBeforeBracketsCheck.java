@@ -27,7 +27,8 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,34 +36,28 @@ import java.util.List;
 @Rule(key = "NoSpaceAfterBeforeBrackets", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<ErlangGrammar> {
+public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar> {
 
-  List<com.sonar.sslr.api.Rule> noSpaceBefore;
-  List<com.sonar.sslr.api.Rule> noSpaceAfter;
+  List<ErlangGrammarImpl> noSpaceBefore = ImmutableList.of(ErlangGrammarImpl.rbracket,
+      ErlangGrammarImpl.rcurlybrace, ErlangGrammarImpl.rparenthesis);
+  List<ErlangGrammarImpl> noSpaceAfter = ImmutableList.of(ErlangGrammarImpl.lbracket,
+      ErlangGrammarImpl.lcurlybrace, ErlangGrammarImpl.lparenthesis);
   List<Integer> failedLines = new ArrayList<Integer>();
 
   private int numOfViolations = 0;
-  private ErlangGrammar grammar;
 
   @Override
   public void init() {
-    grammar = getContext().getGrammar();
-    subscribeTo(grammar.rbracket, grammar.rcurlybrace,
-        grammar.rparenthesis, grammar.lbracket,
-        grammar.lcurlybrace, grammar.lparenthesis);
-
-    noSpaceBefore = ImmutableList.of(grammar.rbracket,
-        grammar.rcurlybrace, grammar.rparenthesis);
-
-    noSpaceAfter = ImmutableList.of(grammar.lbracket,
-        grammar.lcurlybrace, grammar.lparenthesis);
+    subscribeTo(ErlangGrammarImpl.rbracket, ErlangGrammarImpl.rcurlybrace,
+        ErlangGrammarImpl.rparenthesis, ErlangGrammarImpl.lbracket,
+        ErlangGrammarImpl.lcurlybrace, ErlangGrammarImpl.lparenthesis);
   }
 
   @Override
   public void visitNode(AstNode ast) {
     Token compTo;
     if (numOfViolations < 100 && !failedLines.contains(ast.getTokenLine())) {
-      if (ast.hasAncestor(getContext().getGrammar().clauseBody)) {
+      if (ast.hasAncestor(ErlangGrammarImpl.clauseBody)) {
         if (noSpaceAfter.contains(ast.getType())) {
           compTo = ast.getNextSibling().getToken();
           failedLines.add(check(ast, compTo, false));

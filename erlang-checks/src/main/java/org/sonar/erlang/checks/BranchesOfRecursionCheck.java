@@ -27,13 +27,14 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.squid.api.SourceFunction;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "BranchesOfRecursion", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class BranchesOfRecursionCheck extends SquidCheck<ErlangGrammar> {
+public class BranchesOfRecursionCheck extends SquidCheck<LexerlessGrammar> {
 
   private static final int DEFAULT_MAXIMUM_BOR_THRESHOLD = 10;
 
@@ -42,7 +43,7 @@ public class BranchesOfRecursionCheck extends SquidCheck<ErlangGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(getContext().getGrammar().functionDeclaration);
+    subscribeTo(ErlangGrammarImpl.functionDeclaration);
   }
 
   @Override

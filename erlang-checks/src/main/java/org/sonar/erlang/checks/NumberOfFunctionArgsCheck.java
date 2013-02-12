@@ -26,13 +26,14 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.squid.api.SourceFunction;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "NumberOfFunctionArgs", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class NumberOfFunctionArgsCheck extends SquidCheck<ErlangGrammar> {
+public class NumberOfFunctionArgsCheck extends SquidCheck<LexerlessGrammar> {
 
   private static final int DEFAULT_MAXIMUM_FUNCTION_ARGUMENT_THRESHOLD = 8;
 
@@ -42,7 +43,7 @@ public class NumberOfFunctionArgsCheck extends SquidCheck<ErlangGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(getContext().getGrammar().functionClause);
+    subscribeTo(ErlangGrammarImpl.functionClause);
   }
 
   @Override

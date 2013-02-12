@@ -22,8 +22,9 @@ package org.sonar.erlang.metrics;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
 import com.sonar.sslr.squid.SquidAstVisitor;
-import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 /**
  * Erlang complexity calculation +1 for every function clause over 1 +1 for
@@ -33,20 +34,18 @@ import org.sonar.erlang.api.ErlangMetric;
  * @author Tamas Kende
  *
  */
-public class ErlangComplexityVisitor extends SquidAstVisitor<ErlangGrammar> {
+public class ErlangComplexityVisitor extends SquidAstVisitor<LexerlessGrammar> {
 
   private AstNodeType[] complexityAstNodeType;
-  ErlangGrammar grammar;
 
   @Override
   public void init() {
-    grammar = getContext().getGrammar();
     complexityAstNodeType = new AstNodeType[] {
       // Entry points
-      grammar.functionClause,
+      ErlangGrammarImpl.functionClause,
 
       // Branching nodes
-      grammar.branchExp, grammar.patternStatement, grammar.catchPatternStatement,
+      ErlangGrammarImpl.branchExp, ErlangGrammarImpl.patternStatement, ErlangGrammarImpl.catchPatternStatement,
 
         // TODO: Expressions? when increase? if there are more than one guard
         // and more than

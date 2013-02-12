@@ -21,33 +21,29 @@ package org.sonar.erlang.metrics;
 
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Rule;
 import com.sonar.sslr.squid.checks.SquidCheck;
-import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.List;
 
-public class NumberOfFunctionArgument extends SquidCheck<ErlangGrammar> {
+public class NumberOfFunctionArgument extends SquidCheck<LexerlessGrammar> {
 
-  List<Rule> nonArg;
-  private ErlangGrammar grammar;
+  List<ErlangGrammarImpl> nonArg = ImmutableList.of(ErlangGrammarImpl.lparenthesis,
+      ErlangGrammarImpl.rparenthesis, ErlangGrammarImpl.comma);
 
   @Override
   public void init() {
-    grammar = getContext().getGrammar();
 
-    nonArg = ImmutableList.of(grammar.lparenthesis,
-        grammar.rparenthesis, grammar.comma);
-
-    subscribeTo(grammar.clauseHead);
+    subscribeTo(ErlangGrammarImpl.clauseHead);
 
   }
 
   @Override
   public void visitNode(AstNode ast) {
-    AstNode args = ast.getFirstChild(grammar.funcDecl).getFirstChild(
-        grammar.arguments);
+    AstNode args = ast.getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(
+        ErlangGrammarImpl.arguments);
     int numOfArgs = 0;
     for (AstNode arg : args.getChildren()) {
       if (!nonArg.contains(arg.getType())) {

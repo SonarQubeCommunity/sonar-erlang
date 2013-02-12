@@ -25,19 +25,17 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "NoEmacsStyleLeadingComma", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class NoEmacsStyleLeadingCommasCheck extends SquidCheck<ErlangGrammar> {
-
-  private ErlangGrammar grammar;
+public class NoEmacsStyleLeadingCommasCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void init() {
-    grammar = getContext().getGrammar();
-    subscribeTo(grammar.comma);
+    subscribeTo(ErlangGrammarImpl.comma);
   }
 
   @Override

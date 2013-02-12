@@ -21,22 +21,20 @@ package org.sonar.erlang.metrics;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.SquidAstVisitor;
-import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-public class ErlangStatementVisitor extends SquidAstVisitor<ErlangGrammar> {
-
-  ErlangGrammar grammar;
+public class ErlangStatementVisitor extends SquidAstVisitor<LexerlessGrammar> {
 
   @Override
   public void init() {
-    grammar = getContext().getGrammar();
-    subscribeTo(grammar.statement);
+    subscribeTo(ErlangGrammarImpl.statement);
   }
 
   @Override
   public void visitNode(AstNode astNode) {
-    if (astNode.getFirstAncestor(grammar.functionDeclaration) != null) {
+    if (astNode.getFirstAncestor(ErlangGrammarImpl.functionDeclaration) != null) {
       getContext().peekSourceCode().add(ErlangMetric.STATEMENTS, 1);
     }
 

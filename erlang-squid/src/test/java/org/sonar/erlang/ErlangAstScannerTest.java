@@ -21,9 +21,8 @@ package org.sonar.erlang;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
-import com.sonar.sslr.squid.AstScanner;
 import org.junit.Test;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.api.resources.InputFileUtils;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.squid.api.SourceClass;
 import org.sonar.squid.api.SourceCode;
@@ -40,10 +39,11 @@ public class ErlangAstScannerTest {
 
   @Test
   public void files() {
-    AstScanner<ErlangGrammar> scanner = ErlangAstScanner.create(new ErlangConfiguration(
+    org.sonar.erlang.ast.AstScanner scanner = ErlangAstScanner.create(new ErlangConfiguration(
         Charsets.UTF_8));
-    scanner.scanFiles(ImmutableList.of(new File("src/test/resources/metrics/lines.erl"),
-        new File("src/test/resources/metrics/lines_of_code.erl")));
+    File baseDir = new File("src/test/resources/metrics");
+    scanner.scan(InputFileUtils.create(baseDir, ImmutableList.of(new File("src/test/resources/metrics/lines.erl"),
+        new File("src/test/resources/metrics/lines_of_code.erl"))));
     SourceProject project = (SourceProject) scanner.getIndex().search(
         new QueryByType(SourceProject.class)).iterator().next();
     assertThat(project.getInt(ErlangMetric.FILES)).isEqualTo(2);
@@ -63,9 +63,10 @@ public class ErlangAstScannerTest {
   public void modules() {
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
         "src/test/resources/metrics/functions.erl"));
-    AstScanner<ErlangGrammar> scanner = ErlangAstScanner.create(new ErlangConfiguration(
+    org.sonar.erlang.ast.AstScanner scanner = ErlangAstScanner.create(new ErlangConfiguration(
         Charsets.UTF_8));
-    scanner.scanFiles(ImmutableList.of(new File("src/test/resources/metrics/functions.erl")));
+    File baseDir = new File("src/test/resources/metrics");
+    scanner.scan(InputFileUtils.create(baseDir, ImmutableList.of(new File("src/test/resources/metrics/functions.erl"))));
     SourceClass module = (SourceClass) scanner.getIndex().search(
         new QueryByType(SourceClass.class)).iterator().next();
     assertThat(module.getKey()).isEqualTo("functions:1");

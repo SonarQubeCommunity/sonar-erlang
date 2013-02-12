@@ -20,41 +20,37 @@
 package org.sonar.erlang.parser;
 
 import com.google.common.base.Joiner;
-import com.sonar.sslr.api.Rule;
 import org.junit.Test;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangRecordDefinitionTest {
-  ErlangGrammar g = new ErlangGrammarImpl();
-  Rule p = g.recordAttr;
+  private LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
 
   @Test
   public void recordDefinitions() {
-    assertThat(p).matches((code("-record(tm, {log, pending, transactions, checkpoints}).")));
-    assertThat(p)
-        .matches(
-            (code("-record(fallback_args, {opaque,", "scope = global,",
-                "module = mnesia_monitor:get_env(backup_module),",
-                "use_default_dir = true,", "mnesia_dir,", "fallback_bup,",
-                "fallback_tmp,", "skip_tables = [],", "keep_tables = [],",
-                "default_op = keep_tables", "}).")));
-
-    assertThat(p)
-        .matches(
-            (code("-record(expand, {module=[],			%Module name",
-                "parameters=undefined,		%Module parameters",
-                "package=\"\",			%Module package", "exports=[],			%Exports",
-                "imports=[],			%Imports", "mod_imports,			%Module Imports",
-                "compile=[],			%Compile flags",
-                "records=dict:new(),		%Record definitions",
-                "attributes=[],			%Attributes", "defined=[],			%Defined functions",
-                "vcount=0,			%Variable counter", "func=[],			%Current function",
-                "arity=[],			%Arity for current function",
-                "fcount=0,			%Local fun count",
-                "fun_index=0,			%Global index for funs", "bitdefault,", "bittypes",
-                "}).")));
+    assertThat(b.rule(ErlangGrammarImpl.recordAttr))
+        .matches("-record(tm, {log, pending, transactions, checkpoints}).")
+        .matches(code(
+            "-record(fallback_args, {opaque,", "scope = global,",
+            "module = mnesia_monitor:get_env(backup_module),",
+            "use_default_dir = true,", "mnesia_dir,", "fallback_bup,",
+            "fallback_tmp,", "skip_tables = [],", "keep_tables = [],",
+            "default_op = keep_tables", "})."))
+        .matches(code(
+            "-record(expand, {module=[],			%Module name",
+            "parameters=undefined,		%Module parameters",
+            "package=\"\",			%Module package", "exports=[],			%Exports",
+            "imports=[],			%Imports", "mod_imports,			%Module Imports",
+            "compile=[],			%Compile flags",
+            "records=dict:new(),		%Record definitions",
+            "attributes=[],			%Attributes", "defined=[],			%Defined functions",
+            "vcount=0,			%Variable counter", "func=[],			%Current function",
+            "arity=[],			%Arity for current function",
+            "fcount=0,			%Local fun count",
+            "fun_index=0,			%Global index for funs", "bitdefault,", "bittypes",
+            "})."));
   }
 
   private static String code(String... lines) {

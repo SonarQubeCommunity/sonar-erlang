@@ -30,11 +30,11 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "LineLength", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class LineLengthCheck extends SquidCheck<ErlangGrammar> implements AstAndTokenVisitor {
+public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
   private static final int DEFAULT_MAXIMUM_LINE_LENHGTH = 100;
 

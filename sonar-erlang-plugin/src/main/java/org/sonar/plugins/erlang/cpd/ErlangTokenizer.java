@@ -42,7 +42,7 @@ public class ErlangTokenizer implements Tokenizer {
   }
 
   public final void tokenize(SourceCode source, Tokens cpdTokens) {
-    Lexer lexer = ErlangLexer.create(new ErlangConfiguration(charset));
+    Lexer lexer = ErlangLexer.create(charset);
     String fileName = source.getFileName();
     List<Token> tokens = lexer.lex(new File(fileName));
     for (Token token : tokens) {

@@ -20,7 +20,6 @@
 package org.sonar.plugins.erlang;
 
 import com.google.common.collect.Lists;
-import com.sonar.sslr.squid.AstScanner;
 import com.sonar.sslr.squid.SquidAstVisitor;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
@@ -31,13 +30,12 @@ import org.sonar.api.measures.PersistenceMode;
 import org.sonar.api.measures.RangeDistributionBuilder;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.File;
-import org.sonar.api.resources.InputFileUtils;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rules.Violation;
 import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.ast.AstScanner;
 import org.sonar.erlang.checks.CheckList;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.squid.api.CheckMessage;
@@ -46,6 +44,7 @@ import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.api.SourceFunction;
 import org.sonar.squid.indexer.QueryByParent;
 import org.sonar.squid.indexer.QueryByType;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.Collection;
 import java.util.List;
@@ -61,7 +60,7 @@ public class ErlangSquidSensor implements Sensor {
 
   private Project project;
   private SensorContext context;
-  private AstScanner<ErlangGrammar> scanner;
+  private AstScanner scanner;
 
   public ErlangSquidSensor(RulesProfile profile, FileLinesContextFactory fileLinesContextFactory) {
     this.annotationCheckFactory = AnnotationCheckFactory.create(profile,
@@ -77,11 +76,11 @@ public class ErlangSquidSensor implements Sensor {
     this.project = project;
     this.context = context;
 
-    Collection<SquidAstVisitor<ErlangGrammar>> squidChecks = annotationCheckFactory.getChecks();
-    List<SquidAstVisitor<ErlangGrammar>> visitors = Lists.newArrayList(squidChecks);
+    Collection<SquidAstVisitor<LexerlessGrammar>> squidChecks = annotationCheckFactory.getChecks();
+    List<SquidAstVisitor<LexerlessGrammar>> visitors = Lists.newArrayList(squidChecks);
     this.scanner = ErlangAstScanner.create(createConfiguration(project), visitors
         .toArray(new SquidAstVisitor[visitors.size()]));
-    scanner.scanFiles(InputFileUtils.toFiles(project.getFileSystem().mainFiles(Erlang.KEY)));
+    scanner.scan(project.getFileSystem().mainFiles(Erlang.KEY));
 
     Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(
         new QueryByType(SourceFile.class));

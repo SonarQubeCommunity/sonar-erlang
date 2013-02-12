@@ -28,11 +28,11 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "IndentionSize", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class IndentionSizeCheck extends SquidCheck<ErlangGrammar> implements AstAndTokenVisitor {
+public class IndentionSizeCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
   private Token previousToken;
   private int numOfViolations = 0;

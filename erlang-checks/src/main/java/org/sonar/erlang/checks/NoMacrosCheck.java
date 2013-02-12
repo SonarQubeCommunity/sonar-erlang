@@ -28,7 +28,8 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ import java.util.List;
 
 @Rule(key = "NoMacros", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
+public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
 
   @RuleProperty(key = "skipDefineInFlowControl", defaultValue = "true",
     description = "Set it false if you want to check macros in flow controls.")
@@ -58,12 +59,9 @@ public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
     };
   };
 
-  private ErlangGrammar g;
-
   @Override
   public void init() {
-    g = getContext().getGrammar();
-    subscribeTo(g.defineAttr);
+    subscribeTo(ErlangGrammarImpl.defineAttr);
     ignoreList.addAll(Lists.transform(Arrays.asList(ignoredMacroNames.split(",")), trimItems));
   }
 
@@ -79,15 +77,17 @@ public class NoMacrosCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private boolean isNotLiteralMacro(AstNode astNode) {
-    return (astNode.hasDescendant(g.funcDecl) && allowLiteralMacros) || (!allowLiteralMacros);
+    return (astNode.hasDescendant(ErlangGrammarImpl.funcDecl) && allowLiteralMacros) || (!allowLiteralMacros);
   }
 
   private boolean hasFlowControlParent(AstNode astNode) {
-    return (!astNode.hasAncestor(g.flowControlAttr) || !skipDefineInFlowControl);
+    return (!astNode.hasAncestor(ErlangGrammarImpl.flowControlAttr) || !skipDefineInFlowControl);
   }
 
   private String getMacroName(AstNode astNode) {
-    AstNode token = (astNode.getFirstChild(g.funcDecl)!= null) ? astNode.getFirstChild(g.funcDecl).getFirstChild(g.identifier) : astNode.getFirstChild(g.identifier);
+    AstNode token = (astNode.getFirstChild(ErlangGrammarImpl.funcDecl) != null) ? astNode.getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(ErlangGrammarImpl.identifier)
+        : astNode
+            .getFirstChild(ErlangGrammarImpl.identifier);
     return token.getTokenOriginalValue();
   }
 

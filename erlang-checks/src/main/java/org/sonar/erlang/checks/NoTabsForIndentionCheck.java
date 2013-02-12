@@ -25,7 +25,7 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +34,7 @@ import java.util.Scanner;
 
 @Rule(key = "NoTabsForIndention", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class NoTabsForIndentionCheck extends SquidCheck<ErlangGrammar> {
+public class NoTabsForIndentionCheck extends SquidCheck<LexerlessGrammar> {
 
   private int numOfViolations = 0;
 

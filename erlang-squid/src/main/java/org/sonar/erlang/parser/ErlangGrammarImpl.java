@@ -19,22 +19,190 @@
  */
 package org.sonar.erlang.parser;
 
+import org.sonar.sslr.parser.LexerlessGrammar;
+
 import com.sonar.sslr.api.GenericTokenType;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.grammar.GrammarRuleKey;
+import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
-import static org.sonar.sslr.parser.GrammarOperators.commentTrivia;
-import static org.sonar.sslr.parser.GrammarOperators.endOfInput;
-import static org.sonar.sslr.parser.GrammarOperators.firstOf;
-import static org.sonar.sslr.parser.GrammarOperators.nextNot;
-import static org.sonar.sslr.parser.GrammarOperators.oneOrMore;
-import static org.sonar.sslr.parser.GrammarOperators.optional;
-import static org.sonar.sslr.parser.GrammarOperators.regexp;
-import static org.sonar.sslr.parser.GrammarOperators.sequence;
-import static org.sonar.sslr.parser.GrammarOperators.skippedTrivia;
-import static org.sonar.sslr.parser.GrammarOperators.token;
-import static org.sonar.sslr.parser.GrammarOperators.zeroOrMore;
+public enum ErlangGrammarImpl implements GrammarRuleKey {
 
-public class ErlangGrammarImpl extends ErlangGrammar {
+  eof,
+
+  stringLiteral,
+  regularExpressionLiteral,
+
+  numericLiteral,
+  identifier,
+
+  keyword,
+  letterOrDigit,
+
+  spacing,
+
+  afterKeyword,
+  andKeyword,
+  andalsoKeyword,
+  bandKeyword,
+  beginKeyword,
+  bnotKeyword,
+  borKeyword,
+  bslKeyword,
+  bsrKeyword,
+  bxorKeyword,
+  caseKeyword,
+  catchKeyword,
+  condKeyword,
+  divKeyword,
+  endKeyword,
+  funKeyword,
+  ifKeyword,
+  letKeyword,
+  notKeyword,
+  ofKeyword,
+  orKeyword,
+  orelseKeyword,
+  queryKeyword,
+  receiveKeyword,
+  remKeyword,
+  tryKeyword,
+  whenKeyword,
+  xorKeyword,
+
+  // Puncators
+  arrow,
+  arrowback,
+  doublearrowback,
+  lcurlybrace,
+  rcurlybrace,
+  lparenthesis,
+  rparenthesis,
+  lbracket,
+  rbracket,
+  dot,
+  semi,
+  comma,
+  colon,
+  matchop,
+  plus,
+  minus,
+  star,
+  div,
+  lt,
+  gt,
+  le,
+  ge,
+  equal,
+  notequal,
+  equal2,
+  notequal2,
+  binstart,
+  binend,
+  listcomp,
+  pipe,
+  dollar,
+  apostrophe,
+  plusplus,
+  minusminus,
+  numbersign,
+  exclamation,
+  questionmark,
+
+  module,
+  functionDeclaration,
+  moduleAttr,
+  exportAttr,
+  compileAttr,
+  defineAttr,
+  typeSpec,
+  genericAttr,
+  anyAttr,
+  funcExport,
+  expression,
+  funcArity,
+  functionClause,
+  clauseHead,
+  guardSequenceStart,
+  funcDecl,
+  clauseBody,
+  pattern,
+  literal,
+  primaryExpression,
+  listLiteral,
+  tupleLiteral,
+  binaryLiteral,
+  assignmentExpression,
+  memberExpression,
+  funExpression,
+  arguments,
+  unaryExpression,
+  multiplicativeExpression,
+  additiveExpression,
+  shiftExpression,
+  relationalExpression,
+  equalityExpression,
+  bitwiseAndExpression,
+  bitwiseXorExpression,
+  bitwiseOrExpression,
+  logicalAndExpression,
+  logicalOrExpression,
+  leftHandSideExpression,
+  callExpression,
+  qualifier,
+  listOperationExpression,
+  logicalXorExpression,
+  shortCircuitOrElseExpression,
+  shortCircuitAndAlsoExpression,
+  binaryElement,
+  binaryQualifier,
+  expressionStatement,
+  statement,
+  ifExpression,
+  caseExpression,
+  receiveExpression,
+  tryExpression,
+  branchExps,
+  branchExp,
+  guardSequence,
+  guard,
+  guardExpression,
+  functionDeclarationsNoName,
+  functionDeclarationNoName,
+  patternStatements,
+  patternStatement,
+  statements,
+  sendStatement,
+  catchExpression,
+  afterExpression,
+  catchPattern,
+  catchPatternStatement,
+  catchPatternStatements,
+  blockExpression,
+  recordCreateLiteral,
+  recordAccLiteral,
+  recordLiteral,
+  recordLiteralHead,
+  macroLiteral,
+  otherArithmeticExpression,
+  ifdefAttr,
+  ifndefAttr,
+  elseAttr,
+  endifAttr,
+  flowControlAttr,
+  recordAttr,
+  spec,
+  specType,
+  funcSpec,
+  specFun,
+  specTypeDef,
+  specSub,
+  moduleHeadAttr,
+  importAttr,
+  recordField,
+  fileAttr,
+  behaviourAttr,
+  moduleElements,
+  moduleElement;
 
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
   public static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
@@ -62,39 +230,49 @@ public class ErlangGrammarImpl extends ErlangGrammar {
   public static final String IDENTIFIER = "('[^'\n\r]*')"
     + "|^(?!\\$)(\\p{javaJavaIdentifierStart}++[\\p{javaJavaIdentifierPart}@]*+)";
 
-  public ErlangGrammarImpl() {
-    lexical();
-    punctuators();
-    keywords();
-    expressions();
-    branchAndGuardExpressions();
-    statements();
-    module();
-    functions();
-    // GrammarFunctions.enableMemoizationOfMatchesForAllRules(this);
+
+  public static LexerlessGrammar createGrammar() {
+    return createGrammarBuilder().build();
+  }
+
+  public static LexerlessGrammarBuilder createGrammarBuilder() {
+    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
+    lexical(b);
+    punctuators(b);
+    keywords(b);
+    expressions(b);
+    branchAndGuardExpressions(b);
+    statements(b);
+    module(b);
+    functions(b);
+
+    b.setRootRule(module);
+
+    return b;
   }
 
   /**
    * Lexical
+   * @param b
    */
 
-  private void lexical() {
-    eof.is(token(GenericTokenType.EOF, endOfInput())).skip();
+  private static void lexical(LexerlessGrammarBuilder b) {
+    b.rule(eof).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
 
-    identifier.is(
-        nextNot(keyword),
-        regexp(IDENTIFIER), spacing);
+    b.rule(identifier).is(
+        b.nextNot(keyword),
+        b.regexp(IDENTIFIER), spacing);
 
-    numericLiteral.is(
-        regexp(NUMERIC_LITERAL), spacing);
+    b.rule(numericLiteral).is(
+        b.regexp(NUMERIC_LITERAL), spacing);
 
-    stringLiteral.is(
-        regexp(LITERAL), spacing);
+    b.rule(stringLiteral).is(
+        b.regexp(LITERAL), spacing);
 
     /*
      * TODO use the keywords directly
      */
-    keyword.is(firstOf(
+    b.rule(keyword).is(b.firstOf(
         "after",
         "andalso",
         "and",
@@ -122,359 +300,397 @@ public class ErlangGrammarImpl extends ErlangGrammar {
         "rem",
         "try",
         "when",
-        "xor"), nextNot(letterOrDigit));
+        "xor"), b.nextNot(letterOrDigit));
 
-    letterOrDigit.is(regexp("\\p{javaJavaIdentifierPart}"));
+    b.rule(letterOrDigit).is(b.regexp("\\p{javaJavaIdentifierPart}"));
 
-    spacing.is(
-        skippedTrivia(regexp(WHITESPACE + "*+")),
-        zeroOrMore(commentTrivia(regexp(COMMENT)), skippedTrivia(regexp(WHITESPACE + "*+")))
+    b.rule(spacing).is(
+        b.skippedTrivia(b.regexp(WHITESPACE + "*+")),
+        b.zeroOrMore(b.commentTrivia(b.regexp(COMMENT)), b.skippedTrivia(b.regexp(WHITESPACE + "*+")))
         ).skip();
   }
 
-  private void punctuators() {
-    arrow.is(punctuator("->"));
-    arrowback.is(punctuator("<-"));
-    doublearrowback.is(punctuator("<="));
-    lcurlybrace.is(punctuator("{"));
-    rcurlybrace.is(punctuator("}"));
-    lparenthesis.is(punctuator("("));
-    rparenthesis.is(punctuator(")"));
-    lbracket.is(punctuator("["));
-    rbracket.is(punctuator("]"));
-    dot.is(punctuator("."));
-    semi.is(punctuator(";"));
-    comma.is(punctuator(","));
-    colon.is(punctuator(":"));
-    matchop.is(punctuator("=", nextNot(firstOf("=", "<", ":", "/"))));
-    plus.is(punctuator("+", nextNot("+")));
-    minus.is(punctuator("-", nextNot(firstOf(">", "-"))));
-    star.is(punctuator("*"));
-    div.is(punctuator("/", nextNot("=")));
-    lt.is(punctuator("<", nextNot(firstOf("=", "<"))));
-    gt.is(punctuator(">", nextNot(firstOf("=", ">"))));
-    le.is(punctuator("=<"));
-    ge.is(punctuator(">="));
-    equal.is(punctuator("=="));
-    notequal.is(punctuator("/="));
-    equal2.is(punctuator("=:="));
-    notequal2.is(punctuator("=/="));
-    binstart.is(punctuator("<<"));
-    binend.is(punctuator(">>"));
-    listcomp.is(punctuator("||"));
-    pipe.is(punctuator("|", nextNot("|")));
-    dollar.is(punctuator("$"));
-    apostrophe.is(punctuator("'"));
-    plusplus.is(punctuator("++"));
-    minusminus.is(punctuator("--"));
-    numbersign.is(punctuator("#"));
-    exclamation.is(punctuator("!"));
-    questionmark.is(punctuator("?"));
+  private static void punctuators(LexerlessGrammarBuilder b) {
+    b.rule(arrow).is(punctuator("->", b));
+    b.rule(arrowback).is(punctuator("<-", b));
+    b.rule(doublearrowback).is(punctuator("<=", b));
+    b.rule(lcurlybrace).is(punctuator("{", b));
+    b.rule(rcurlybrace).is(punctuator("}", b));
+    b.rule(lparenthesis).is(punctuator("(", b));
+    b.rule(rparenthesis).is(punctuator(")", b));
+    b.rule(lbracket).is(punctuator("[", b));
+    b.rule(rbracket).is(punctuator("]", b));
+    b.rule(dot).is(punctuator(".", b));
+    b.rule(semi).is(punctuator(";", b));
+    b.rule(comma).is(punctuator(",", b));
+    b.rule(colon).is(punctuator(":", b));
+    b.rule(matchop).is(punctuator("=", b.nextNot(b.firstOf("=", "<", ":", "/")), b));
+    b.rule(plus).is(punctuator("+", b.nextNot("+"), b));
+    b.rule(minus).is(punctuator("-", b.nextNot(b.firstOf(">", "-")), b));
+    b.rule(star).is(punctuator("*", b));
+    b.rule(div).is(punctuator("/", b.nextNot("="), b));
+    b.rule(lt).is(punctuator("<", b.nextNot(b.firstOf("=", "<")), b));
+    b.rule(gt).is(punctuator(">", b.nextNot(b.firstOf("=", ">")), b));
+    b.rule(le).is(punctuator("=<", b));
+    b.rule(ge).is(punctuator(">=", b));
+    b.rule(equal).is(punctuator("==", b));
+    b.rule(notequal).is(punctuator("/=", b));
+    b.rule(equal2).is(punctuator("=:=", b));
+    b.rule(notequal2).is(punctuator("=/=", b));
+    b.rule(binstart).is(punctuator("<<", b));
+    b.rule(binend).is(punctuator(">>", b));
+    b.rule(listcomp).is(punctuator("||", b));
+    b.rule(pipe).is(punctuator("|", b.nextNot("|"), b));
+    b.rule(dollar).is(punctuator("$", b));
+    b.rule(apostrophe).is(punctuator("'", b));
+    b.rule(plusplus).is(punctuator("++", b));
+    b.rule(minusminus).is(punctuator("--", b));
+    b.rule(numbersign).is(punctuator("#", b));
+    b.rule(exclamation).is(punctuator("!", b));
+    b.rule(questionmark).is(punctuator("?", b));
   }
 
-  private void keywords() {
-    afterKeyword.is(keyword("after"));
-    andKeyword.is(keyword("and"));
-    andalsoKeyword.is(keyword("andalso"));
-    bandKeyword.is(keyword("band"));
-    beginKeyword.is(keyword("begin"));
-    bnotKeyword.is(keyword("bnot"));
-    borKeyword.is(keyword("bor"));
-    bslKeyword.is(keyword("bsl"));
-    bsrKeyword.is(keyword("bsr"));
-    bxorKeyword.is(keyword("bxor"));
-    caseKeyword.is(keyword("case"));
-    catchKeyword.is(keyword("catch"));
-    condKeyword.is(keyword("cond"));
-    divKeyword.is(keyword("div"));
-    endKeyword.is(keyword("end"));
-    funKeyword.is(keyword("fun"));
-    ifKeyword.is(keyword("if"));
-    letKeyword.is(keyword("let"));
-    notKeyword.is(keyword("not"));
-    ofKeyword.is(keyword("of"));
-    orKeyword.is(keyword("or"));
-    orelseKeyword.is(keyword("orelse"));
-    queryKeyword.is(keyword("query"));
-    receiveKeyword.is(keyword("receive"));
-    remKeyword.is(keyword("rem"));
-    tryKeyword.is(keyword("try"));
-    whenKeyword.is(keyword("when"));
-    xorKeyword.is(keyword("xor"));
+  private static void keywords(LexerlessGrammarBuilder b) {
+    b.rule(afterKeyword).is(keyword("after", b));
+    b.rule(andKeyword).is(keyword("and", b));
+    b.rule(andalsoKeyword).is(keyword("andalso", b));
+    b.rule(bandKeyword).is(keyword("band", b));
+    b.rule(beginKeyword).is(keyword("begin", b));
+    b.rule(bnotKeyword).is(keyword("bnot", b));
+    b.rule(borKeyword).is(keyword("bor", b));
+    b.rule(bslKeyword).is(keyword("bsl", b));
+    b.rule(bsrKeyword).is(keyword("bsr", b));
+    b.rule(bxorKeyword).is(keyword("bxor", b));
+    b.rule(caseKeyword).is(keyword("case", b));
+    b.rule(catchKeyword).is(keyword("catch", b));
+    b.rule(condKeyword).is(keyword("cond", b));
+    b.rule(divKeyword).is(keyword("div", b));
+    b.rule(endKeyword).is(keyword("end", b));
+    b.rule(funKeyword).is(keyword("fun", b));
+    b.rule(ifKeyword).is(keyword("if", b));
+    b.rule(letKeyword).is(keyword("let", b));
+    b.rule(notKeyword).is(keyword("not", b));
+    b.rule(ofKeyword).is(keyword("of", b));
+    b.rule(orKeyword).is(keyword("or", b));
+    b.rule(orelseKeyword).is(keyword("orelse", b));
+    b.rule(queryKeyword).is(keyword("query", b));
+    b.rule(receiveKeyword).is(keyword("receive", b));
+    b.rule(remKeyword).is(keyword("rem", b));
+    b.rule(tryKeyword).is(keyword("try", b));
+    b.rule(whenKeyword).is(keyword("when", b));
+    b.rule(xorKeyword).is(keyword("xor", b));
   }
 
-  private void module() {
-    module.is(spacing, optional(moduleElements), eof);
-    moduleElements.is(oneOrMore(
+  private static void module(LexerlessGrammarBuilder b) {
+    b.rule(module).is(spacing, b.optional(moduleElements), eof);
+    b.rule(moduleElements).is(b.oneOrMore(
         moduleElement
         ));
 
-    moduleElement.is(firstOf(moduleHeadAttr, sequence(macroLiteral, dot), functionDeclaration)).skipIfOneChild();
+    b.rule(moduleElement).is(b.firstOf(moduleHeadAttr, b.sequence(macroLiteral, dot), functionDeclaration)).skipIfOneChild();
 
-    moduleHeadAttr.is(firstOf(moduleAttr, fileAttr, exportAttr, compileAttr, defineAttr,
+    b.rule(moduleHeadAttr).is(b.firstOf(moduleAttr, fileAttr, exportAttr, compileAttr, defineAttr,
         importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr, anyAttr)).skipIfOneChild();
 
-    recordAttr.is(minus, semiKeyword("record"), lparenthesis, identifier, comma, lcurlybrace, optional(sequence(
-        recordField, optional(matchop, recordField)), zeroOrMore(firstOf(comma, pipe), sequence(recordField,
-        optional(matchop, recordField)))), rcurlybrace, rparenthesis, dot);
+    b.rule(recordAttr).is(minus, semiKeyword("record", b), lparenthesis, identifier, comma, lcurlybrace, b.optional(b.sequence(
+        recordField, b.optional(matchop, recordField)), b.zeroOrMore(b.firstOf(comma, pipe), b.sequence(recordField,
+        b.optional(matchop, recordField)))), rcurlybrace, rparenthesis, dot);
 
-    recordField.is(firstOf(sequence(firstOf(lcurlybrace, lbracket), recordField, zeroOrMore(comma,
-        recordField), firstOf(rcurlybrace, rbracket)),
-        sequence(firstOf(specFun, callExpression))), optional(colon, colon, recordField));
+    b.rule(recordField).is(b.firstOf(b.sequence(b.firstOf(lcurlybrace, lbracket), recordField, b.zeroOrMore(comma,
+        recordField), b.firstOf(rcurlybrace, rbracket)),
+        b.firstOf(specFun, callExpression)), b.optional(colon, colon, recordField));
 
-    flowControlAttr.is(firstOf(ifdefAttr, ifndefAttr), zeroOrMore(firstOf(moduleHeadAttr,
-        functionDeclaration)), optional(elseAttr, zeroOrMore(firstOf(moduleHeadAttr,
+    b.rule(flowControlAttr).is(b.firstOf(ifdefAttr, ifndefAttr), b.zeroOrMore(b.firstOf(moduleHeadAttr,
+        functionDeclaration)), b.optional(elseAttr, b.zeroOrMore(b.firstOf(moduleHeadAttr,
         functionDeclaration))), endifAttr);
 
-    ifdefAttr.is(minus, semiKeyword("ifdef"), lparenthesis, identifier, rparenthesis, dot);
+    b.rule(ifdefAttr).is(minus, semiKeyword("ifdef", b), lparenthesis, identifier, rparenthesis, dot);
 
-    ifndefAttr.is(minus, semiKeyword("ifndef"), lparenthesis, identifier, rparenthesis, dot);
+    b.rule(ifndefAttr).is(minus, semiKeyword("ifndef", b), lparenthesis, identifier, rparenthesis, dot);
 
-    elseAttr.is(minus, semiKeyword("else"), dot);
+    b.rule(elseAttr).is(minus, semiKeyword("else", b), dot);
 
-    endifAttr.is(minus, semiKeyword("endif"), dot);
+    b.rule(endifAttr).is(minus, semiKeyword("endif", b), dot);
 
-    moduleAttr.is(minus, semiKeyword("module"), lparenthesis, identifier, rparenthesis, dot);
-    exportAttr.is(minus, semiKeyword("export"), lparenthesis, funcExport, rparenthesis, dot);
-    compileAttr.is(minus, semiKeyword("compile"), lparenthesis, primaryExpression, rparenthesis, dot);
+    b.rule(moduleAttr).is(minus, semiKeyword("module", b), lparenthesis, identifier, rparenthesis, dot);
+    b.rule(exportAttr).is(minus, semiKeyword("export", b), lparenthesis, funcExport, rparenthesis, dot);
+    b.rule(compileAttr).is(minus, semiKeyword("compile", b), lparenthesis, primaryExpression, rparenthesis, dot);
 
-    defineAttr.is(minus, semiKeyword("define"), lparenthesis, firstOf(sequence(identifier, comma,
-        statement), sequence(funcDecl, comma, statement)), rparenthesis, dot);
+    b.rule(defineAttr).is(minus, semiKeyword("define", b), lparenthesis, b.firstOf(b.sequence(identifier, comma,
+        statement), b.sequence(funcDecl, comma, statement)), rparenthesis, dot);
 
-    importAttr.is(minus, semiKeyword("import"), lparenthesis, firstOf(macroLiteral, identifier), comma,
-        lbracket, funcArity, zeroOrMore(comma, funcArity), rbracket, rparenthesis, dot);
+    b.rule(importAttr).is(minus, semiKeyword("import", b), lparenthesis, b.firstOf(macroLiteral, identifier), comma,
+        lbracket, funcArity, b.zeroOrMore(comma, funcArity), rbracket, rparenthesis, dot);
 
-    fileAttr.is(minus, semiKeyword("file"), lparenthesis, primaryExpression, comma, primaryExpression,
+    b.rule(fileAttr).is(minus, semiKeyword("file", b), lparenthesis, primaryExpression, comma, primaryExpression,
         rparenthesis, dot);
 
-    behaviourAttr.is(minus, semiKeyword("behaviour"), lparenthesis, identifier, rparenthesis, dot);
+    b.rule(behaviourAttr).is(minus, semiKeyword("behaviour", b), lparenthesis, identifier, rparenthesis, dot);
 
-    genericAttr.is(minus, firstOf(semiKeyword("vsn"), semiKeyword("on_load"), semiKeyword("include"), semiKeyword("file"),
-        semiKeyword("ignore_xref"), semiKeyword("include_lib"), semiKeyword("author"), semiKeyword("export_type"), semiKeyword("deprecated"), semiKeyword("asn1_info")),
-        lparenthesis, firstOf(funcArity, primaryExpression), rparenthesis, dot);
+    b.rule(genericAttr).is(minus, b.firstOf(semiKeyword("vsn", b), semiKeyword("on_load", b), semiKeyword("include", b), semiKeyword("file", b),
+        semiKeyword("ignore_xref", b), semiKeyword("include_lib", b), semiKeyword("author", b), semiKeyword("export_type", b), semiKeyword("deprecated", b), semiKeyword("asn1_info", b)),
+        lparenthesis, b.firstOf(funcArity, primaryExpression), rparenthesis, dot);
 
-    anyAttr.is(minus, identifier, lparenthesis, primaryExpression, rparenthesis, dot);
+    b.rule(anyAttr).is(minus, identifier, lparenthesis, primaryExpression, rparenthesis, dot);
 
     // TODO: is it possible to have something like: -export().?
-    funcExport.is(lbracket, zeroOrMore(funcArity, zeroOrMore(comma, funcArity)), rbracket);
+    b.rule(funcExport).is(lbracket, b.zeroOrMore(funcArity, b.zeroOrMore(comma, funcArity)), rbracket);
   }
 
-  private void functions() {
-    spec.is(minus, firstOf(semiKeyword("spec"), semiKeyword("callback")), optional(lparenthesis), optional(
-        identifier, colon), identifier, optional(div, numericLiteral), optional(colon, colon),
-        funcSpec, zeroOrMore(semi, funcSpec), optional(rparenthesis), dot);
+  private static void functions(LexerlessGrammarBuilder b) {
+    b.rule(spec).is(minus, b.firstOf(semiKeyword("spec", b), semiKeyword("callback", b)), b.optional(lparenthesis), b.optional(
+        identifier, colon), identifier, b.optional(div, numericLiteral), b.optional(colon, colon),
+        funcSpec, b.zeroOrMore(semi, funcSpec), b.optional(rparenthesis), dot);
 
-    typeSpec.is(minus, firstOf(semiKeyword("type"), semiKeyword("opaque")), optional(lparenthesis), funcDecl, firstOf(sequence(
-        colon, colon, specType), sequence(arrow, funcDecl)), optional(rparenthesis), dot);
+    b.rule(typeSpec).is(minus, b.firstOf(semiKeyword("type", b), semiKeyword("opaque", b)), b.optional(lparenthesis), funcDecl, b.firstOf(b.sequence(
+        colon, colon, specType), b.sequence(arrow, funcDecl)), b.optional(rparenthesis), dot);
 
-    funcSpec.is(lparenthesis, optional(specType), rparenthesis, arrow, specType, optional(whenKeyword, specType));
+    b.rule(funcSpec).is(lparenthesis, b.optional(specType), rparenthesis, arrow, specType, b.optional(whenKeyword, specType));
 
-    specType.is(oneOrMore(specTypeDef, zeroOrMore(firstOf(pipe, comma), specTypeDef)));
+    b.rule(specType).is(b.oneOrMore(specTypeDef, b.zeroOrMore(b.firstOf(pipe, comma), specTypeDef)));
 
-    specTypeDef.is(firstOf(sequence(firstOf(lcurlybrace, lbracket), specTypeDef, firstOf(
-        rcurlybrace, rbracket)), specSub), zeroOrMore(firstOf(comma, pipe), firstOf(sequence(firstOf(
-        lcurlybrace, lbracket), specTypeDef, firstOf(rcurlybrace, rbracket)), specSub)));
+    b.rule(specTypeDef).is(b.firstOf(b.sequence(b.firstOf(lcurlybrace, lbracket), specTypeDef, b.firstOf(
+        rcurlybrace, rbracket)), specSub), b.zeroOrMore(b.firstOf(comma, pipe), b.firstOf(b.sequence(b.firstOf(
+        lcurlybrace, lbracket), specTypeDef, b.firstOf(rcurlybrace, rbracket)), specSub)));
 
-    specSub.is(firstOf(
+    b.rule(specSub).is(b.firstOf(
         // things in ()
-        sequence(lparenthesis, specTypeDef, rparenthesis),
+        b.sequence(lparenthesis, specTypeDef, rparenthesis),
         // workaround for fun like expression:fun(), fun((id())-> error
         // | ok)
-        sequence(specFun),
+        specFun,
         // something like: list(A | B)
-        sequence(identifier, lparenthesis, callExpression, oneOrMore(pipe, callExpression),
+        b.sequence(identifier, lparenthesis, callExpression, b.oneOrMore(pipe, callExpression),
             rparenthesis),
         // and: Mega::giga()
-        sequence(firstOf(funcArity, identifier), colon, colon, specTypeDef),
+        b.sequence(b.firstOf(funcArity, identifier), colon, colon, specTypeDef),
         // and for records
-        sequence(numbersign, identifier, specTypeDef),
+        b.sequence(numbersign, identifier, specTypeDef),
         // and things like: 1..255
-        sequence(primaryExpression, dot, dot, primaryExpression),
+        b.sequence(primaryExpression, dot, dot, primaryExpression),
         // or just simple ...
-        sequence(dot, dot, dot),
+        b.sequence(dot, dot, dot),
         // and simple function call
-        sequence(optional(identifier, colon), identifier, lparenthesis, optional(specTypeDef),
+        b.sequence(b.optional(identifier, colon), identifier, lparenthesis, b.optional(specTypeDef),
             rparenthesis),
         // and everything other
         callExpression));
 
-    specFun.is(funKeyword, lparenthesis, optional(lparenthesis, optional(specTypeDef), rparenthesis), optional(arrow,
+    b.rule(specFun).is(funKeyword, lparenthesis, b.optional(lparenthesis, b.optional(specTypeDef), rparenthesis), b.optional(arrow,
         specTypeDef), rparenthesis);
 
-    functionDeclaration.is(functionClause, zeroOrMore(semi, functionClause),
+    b.rule(functionDeclaration).is(functionClause, b.zeroOrMore(semi, functionClause),
 
         dot);
-    functionClause.is(clauseHead, arrow, clauseBody);
-    clauseHead.is(funcDecl, optional(guardSequenceStart));
-    clauseBody.is(statements);
+    b.rule(functionClause).is(clauseHead, arrow, clauseBody);
+    b.rule(clauseHead).is(funcDecl, b.optional(guardSequenceStart));
+    b.rule(clauseBody).is(statements);
 
-    funcArity.is(optional(literal, colon), literal, div, literal);
+    b.rule(funcArity).is(b.optional(literal, colon), literal, div, literal);
 
-    funcDecl.is(identifier, arguments);
+    b.rule(funcDecl).is(identifier, arguments);
   }
 
-  private void expressions() {
+  private static void expressions(LexerlessGrammarBuilder b) {
     // handle string concetanation ("..."\n[\r\t]"..." is one literal as
     // well this:
     // "asasd" ?MACRO "asdasd"
-    literal.is(oneOrMore(firstOf(stringLiteral, numericLiteral, identifier, macroLiteral)));
-    primaryExpression.is(firstOf(sequence(lparenthesis, expression, rparenthesis), literal, listLiteral, tupleLiteral, binaryLiteral));
+    b.rule(literal).is(b.oneOrMore(b.firstOf(stringLiteral, numericLiteral, identifier, macroLiteral)));
+    b.rule(primaryExpression).is(b.firstOf(b.sequence(lparenthesis, expression, rparenthesis), literal, listLiteral, tupleLiteral, binaryLiteral));
 
-    listLiteral.is(lbracket, optional(firstOf(sequence(assignmentExpression, listcomp, qualifier, zeroOrMore(
-        comma, qualifier)), sequence(assignmentExpression, zeroOrMore(firstOf(comma,
-        assignmentExpression)), optional(pipe, assignmentExpression)))), rbracket);
-    qualifier.is(firstOf(sequence(assignmentExpression, arrowback, expression), expression));
-    recordLiteral.is(optional(primaryExpression), oneOrMore(recordLiteralHead), optional(lcurlybrace, optional(
-        assignmentExpression, zeroOrMore(comma, assignmentExpression)), rcurlybrace));
-    recordLiteralHead.is(numbersign, identifier, zeroOrMore(dot, identifier));
+    b.rule(listLiteral).is(lbracket, b.optional(b.firstOf(b.sequence(assignmentExpression, listcomp, qualifier, b.zeroOrMore(
+        comma, qualifier)), b.sequence(assignmentExpression, b.zeroOrMore(b.firstOf(comma,
+        assignmentExpression)), b.optional(pipe, assignmentExpression)))), rbracket);
+    b.rule(qualifier).is(b.firstOf(b.sequence(assignmentExpression, arrowback, expression), expression));
+    b.rule(recordLiteral).is(b.optional(primaryExpression), b.oneOrMore(recordLiteralHead), b.optional(lcurlybrace, b.optional(
+        assignmentExpression, b.zeroOrMore(comma, assignmentExpression)), rcurlybrace));
+    b.rule(recordLiteralHead).is(numbersign, identifier, b.zeroOrMore(dot, identifier));
 
-    macroLiteral.is(questionmark, identifier, optional(arguments));
-    tupleLiteral.is(lcurlybrace, zeroOrMore(firstOf(comma, expression)), rcurlybrace);
-    binaryLiteral.is(binstart, firstOf(sequence(sequence(assignmentExpression, listcomp,
-        oneOrMore(binaryQualifier)), zeroOrMore(firstOf(comma, assignmentExpression))), zeroOrMore(firstOf(
+    b.rule(macroLiteral).is(questionmark, identifier, b.optional(arguments));
+    b.rule(tupleLiteral).is(lcurlybrace, b.zeroOrMore(b.firstOf(comma, expression)), rcurlybrace);
+    b.rule(binaryLiteral).is(binstart, b.firstOf(b.sequence(b.sequence(assignmentExpression, listcomp,
+        b.oneOrMore(binaryQualifier)), b.zeroOrMore(b.firstOf(comma, assignmentExpression))), b.zeroOrMore(b.firstOf(
         comma, binaryElement))), binend);
-    binaryQualifier.is(firstOf(
-        sequence(binaryLiteral, doublearrowback, expression), sequence(
-            primaryExpression, arrowback, expression, zeroOrMore(comma, expression)
+    b.rule(binaryQualifier).is(b.firstOf(
+        b.sequence(binaryLiteral, doublearrowback, expression), b.sequence(
+            primaryExpression, arrowback, expression, b.zeroOrMore(comma, expression)
 
-        )));
+            )));
 
-    binaryElement.is(firstOf(sequence(expression, optional(colon, firstOf(numericLiteral, identifier,
-        macroLiteral)), optional(div,
-        /*
-         * Hack for things like: 1024:32/little-float-dafaq
-         */
-        firstOf(numericLiteral, sequence(identifier, oneOrMore(minus, identifier)), identifier)))));
-    memberExpression.is(
-        firstOf(recordLiteral, macroLiteral, ifExpression, funExpression, caseExpression,
+    b.rule(binaryElement).is(
+        b.sequence(expression,
+            b.optional(
+                colon,
+                b.firstOf(numericLiteral, identifier, macroLiteral)),
+            b.optional(
+                div,
+                /*
+                 * Hack for things like: 1024:32/little-float-dafaq
+                 */
+                b.firstOf(
+                    numericLiteral,
+                    b.sequence(
+                        identifier,
+                        b.oneOrMore(minus, identifier)),
+                    identifier)
+                )
+            )
+        );
+    b.rule(memberExpression).is(
+        b.firstOf(recordLiteral, macroLiteral, ifExpression, funExpression, caseExpression,
             tryExpression, receiveExpression, blockExpression, primaryExpression))
         .skipIfOneChild();
     /**
      * It can be a record ref (originaly a.b['a']) as well
      */
-    callExpression.is(
-        firstOf(sequence(optional(memberExpression, colon), memberExpression, arguments),
+    b.rule(callExpression).is(
+        b.firstOf(b.sequence(b.optional(memberExpression, colon), memberExpression, arguments),
             memberExpression)).skipIfOneChild();
 
-    arguments.is(lparenthesis, optional(assignmentExpression, zeroOrMore(comma, assignmentExpression)),
+    b.rule(arguments).is(lparenthesis, b.optional(assignmentExpression, b.zeroOrMore(comma, assignmentExpression)),
         rparenthesis);
-    unaryExpression.is(firstOf(
+    b.rule(unaryExpression).is(b.firstOf(
         // handle things like: -12, -A, -func(A), -(6+3)
-        sequence(optional(minus), callExpression), sequence(notKeyword, callExpression))).skipIfOneChild();
-    otherArithmeticExpression.is(unaryExpression,
-        zeroOrMore(firstOf(bnotKeyword, divKeyword, remKeyword), unaryExpression)).skipIfOneChild();
-    multiplicativeExpression.is(otherArithmeticExpression,
-        zeroOrMore(firstOf(star, div), otherArithmeticExpression)).skipIfOneChild();
-    additiveExpression.is(multiplicativeExpression,
-        zeroOrMore(firstOf(plus, minus), multiplicativeExpression)).skipIfOneChild();
+        b.sequence(b.optional(minus), callExpression), b.sequence(notKeyword, callExpression))).skipIfOneChild();
+    b.rule(otherArithmeticExpression).is(unaryExpression,
+        b.zeroOrMore(b.firstOf(bnotKeyword, divKeyword, remKeyword), unaryExpression)).skipIfOneChild();
+    b.rule(multiplicativeExpression).is(otherArithmeticExpression,
+        b.zeroOrMore(b.firstOf(star, div), otherArithmeticExpression)).skipIfOneChild();
+    b.rule(additiveExpression).is(multiplicativeExpression,
+        b.zeroOrMore(b.firstOf(plus, minus), multiplicativeExpression)).skipIfOneChild();
 
-    shiftExpression.is(additiveExpression, zeroOrMore(firstOf(bslKeyword, bsrKeyword), additiveExpression))
+    b.rule(shiftExpression).is(additiveExpression, b.zeroOrMore(b.firstOf(bslKeyword, bsrKeyword), additiveExpression))
         .skipIfOneChild();
-    relationalExpression.is(shiftExpression, zeroOrMore(firstOf(lt, gt, le, ge), shiftExpression))
-        .skipIfOneChild();
-
-    equalityExpression.is(relationalExpression,
-        zeroOrMore(firstOf(equal, notequal, equal2, notequal2), relationalExpression))
+    b.rule(relationalExpression).is(shiftExpression, b.zeroOrMore(b.firstOf(lt, gt, le, ge), shiftExpression))
         .skipIfOneChild();
 
-    bitwiseAndExpression.is(equalityExpression, zeroOrMore(bandKeyword, equalityExpression)).skipIfOneChild();
-
-    bitwiseXorExpression.is(bitwiseAndExpression, zeroOrMore(bxorKeyword, bitwiseAndExpression))
+    b.rule(equalityExpression).is(relationalExpression,
+        b.zeroOrMore(b.firstOf(equal, notequal, equal2, notequal2), relationalExpression))
         .skipIfOneChild();
 
-    bitwiseOrExpression.is(bitwiseXorExpression, zeroOrMore(borKeyword, bitwiseXorExpression))
+    b.rule(bitwiseAndExpression).is(equalityExpression, b.zeroOrMore(bandKeyword, equalityExpression)).skipIfOneChild();
+
+    b.rule(bitwiseXorExpression).is(bitwiseAndExpression, b.zeroOrMore(bxorKeyword, bitwiseAndExpression))
         .skipIfOneChild();
 
-    logicalAndExpression.is(bitwiseOrExpression, zeroOrMore(andKeyword, bitwiseOrExpression))
+    b.rule(bitwiseOrExpression).is(bitwiseXorExpression, b.zeroOrMore(borKeyword, bitwiseXorExpression))
         .skipIfOneChild();
 
-    logicalOrExpression.is(logicalAndExpression, zeroOrMore(orKeyword, logicalAndExpression))
+    b.rule(logicalAndExpression).is(bitwiseOrExpression, b.zeroOrMore(andKeyword, bitwiseOrExpression))
         .skipIfOneChild();
 
-    logicalXorExpression.is(logicalOrExpression, zeroOrMore(xorKeyword, logicalOrExpression))
+    b.rule(logicalOrExpression).is(logicalAndExpression, b.zeroOrMore(orKeyword, logicalAndExpression))
         .skipIfOneChild();
 
-    shortCircuitOrElseExpression.is(logicalXorExpression, zeroOrMore(orelseKeyword, logicalXorExpression))
+    b.rule(logicalXorExpression).is(logicalOrExpression, b.zeroOrMore(xorKeyword, logicalOrExpression))
         .skipIfOneChild();
 
-    shortCircuitAndAlsoExpression.is(shortCircuitOrElseExpression,
-        zeroOrMore(andalsoKeyword, shortCircuitOrElseExpression)).skipIfOneChild();
+    b.rule(shortCircuitOrElseExpression).is(logicalXorExpression, b.zeroOrMore(orelseKeyword, logicalXorExpression))
+        .skipIfOneChild();
 
-    listOperationExpression.is(shortCircuitAndAlsoExpression,
-        zeroOrMore(firstOf(plusplus, minusminus), shortCircuitAndAlsoExpression)).skipIfOneChild();
+    b.rule(shortCircuitAndAlsoExpression).is(shortCircuitOrElseExpression,
+        b.zeroOrMore(andalsoKeyword, shortCircuitOrElseExpression)).skipIfOneChild();
 
-    assignmentExpression.is(
-        firstOf(sequence(listOperationExpression, matchop, assignmentExpression),
+    b.rule(listOperationExpression).is(shortCircuitAndAlsoExpression,
+        b.zeroOrMore(b.firstOf(plusplus, minusminus), shortCircuitAndAlsoExpression)).skipIfOneChild();
+
+    b.rule(assignmentExpression).is(
+        b.firstOf(b.sequence(listOperationExpression, matchop, assignmentExpression),
             listOperationExpression)).skipIfOneChild();
 
-    expression.is(optional(catchKeyword), assignmentExpression);
+    b.rule(expression).is(b.optional(catchKeyword), assignmentExpression);
 
-    funExpression.is(funKeyword, firstOf(sequence(optional(memberExpression, colon), funcArity),
-        sequence(functionDeclarationsNoName, endKeyword)), optional(arguments));
-    functionDeclarationsNoName.is(functionDeclarationNoName, zeroOrMore(semi,
+    b.rule(funExpression).is(funKeyword, b.firstOf(b.sequence(b.optional(memberExpression, colon), funcArity),
+        b.sequence(functionDeclarationsNoName, endKeyword)), b.optional(arguments));
+    b.rule(functionDeclarationsNoName).is(functionDeclarationNoName, b.zeroOrMore(semi,
         functionDeclarationNoName));
-    functionDeclarationNoName.is(arguments, optional(guardSequenceStart), arrow, statements);
+    b.rule(functionDeclarationNoName).is(arguments, b.optional(guardSequenceStart), arrow, statements);
 
-    caseExpression.is(caseKeyword, expression, ofKeyword, patternStatements, endKeyword);
+    b.rule(caseExpression).is(caseKeyword, expression, ofKeyword, patternStatements, endKeyword);
 
-    ifExpression.is(ifKeyword, branchExps, endKeyword);
+    b.rule(ifExpression).is(ifKeyword, branchExps, endKeyword);
 
-    tryExpression.is(tryKeyword, statements, optional(ofKeyword, patternStatements), firstOf(sequence(catchExpression,
+    b.rule(tryExpression).is(tryKeyword, statements, b.optional(ofKeyword, patternStatements), b.firstOf(b.sequence(catchExpression,
         afterExpression), catchExpression, afterExpression), endKeyword);
 
-    afterExpression.is(afterKeyword, statements);
+    b.rule(afterExpression).is(afterKeyword, statements);
 
-    catchExpression.is(catchKeyword, catchPatternStatements);
+    b.rule(catchExpression).is(catchKeyword, catchPatternStatements);
 
-    receiveExpression.is(receiveKeyword, firstOf(sequence(patternStatements, optional(afterKeyword, expression, arrow,
-        statements)), sequence(afterKeyword, expression, arrow, statements)), endKeyword);
+    b.rule(receiveExpression).is(receiveKeyword, b.firstOf(b.sequence(patternStatements, b.optional(afterKeyword, expression, arrow,
+        statements)), b.sequence(afterKeyword, expression, arrow, statements)), endKeyword);
 
-    blockExpression.is(beginKeyword, statements, endKeyword);
+    b.rule(blockExpression).is(beginKeyword, statements, endKeyword);
   }
 
   /**
    * A.4 Statement
    **/
-  private void statements() {
-    expressionStatement.is(expression);
-    statement.is(firstOf(sendStatement, expressionStatement));
-    statements.is(statement, zeroOrMore(comma, statement));
+  private static void statements(LexerlessGrammarBuilder b) {
+    b.rule(expressionStatement).is(expression);
+    b.rule(statement).is(b.firstOf(sendStatement, expressionStatement));
+    b.rule(statements).is(statement, b.zeroOrMore(comma, statement));
 
-    sendStatement.is(expression, exclamation, expression);
+    b.rule(sendStatement).is(expression, exclamation, expression);
   }
 
-  public void branchAndGuardExpressions() {
-    branchExps.is(branchExp, zeroOrMore(semi, branchExp));
-    branchExp.is(guardSequence, arrow, statements);
+  public static void branchAndGuardExpressions(LexerlessGrammarBuilder b) {
+    b.rule(branchExps).is(branchExp, b.zeroOrMore(semi, branchExp));
+    b.rule(branchExp).is(guardSequence, arrow, statements);
 
-    patternStatements.is(patternStatement, zeroOrMore(semi, patternStatement));
-    patternStatement.is(pattern, optional(guardSequenceStart), arrow, statements);
+    b.rule(patternStatements).is(patternStatement, b.zeroOrMore(semi, patternStatement));
+    b.rule(patternStatement).is(pattern, b.optional(guardSequenceStart), arrow, statements);
 
-    catchPatternStatements.is(catchPatternStatement, zeroOrMore(semi, catchPatternStatement));
-    catchPatternStatement.is(catchPattern, optional(guardSequenceStart), arrow, statements);
-    pattern.is(assignmentExpression);
-    catchPattern.is(optional(identifier, colon), assignmentExpression);
+    b.rule(catchPatternStatements).is(catchPatternStatement, b.zeroOrMore(semi, catchPatternStatement));
+    b.rule(catchPatternStatement).is(catchPattern, b.optional(guardSequenceStart), arrow, statements);
+    b.rule(pattern).is(assignmentExpression);
+    b.rule(catchPattern).is(b.optional(identifier, colon), assignmentExpression);
 
-    guardSequenceStart.is(whenKeyword, guardSequence);
+    b.rule(guardSequenceStart).is(whenKeyword, guardSequence);
 
-    guardSequence.is(guard, zeroOrMore(semi, guard));
-    guard.is(guardExpression, zeroOrMore(comma, guardExpression));
-    guardExpression.is(expression);
+    b.rule(guardSequence).is(guard, b.zeroOrMore(semi, guard));
+    b.rule(guard).is(guardExpression, b.zeroOrMore(comma, guardExpression));
+    b.rule(guardExpression).is(expression);
   }
 
-  private Object punctuator(String value) {
-    return sequence(value, spacing);
+  private static Object punctuator(String value, LexerlessGrammarBuilder b) {
+    return b.sequence(value, spacing);
   }
 
-  private Object punctuator(String value, Object element) {
-    return sequence(value, element, spacing);
+  private static Object punctuator(String value, Object element, LexerlessGrammarBuilder b) {
+    return b.sequence(value, element, spacing);
   }
 
-  private Object keyword(String value) {
-    return sequence(value, nextNot(letterOrDigit), spacing);
+  private static Object keyword(String value, LexerlessGrammarBuilder b) {
+    return b.sequence(value, b.nextNot(letterOrDigit), spacing);
   }
 
-  private Object semiKeyword(String value) {
-    return sequence(value, nextNot(letterOrDigit), spacing);
+  private static Object semiKeyword(String value, LexerlessGrammarBuilder b) {
+    return b.sequence(value, b.nextNot(letterOrDigit), spacing);
   }
+
+  private final String internalName;
+
+  private ErlangGrammarImpl() {
+    String name = name();
+    StringBuilder sb = new StringBuilder();
+    int i = 0;
+    while (i < name.length()) {
+      if (name.charAt(i) == '_' && i + 1 < name.length()) {
+        i++;
+        sb.append(name.charAt(i));
+      } else {
+        sb.append(Character.toLowerCase(name.charAt(i)));
+      }
+      i++;
+    }
+    this.internalName = sb.toString();
+  }
+
+/*  @Override
+  public String toString() {
+    // This allows to keep compatibility with old XPath expressions
+    return internalName;
+  }
+*/
 }

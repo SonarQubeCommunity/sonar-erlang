@@ -26,7 +26,8 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,20 +35,18 @@ import java.util.List;
 @Rule(key = "SpaceAfterBeforeOperators", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<ErlangGrammar> {
+public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar> {
 
-  List<com.sonar.sslr.api.Rule> operators;
+  List<ErlangGrammarImpl> operators= ImmutableList.of(ErlangGrammarImpl.matchop,
+      ErlangGrammarImpl.star, ErlangGrammarImpl.div, ErlangGrammarImpl.plus,
+      ErlangGrammarImpl.minus);
   List<Integer> failedLines = new ArrayList<Integer>();
 
   private int numOfViolations = 0;
 
   @Override
   public void init() {
-    ErlangGrammar grammar = getContext().getGrammar();
-    subscribeTo(grammar.primaryExpression);
-    operators = ImmutableList.of(grammar.matchop,
-        grammar.star, grammar.div, grammar.plus,
-        grammar.minus);
+    subscribeTo(ErlangGrammarImpl.primaryExpression);
   }
 
   @Override

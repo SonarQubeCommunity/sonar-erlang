@@ -27,13 +27,14 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
 import org.sonar.erlang.api.ErlangMetric;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.squid.api.SourceFunction;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "FunExpressionComplexity", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class FunExpressionComplexityCheck extends SquidCheck<ErlangGrammar> {
+public class FunExpressionComplexityCheck extends SquidCheck<LexerlessGrammar> {
 
   private static final int DEFAULT_MAXIMUM_FUN_EXPRESSION_COMPLEXITY_THRESHOLD = 4;
 
@@ -43,7 +44,7 @@ public class FunExpressionComplexityCheck extends SquidCheck<ErlangGrammar> {
 
   @Override
   public void init() {
-    subscribeTo(getContext().getGrammar().funExpression);
+    subscribeTo(ErlangGrammarImpl.funExpression);
   }
 
   @Override

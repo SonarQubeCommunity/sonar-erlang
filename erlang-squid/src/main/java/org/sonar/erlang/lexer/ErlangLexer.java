@@ -19,13 +19,14 @@
  */
 package org.sonar.erlang.lexer;
 
+import java.nio.charset.Charset;
+
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.impl.Lexer;
 import com.sonar.sslr.impl.channel.BlackHoleChannel;
 import com.sonar.sslr.impl.channel.IdentifierAndKeywordChannel;
 import com.sonar.sslr.impl.channel.PunctuatorChannel;
 import com.sonar.sslr.impl.channel.UnknownCharacterChannel;
-import org.sonar.erlang.ErlangConfiguration;
 import org.sonar.erlang.api.ErlangKeyword;
 import org.sonar.erlang.api.ErlangPunctuator;
 import org.sonar.erlang.api.ErlangTokenType;
@@ -39,9 +40,10 @@ public final class ErlangLexer {
   private ErlangLexer() {
   }
 
-  public static Lexer create(ErlangConfiguration conf) {
+  public static Lexer create(Charset charset) {
     return Lexer
         .builder()
+        .withCharset(charset)
         .withChannel(regexp(GenericTokenType.LITERAL, ErlangGrammarImpl.LITERAL))
         .withChannel(new BlackHoleChannel(ErlangGrammarImpl.WHITESPACE))
         .withChannel(commentRegexp(ErlangGrammarImpl.COMMENT))

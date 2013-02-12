@@ -28,14 +28,15 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Rule(key = "MultipleBlankLines", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
+public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> {
 
   @RuleProperty(key = "maxBlankLinesInsideFunctions", defaultValue = "1")
   public int maxBlankLinesInsideFunctions = 1;
@@ -48,7 +49,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
   @Override
   public void init() {
 
-    subscribeTo(getContext().getGrammar().identifier);
+    subscribeTo(ErlangGrammarImpl.identifier);
   }
 
   @Override
@@ -85,7 +86,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<ErlangGrammar> {
   }
 
   private int getMaxFor(AstNode ast) {
-    if (ast.getFirstAncestor(getContext().getGrammar().clauseBody) != null) {
+    if (ast.getFirstAncestor(ErlangGrammarImpl.clauseBody) != null) {
       return maxBlankLinesInsideFunctions;
     } else {
       return maxBlankLinesOutsideFunctions;

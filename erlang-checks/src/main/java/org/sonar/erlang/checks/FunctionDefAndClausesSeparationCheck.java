@@ -28,7 +28,8 @@ import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,7 @@ import java.util.List;
 @Rule(key = "FunctionDefAndClausesSeparation", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class FunctionDefAndClausesSeparationCheck extends SquidCheck<ErlangGrammar> {
+public class FunctionDefAndClausesSeparationCheck extends SquidCheck<LexerlessGrammar> {
 
   @RuleProperty(key = "allowedBlankLinesBetweenClauses", defaultValue = "0")
   public int allowedBlankLinesBetweenClauses = 0;
@@ -48,7 +49,7 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<ErlangGramm
 
   @Override
   public void init() {
-    subscribeTo(getContext().getGrammar().functionDeclaration);
+    subscribeTo(ErlangGrammarImpl.functionDeclaration);
   }
 
   @Override
@@ -57,7 +58,7 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<ErlangGramm
       /**
        * Check the definition first
        */
-      if (ast.getType().equals(getContext().getGrammar().functionDeclaration)) {
+      if (ast.getType().equals(ErlangGrammarImpl.functionDeclaration)) {
         if (previousDefinition == null) {
           previousDefinition = ast;
         } else {
@@ -68,9 +69,9 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<ErlangGramm
       /**
        * Check the clauses
        */
-      if (ast.getChildren(getContext().getGrammar().functionClause).size() > 1) {
+      if (ast.getChildren(ErlangGrammarImpl.functionClause).size() > 1) {
         List<AstNode> funcClauses = ast
-            .getChildren(getContext().getGrammar().functionClause);
+            .getChildren(ErlangGrammarImpl.functionClause);
         Iterator<AstNode> clauses = funcClauses.iterator();
         AstNode previousClause = clauses.next();
         while (clauses.hasNext()) {

@@ -25,7 +25,7 @@ import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.erlang.api.ErlangGrammar;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +34,7 @@ import java.util.Scanner;
 
 @Rule(key = "NoTrailingWhiteSpace", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class NoTrailingWhitespaceCheck extends SquidCheck<ErlangGrammar> {
+public class NoTrailingWhitespaceCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void visitFile(AstNode astNode) {
