@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.parser;
 
+import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
+
 import com.sonar.sslr.api.Rule;
 import org.junit.Test;
 import org.sonar.erlang.api.ErlangGrammar;
@@ -28,6 +30,8 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
 public class ErlangParserLowLevelTest {
 
   ErlangGrammar g = new ErlangGrammarImpl();
+
+  private LexerlessGrammarBuilder b = ErlangGrammarImpl2.createGrammarBuilder();
 
   @Test
   public void lexInlineComment() {
@@ -40,6 +44,40 @@ public class ErlangParserLowLevelTest {
 
   @Test
   public void numericLiteral() {
+    assertThat(b.build().rule(ErlangGrammarImpl2.numericLiteral))
+    .matches("0")
+    .matches("0")
+    .matches("123")
+
+    .matches("123.456")
+
+    .matches("123.456e10")
+    .matches("123.456e-10")
+
+    .matches("123.456E10")
+    .matches("123.456E-10")
+
+    .matches("0.123")
+
+    .matches("0.123e4")
+    .matches("0.123e-4")
+
+    .matches("0.123E4")
+    .matches("0.123E-4")
+
+    .matches("2#12")
+    .matches("16#1f")
+    .matches("$\\n")
+    .matches("$\\")
+    .matches("$w")
+    .matches("$\\b")
+    .matches("$\\123")
+    .matches("$\\xA0")
+    .matches("$\\x{A2F}")
+    .matches("$\\^A")
+    .matches("$\\\"")
+    .matches("$\\\\");
+
     Rule p = g.numericLiteral;
 
     assertThat(p).matches("0");
