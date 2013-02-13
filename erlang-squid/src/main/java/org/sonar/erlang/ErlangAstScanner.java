@@ -21,19 +21,17 @@ package org.sonar.erlang;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
+import com.sonar.sslr.squid.AstScanner;
 import com.sonar.sslr.squid.SourceCodeBuilderCallback;
 import com.sonar.sslr.squid.SourceCodeBuilderVisitor;
 import com.sonar.sslr.squid.SquidAstVisitor;
+import com.sonar.sslr.squid.SquidAstVisitorContextImpl;
 import com.sonar.sslr.squid.metrics.CommentsVisitor;
 import com.sonar.sslr.squid.metrics.ComplexityVisitor;
 import com.sonar.sslr.squid.metrics.CounterVisitor;
 import com.sonar.sslr.squid.metrics.LinesOfCodeVisitor;
 import com.sonar.sslr.squid.metrics.LinesVisitor;
-import org.sonar.api.resources.InputFile;
-import org.sonar.api.resources.InputFileUtils;
 import org.sonar.erlang.api.ErlangMetric;
-import org.sonar.erlang.ast.AstScanner;
-import org.sonar.erlang.ast.FileVisitor;
 import org.sonar.erlang.metrics.BranchesOfRecursion;
 import org.sonar.erlang.metrics.ErlangComplexityVisitor;
 import org.sonar.erlang.metrics.ErlangStatementVisitor;
@@ -45,13 +43,13 @@ import org.sonar.squid.api.SourceClass;
 import org.sonar.squid.api.SourceCode;
 import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.api.SourceFunction;
+import org.sonar.squid.api.SourceProject;
 import org.sonar.squid.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.Collections;
 
 public final class ErlangAstScanner {
 
@@ -62,33 +60,36 @@ public final class ErlangAstScanner {
     if (!file.isFile()) {
       throw new IllegalArgumentException("File '" + file + "' not found.");
     }
-    AstScanner scanner = create(new ErlangConfiguration(Charset.forName("UTF-8")), visitors);
-    InputFile inputFile = InputFileUtils.create(file.getParentFile(), file);
-    scanner.scan(Collections.singleton(inputFile));
-    Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
+    AstScanner<LexerlessGrammar> scanner = create(new ErlangConfiguration(Charset.forName("UTF-8")), visitors);
+    scanner.scanFile(file);
+    Collection<SourceCode> sources = scanner.getIndex().search(
+        new QueryByType(SourceFile.class));
     if (sources.size() != 1) {
-      throw new IllegalStateException("Only one SourceFile was expected whereas " + sources.size() + " has been returned.");
+      throw new IllegalStateException("Only one SourceFile was expected whereas "
+        + sources.size() + " has been returned.");
     }
     return (SourceFile) sources.iterator().next();
   }
 
-  public static AstScanner create(ErlangConfiguration conf,
+  public static AstScanner<LexerlessGrammar> create(ErlangConfiguration conf,
       SquidAstVisitor<LexerlessGrammar>... visitors) {
+    final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<LexerlessGrammar>(
+        new SourceProject("Erlang Project"));
     final Parser<LexerlessGrammar> parser = ErlangParser.create(conf);
 
-    AstScanner builder = new AstScanner(parser);
+    AstScanner.Builder<LexerlessGrammar> builder = AstScanner.<LexerlessGrammar> builder(context)
+        .setBaseParser(parser);
 
-    // /* Metrics */
-    // builder.withMetrics(ErlangMetric.values());
+    /* Metrics */
+    builder.withMetrics(ErlangMetric.values());
 
     /* Comments */
     builder.setCommentAnalyser(new ErlangCommentAnalyser());
 
     /* Files */
-    builder.withSquidAstVisitor(new FileVisitor());
+    builder.setFilesMetric(ErlangMetric.FILES);
 
     /* Classes = modules */
-
     builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<LexerlessGrammar>(
         new SourceCodeBuilderCallback() {
           public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
@@ -142,14 +143,15 @@ public final class ErlangAstScanner {
 
           private String getArity(AstNode ast) {
             AstNode args = ast.getFirstChild(ErlangGrammarImpl.clauseHead)
-                .getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(
-                    ErlangGrammarImpl.arguments);
+                .getFirstChild(ErlangGrammarImpl.funcDecl)
+                .getFirstChild(ErlangGrammarImpl.arguments);
             return countArgs(args);
           }
 
           private String countArgs(AstNode args) {
-            int num = args.getNumberOfChildren() > 3 ? args.getChildren(
-                ErlangGrammarImpl.comma).size() + 1 : args.getNumberOfChildren() - 2;
+            int num = args.getNumberOfChildren() > 3
+                ? args.getChildren(ErlangGrammarImpl.comma).size() + 1
+                : args.getNumberOfChildren() - 2;
             return String.valueOf(num);
           }
         }, ErlangGrammarImpl.functionDeclaration, ErlangGrammarImpl.functionClause, ErlangGrammarImpl.funExpression));
@@ -163,12 +165,10 @@ public final class ErlangAstScanner {
     builder.withSquidAstVisitor(new LinesOfCodeVisitor<LexerlessGrammar>(
         ErlangMetric.LINES_OF_CODE));
 
-    builder.withSquidAstVisitor(CommentsVisitor.<LexerlessGrammar> builder()
-        .withCommentMetric(ErlangMetric.COMMENT_LINES)
-        .withBlankCommentMetric(ErlangMetric.COMMENT_BLANK_LINES)
-        .withNoSonar(true)
-        .withIgnoreHeaderComment(false)
-        .build());
+    builder.withSquidAstVisitor(CommentsVisitor.<LexerlessGrammar> builder().withCommentMetric(
+        ErlangMetric.COMMENT_LINES)
+        .withBlankCommentMetric(ErlangMetric.COMMENT_BLANK_LINES).withNoSonar(true)
+        .withIgnoreHeaderComment(false).build());
 
     /* Statements */
     builder.withSquidAstVisitor(new ErlangStatementVisitor());
@@ -201,6 +201,6 @@ public final class ErlangAstScanner {
     for (SquidAstVisitor<LexerlessGrammar> visitor : visitors) {
       builder.withSquidAstVisitor(visitor);
     }
-    return builder;
+    return builder.build();
   }
 }
