@@ -26,6 +26,8 @@ import org.sonar.api.batch.SensorContext;
 import org.sonar.api.checks.AnnotationCheckFactory;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContextFactory;
+import org.sonar.api.measures.PersistenceMode;
+import org.sonar.api.measures.RangeDistributionBuilder;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.File;
 import org.sonar.api.resources.Project;
@@ -39,6 +41,8 @@ import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.squid.api.CheckMessage;
 import org.sonar.squid.api.SourceCode;
 import org.sonar.squid.api.SourceFile;
+import org.sonar.squid.api.SourceFunction;
+import org.sonar.squid.indexer.QueryByParent;
 import org.sonar.squid.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
@@ -74,10 +78,8 @@ public class ErlangSquidSensor implements Sensor {
 
     Collection<SquidAstVisitor<LexerlessGrammar>> squidChecks = annotationCheckFactory.getChecks();
     List<SquidAstVisitor<LexerlessGrammar>> visitors = Lists.newArrayList(squidChecks);
-
     this.scanner = ErlangAstScanner.create(createConfiguration(project), visitors
         .toArray(new SquidAstVisitor[visitors.size()]));
-
     scanner.scan(project.getFileSystem().mainFiles(Erlang.KEY));
 
     Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(
@@ -93,11 +95,10 @@ public class ErlangSquidSensor implements Sensor {
     for (SourceCode squidSourceFile : squidSourceFiles) {
       SourceFile squidFile = (SourceFile) squidSourceFile;
 
-      /*
-       * soanrFile is always null
-       */
-      File sonarFile = File.fromIOFile(new java.io.File(squidFile.getKey()), project.getFileSystem().getSourceDirs());
+      File sonarFile = File.fromIOFile(new java.io.File(squidFile.getKey()), project);
 
+      saveFilesComplexityDistribution(sonarFile, squidFile);
+      saveFunctionsComplexityDistribution(sonarFile, squidFile);
       saveMeasures(sonarFile, squidFile);
       saveViolations(sonarFile, squidFile);
     }
@@ -114,6 +115,26 @@ public class ErlangSquidSensor implements Sensor {
     context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_API, squidFile.getDouble(ErlangMetric.PUBLIC_API));
     double publicUndocApi = squidFile.getDouble(ErlangMetric.PUBLIC_API) - squidFile.getDouble(ErlangMetric.PUBLIC_DOC_API);
     context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_UNDOCUMENTED_API, publicUndocApi);
+  }
+
+  private void saveFunctionsComplexityDistribution(File sonarFile, SourceFile squidFile) {
+    Collection<SourceCode> squidFunctionsInFile = scanner.getIndex().search(
+        new QueryByParent(squidFile), new QueryByType(SourceFunction.class));
+    RangeDistributionBuilder complexityDistribution = new RangeDistributionBuilder(
+        CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION, FUNCTIONS_DISTRIB_BOTTOM_LIMITS);
+    for (SourceCode squidFunction : squidFunctionsInFile) {
+      complexityDistribution.add(squidFunction.getDouble(ErlangMetric.COMPLEXITY));
+    }
+    context.saveMeasure(sonarFile, complexityDistribution.build().setPersistenceMode(
+        PersistenceMode.MEMORY));
+  }
+
+  private void saveFilesComplexityDistribution(File sonarFile, SourceFile squidFile) {
+    RangeDistributionBuilder complexityDistribution = new RangeDistributionBuilder(
+        CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION, FILES_DISTRIB_BOTTOM_LIMITS);
+    complexityDistribution.add(squidFile.getDouble(ErlangMetric.COMPLEXITY));
+    context.saveMeasure(sonarFile, complexityDistribution.build().setPersistenceMode(
+        PersistenceMode.MEMORY));
   }
 
   private void saveViolations(File sonarFile, SourceFile squidFile) {

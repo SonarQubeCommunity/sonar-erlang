@@ -19,10 +19,6 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.sonar.plugins.erlang.decorators.FunctionComplexityDistributionDecorator;
-
-import org.sonar.plugins.erlang.decorators.FileComplexityDistributionDecorator;
-
 import com.google.common.collect.ImmutableList;
 import org.sonar.api.Extension;
 import org.sonar.api.Properties;
@@ -98,12 +94,7 @@ public class ErlangPlugin extends SonarPlugin {
 
         DialyzerSensor.class,
 
-        ErlangLibrarySensor.class,
-
-        FileComplexityDistributionDecorator.class,
-
-        FunctionComplexityDistributionDecorator.class
-        );
+        ErlangLibrarySensor.class);
   }
 
 }
