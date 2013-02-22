@@ -594,9 +594,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(listOperationExpression).is(shortCircuitAndAlsoExpression,
         b.zeroOrMore(b.firstOf(plusplus, minusminus), shortCircuitAndAlsoExpression)).skipIfOneChild();
 
-    b.rule(assignmentExpression).is(
-        b.firstOf(b.sequence(listOperationExpression, matchop, assignmentExpression),
-            listOperationExpression)).skipIfOneChild();
+    b.rule(assignmentExpression).is(listOperationExpression, b.optional(matchop, listOperationExpression)).skipIfOneChild();
 
     b.rule(expression).is(b.optional(catchKeyword), assignmentExpression);
 
