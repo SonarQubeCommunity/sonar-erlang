@@ -19,36 +19,22 @@
  */
 package org.sonar.plugins.erlang.libraries;
 
+import com.sonar.sslr.api.AstNode;
 import org.sonar.api.resources.Library;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
 
-import java.util.regex.Pattern;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 public class ErlangDependency {
-
-  private static final Pattern DEP_NAME_PATTERN = Pattern.compile("(^\\{)([A-Za-z_0-9]*?)(\\,.*)", Pattern.DOTALL + Pattern.MULTILINE);
-  private static final Pattern DEP_VERSION_IN_TAG_PATTERN = Pattern.compile("(.*tag.*?\\\")(.*?)(\\\".*)", Pattern.DOTALL + Pattern.MULTILINE);
-  private static final Pattern DEP_VERSION_IN_BRANCH_PATTERN = Pattern.compile("(.*branch.*?\\\")(.*?)(\\\".*)", Pattern.DOTALL + Pattern.MULTILINE);
 
   String name;
   String version;
   String key;
 
-  public ErlangDependency(String oneDependency) {
-    name = DEP_NAME_PATTERN.matcher(oneDependency).replaceFirst("$2");
-    version = DEP_VERSION_IN_TAG_PATTERN.matcher(oneDependency).replaceFirst("$2");
-    if (version.length() == oneDependency.length()) {
-      version = DEP_VERSION_IN_BRANCH_PATTERN.matcher(oneDependency).replaceFirst("$2");
-      if (version.length() == oneDependency.length()) {
-        if (oneDependency.contains("HEAD")) {
-          version = "HEAD";
-        } else {
-          version = "UNKOWN";
-        }
-      }
-    }
-    String[] parts = oneDependency.split(",");
-    key = parts[3].replaceFirst("(.*:)(.*?)(\\\")", "$2").replaceAll("[\\\\/]", ":")
-        .replaceAll("\\.git", "");
+  public ErlangDependency(){
+    super();
   }
 
   public String getName() {
@@ -63,10 +49,63 @@ public class ErlangDependency {
     return key;
   }
 
+  protected void setName(String name) {
+    this.name = name;
+  }
+
+  protected void setVersion(String version) {
+    this.version = version;
+  }
+
+  protected void setKey(String key) {
+    this.key = key;
+  }
+
   public Library getAsLibrary() {
     Library lib = new Library(getKey(), getVersion());
     lib.setName(getName());
     return lib;
+  }
+
+  public void parseVersionInfo(AstNode astNode) {
+     List<AstNode> vcsElements = astNode.getFirstDescendant(ErlangGrammarImpl.tupleLiteral).getChildren(ErlangGrammarImpl.expression);
+     String urlStr = removeQuotes(vcsElements.get(1).getTokenValue());
+     try {
+      URL url =new URL(urlStr);
+      if(!"git".equals(vcsElements.get(0).getTokenValue())){
+        setKey(url.getHost()+":"+getName());
+      } else {
+        setKey(getKeyFromUrl(url.getPath()));
+      }
+
+    } catch (MalformedURLException e) {
+      // Replace possible protocol settings, like git:// or things, like: git@ from the beginning
+      String[] gitUrl = urlStr.replaceAll("^[a-z]+?(@|://)", "").split(":");
+      if(gitUrl.length==1){
+        gitUrl = gitUrl[0].split("[/\\\\]", 2);
+      }
+      setKey(getKeyFromUrl(gitUrl[1]));
+    }
+
+     if(vcsElements.size()<3){
+       setVersion("HEAD");
+     } else {
+       AstNode versionInfo = vcsElements.get(2);
+       AstNode tuple = versionInfo.getFirstDescendant(ErlangGrammarImpl.tupleLiteral);
+      if(tuple==null){
+         setVersion(removeQuotes(versionInfo.getTokenValue()));
+       } else {
+         setVersion(removeQuotes(tuple.getDescendants(ErlangGrammarImpl.expression).get(1).getTokenValue()));
+       }
+     }
+  }
+
+  private String removeQuotes(String str){
+    return str.replaceAll("\"", "");
+  }
+
+  private String getKeyFromUrl(String str){
+    return str.replace(".git", "").replaceAll("^[/\\\\]", "").replaceAll("[/\\\\]", ":");
   }
 
 }

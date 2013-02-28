@@ -23,6 +23,9 @@ import org.apache.commons.configuration.Configuration;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -36,6 +39,8 @@ import org.sonar.plugins.erlang.core.Erlang;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,23 +50,37 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(value = Parameterized.class)
 public class ErlangLibrarySensorTest {
 
-  private SensorContext context;
+  private String rebarConfigPath;
+  private String filename;
+
+  public ErlangLibrarySensorTest(String rebarConfigPath, String filename){
+    this.rebarConfigPath = rebarConfigPath;
+    this.filename = filename;
+  }
+
+  private static SensorContext context;
+
+
+  @Parameters
+  public static Collection<Object[]> data(){
+    Object[][] data = new Object[][]{{"/org/sonar/plugins/erlang/erlcount/rebar.config", "rebar.config"},
+        {"/org/sonar/plugins/erlang/erlcount/rebar_with_deps.config", "rebar_with_deps.config"}};
+    return Arrays.asList(data);
+  }
 
   @Before
   public void setup() throws URISyntaxException {
     context = ProjectUtil.mockContext();
     Configuration configuration = mock(Configuration.class);
-    ArrayList<InputFile> srcFiles = new ArrayList<InputFile>();
-    ArrayList<InputFile> otherFiles = new ArrayList<InputFile>();
     when(context.getResource(any(Library.class))).thenAnswer(new Answer<Library>() {
       public Library answer(InvocationOnMock invocation) {
         Object[] args = invocation.getArguments();
         return (Library) args[0];
       }
     });
-    configuration = mock(Configuration.class);
     when(
         configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
             ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
@@ -69,15 +88,18 @@ public class ErlangLibrarySensorTest {
     when(
         configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
             ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
-        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
-    srcFiles.add(ProjectUtil.getInputFileByPath("/org/sonar/plugins/erlang/erlcount/rebar.config"));
+        filename);
+
+    ArrayList<InputFile> srcFiles = new ArrayList<InputFile>();
+    ArrayList<InputFile> otherFiles = new ArrayList<InputFile>();
+    srcFiles.add(ProjectUtil.getInputFileByPath(rebarConfigPath));
     new ErlangLibrarySensor(new Erlang(configuration)).analyse(ProjectUtil.getProject(srcFiles, otherFiles, configuration), context);
   }
 
   @Test
   public void erlangLibrariesTest() throws URISyntaxException {
     ArgumentCaptor<Dependency> argument = ArgumentCaptor.forClass(Dependency.class);
-    verify(context, times(7)).saveDependency(argument.capture());
+    verify(context, times(12)).saveDependency(argument.capture());
     List<Dependency> capturedDependencies = argument.getAllValues();
     assertThat(((Library) capturedDependencies.get(0).getTo()).getKey(),
         Matchers.equalTo("fake:elibs"));
@@ -93,6 +115,16 @@ public class ErlangLibrarySensorTest {
         Matchers.equalTo("should:meck"));
     assertThat(((Library) capturedDependencies.get(6).getTo()).getKey(),
         Matchers.equalTo("should:meck"));
+    assertThat(((Library) capturedDependencies.get(7).getTo()).getKey(),
+        Matchers.equalTo("andrewtj:dnssd_erlang"));
+    assertThat(((Library) capturedDependencies.get(8).getTo()).getKey(),
+        Matchers.equalTo("evanmiller:erlydtl"));
+    assertThat(((Library) capturedDependencies.get(9).getTo()).getKey(),
+        Matchers.equalTo("basho:lager"));
+    assertThat(((Library) capturedDependencies.get(10).getTo()).getKey(),
+        Matchers.equalTo("log4erl.googlecode.com:log4erl"));
+    assertThat(((Library) capturedDependencies.get(11).getTo()).getKey(),
+        Matchers.equalTo("erlang-mbcs.googlecode.com:mbcs"));
 
     assertThat(((Library) capturedDependencies.get(0).getTo()).getName(),
         Matchers.equalTo("elibs"));
@@ -108,6 +140,16 @@ public class ErlangLibrarySensorTest {
         Matchers.equalTo("meck"));
     assertThat(((Library) capturedDependencies.get(6).getTo()).getName(),
         Matchers.equalTo("meck"));
+    assertThat(((Library) capturedDependencies.get(7).getTo()).getName(),
+        Matchers.equalTo("dnssd"));
+    assertThat(((Library) capturedDependencies.get(8).getTo()).getName(),
+        Matchers.equalTo("erlydtl"));
+    assertThat(((Library) capturedDependencies.get(9).getTo()).getName(),
+        Matchers.equalTo("lager"));
+    assertThat(((Library) capturedDependencies.get(10).getTo()).getName(),
+        Matchers.equalTo("log4erl"));
+    assertThat(((Library) capturedDependencies.get(11).getTo()).getName(),
+        Matchers.equalTo("mbcs"));
 
     assertThat(((Library) capturedDependencies.get(0).getTo()).getVersion(),
         Matchers.equalTo("1.1.0"));
@@ -123,6 +165,16 @@ public class ErlangLibrarySensorTest {
         Matchers.equalTo("0.7.2-0"));
     assertThat(((Library) capturedDependencies.get(6).getTo()).getVersion(),
         Matchers.equalTo("0.7.2-0"));
-  }
+    assertThat(((Library) capturedDependencies.get(7).getTo()).getVersion(),
+        Matchers.equalTo("master"));
+    assertThat(((Library) capturedDependencies.get(8).getTo()).getVersion(),
+        Matchers.equalTo("dda4db043a"));
+    assertThat(((Library) capturedDependencies.get(9).getTo()).getVersion(),
+        Matchers.equalTo("master"));
+    assertThat(((Library) capturedDependencies.get(10).getTo()).getVersion(),
+        Matchers.equalTo("HEAD"));
+    assertThat(((Library) capturedDependencies.get(11).getTo()).getVersion(),
+        Matchers.equalTo("54"));
 
+  }
 }

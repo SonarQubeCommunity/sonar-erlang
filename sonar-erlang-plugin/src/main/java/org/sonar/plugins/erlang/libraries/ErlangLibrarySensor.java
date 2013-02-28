@@ -20,6 +20,9 @@
 package org.sonar.plugins.erlang.libraries;
 
 import org.apache.commons.io.FileUtils;
+
+import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
@@ -32,18 +35,10 @@ import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 public class ErlangLibrarySensor implements Sensor {
-
-  private static final Pattern DEPS_DIR_PATTERN = Pattern.compile("\\{deps_dir, ?\\[.*?\\]\\}\\.", Pattern.DOTALL + Pattern.MULTILINE);
-  private static final Pattern ALL_DEP_PATTERN = Pattern.compile("\\{deps, ?\\[.*?\\]\\}\\.", Pattern.DOTALL + Pattern.MULTILINE);
-  private static final Pattern EMPTY_DEP_PATTERN = Pattern.compile("\\{deps, *\\[[ \t\n\r]*?\\]\\}\\.", Pattern.DOTALL + Pattern.MULTILINE);
-  private static final Pattern ONE_DEP_PATTERN = Pattern.compile("\\{[^\\[]+?\\}", Pattern.DOTALL + Pattern.MULTILINE);
-  private static final Pattern DEPS_GET_DIR_PATTERN = Pattern.compile("(\\{deps_dir, ?\\[\\\")(.*?)(\\\"\\]\\}\\.)", Pattern.DOTALL + Pattern.MULTILINE);
 
   private final static Logger LOG = LoggerFactory.getLogger(ErlangLibrarySensor.class);
   private Erlang erlang;
@@ -56,43 +51,38 @@ public class ErlangLibrarySensor implements Sensor {
     analyzeRebarConfigFile(project, context, project.getFileSystem().getBasedir());
   }
 
-  private void analyzeRebarConfigFile(Resource projectResource, SensorContext context, File baseDir) {
+  private void analyzeRebarConfigFile(Resource<?> projectResource, SensorContext context, File baseDir) {
     String rebarConfigUrl = erlang.getConfiguration().getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
         ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
     File rebarConfigFile = new File(baseDir, rebarConfigUrl);
     LOG.warn("Try get libraries from: " + rebarConfigFile.getAbsolutePath());
-    try {
-      String rebarConfigContent = FileUtils.readFileToString(rebarConfigFile, "UTF-8");
 
-      String depsDir = getDepsDir(rebarConfigContent);
-      Matcher allDepMatcher = ALL_DEP_PATTERN.matcher(rebarConfigContent);
-      if (EMPTY_DEP_PATTERN.matcher(rebarConfigContent).find()) {
-        return;
+    if (rebarConfigFile.exists()) {
+      AstNode config = RebarConfigParser.create().parse(rebarConfigFile);
+
+      String depsDir = getDepsDir(config);
+
+      List<Object> dependencies = AstNodeXPathQuery.create("//tupleLiteral[.//*/@*='deps']//listLiteral/primaryExpression").selectNodes(config);
+      for (Object dependencyObj : dependencies) {
+        AstNode dependency = (AstNode) dependencyObj;
+        List<Object> dependencyElementObjs = AstNodeXPathQuery.create("./tupleLiteral/expression").selectNodes(dependency);
+        ErlangDependency erlangDep = new ErlangDependency();
+        erlangDep.setName(((AstNode)dependencyElementObjs.get(0)).getTokenValue());
+        erlangDep.parseVersionInfo(((AstNode)dependencyElementObjs.get(2)));
+
+        Library depLib = erlangDep.getAsLibrary();
+        Resource<?> to = getResourceFromLibrary(context, depLib);
+        saveDependency(projectResource, context, to);
+        File depRebarConfig = new File(baseDir.getPath().concat(File.separator + depsDir)
+            .concat(File.separator + erlangDep.getName()));
+        analyzeRebarConfigFile(to, context, depRebarConfig);
       }
-      while (allDepMatcher.find()) {
-        String dependencies = rebarConfigContent.substring(allDepMatcher.start(), allDepMatcher.end() - 1).replaceAll("[\\n\\r\\t ]", "").replaceAll("\\[\\]", "");
-        Matcher deps = ONE_DEP_PATTERN.matcher(dependencies.trim());
-        while (deps.find()) {
-          String dep = dependencies.substring(deps.start(), deps.end());
-          ErlangDependency erlangDep = new ErlangDependency(dep);
-          Library depLib = erlangDep.getAsLibrary();
-          Resource to = getResourceFromLibrary(context, depLib);
-          saveDependency(projectResource, context, to);
-          File depRebarConfig = new File(baseDir.getPath().concat(File.separator + depsDir)
-              .concat(File.separator + erlangDep.getName()));
-          analyzeRebarConfigFile(to, context, depRebarConfig);
-        }
-      }
-    } catch (FileNotFoundException e) {
-      LOG.warn("Cannot open file: " + rebarConfigFile + e);
-    } catch (IOException e) {
-      LOG.warn("Cannot open file: " + rebarConfigFile + e);
     }
     LOG.debug("Libraries added: " + context);
   }
 
-  private Resource getResourceFromLibrary(SensorContext context, Library depLib) {
-    Resource to = context.getResource(depLib);
+  private Resource<?> getResourceFromLibrary(SensorContext context, Library depLib) {
+    Resource<?> to = context.getResource(depLib);
     if (to == null) {
       context.index(depLib);
       to = context.getResource(depLib);
@@ -100,22 +90,21 @@ public class ErlangLibrarySensor implements Sensor {
     return to;
   }
 
-  private void saveDependency(Resource projectResource, SensorContext context, Resource to) {
+  private void saveDependency(Resource<?> projectResource, SensorContext context, Resource<?> to) {
     Dependency dependency = new Dependency(projectResource, to);
     dependency.setUsage("compile");
     dependency.setWeight(1);
     context.saveDependency(dependency);
   }
 
-  private String getDepsDir(String rebarConfigContent) {
+  private String getDepsDir(AstNode config) {
     // find lib dir: {lib_dirs,["deps"]}. or deps_dir?
-    Matcher depsDirMatcher = DEPS_DIR_PATTERN.matcher(rebarConfigContent);
-    String depDir = "deps";
-    if (depsDirMatcher.matches()) {
-      depsDirMatcher.find();
-      depDir = DEPS_GET_DIR_PATTERN.matcher(rebarConfigContent.substring(depsDirMatcher.start(), depsDirMatcher.end() - 1)).replaceAll("$2");
+    String ret = "deps";
+    Object depsSetting = AstNodeXPathQuery.create("//tupleLiteral[.//*/@*='deps_dir']").selectSingleNode(config);
+    if(depsSetting!=null){
+      ret = ((AstNode)AstNodeXPathQuery.create(".//stringLiteral").selectSingleNode((AstNode)depsSetting)).getTokenValue();
     }
-    return depDir;
+    return ret;
   }
 
   public final boolean shouldExecuteOnProject(Project project) {
