@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang.libraries;
 
-import org.apache.commons.io.FileUtils;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.xpath.api.AstNodeXPathQuery;
 import org.slf4j.Logger;
@@ -35,7 +33,6 @@ import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class ErlangLibrarySensor implements Sensor {

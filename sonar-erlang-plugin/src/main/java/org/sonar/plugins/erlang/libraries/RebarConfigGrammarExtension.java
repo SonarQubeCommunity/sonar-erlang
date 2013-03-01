@@ -26,15 +26,18 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 import static org.sonar.erlang.parser.ErlangGrammarImpl.statements;
 import static org.sonar.erlang.parser.ErlangGrammarImpl.statement;
 import static org.sonar.erlang.parser.ErlangGrammarImpl.dot;
+import static org.sonar.erlang.parser.ErlangGrammarImpl.spacing;
+import static org.sonar.erlang.parser.ErlangGrammarImpl.eof;
 
 public enum RebarConfigGrammarExtension implements GrammarRuleKey {
 
-  ;
+  rebarConfig;
 
   public static LexerlessGrammarBuilder createGrammarBuilder(LexerlessGrammarBuilder basic) {
     LexerlessGrammarBuilder extended = LexerlessGrammarBuilder.createBasedOn(basic);
     extended.rule(statements).override(statement, extended.zeroOrMore(dot, statement));
-    extended.setRootRule(statements);
+    extended.rule(rebarConfig).override(spacing, extended.optional(statements));
+    extended.setRootRule(rebarConfig);
     return extended;
   }
 
