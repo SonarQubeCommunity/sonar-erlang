@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="7" failures="1" errors="0" skipped="0" time="0.119" name="module 'erlcount'">
-  <testcase time="0.096" name="erlcount_tests:find_erl_test_/0_20">
+<testsuite tests="7" failures="1" errors="0" skipped="0" time="0.133" name="module 'erlcount'">
+  <testcase time="0.112" name="erlcount_tests:find_erl_test_/0_20">
     <failure type="assertEqual_failed">
-::{assertEqual_failed,[{module,erlcount_eunit},
+::{assertEqual_failed,[{module,erlcount_tests},
                      {line,21},
                      {expression,"lists : sort ( build_list ( erlcount_lib : find_erl ( ? TESTDIR ) ) )"},
                      {expected,["Használat: find [-H] [-L] [-P][-Oszint] [-D help|tree|search|stat|rates|opt|exec] [útvonal...] [kifejezés]",
@@ -20,6 +20,7 @@
                              "../.eunit/erlcount_eunit.erl",
                              "../.eunit/erlcount_lib.erl",
                              "../.eunit/erlcount_sup.erl",
+                             "../.eunit/erlcount_tests.erl",
                              "../.eunit/refactorerl_issues.erl",
                              "../src/erlcount.erl",
                              "../src/erlcount_counter.erl",
@@ -36,7 +37,9 @@
                              "../target/classes/erlcount_sup.erl",
                              "../target/classes/refactorerl_issues.erl",
                              "../target/test-classes/erlcount_eunit.erl",
-                             "../test/erlcount_eunit.erl"]}]}
+                             "../target/test-classes/erlcount_tests.erl",
+                             "../test/erlcount_eunit.erl",
+                             "../test/erlcount_tests.erl"]}]}
     </failure>
     <system-out>
     </system-out>

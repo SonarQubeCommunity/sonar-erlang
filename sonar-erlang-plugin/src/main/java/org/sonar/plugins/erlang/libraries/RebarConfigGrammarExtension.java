@@ -23,11 +23,10 @@ import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-import static org.sonar.erlang.parser.ErlangGrammarImpl.statements;
-import static org.sonar.erlang.parser.ErlangGrammarImpl.statement;
 import static org.sonar.erlang.parser.ErlangGrammarImpl.dot;
 import static org.sonar.erlang.parser.ErlangGrammarImpl.spacing;
-import static org.sonar.erlang.parser.ErlangGrammarImpl.eof;
+import static org.sonar.erlang.parser.ErlangGrammarImpl.statement;
+import static org.sonar.erlang.parser.ErlangGrammarImpl.statements;
 
 public enum RebarConfigGrammarExtension implements GrammarRuleKey {
 

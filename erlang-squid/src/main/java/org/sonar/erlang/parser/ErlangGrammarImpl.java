@@ -19,11 +19,10 @@
  */
 package org.sonar.erlang.parser;
 
-import org.sonar.sslr.parser.LexerlessGrammar;
-
 import com.sonar.sslr.api.GenericTokenType;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 public enum ErlangGrammarImpl implements GrammarRuleKey {
 

@@ -25,5 +25,8 @@ docs:
 shell: compile
 	rebar shell
 
+getdeps:
+	rebar get-deps
+
 dialyzer:
 	dialyzer ebin -o  .eunit/dialyzer.log

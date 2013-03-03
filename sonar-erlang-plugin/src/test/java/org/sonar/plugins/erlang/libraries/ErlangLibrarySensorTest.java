@@ -66,8 +66,8 @@ public class ErlangLibrarySensorTest {
 
   @Parameters
   public static Collection<Object[]> data(){
-    Object[][] data = new Object[][]{{"/org/sonar/plugins/erlang/erlcount/rebar.config", "rebar.config"},
-        {"/org/sonar/plugins/erlang/erlcount/rebar_with_deps.config", "rebar_with_deps.config"}};
+    Object[][] data = new Object[][]{{"/org/sonar/plugins/erlang/erlcount/rebar_comments.config", "rebar_comments.config"},
+        {"/org/sonar/plugins/erlang/erlcount/rebar_depsdir.config", "rebar_depsdir.config"}};
     return Arrays.asList(data);
   }
 

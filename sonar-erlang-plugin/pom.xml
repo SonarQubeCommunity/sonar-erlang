@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -57,7 +58,11 @@
       <artifactId>sonar-common-rules</artifactId>
       <version>1.0.1</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.erlang.otp</groupId>
+      <artifactId>jinterface</artifactId>
+      <version>1.5.6</version>
+    </dependency>
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-testing-harness</artifactId>
@@ -91,7 +96,7 @@
             <configuration>
               <rules>
                 <requireFilesSize>
-                  <maxsize>660000</maxsize>
+                  <maxsize>760000</maxsize>
                   <minsize>550000</minsize>
                   <files>
                     <file>${project.build.directory}/${project.build.finalName}.jar</file>

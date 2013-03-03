@@ -20,30 +20,38 @@
 package org.sonar.plugins.erlang.cover;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
+
+import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import org.junit.Test;
+import org.sonar.plugins.erlang.ProjectUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class LCOVParserTest {
-
-  private ErlangFileCoverage cov;
-
-  @Before
-  public void setup() throws URISyntaxException, IOException {
-
-    cov = new LCOVParser().parseFile(new File("src/test/resources",
-        "org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
-  }
+public class CoverDataFileParserTest {
 
   @Test
-  public void checkCoverage() {
+  public void test() throws IOException, URISyntaxException, OtpErlangDecodeException{
+    List<ErlangFileCoverage> coverageResult = CoverDataFileParser.parse(new File(ProjectUtil.class.getResource("/org/sonar/plugins/erlang/erlcount/.eunit/eunit.coverdata").toURI()), null);
+    assertThat(coverageResult.get(0), Matchers.notNullValue());
+    ErlangFileCoverage cov = getResultOfModule("erlcount_lib.erl", coverageResult);
     assertThat(cov.getCoveredLines(), Matchers.equalTo(19));
     assertThat(cov.getLinesToCover(), Matchers.equalTo(21));
     assertThat(cov.getUncoveredLines(), Matchers.equalTo(2));
+
   }
+
+  private ErlangFileCoverage getResultOfModule(String module, List<ErlangFileCoverage> cov){
+    for (ErlangFileCoverage erlangFileCoverage : cov) {
+      if(module.equals(erlangFileCoverage.getFilePath())){
+        return erlangFileCoverage;
+      }
+    }
+    return null;
+  }
+
 }

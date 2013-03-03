@@ -1,7 +1,7 @@
 <html>
 <head><title>.eunit/erlcount_lib.COVER.html</title></head><body bgcolor=white text=black>
 <pre>
-File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.erl by COVER 2012-11-23 at 19:54:05
+File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.erl by COVER 2013-03-01 at 18:50:04
 
 ****************************************************************************
 
@@ -11,53 +11,53 @@ File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-p
         |  
         |  %% Finds all files ending in .erl
         |  find_erl(Directory) -&gt;
-     1..|      find_erl(Directory, queue:new()).
+     2..|      find_erl(Directory, queue:new()).
         |  
         |  regex_count(Re, Str) -&gt;
-     6..|      case re:run(Str, Re, [global]) of
-     1..|          nomatch -&gt; 0;
-     5..|          {match, List} -&gt; length(List)
+    12..|      case re:run(Str, Re, [global]) of
+     2..|          nomatch -&gt; 0;
+    10..|          {match, List} -&gt; length(List)
         |      end.
         |  
         |  %%% Private
         |  %% Dispatches based on file type
         |  find_erl(Name, Queue) -&gt;
-    67..|      {ok, F = #file_info{}} = file:read_file_info(Name),
-    67..|      case F#file_info.type of
-    15..|          directory -&gt; handle_directory(Name, Queue);
-    52..|          regular -&gt; handle_regular_file(Name, Queue);
+   186..|      {ok, F = #file_info{}} = file:read_file_info(Name),
+   186..|      case F#file_info.type of
+    30..|          directory -&gt; handle_directory(Name, Queue);
+   156..|          regular -&gt; handle_regular_file(Name, Queue);
 <font color=red>     0..|          _Other -&gt; dequeue_and_run(Queue)</font>
         |      end.
         |  
         |  %% Opens directories and enqueues files in there
         |  handle_directory(Dir, Queue) -&gt;
-    15..|      case file:list_dir(Dir) of
+    30..|      case file:list_dir(Dir) of
         |          {ok, []} -&gt;
-     1..|              dequeue_and_run(Queue);
+     2..|              dequeue_and_run(Queue);
         |          {ok, Files} -&gt;
-    14..|              dequeue_and_run(enqueue_many(Dir, Files, Queue))
+    28..|              dequeue_and_run(enqueue_many(Dir, Files, Queue))
         |      end.
         |  
         |  %% Checks if the file finishes in .erl
         |  handle_regular_file(Name, Queue) -&gt;
-    52..|      case filename:extension(Name) of
+   156..|      case filename:extension(Name) of
         |          ".erl" -&gt;
-    24..|              {continue, Name, fun() -&gt; dequeue_and_run(Queue) end};
+    54..|              {continue, Name, fun() -&gt; dequeue_and_run(Queue) end};
         |          _NonErl -&gt;
-    28..|              dequeue_and_run(Queue)
+   102..|              dequeue_and_run(Queue)
         |      end.
         |  
         |  %% Pops an item from the queue and runs it.
         |  dequeue_and_run(Queue) -&gt;
-    67..|      case queue:out(Queue) of
-     1..|          {empty, _} -&gt; done;
-    66..|          {{value, File}, NewQueue} -&gt; find_erl(File, NewQueue)
+   186..|      case queue:out(Queue) of
+     2..|          {empty, _} -&gt; done;
+   184..|          {{value, File}, NewQueue} -&gt; find_erl(File, NewQueue)
         |      end.
         |  
         |  %% Adds a bunch of items to the queue.
         |  enqueue_many(Path, Files, Queue) -&gt;
-    14..|      F = fun(File, Q) -&gt; queue:in(filename:join(Path,File), Q) end,
-    14..|      lists:foldl(F, Queue, Files).
+    28..|      F = fun(File, Q) -&gt; queue:in(filename:join(Path,File), Q) end,
+    28..|      lists:foldl(F, Queue, Files).
         |  unused_func(A,B) -&gt;
 <font color=red>     0..|      throw({error, not_implemented}).</font>
         |  
