@@ -19,22 +19,26 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.sonar.plugins.erlang.core.Erlang;
+import org.hamcrest.Matchers;
+import org.mockito.ArgumentCaptor;
+import org.sonar.api.rules.Violation;
+
+import org.sonar.api.profiles.RulesProfile;
+import org.sonar.api.resources.InputFileUtils;
+import org.sonar.api.rules.ActiveRule;
 
 import org.apache.commons.configuration.Configuration;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.sonar.api.batch.SensorContext;
-import org.sonar.api.profiles.RulesProfile;
+import org.sonar.api.measures.Measure;
+import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.InputFile;
-import org.sonar.api.resources.InputFileUtils;
 import org.sonar.api.resources.Project;
-import org.sonar.api.rules.ActiveRule;
-import org.sonar.api.rules.Violation;
+import org.sonar.api.resources.Resource;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
+import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,32 +47,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ErlangDialyzerTest {
+public class DialyzerSensorTest {
 
   private Configuration configuration;
-  private SensorContext context;
   private Erlang erlang;
+  private Project project;
+  private SensorContext context;
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    context = ProjectUtil.mockContext();
     configuration = mock(Configuration.class);
+    when(
+        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
+            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
+        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    erlang = new Erlang(configuration);
+    context = mock(SensorContext.class);
     when(
         configuration.getString(ErlangPlugin.DIALYZER_FILENAME_KEY,
             ErlangPlugin.DIALYZER_DEFAULT_FILENAME)).thenReturn(
         ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
 
-    when(
-        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
-
-    erlang = new Erlang(configuration);
+    List<InputFile> srcFiles = new ArrayList<InputFile>();
+    List<InputFile> otherFiles = new ArrayList<InputFile>();
+    srcFiles.add(ProjectUtil
+        .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.erl"));
+    project = ProjectUtil.getProject(srcFiles, otherFiles, configuration);
 
     RulesProfile rp = mock(RulesProfile.class);
     ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019", null);
@@ -83,13 +95,12 @@ public class ErlangDialyzerTest {
     InputFile inputFile = InputFileUtils.create(fileToAnalyse.getParentFile(), fileToAnalyse);
     ArrayList<InputFile> inputFiles = new ArrayList<InputFile>();
     inputFiles.add(inputFile);
-    Project project = ProjectUtil.getProject(inputFiles, null, configuration);
-    new DialyzerReportParser().dialyzer(erlang, project, context, new ErlangRuleManager(
-        DialyzerRuleRepository.DIALYZER_PATH), rp);
+
+    new DialyzerSensor(erlang, rp).analyse(project, context);
   }
 
   @Test
-  public void checkDialyzer() {
+  public void checkCoverSensor() throws URISyntaxException {
     ArgumentCaptor<Violation> argument = ArgumentCaptor.forClass(Violation.class);
     verify(context, times(3)).saveViolation(argument.capture());
     List<Violation> capturedViolations = argument.getAllValues();
@@ -99,5 +110,7 @@ public class ErlangDialyzerTest {
         .equalTo("D041"));
     assertThat("violation is not D019", capturedViolations.get(2).getRule().getKey(), Matchers
         .equalTo("D019"));
+
   }
+
 }

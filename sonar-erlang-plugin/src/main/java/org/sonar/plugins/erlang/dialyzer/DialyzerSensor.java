@@ -36,12 +36,13 @@ public class DialyzerSensor extends AbstractErlangSensor {
       DialyzerRuleRepository.DIALYZER_PATH);
   private RulesProfile rulesProfile;
 
+
   public DialyzerSensor(Erlang erlang, RulesProfile rulesProfile) {
     super(erlang);
     this.rulesProfile = rulesProfile;
   }
 
   public void analyse(Project project, SensorContext context) {
-    new DialyzerReportParser().dialyzer(project, context, dialyzerRuleManager, rulesProfile);
+    new DialyzerReportParser().dialyzer(getErlang(), project, context, dialyzerRuleManager, rulesProfile);
   }
 }
