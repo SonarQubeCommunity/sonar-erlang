@@ -19,9 +19,8 @@
  */
 package org.sonar.plugins.erlang.cover;
 
-import org.hamcrest.Matchers;
-
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.sonar.plugins.erlang.ProjectUtil;
 
@@ -42,8 +41,8 @@ public class CoverDataFileParserTest {
     assertThat(cov.getCoveredLines(), Matchers.equalTo(19));
     assertThat(cov.getLinesToCover(), Matchers.equalTo(21));
     assertThat(cov.getUncoveredLines(), Matchers.equalTo(2));
-
   }
+
 
   private ErlangFileCoverage getResultOfModule(String module, List<ErlangFileCoverage> cov){
     for (ErlangFileCoverage erlangFileCoverage : cov) {

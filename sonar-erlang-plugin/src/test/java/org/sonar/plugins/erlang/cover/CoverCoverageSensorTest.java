@@ -63,6 +63,11 @@ public class CoverCoverageSensorTest {
 
   @Test
   public void checkCoverSensor() throws URISyntaxException {
+    when(
+        configuration.getString(ErlangPlugin.COVERDATA_FILENAME_KEY,
+            ErlangPlugin.COVERDATA_DEFAULT_FILENAME)).thenReturn(
+        "non_existing.coverdata");
+
     List<InputFile> srcFiles = new ArrayList<InputFile>();
     List<InputFile> otherFiles = new ArrayList<InputFile>();
     srcFiles.add(ProjectUtil
@@ -77,5 +82,32 @@ public class CoverCoverageSensorTest {
     verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(21.0));
     verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(2.0));
   }
+
+  @Test
+  public void checkCoverSensorWithDataFile() throws URISyntaxException {
+    when(
+        configuration.getString(ErlangPlugin.COVERDATA_FILENAME_KEY,
+            ErlangPlugin.COVERDATA_DEFAULT_FILENAME)).thenReturn(
+        ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
+
+    List<InputFile> srcFiles = new ArrayList<InputFile>();
+    List<InputFile> otherFiles = new ArrayList<InputFile>();
+    srcFiles.add(ProjectUtil
+        .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.erl"));
+    otherFiles
+        .add(ProjectUtil
+            .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
+    otherFiles
+    .add(ProjectUtil
+        .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/eunit.coverdata"));
+
+    project = ProjectUtil.getProject(srcFiles, otherFiles, configuration);
+    new CoverCoverageSensor(erlang).analyse(project, context);
+
+    verify(context).saveMeasure((Resource) anyObject(), (Measure) anyObject());
+    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(21.0));
+    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(2.0));
+  }
+
 
 }

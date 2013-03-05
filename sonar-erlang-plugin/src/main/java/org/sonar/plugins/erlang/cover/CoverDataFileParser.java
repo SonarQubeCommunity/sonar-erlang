@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Parse Erlang Cover data file.
@@ -74,15 +73,11 @@ public class CoverDataFileParser {
   }
 
   public static List<ErlangFileCoverage> parse(File inFile, ErlangFileCoverage cumulative) throws IOException {
-    return parse(inFile, cumulative, null);
-  }
-
-  public static List<ErlangFileCoverage> parse(File inFile, ErlangFileCoverage cumulative, Set<String> sourcePaths) throws IOException {
     InputStream fin = new FileInputStream(inFile);
     try {
       InputStream in = new BufferedInputStream(fin);
       try {
-        return parse(in, cumulative, sourcePaths);
+        return parse(in, cumulative);
       } finally {
         Closeables.closeQuietly(in);
       }
@@ -92,10 +87,6 @@ public class CoverDataFileParser {
   }
 
   public static List<ErlangFileCoverage> parse(InputStream in, ErlangFileCoverage rootCoverage) throws IOException {
-    return parse(in, rootCoverage, null);
-  }
-
-  public static List<ErlangFileCoverage> parse(InputStream in, ErlangFileCoverage rootCoverage, Set<String> sourcePaths) throws IOException {
     Preconditions.checkNotNull(in);
     List<ErlangFileCoverage> ret = new ArrayList<ErlangFileCoverage>();
     if (rootCoverage == null) {
@@ -111,15 +102,7 @@ public class CoverDataFileParser {
           if (tuple.arity() == 3 && FILE_ATOM.equals(tuple.elementAt(0))) {
             // {file,sip_ua_client,"/Users/idubrov/Projects/siperl/apps/sip/ebin/sip_ua_client.beam"}
             String module = eatom(tuple, 1);
-            String path = estring(tuple, 2);
 
-            if (sourcePaths != null) {
-              // Let's guess source paths
-              // FIXME: What if path was generated on different OS?
-              // Remove ebin/<file>.beam or .eunit/<file>.beam
-              String sourcePath = new File(path).getParentFile().getParentFile().getAbsolutePath();
-              sourcePaths.add(sourcePath + "/src");
-            }
             moduleResult = new ErlangFileCoverage();
             moduleResult.setFilePath(module+".erl");
             ret.add(moduleResult);

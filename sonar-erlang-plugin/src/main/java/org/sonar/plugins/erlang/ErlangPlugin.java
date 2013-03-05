@@ -57,6 +57,12 @@ import java.util.List;
     description = "Filename of the dialyzer output located in the eunit folder",
     global = true, project = true),
 
+    @Property(key = ErlangPlugin.COVERDATA_FILENAME_KEY,
+    defaultValue = ErlangPlugin.COVERDATA_DEFAULT_FILENAME,
+    name = "Coverdata Default Filename",
+    description = "Filename of the coverdata file located in the eunit folder",
+    global = true, project = true),
+
   @Property(key = ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
     defaultValue = ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME,
     name = "Rebar configfile name",
@@ -67,9 +73,13 @@ public class ErlangPlugin extends SonarPlugin {
 
   public static final String EUNIT_FOLDER_KEY = "sonar.erlang.eunit.repotsfolder";
   public static final String EUNIT_DEFAULT_FOLDER = ".eunit/";
-  public static final String DIALYZER_FILENAME_KEY = "sonar.erlang.dialyzer.filename";
 
-  public static final String DIALYZER_DEFAULT_FILENAME = EUNIT_DEFAULT_FOLDER + "dialyzer.log";
+  public static final String DIALYZER_FILENAME_KEY = "sonar.erlang.dialyzer.filename";
+  public static final String DIALYZER_DEFAULT_FILENAME = "dialyzer.log";
+
+  public static final String COVERDATA_FILENAME_KEY = "sonar.erlang.dialyzer.filename";
+  public static final String COVERDATA_DEFAULT_FILENAME = "eunit.coverdata";
+
   public static final String NAME = "Erlang";
   public static final String EXTENSION = ".erl";
   public static final String FILE_SUFFIXES_KEY = "sonar.erlang.file.suffixes";

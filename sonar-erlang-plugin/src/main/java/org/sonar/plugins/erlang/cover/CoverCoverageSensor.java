@@ -32,6 +32,7 @@ import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,13 +52,33 @@ public class CoverCoverageSensor implements Sensor {
   }
 
   public void analyse(Project project, SensorContext context) {
-
     File reportsDir = new File(project.getFileSystem().getBasedir(), erlang.getConfiguration()
         .getString(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+
+    String coverDataFilename = erlang.getConfiguration().getString(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
+
+    File coverDataFile = new File(reportsDir, coverDataFilename);
+
+    if(coverDataFile.exists()){
+      parseCoverdataFile(project, context, coverDataFile);
+    } else{
+      parseCoverHtmlOutput(project, context, reportsDir);
+    }
+  }
+
+  private void parseCoverdataFile(Project project, SensorContext context, File coverDataFile) {
+    try {
+      List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile, null);
+      analyseCoveredFiles(project, context, coveredFiles);
+    } catch (IOException e) {
+      LOG.error("Cannot parse coverdata file: "+coverDataFile.getAbsolutePath());
+    }
+  }
+
+  private void parseCoverHtmlOutput(Project project, SensorContext context, File reportsDir) {
     LOG.debug("Parsing coverage results in html format from folder {}", reportsDir);
 
     GenericExtFilter filter = new GenericExtFilter(".html");
-
     String[] list = reportsDir.list(filter);
 
     if (list == null || list.length == 0) {
@@ -69,12 +90,12 @@ public class CoverCoverageSensor implements Sensor {
       if (!file.matches(".*\\.COVER.html")) {
         continue;
       }
-      coveredFiles.add(analyse(project, context, file));
+      coveredFiles.add(analyseHtml(project, context, file));
     }
     analyseCoveredFiles(project, context, coveredFiles);
   }
 
-  public ErlangFileCoverage analyse(Project project, SensorContext sensorContext,
+  public ErlangFileCoverage analyseHtml(Project project, SensorContext sensorContext,
       String testCoverageFileName) {
     File coverCoverageReportFile = new File(project.getFileSystem().getBasedir(),
         getTestReportsFolder() + "/" + testCoverageFileName);
