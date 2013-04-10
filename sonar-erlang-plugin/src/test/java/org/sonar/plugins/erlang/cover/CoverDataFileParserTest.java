@@ -43,7 +43,6 @@ public class CoverDataFileParserTest {
     assertThat(cov.getUncoveredLines(), Matchers.equalTo(2));
   }
 
-
   private ErlangFileCoverage getResultOfModule(String module, List<ErlangFileCoverage> cov){
     for (ErlangFileCoverage erlangFileCoverage : cov) {
       if(module.equals(erlangFileCoverage.getFilePath())){

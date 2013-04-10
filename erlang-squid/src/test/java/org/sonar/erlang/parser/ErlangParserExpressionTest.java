@@ -53,7 +53,9 @@ public class ErlangParserExpressionTest {
         .matches("A=N-2")
         .matches("A=N--2")
         .matches("B=[2,3]")
-        .matches("B={2,3}");
+        .matches("B={2,3}")
+        .matches("B=A")
+        .matches("B=A=error");
 
   }
 
@@ -141,7 +143,9 @@ public class ErlangParserExpressionTest {
         .matches("#person{name=Name, _='_'}")
         .matches("A = #Name{Field1=Expr1,Field2=Expr2,FieldK=ExprK}")
         .matches("S = #person{name=Name, _='_'}")
-        .matches("User#user{ibuttons = User#user.ibuttons ++ [IButton]}");
+        .matches("User#user{ibuttons = User#user.ibuttons ++ [IButton]}")
+        .matches("#input{field=#person{name=Name}=Boss, partner=Partner}")
+        .matches("N2#nrec2.nrec1#nrec1.nrec0#nrec0{name = \"nested0a\"}");
   }
 
   @Test
@@ -150,9 +154,7 @@ public class ErlangParserExpressionTest {
         .matches("#person.name")
         .matches("Expr#Name.Field")
         .matches("N2#nrec2.nrec1#nrec1.nrec0.nrec00#nrec0.name.first")
-        .matches("N2#nrec2.nrec1#nrec1.nrec0#nrec0{name = \"nested0a\"}")
         .matches("(PartialMsg#'MegacoMessage'.mess)#'Message'.version");
-
   }
 
   @Test

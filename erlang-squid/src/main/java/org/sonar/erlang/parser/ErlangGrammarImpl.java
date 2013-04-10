@@ -229,7 +229,6 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   public static final String IDENTIFIER = "('[^'\n\r]*')"
     + "|^(?!\\$)(\\p{javaJavaIdentifierStart}++[\\p{javaJavaIdentifierPart}@]*+)";
 
-
   public static LexerlessGrammar createGrammar() {
     return createGrammarBuilder().build();
   }
@@ -426,8 +425,11 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
 
     b.rule(behaviourAttr).is(minus, semiKeyword("behaviour", b), lparenthesis, identifier, rparenthesis, dot);
 
-    b.rule(genericAttr).is(minus, b.firstOf(semiKeyword("vsn", b), semiKeyword("on_load", b), semiKeyword("include", b), semiKeyword("file", b),
-        semiKeyword("ignore_xref", b), semiKeyword("include_lib", b), semiKeyword("author", b), semiKeyword("export_type", b), semiKeyword("deprecated", b), semiKeyword("asn1_info", b)),
+    b.rule(genericAttr).is(
+        minus,
+        b.firstOf(semiKeyword("vsn", b), semiKeyword("on_load", b), semiKeyword("include", b), semiKeyword("file", b),
+            semiKeyword("ignore_xref", b), semiKeyword("include_lib", b), semiKeyword("author", b), semiKeyword("export_type", b), semiKeyword("deprecated", b),
+            semiKeyword("asn1_info", b)),
         lparenthesis, b.firstOf(funcArity, primaryExpression), rparenthesis, dot);
 
     b.rule(anyAttr).is(minus, identifier, lparenthesis, primaryExpression, rparenthesis, dot);
@@ -501,8 +503,13 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         comma, qualifier)), b.sequence(assignmentExpression, b.zeroOrMore(b.firstOf(comma,
         assignmentExpression)), b.optional(pipe, assignmentExpression)))), rbracket);
     b.rule(qualifier).is(b.firstOf(b.sequence(assignmentExpression, arrowback, expression), expression));
-    b.rule(recordLiteral).is(b.optional(primaryExpression), b.oneOrMore(recordLiteralHead), b.optional(lcurlybrace, b.optional(
-        assignmentExpression, b.zeroOrMore(comma, assignmentExpression)), rcurlybrace));
+    b.rule(recordLiteral).is(
+        b.optional(primaryExpression),
+        b.oneOrMore(recordLiteralHead),
+        b.optional(lcurlybrace,
+            b.optional(assignmentExpression,
+                b.zeroOrMore(comma, assignmentExpression)
+                ), rcurlybrace));
     b.rule(recordLiteralHead).is(numbersign, identifier, b.zeroOrMore(dot, identifier));
 
     b.rule(macroLiteral).is(questionmark, identifier, b.optional(arguments));
@@ -545,6 +552,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(callExpression).is(
         b.firstOf(b.sequence(b.optional(memberExpression, colon), memberExpression, arguments),
             memberExpression)).skipIfOneChild();
+    // memberExpression, b.optional(colon, memberExpression), b.optional(arguments)).skipIfOneChild();
 
     b.rule(arguments).is(lparenthesis, b.optional(assignmentExpression, b.zeroOrMore(comma, assignmentExpression)),
         rparenthesis);
@@ -593,7 +601,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(listOperationExpression).is(shortCircuitAndAlsoExpression,
         b.zeroOrMore(b.firstOf(plusplus, minusminus), shortCircuitAndAlsoExpression)).skipIfOneChild();
 
-    b.rule(assignmentExpression).is(listOperationExpression, b.optional(matchop, listOperationExpression)).skipIfOneChild();
+    b.rule(assignmentExpression).is(listOperationExpression, b.optional(matchop, assignmentExpression)).skipIfOneChild();
 
     b.rule(expression).is(b.optional(catchKeyword), assignmentExpression);
 
@@ -684,10 +692,11 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     this.internalName = sb.toString();
   }
 
-/*  @Override
-  public String toString() {
-    // This allows to keep compatibility with old XPath expressions
-    return internalName;
-  }
-*/
+  /*
+   * @Override
+   * public String toString() {
+   * // This allows to keep compatibility with old XPath expressions
+   * return internalName;
+   * }
+   */
 }
