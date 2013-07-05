@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import org.apache.commons.io.FileUtils;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
@@ -59,40 +61,39 @@ public class EunitXmlSensor implements Sensor {
 
   protected void collect(final Project project, final SensorContext context, File reportsDir) {
     LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
+    if (reportsDir.exists() && project.getFileSystem().getTestDirs().size() > 0) {
+      new AbstractSurefireParser() {
 
-    new AbstractSurefireParser() {
+        @Override
+        protected Resource<?> getUnitTestResource(String classKey) {
+          List<File> testDirectories = project.getFileSystem().getTestDirs();
+          File unitTestFile = getUnitTestFile(testDirectories, classKey);
 
-      @Override
-      protected Resource<?> getUnitTestResource(String classKey) {
+          org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
+          unitTestFileResource.setLanguage(erlang);
+          unitTestFileResource.setQualifier(Qualifiers.UNIT_TEST_FILE);
 
-        List<File> testDirectories = project.getFileSystem().getTestDirs();
+          LOG.debug("Adding unittest resource: {}", unitTestFileResource.toString());
 
-        File unitTestFile = getUnitTestFile(testDirectories, classKey);
+          String source = "";
 
-        org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
-        unitTestFileResource.setLanguage(erlang);
-        unitTestFileResource.setQualifier(Qualifiers.UNIT_TEST_FILE);
+          try {
+            source = FileUtils.readFileToString(unitTestFile, project.getFileSystem()
+                .getSourceCharset().name());
+          } catch (IOException e) {
+            source = "Could not find source for unit test: " + classKey
+              + " in any of test directories";
+            Log.debug(source, e);
+          }
 
-        LOG.debug("Adding unittest resource: {}", unitTestFileResource.toString());
+          context.saveSource(unitTestFileResource, source);
 
-        String source = "";
-
-        try {
-          source = FileUtils.readFileToString(unitTestFile, project.getFileSystem()
-              .getSourceCharset().name());
-        } catch (IOException e) {
-          source = "Could not find source for unit test: " + classKey
-            + " in any of test directories";
-          Log.debug(source, e);
+          return unitTestFileResource;
         }
-
-        context.saveSource(unitTestFileResource, source);
-
-        return unitTestFileResource;
-
-      }
-    }.collect(project, context, reportsDir);
-
+      }.collect(project, context, reportsDir);
+    } else {
+      LOG.debug("Eunit folder {} or test folder does not exists. Skip.", reportsDir);
+    }
   }
 
   protected String cleanName(String name) {
