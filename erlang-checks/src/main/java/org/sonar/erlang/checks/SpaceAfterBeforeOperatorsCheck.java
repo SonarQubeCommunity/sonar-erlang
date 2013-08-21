@@ -37,7 +37,7 @@ import java.util.List;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar> {
 
-  List<ErlangGrammarImpl> operators= ImmutableList.of(ErlangGrammarImpl.matchop,
+  List<ErlangGrammarImpl> operators = ImmutableList.of(ErlangGrammarImpl.matchop,
       ErlangGrammarImpl.star, ErlangGrammarImpl.div, ErlangGrammarImpl.plus,
       ErlangGrammarImpl.minus);
   List<Integer> failedLines = new ArrayList<Integer>();
@@ -65,7 +65,7 @@ public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar>
   }
 
   private int check(AstNode ast, AstNode compTo, boolean previous) {
-    int actCol = ast.getLastToken().getColumn();
+    int actCol = (previous) ? ast.getToken().getColumn() : ast.getLastToken().getColumn();
     int actLength = ast.getTokenOriginalValue().length();
     int compCol = compTo.getToken().getColumn();
     int compLength = compTo.getTokenOriginalValue().length();

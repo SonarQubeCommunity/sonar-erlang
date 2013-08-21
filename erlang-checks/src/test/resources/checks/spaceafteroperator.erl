@@ -6,4 +6,10 @@ hello(A) ->
     C= B -2, 
     D =C- 2,
     [Y, M, D] = string:tokens(DateStr, "-"),
-    [Y, M, D]= string:tokens(DateStr, "-"). 
+    [Y, M, D]= string:tokens(DateStr, "-"),
+    E = { as,
+    bs},
+    F= { as,
+    bs},
+    G ={ as,
+    bs}. 
