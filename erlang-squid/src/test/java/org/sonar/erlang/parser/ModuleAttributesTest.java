@@ -83,7 +83,7 @@ public class ModuleAttributesTest {
 
   @Test
   public void typeTest() {
-    assertThat(b.rule(ErlangGrammarImpl.module))
+    assertThat(b.rule(ErlangGrammarImpl.typeSpec))
         .matches("-type ascii_string() :: [1..255].")
         .matches(code("-type timestamp() :: {MegaSecs::non_neg_integer(), Secs::non_neg_integer(), MicroSecs::non_neg_integer()}."))
         .matches(code("-opaque my_opaq_type() :: Type."))
@@ -96,7 +96,7 @@ public class ModuleAttributesTest {
         .matches("-spec nif_now/0 :: ( ) -> timestamp().")
         .matches("-spec nif_rot13/1 :: ( ascii_string() ) -> ascii_string().")
         .matches(code("-spec init([", "non_neg_integer() | callback_module()]) ->",
-            "{'ok', #state{	nodes::[],", "table::atom() | ets:tid(),",
+            "{'ok', #state{  nodes::[],", "table::atom() | ets:tid(),",
             "host_names::maybe_improper_list()", "}", "}."))
         .matches("-spec in_neighbours(mfa_or_funlbl(), callgraph()) -> 'none' | [mfa_or_funlbl(),...].")
         .matches("-spec analyze(cerl:c_module()) -> {dict(), ordset('external' | label()), dict()}.")

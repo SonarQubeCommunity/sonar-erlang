@@ -190,11 +190,6 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   flowControlAttr,
   recordAttr,
   spec,
-  specType,
-  funcSpec,
-  specFun,
-  specTypeDef,
-  specSub,
   moduleHeadAttr,
   importAttr,
   recordField,
@@ -390,6 +385,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(moduleHeadAttr).is(b.firstOf(moduleAttr, fileAttr, exportAttr, compileAttr, defineAttr,
         importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr, anyAttr)).skipIfOneChild();
 
+    b.rule(recordAttr).is(minus, semiKeyword("record", b),lparenthesis, b.zeroOrMore(b.regexp("[^\\.]"), spacing), dot);
+    /*
     b.rule(recordAttr).is(minus, semiKeyword("record", b), lparenthesis, identifier, comma, lcurlybrace, b.optional(b.sequence(
         recordField, b.optional(matchop, recordField)), b.zeroOrMore(b.firstOf(comma, pipe), b.sequence(recordField,
         b.optional(matchop, recordField)))), rcurlybrace, rparenthesis, dot);
@@ -397,7 +394,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(recordField).is(b.firstOf(b.sequence(b.firstOf(lcurlybrace, lbracket), recordField, b.zeroOrMore(comma,
         recordField), b.firstOf(rcurlybrace, rbracket)),
         b.firstOf(specFun, callExpression)), b.optional(colon, colon, recordField));
-
+*/
     b.rule(flowControlAttr).is(b.firstOf(ifdefAttr, ifndefAttr), b.zeroOrMore(b.firstOf(moduleHeadAttr,
         functionDeclaration)), b.optional(elseAttr, b.zeroOrMore(b.firstOf(moduleHeadAttr,
         functionDeclaration))), endifAttr);
@@ -439,46 +436,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   }
 
   private static void functions(LexerlessGrammarBuilder b) {
-    b.rule(spec).is(minus, b.firstOf(semiKeyword("spec", b), semiKeyword("callback", b)), b.optional(lparenthesis), b.optional(
-        identifier, colon), identifier, b.optional(div, numericLiteral), b.optional(colon, colon),
-        funcSpec, b.zeroOrMore(semi, funcSpec), b.optional(rparenthesis), dot);
-
-    b.rule(typeSpec).is(minus, b.firstOf(semiKeyword("type", b), semiKeyword("opaque", b)), b.optional(lparenthesis), funcDecl, b.firstOf(b.sequence(
-        colon, colon, specType), b.sequence(arrow, funcDecl)), b.optional(rparenthesis), dot);
-
-    b.rule(funcSpec).is(lparenthesis, b.optional(specType), rparenthesis, arrow, specType, b.optional(whenKeyword, specType));
-
-    b.rule(specType).is(b.oneOrMore(specTypeDef, b.zeroOrMore(b.firstOf(pipe, comma), specTypeDef)));
-
-    b.rule(specTypeDef).is(b.firstOf(b.sequence(b.firstOf(lcurlybrace, lbracket), specTypeDef, b.firstOf(
-        rcurlybrace, rbracket)), specSub), b.zeroOrMore(b.firstOf(comma, pipe), b.firstOf(b.sequence(b.firstOf(
-        lcurlybrace, lbracket), specTypeDef, b.firstOf(rcurlybrace, rbracket)), specSub)));
-
-    b.rule(specSub).is(b.firstOf(
-        // things in ()
-        b.sequence(lparenthesis, specTypeDef, rparenthesis),
-        // workaround for fun like expression:fun(), fun((id())-> error
-        // | ok)
-        specFun,
-        // something like: list(A | B)
-        b.sequence(identifier, lparenthesis, callExpression, b.oneOrMore(pipe, callExpression),
-            rparenthesis),
-        // and: Mega::giga()
-        b.sequence(b.firstOf(funcArity, identifier), colon, colon, specTypeDef),
-        // and for records
-        b.sequence(numbersign, identifier, specTypeDef),
-        // and things like: 1..255
-        b.sequence(primaryExpression, dot, dot, primaryExpression),
-        // or just simple ...
-        b.sequence(dot, dot, dot),
-        // and simple function call
-        b.sequence(b.optional(identifier, colon), identifier, lparenthesis, b.optional(specTypeDef),
-            rparenthesis),
-        // and everything other
-        callExpression));
-
-    b.rule(specFun).is(funKeyword, lparenthesis, b.optional(lparenthesis, b.optional(specTypeDef), rparenthesis), b.optional(arrow,
-        specTypeDef), rparenthesis);
+    b.rule(spec).is(minus, b.firstOf(semiKeyword("spec", b), semiKeyword("callback", b)), b.zeroOrMore(b.firstOf(b.regexp("\\.\\.+"), b.regexp("[^\\.]")), spacing), dot);
+    b.rule(typeSpec).is(minus, b.firstOf(semiKeyword("type", b), semiKeyword("opaque", b)), b.zeroOrMore(b.firstOf(b.regexp("\\.\\.+"), b.regexp("[^\\.]")), spacing), dot);
 
     b.rule(functionDeclaration).is(functionClause, b.zeroOrMore(semi, functionClause),
 
