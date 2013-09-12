@@ -32,7 +32,7 @@ import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.squid.checks.SquidCheck;
 
 
-@Rule(key = "FixmeCommentCheck", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
+@Rule(key = "TodoCommentCheck", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class TodoCommentCheck extends SquidCheck<LexerlessGrammar>
     implements AstAndTokenVisitor {
