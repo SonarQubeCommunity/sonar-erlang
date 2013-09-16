@@ -42,7 +42,8 @@ public final class CheckList {
         NoEmacsStyleLeadingCommasCheck.class, NoSpaceAfterBeforeBracketsCheck.class,
         NoTabsForIndentionCheck.class, NoTrailingWhitespaceCheck.class,
         NumberOfFunctionArgsCheck.class, ParsingErrorCheck.class, SpaceAfterBeforeOperatorsCheck.class, XPathCheck.class,
-        IsTailRecursiveCheck.class, MethodMustHaveSpecs.class, TodoCommentCheck.class, FixmeCommentCheck.class);
+        IsTailRecursiveCheck.class, MethodMustHaveSpecs.class, TodoCommentCheck.class, FixmeCommentCheck.class,
+        FunctionLengthCheck.class);
   }
 
 }

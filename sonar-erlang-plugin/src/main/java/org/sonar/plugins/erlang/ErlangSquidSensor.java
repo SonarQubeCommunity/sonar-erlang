@@ -61,7 +61,7 @@ public class ErlangSquidSensor implements Sensor {
 
   private Project project;
   private SensorContext context;
-  private AstScanner scanner;
+  private AstScanner<LexerlessGrammar> scanner;
 
   public ErlangSquidSensor(RulesProfile profile, FileLinesContextFactory fileLinesContextFactory) {
     this.annotationCheckFactory = AnnotationCheckFactory.create(profile,
