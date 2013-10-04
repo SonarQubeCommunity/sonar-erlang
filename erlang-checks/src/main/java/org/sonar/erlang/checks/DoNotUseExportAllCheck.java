@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import org.sonar.check.RuleProperty;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
@@ -32,6 +34,10 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DoNotUseExportAllCheck extends SquidCheck<LexerlessGrammar> {
 
+  @RuleProperty(key = "skipInFlowControl", defaultValue = "true",
+      description = "Set it false if you want to check export_all in flow controls.")
+    private boolean skipInFlowControl = true;
+
   @Override
   public void init() {
     subscribeTo(ErlangGrammarImpl.compileAttr);
@@ -39,9 +45,17 @@ public class DoNotUseExportAllCheck extends SquidCheck<LexerlessGrammar> {
 
   @Override
   public void visitNode(AstNode node) {
-    if ("export_all".equalsIgnoreCase(node.getFirstChild(ErlangGrammarImpl.primaryExpression).getTokenOriginalValue())) {
+    if (hasFlowControlParent(node) && "export_all".equalsIgnoreCase(node.getFirstChild(ErlangGrammarImpl.primaryExpression).getTokenOriginalValue())) {
       getContext().createLineViolation(this, "Do not use export_all", node);
     }
+  }
+
+  private boolean hasFlowControlParent(AstNode astNode) {
+    return (!astNode.hasAncestor(ErlangGrammarImpl.flowControlAttr) || !skipInFlowControl);
+  }
+
+  public void setsSkipInFlowControl(boolean skipInFlowControl) {
+    this.skipInFlowControl = skipInFlowControl;
   }
 
 }

@@ -43,6 +43,17 @@ public class DoNotUseExportAllTest {
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
         "src/test/resources/checks/exportall.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
-        "Do not use export_all");
+        "Do not use export_all").noMore();
+  }
+
+  @Test
+  public void test3() {
+    DoNotUseExportAllCheck check = new DoNotUseExportAllCheck();
+    check.setsSkipInFlowControl(false);
+    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+        "src/test/resources/checks/exportall.erl"), check);
+    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
+        .atLine(2).withMessage("Do not use export_all").next()
+        .atLine(5).withMessage("Do not use export_all").noMore();
   }
 }
