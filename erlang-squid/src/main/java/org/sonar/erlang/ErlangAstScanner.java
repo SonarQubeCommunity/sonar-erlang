@@ -38,7 +38,6 @@ import org.sonar.erlang.metrics.ErlangStatementVisitor;
 import org.sonar.erlang.metrics.NumberOfFunctionArgument;
 import org.sonar.erlang.metrics.PublicDocumentedApiCounter;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
-import org.sonar.erlang.parser.ErlangParser;
 import org.sonar.squid.api.SourceClass;
 import org.sonar.squid.api.SourceCode;
 import org.sonar.squid.api.SourceFile;
@@ -46,6 +45,7 @@ import org.sonar.squid.api.SourceFunction;
 import org.sonar.squid.api.SourceProject;
 import org.sonar.squid.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
+import org.sonar.sslr.parser.ParserAdapter;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -75,7 +75,7 @@ public final class ErlangAstScanner {
       SquidAstVisitor<LexerlessGrammar>... visitors) {
     final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<LexerlessGrammar>(
         new SourceProject("Erlang Project"));
-    final Parser<LexerlessGrammar> parser = ErlangParser.create(conf);
+    final Parser<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(conf.getCharset(), ErlangGrammarImpl.createGrammar());
 
     AstScanner.Builder<LexerlessGrammar> builder = AstScanner.<LexerlessGrammar> builder(context)
         .setBaseParser(parser);
@@ -167,7 +167,7 @@ public final class ErlangAstScanner {
 
     builder.withSquidAstVisitor(CommentsVisitor.<LexerlessGrammar> builder().withCommentMetric(
         ErlangMetric.COMMENT_LINES)
-        .withBlankCommentMetric(ErlangMetric.COMMENT_BLANK_LINES).withNoSonar(true)
+        .withNoSonar(true)
         .withIgnoreHeaderComment(false).build());
 
     /* Statements */

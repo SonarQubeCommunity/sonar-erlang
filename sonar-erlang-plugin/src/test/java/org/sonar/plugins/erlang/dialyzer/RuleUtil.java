@@ -55,7 +55,7 @@ public class RuleUtil {
     rule.setKey(ruleKey);
     rule.setConfigKey(ruleKey);
     rule.setRepositoryKey("Erlang");
-    rule.setEnabled(true);
+    rule.setStatus(Rule.STATUS_READY);
     rule.setSeverity(RulePriority.MAJOR);
     rule.setCardinality(Cardinality.SINGLE);
     ActiveRule activeRule = new ActiveRule();

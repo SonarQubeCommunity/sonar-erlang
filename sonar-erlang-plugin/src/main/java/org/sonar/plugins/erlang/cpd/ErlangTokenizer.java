@@ -19,19 +19,20 @@
  */
 package org.sonar.plugins.erlang.cpd;
 
+import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.impl.Lexer;
+import com.sonar.sslr.impl.Parser;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokenizer;
 import net.sourceforge.pmd.cpd.Tokens;
-import org.sonar.erlang.ErlangConfiguration;
-import org.sonar.erlang.lexer.ErlangLexer;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.parser.LexerlessGrammar;
+import org.sonar.sslr.parser.ParserAdapter;
 
 import java.io.File;
 import java.nio.charset.Charset;
-import java.util.List;
 
 public class ErlangTokenizer implements Tokenizer {
 
@@ -42,12 +43,14 @@ public class ErlangTokenizer implements Tokenizer {
   }
 
   public final void tokenize(SourceCode source, Tokens cpdTokens) {
-    Lexer lexer = ErlangLexer.create(charset);
     String fileName = source.getFileName();
-    List<Token> tokens = lexer.lex(new File(fileName));
-    for (Token token : tokens) {
-      TokenEntry cpdToken = new TokenEntry(getTokenImage(token), fileName, token.getLine());
-      cpdTokens.add(cpdToken);
+    Parser<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(charset, ErlangGrammarImpl.createGrammar());
+    AstNode result = parser.parse(new File(fileName));
+    for (Token token : result.getTokens()) {
+      if (token != null) {
+        TokenEntry cpdToken = new TokenEntry(getTokenImage(token), fileName, token.getLine());
+        cpdTokens.add(cpdToken);
+      }
     }
     cpdTokens.add(TokenEntry.getEOF());
   }

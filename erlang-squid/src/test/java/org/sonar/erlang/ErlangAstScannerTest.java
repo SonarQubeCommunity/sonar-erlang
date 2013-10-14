@@ -52,7 +52,6 @@ public class ErlangAstScannerTest {
   public void comments() {
     SourceFile file = ErlangAstScanner.scanSingleFile(new File(
         "src/test/resources/metrics/functions.erl"));
-    assertThat(file.getInt(ErlangMetric.COMMENT_BLANK_LINES)).isEqualTo(6);
     assertThat(file.getInt(ErlangMetric.COMMENT_LINES)).isEqualTo(5);
     assertThat(file.getNoSonarTagLines()).contains(38);
     assertThat(file.getNoSonarTagLines().size()).isEqualTo(1);
