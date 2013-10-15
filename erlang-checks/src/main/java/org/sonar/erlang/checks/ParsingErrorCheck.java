@@ -19,29 +19,15 @@
  */
 package org.sonar.erlang.checks;
 
-import com.sonar.sslr.api.AuditListener;
-import com.sonar.sslr.api.RecognitionException;
-import com.sonar.sslr.squid.checks.SquidCheck;
-import org.sonar.check.Priority;
-import org.sonar.check.Rule;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import com.sonar.sslr.squid.checks.AbstractParseErrorCheck;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
 
 @Rule(
   key = "ParsingError",
   priority = Priority.MAJOR)
-public class ParsingErrorCheck extends SquidCheck<LexerlessGrammar> implements AuditListener {
-
-  public void processRecognitionException(RecognitionException e) {
-    getContext().createLineViolation(this, e.getMessage(), e.getLine());
-  }
-
-  public void processException(Exception e) {
-    StringWriter exception = new StringWriter();
-    e.printStackTrace(new PrintWriter(exception));
-    getContext().createFileViolation(this, exception.toString());
-  }
+public class ParsingErrorCheck extends AbstractParseErrorCheck<LexerlessGrammar>  {
 
 }

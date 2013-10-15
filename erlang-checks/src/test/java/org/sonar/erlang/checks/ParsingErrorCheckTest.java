@@ -19,8 +19,6 @@
  */
 package org.sonar.erlang.checks;
 
-import org.junit.Ignore;
-
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
 import org.sonar.erlang.ErlangAstScanner;
@@ -30,7 +28,6 @@ import java.io.File;
 
 import static org.hamcrest.Matchers.containsString;
 
-@Ignore
 public class ParsingErrorCheckTest {
 
   @Test
