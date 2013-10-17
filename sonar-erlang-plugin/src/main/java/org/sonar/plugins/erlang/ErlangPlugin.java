@@ -88,12 +88,16 @@ public class ErlangPlugin extends SonarPlugin {
   public static final String REBAR_DEFAULT_CONFIG_FILENAME = "rebar.config";
 
   public List<Class<? extends Extension>> getExtensions() {
-    return ImmutableList.of(Erlang.class, ErlangSourceImporter.class,
-        ErlangColorizerFormat.class, ErlangCpdMapping.class,
+    return ImmutableList.of(
+        Erlang.class,
+        ErlangSourceImporter.class,
+        ErlangColorizerFormat.class,
+        ErlangCpdMapping.class,
 
         ErlangSquidSensor.class,
 
-        ErlangChecksRuleRepository.class, DialyzerRuleRepository.class,
+        ErlangChecksRuleRepository.class,
+        DialyzerRuleRepository.class,
         ErlangProfile.class,
 
         ErlangCommonRulesEngineProvider.class,

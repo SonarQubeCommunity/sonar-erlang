@@ -19,30 +19,27 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.sonar.plugins.erlang.core.Erlang;
-
 import org.apache.commons.configuration.Configuration;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.issue.Issuable;
+import org.sonar.api.issue.Issue;
 import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.InputFile;
-import org.sonar.api.resources.InputFileUtils;
-import org.sonar.api.resources.Project;
+import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.ActiveRule;
-import org.sonar.api.rules.Violation;
-import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ProjectUtil;
+import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -50,25 +47,13 @@ import static org.mockito.Mockito.when;
 
 public class ErlangDialyzerTest {
 
-  private Configuration configuration;
-  private SensorContext context;
-  private Erlang erlang;
+  private Issuable issuable;
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    context = ProjectUtil.mockContext();
-    configuration = mock(Configuration.class);
-    when(
-        configuration.getString(ErlangPlugin.DIALYZER_FILENAME_KEY,
-            ErlangPlugin.DIALYZER_DEFAULT_FILENAME)).thenReturn(
-        ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
-
-    when(
-        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
-
-    erlang = new Erlang(configuration);
+    Configuration configuration = ProjectUtil.mockConfiguration();
+    Erlang erlang = new Erlang(configuration);
+    SensorContext context = ProjectUtil.mockContext();
 
     RulesProfile rp = mock(RulesProfile.class);
     ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019", null);
@@ -78,26 +63,21 @@ public class ErlangDialyzerTest {
     when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D041"))
         .thenReturn(activeRule);
 
-    File fileToAnalyse = new File(getClass().getResource(
-        "/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl").toURI());
-    InputFile inputFile = InputFileUtils.create(fileToAnalyse.getParentFile(), fileToAnalyse);
-    ArrayList<InputFile> inputFiles = new ArrayList<InputFile>();
-    inputFiles.add(inputFile);
-    Project project = ProjectUtil.getProject(inputFiles, null, configuration);
-    new DialyzerReportParser().dialyzer(erlang, project, context, new ErlangRuleManager(
+    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
+        Arrays.asList(
+            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
+
+    issuable = ProjectUtil.mockIssueable();
+    ResourcePerspectives resourcePerspectives = mock(ResourcePerspectives.class);
+    when(resourcePerspectives.as(Mockito.eq(Issuable.class), Mockito.any(Resource.class))).thenReturn(issuable);
+
+    new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(erlang, context, new ErlangRuleManager(
         DialyzerRuleRepository.DIALYZER_PATH), rp);
   }
 
   @Test
   public void checkDialyzer() {
-    ArgumentCaptor<Violation> argument = ArgumentCaptor.forClass(Violation.class);
-    verify(context, times(3)).saveViolation(argument.capture());
-    List<Violation> capturedViolations = argument.getAllValues();
-    assertThat("violation is not D019", capturedViolations.get(0).getRule().getKey(), Matchers
-        .equalTo("D019"));
-    assertThat("violation is not D041", capturedViolations.get(1).getRule().getKey(), Matchers
-        .equalTo("D041"));
-    assertThat("violation is not D019", capturedViolations.get(2).getRule().getKey(), Matchers
-        .equalTo("D019"));
+    ArgumentCaptor<Issue> argument = ArgumentCaptor.forClass(Issue.class);
+    verify(issuable, times(3)).addIssue(argument.capture());
   }
 }

@@ -25,17 +25,19 @@ import com.sonar.sslr.squid.SquidAstVisitor;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.checks.AnnotationCheckFactory;
+import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.issue.Issuable;
+import org.sonar.api.issue.Issue;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.measures.PersistenceMode;
 import org.sonar.api.measures.RangeDistributionBuilder;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.File;
-import org.sonar.api.resources.InputFileUtils;
 import org.sonar.api.resources.Project;
-import org.sonar.api.rules.Violation;
+import org.sonar.api.rule.RuleKey;
+import org.sonar.api.rules.ActiveRule;
+import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.erlang.ErlangAstScanner;
-import org.sonar.erlang.ErlangConfiguration;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.checks.CheckList;
 import org.sonar.plugins.erlang.core.Erlang;
@@ -49,7 +51,6 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 public class ErlangSquidSensor implements Sensor {
 
@@ -57,16 +58,18 @@ public class ErlangSquidSensor implements Sensor {
   private final Number[] FILES_DISTRIB_BOTTOM_LIMITS = {0, 5, 10, 20, 30, 60, 90};
 
   private final AnnotationCheckFactory annotationCheckFactory;
-  private final FileLinesContextFactory fileLinesContextFactory;
 
   private Project project;
   private SensorContext context;
   private AstScanner<LexerlessGrammar> scanner;
+  private ModuleFileSystem moduleFileSystem;
+  private ResourcePerspectives resourcePerspectives;
 
-  public ErlangSquidSensor(RulesProfile profile, FileLinesContextFactory fileLinesContextFactory) {
+  public ErlangSquidSensor(RulesProfile profile, ModuleFileSystem moduleFileSystem, ResourcePerspectives resourcePerspectives) {
     this.annotationCheckFactory = AnnotationCheckFactory.create(profile,
         CheckList.REPOSITORY_KEY, CheckList.getChecks());
-    this.fileLinesContextFactory = fileLinesContextFactory;
+    this.moduleFileSystem = moduleFileSystem;
+    this.resourcePerspectives = resourcePerspectives;
   }
 
   public boolean shouldExecuteOnProject(Project project) {
@@ -79,24 +82,21 @@ public class ErlangSquidSensor implements Sensor {
 
     Collection<SquidAstVisitor<LexerlessGrammar>> squidChecks = annotationCheckFactory.getChecks();
     List<SquidAstVisitor<LexerlessGrammar>> visitors = Lists.newArrayList(squidChecks);
-    this.scanner = ErlangAstScanner.create(createConfiguration(project), visitors
+    this.scanner = ErlangAstScanner.create(moduleFileSystem.sourceCharset(), visitors
         .toArray(new SquidAstVisitor[visitors.size()]));
-    scanner.scanFiles(InputFileUtils.toFiles(project.getFileSystem().mainFiles(Erlang.KEY)));
+
+    scanner.scanFiles(moduleFileSystem.files(Erlang.sourceQuery));
 
     Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(
         new QueryByType(SourceFile.class));
     save(squidSourceFiles);
   }
 
-  private ErlangConfiguration createConfiguration(Project project) {
-    return new ErlangConfiguration(project.getFileSystem().getSourceCharset());
-  }
-
   private void save(Collection<SourceCode> squidSourceFiles) {
     for (SourceCode squidSourceFile : squidSourceFiles) {
       SourceFile squidFile = (SourceFile) squidSourceFile;
 
-      File sonarFile = File.fromIOFile(new java.io.File(squidFile.getKey()), project);
+      File sonarFile = File.fromIOFile(new java.io.File(squidFile.getKey()), moduleFileSystem.sourceDirs());
 
       saveFilesComplexityDistribution(sonarFile, squidFile);
       saveFunctionsComplexityDistribution(sonarFile, squidFile);
@@ -142,10 +142,13 @@ public class ErlangSquidSensor implements Sensor {
     Collection<CheckMessage> messages = squidFile.getCheckMessages();
     if (messages != null) {
       for (CheckMessage message : messages) {
-        Violation violation = Violation.create(
-            annotationCheckFactory.getActiveRule(message.getCheck()), sonarFile)
-            .setLineId(message.getLine()).setMessage(message.getText(Locale.ENGLISH));
-        context.saveViolation(violation);
+        ActiveRule activeRule = annotationCheckFactory.getActiveRule(message.getCheck());
+        Issuable issuable = resourcePerspectives.as(Issuable.class, sonarFile);
+        Issue issue = issuable.newIssueBuilder()
+            .ruleKey(RuleKey.of(activeRule.getRepositoryKey(), activeRule.getRuleKey()))
+            .line(message.getLine())
+            .build();
+        issuable.addIssue(issue);
       }
     }
   }

@@ -19,27 +19,26 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.hamcrest.Matchers;
-
 import org.apache.commons.configuration.Configuration;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.resources.InputFile;
+import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
+import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
 import org.sonar.plugins.erlang.core.Erlang;
 
+import java.io.File;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.doubleThat;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,39 +46,34 @@ import static org.mockito.Mockito.when;
 public class EunitXmlSensorTest {
 
   private SensorContext context;
-  private Configuration configuration;
-  private List<InputFile> srcFiles = new ArrayList<InputFile>();
 
   @Before
   public void setup() throws URISyntaxException {
     context = ProjectUtil.mockContext();
-    configuration = mock(Configuration.class);
-    when(
-        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    Configuration configuration = ProjectUtil.mockConfiguration();
     when(
         configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
             ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
         ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
-    List<InputFile> otherFiles = new ArrayList<InputFile>();
-    otherFiles.add(ProjectUtil.getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/TEST-erlcount_eunit.xml"));
-    otherFiles.add(ProjectUtil.getInputFileByPath("/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"));
-    otherFiles.add(ProjectUtil.getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/TEST-erlcount.xml"));
-    otherFiles.add(ProjectUtil.getInputFileByPath("/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl"));
-    new EunitXmlSensor(new Erlang(configuration)).analyse(ProjectUtil.getProject(srcFiles, otherFiles, configuration), context);
+
+    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
+        Arrays.asList(new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src")),
+        Arrays.asList(new File("/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"),
+            new File("/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl")));
+
+    new EunitXmlSensor(new Erlang(configuration), fileSystem).analyse(new Project("dummy"), context);
 
   }
 
   @Test
   public void shouldSaveErrorsAndFailuresInXML() throws URISyntaxException {
 
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TESTS), eq(7.0));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.SKIPPED_TESTS), eq(0.0));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_ERRORS), eq(0.0));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_FAILURES), eq(1.0));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_EXECUTION_TIME), doubleThat(Matchers.greaterThan(1.0)));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_SUCCESS_DENSITY), eq(85.71));
+    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TESTS), eq(7.0));
+    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.SKIPPED_TESTS), eq(0.0));
+    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TEST_ERRORS), eq(0.0));
+    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TEST_FAILURES), eq(1.0));
+    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TEST_EXECUTION_TIME), doubleThat(Matchers.greaterThan(1.0)));
+    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TEST_SUCCESS_DENSITY), eq(85.71));
   }
 
 }

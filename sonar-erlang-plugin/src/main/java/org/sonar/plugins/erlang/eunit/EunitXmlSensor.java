@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import org.apache.commons.io.FileUtils;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
@@ -30,6 +28,7 @@ import org.sonar.api.batch.SensorContext;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Qualifiers;
 import org.sonar.api.resources.Resource;
+import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.plugins.surefire.api.AbstractSurefireParser;
@@ -41,9 +40,11 @@ import java.util.List;
 public class EunitXmlSensor implements Sensor {
 
   protected Erlang erlang;
+  private ModuleFileSystem moduleFileSystem;
 
-  public EunitXmlSensor(Erlang erlang) {
+  public EunitXmlSensor(Erlang erlang, ModuleFileSystem moduleFileSystem) {
     this.erlang = erlang;
+    this.moduleFileSystem = moduleFileSystem;
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
@@ -56,17 +57,17 @@ public class EunitXmlSensor implements Sensor {
     String eunitFolder = erlang.getConfiguration().getString(
         ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     collect(project, context,
-        new File(project.getFileSystem().getBasedir(), eunitFolder));
+        new File(moduleFileSystem.baseDir(), eunitFolder));
   }
 
   protected void collect(final Project project, final SensorContext context, File reportsDir) {
     LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
-    if (reportsDir.exists() && project.getFileSystem().getTestDirs().size() > 0) {
+    if (reportsDir.exists() && moduleFileSystem.testDirs().size() > 0) {
       new AbstractSurefireParser() {
 
         @Override
         protected Resource<?> getUnitTestResource(String classKey) {
-          List<File> testDirectories = project.getFileSystem().getTestDirs();
+          List<File> testDirectories = moduleFileSystem.testDirs();
           File unitTestFile = getUnitTestFile(testDirectories, classKey);
 
           org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
@@ -78,8 +79,7 @@ public class EunitXmlSensor implements Sensor {
           String source = "";
 
           try {
-            source = FileUtils.readFileToString(unitTestFile, project.getFileSystem()
-                .getSourceCharset().name());
+            source = FileUtils.readFileToString(unitTestFile, moduleFileSystem.sourceCharset().name());
           } catch (IOException e) {
             source = "Could not find source for unit test: " + classKey
               + " in any of test directories";

@@ -19,25 +19,24 @@
  */
 package org.sonar.plugins.erlang;
 
-import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
+import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.InputFile;
-import org.sonar.api.resources.InputFileUtils;
 import org.sonar.api.resources.Language;
 import org.sonar.api.resources.Project;
-import org.sonar.api.resources.ProjectFileSystem;
 import org.sonar.api.resources.Resource;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.api.scan.filesystem.FileQuery;
+import org.sonar.api.scan.filesystem.ModuleFileSystem;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -47,14 +46,16 @@ import static org.mockito.Mockito.when;
 public class ErlangSquidSensorTest {
 
   private ErlangSquidSensor sensor;
+  private ModuleFileSystem fileSystem;
 
   @Before
   public void setUp() {
     FileLinesContextFactory fileLinesContextFactory = mock(FileLinesContextFactory.class);
     FileLinesContext fileLinesContext = mock(FileLinesContext.class);
-    when(fileLinesContextFactory.createFor(Matchers.any(Resource.class))).thenReturn(
-        fileLinesContext);
-    sensor = new ErlangSquidSensor(mock(RulesProfile.class), fileLinesContextFactory);
+    when(fileLinesContextFactory.createFor(Mockito.any(Resource.class))).thenReturn(fileLinesContext);
+    fileSystem = mock(ModuleFileSystem.class);
+    when(fileSystem.sourceCharset()).thenReturn(Charset.forName("UTF-8"));
+    sensor = new ErlangSquidSensor(mock(RulesProfile.class), fileSystem, null);
   }
 
   @Test
@@ -74,13 +75,10 @@ public class ErlangSquidSensorTest {
 
   @Test
   public void should_analyse() {
-    ProjectFileSystem fs = mock(ProjectFileSystem.class);
-    when(fs.getSourceCharset()).thenReturn(Charset.forName("UTF-8"));
-    InputFile inputFile = InputFileUtils.create(new File("src/test/resources/cpd"), new File(
-        "src/test/resources/cpd/person.erl"));
-    when(fs.mainFiles(Erlang.KEY)).thenReturn(ImmutableList.of(inputFile));
+    when(fileSystem.files(Mockito.any(FileQuery.class))).thenReturn(Arrays.asList(
+        new File("src/test/resources/cpd/person.erl")));
+
     Project project = new Project("key");
-    project.setFileSystem(fs);
     SensorContext context = mock(SensorContext.class);
 
     sensor.analyse(project, context);
@@ -96,13 +94,10 @@ public class ErlangSquidSensorTest {
 
   @Test
   public void analyse() {
-    ProjectFileSystem fs = mock(ProjectFileSystem.class);
-    when(fs.getSourceCharset()).thenReturn(Charset.forName("UTF-8"));
-    InputFile inputFile = InputFileUtils.create(new File("src/test/resources"), new File(
-        "src/test/resources/megaco_ber_bin_encoder.erl"));
-    when(fs.mainFiles(Erlang.KEY)).thenReturn(ImmutableList.of(inputFile));
+    when(fileSystem.files(Mockito.any(FileQuery.class))).thenReturn(Arrays.asList(
+        new File("src/test/resources/megaco_ber_bin_encoder.erl")));
+
     Project project = new Project("key");
-    project.setFileSystem(fs);
     SensorContext context = mock(SensorContext.class);
 
     sensor.analyse(project, context);

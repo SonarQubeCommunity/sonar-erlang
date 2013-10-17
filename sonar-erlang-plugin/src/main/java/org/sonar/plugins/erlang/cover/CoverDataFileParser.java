@@ -25,7 +25,6 @@ import com.ericsson.otp.erlang.OtpErlangException;
 import com.ericsson.otp.erlang.OtpErlangLong;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangString;
 import com.ericsson.otp.erlang.OtpErlangTuple;
 import com.ericsson.otp.erlang.OtpInputStream;
 import com.google.common.base.Preconditions;
@@ -137,10 +136,6 @@ public class CoverDataFileParser {
 
   private static int eint(OtpErlangTuple tuple, int pos) throws OtpErlangRangeException {
     return ((OtpErlangLong) tuple.elementAt(pos)).intValue();
-  }
-
-  private static String estring(OtpErlangTuple tuple, int pos) {
-    return ((OtpErlangString) tuple.elementAt(pos)).stringValue();
   }
 
   /**

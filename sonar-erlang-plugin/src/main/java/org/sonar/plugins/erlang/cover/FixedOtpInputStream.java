@@ -19,12 +19,11 @@
  */
 package org.sonar.plugins.erlang.cover;
 
-import com.google.common.io.Closeables;
-
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
 import com.ericsson.otp.erlang.OtpErlangObject;
 import com.ericsson.otp.erlang.OtpExternal;
 import com.ericsson.otp.erlang.OtpInputStream;
+import com.google.common.io.Closeables;
 
 import java.io.IOException;
 import java.util.zip.Inflater;

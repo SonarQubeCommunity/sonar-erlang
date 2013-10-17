@@ -25,21 +25,20 @@ import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.Metric;
-import org.sonar.api.resources.InputFile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
+import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
 import org.sonar.plugins.erlang.core.Erlang;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,13 +51,9 @@ public class CoverCoverageSensorTest {
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    configuration = mock(Configuration.class);
-    when(
-        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    configuration = ProjectUtil.mockConfiguration();
     erlang = new Erlang(configuration);
-    context = mock(SensorContext.class);
+    context = ProjectUtil.mockContext();
   }
 
   @Test
@@ -68,19 +63,15 @@ public class CoverCoverageSensorTest {
             ErlangPlugin.COVERDATA_DEFAULT_FILENAME)).thenReturn(
         "non_existing.coverdata");
 
-    List<InputFile> srcFiles = new ArrayList<InputFile>();
-    List<InputFile> otherFiles = new ArrayList<InputFile>();
-    srcFiles.add(ProjectUtil
-        .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.erl"));
-    otherFiles
-        .add(ProjectUtil
-            .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
-    project = ProjectUtil.getProject(srcFiles, otherFiles, configuration);
-    new CoverCoverageSensor(erlang).analyse(project, context);
+    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
+        Arrays.asList(
+            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
 
-    verify(context).saveMeasure((Resource) anyObject(), (Measure) anyObject());
-    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(21.0));
-    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(2.0));
+    new CoverCoverageSensor(erlang, fileSystem).analyse(project, context);
+
+    verify(context).saveMeasure((Resource<?>) anyObject(), (Measure) anyObject());
+    verify(context).saveMeasure((Resource<?>) anyObject(), (Metric) anyObject(), eq(21.0));
+    verify(context).saveMeasure((Resource<?>) anyObject(), (Metric) anyObject(), eq(2.0));
   }
 
   @Test
@@ -90,24 +81,15 @@ public class CoverCoverageSensorTest {
             ErlangPlugin.COVERDATA_DEFAULT_FILENAME)).thenReturn(
         ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
 
-    List<InputFile> srcFiles = new ArrayList<InputFile>();
-    List<InputFile> otherFiles = new ArrayList<InputFile>();
-    srcFiles.add(ProjectUtil
-        .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.erl"));
-    otherFiles
-        .add(ProjectUtil
-            .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
-    otherFiles
-    .add(ProjectUtil
-        .getInputFileByPath("/org/sonar/plugins/erlang/erlcount/.eunit/eunit.coverdata"));
+    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
+        Arrays.asList(
+            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
 
-    project = ProjectUtil.getProject(srcFiles, otherFiles, configuration);
-    new CoverCoverageSensor(erlang).analyse(project, context);
+    new CoverCoverageSensor(erlang, fileSystem).analyse(project, context);
 
-    verify(context).saveMeasure((Resource) anyObject(), (Measure) anyObject());
-    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(21.0));
-    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(2.0));
+    verify(context).saveMeasure((Resource<?>) anyObject(), (Measure) anyObject());
+    verify(context).saveMeasure((Resource<?>) anyObject(), (Metric) anyObject(), eq(21.0));
+    verify(context).saveMeasure((Resource<?>) anyObject(), (Metric) anyObject(), eq(2.0));
   }
-
 
 }

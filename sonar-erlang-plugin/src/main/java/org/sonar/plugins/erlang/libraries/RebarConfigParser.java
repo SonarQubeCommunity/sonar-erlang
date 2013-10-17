@@ -20,14 +20,12 @@
 package org.sonar.plugins.erlang.libraries;
 
 
-import org.sonar.erlang.parser.ErlangGrammarImpl;
-
-import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.impl.Parser;
 import com.sonar.sslr.impl.events.ParsingEventListener;
 import org.sonar.erlang.ErlangConfiguration;
+import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.parser.LexerlessGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
 

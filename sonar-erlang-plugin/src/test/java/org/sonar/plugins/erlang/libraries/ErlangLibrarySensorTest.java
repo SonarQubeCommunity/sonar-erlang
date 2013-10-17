@@ -31,21 +31,20 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.design.Dependency;
-import org.sonar.api.resources.InputFile;
 import org.sonar.api.resources.Library;
+import org.sonar.api.resources.Project;
+import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,47 +52,42 @@ import static org.mockito.Mockito.when;
 @RunWith(value = Parameterized.class)
 public class ErlangLibrarySensorTest {
 
-  private String rebarConfigPath;
   private String filename;
 
-  public ErlangLibrarySensorTest(String rebarConfigPath, String filename){
-    this.rebarConfigPath = rebarConfigPath;
+  public ErlangLibrarySensorTest(String filename) {
     this.filename = filename;
   }
 
   private static SensorContext context;
 
-
   @Parameters
-  public static Collection<Object[]> data(){
-    Object[][] data = new Object[][]{{"/org/sonar/plugins/erlang/erlcount/rebar_comments.config", "rebar_comments.config"},
-        {"/org/sonar/plugins/erlang/erlcount/rebar_depsdir.config", "rebar_depsdir.config"}};
+  public static Collection<Object[]> data() {
+    Object[][] data = new Object[][] {
+      {"rebar_comments.config"},
+      {"rebar_depsdir.config"}};
     return Arrays.asList(data);
   }
 
   @Before
   public void setup() throws URISyntaxException {
     context = ProjectUtil.mockContext();
-    Configuration configuration = mock(Configuration.class);
+    Project project = new Project("dummy");
+
     when(context.getResource(any(Library.class))).thenAnswer(new Answer<Library>() {
       public Library answer(InvocationOnMock invocation) {
         Object[] args = invocation.getArguments();
         return (Library) args[0];
       }
     });
-    when(
-        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+
+    Configuration configuration = ProjectUtil.mockConfiguration();
     when(
         configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
             ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
         filename);
 
-    ArrayList<InputFile> srcFiles = new ArrayList<InputFile>();
-    ArrayList<InputFile> otherFiles = new ArrayList<InputFile>();
-    srcFiles.add(ProjectUtil.getInputFileByPath(rebarConfigPath));
-    new ErlangLibrarySensor(new Erlang(configuration)).analyse(ProjectUtil.getProject(srcFiles, otherFiles, configuration), context);
+    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(null, null);
+    new ErlangLibrarySensor(new Erlang(configuration), fileSystem).analyse(project, context);
   }
 
   @Test

@@ -29,6 +29,7 @@ import org.sonar.api.design.Dependency;
 import org.sonar.api.resources.Library;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
+import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
@@ -39,13 +40,15 @@ public class ErlangLibrarySensor implements Sensor {
 
   private final static Logger LOG = LoggerFactory.getLogger(ErlangLibrarySensor.class);
   private Erlang erlang;
+  private ModuleFileSystem moduleFileSystem;
 
-  public ErlangLibrarySensor(Erlang erlang) {
+  public ErlangLibrarySensor(Erlang erlang, ModuleFileSystem moduleFileSystem) {
     this.erlang = erlang;
+    this.moduleFileSystem = moduleFileSystem;
   }
 
   public void analyse(Project project, SensorContext context) {
-    analyzeRebarConfigFile(project, context, project.getFileSystem().getBasedir());
+    analyzeRebarConfigFile(project, context, moduleFileSystem.baseDir());
   }
 
   private void analyzeRebarConfigFile(Resource<?> projectResource, SensorContext context, File baseDir) {
@@ -101,7 +104,7 @@ public class ErlangLibrarySensor implements Sensor {
     if(depsSetting!=null){
       ret = ((AstNode)AstNodeXPathQuery.create(".//stringLiteral").selectSingleNode((AstNode)depsSetting)).getTokenValue();
     }
-    return ret;
+    return ret.replaceAll("[\\'\\\"]", "");
   }
 
   public final boolean shouldExecuteOnProject(Project project) {
