@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class DoNotUseExportAllTest {
   public void test() {
     DoNotUseExportAllCheck check = new DoNotUseExportAllCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/spacesastabs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
@@ -40,7 +39,7 @@ public class DoNotUseExportAllTest {
   @Test
   public void test2() {
     DoNotUseExportAllCheck check = new DoNotUseExportAllCheck();
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/exportall.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
         "Do not use export_all").noMore();
@@ -50,7 +49,7 @@ public class DoNotUseExportAllTest {
   public void test3() {
     DoNotUseExportAllCheck check = new DoNotUseExportAllCheck();
     check.setsSkipInFlowControl(false);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/exportall.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
         .atLine(2).withMessage("Do not use export_all").next()

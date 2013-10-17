@@ -40,42 +40,23 @@ import org.sonar.erlang.metrics.PublicDocumentedApiCounter;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.squid.api.SourceClass;
 import org.sonar.squid.api.SourceCode;
-import org.sonar.squid.api.SourceFile;
 import org.sonar.squid.api.SourceFunction;
 import org.sonar.squid.api.SourceProject;
-import org.sonar.squid.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
 
-import java.io.File;
 import java.nio.charset.Charset;
-import java.util.Collection;
 
 public final class ErlangAstScanner {
 
   private ErlangAstScanner() {
   }
 
-  public static SourceFile scanSingleFile(File file, SquidAstVisitor<LexerlessGrammar>... visitors) {
-    if (!file.isFile()) {
-      throw new IllegalArgumentException("File '" + file + "' not found.");
-    }
-    AstScanner<LexerlessGrammar> scanner = create(new ErlangConfiguration(Charset.forName("UTF-8")), visitors);
-    scanner.scanFile(file);
-    Collection<SourceCode> sources = scanner.getIndex().search(
-        new QueryByType(SourceFile.class));
-    if (sources.size() != 1) {
-      throw new IllegalStateException("Only one SourceFile was expected whereas "
-        + sources.size() + " has been returned.");
-    }
-    return (SourceFile) sources.iterator().next();
-  }
-
-  public static AstScanner<LexerlessGrammar> create(ErlangConfiguration conf,
+  public static AstScanner<LexerlessGrammar> create(Charset charset,
       SquidAstVisitor<LexerlessGrammar>... visitors) {
     final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<LexerlessGrammar>(
         new SourceProject("Erlang Project"));
-    final Parser<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(conf.getCharset(), ErlangGrammarImpl.createGrammar());
+    final Parser<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(charset, ErlangGrammarImpl.createGrammar());
 
     AstScanner.Builder<LexerlessGrammar> builder = AstScanner.<LexerlessGrammar> builder(context)
         .setBaseParser(parser);

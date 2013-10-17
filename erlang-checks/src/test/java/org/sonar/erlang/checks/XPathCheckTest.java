@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -34,7 +33,7 @@ public class XPathCheckTest {
     check.xpathQuery = "//identifier[@tokenValue = 'really_retain']";
     check.message = "Do not use name: really_retain";
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/complexity.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(18).withMessage(
         "Do not use name: really_retain").noMore();

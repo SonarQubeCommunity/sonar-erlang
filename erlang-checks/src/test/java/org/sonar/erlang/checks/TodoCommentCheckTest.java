@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -31,7 +30,7 @@ public class TodoCommentCheckTest {
   @Test
   public void test() {
     TodoCommentCheck check = new TodoCommentCheck();
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/todo.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(4).withMessage("Complete the task associated to this TODO comment.")

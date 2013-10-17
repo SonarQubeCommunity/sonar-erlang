@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class DoNotUseImportTest {
   public void test() {
     DoNotUseImportCheck check = new DoNotUseImportCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/funargs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
@@ -40,7 +39,7 @@ public class DoNotUseImportTest {
   @Test
   public void test2() {
     DoNotUseImportCheck check = new DoNotUseImportCheck();
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/donotuseimport.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
         "Do not use import");

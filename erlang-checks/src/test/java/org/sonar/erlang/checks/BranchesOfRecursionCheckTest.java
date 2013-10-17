@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class BranchesOfRecursionCheckTest {
   public void test() {
     BranchesOfRecursionCheck check = new BranchesOfRecursionCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/branchesofrecursion.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
@@ -41,7 +40,7 @@ public class BranchesOfRecursionCheckTest {
   public void test2() {
     BranchesOfRecursionCheck check = new BranchesOfRecursionCheck();
     check.setMaximumBORThreshold(1);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/branchesofrecursion.erl"), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())

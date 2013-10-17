@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class IsTailRecursiveCheckTest {
   public void test() {
     IsTailRecursiveCheck check = new IsTailRecursiveCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/branchesofrecursion.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).noMore();
   }
@@ -40,7 +39,7 @@ public class IsTailRecursiveCheckTest {
   @Test
   public void test2() {
     IsTailRecursiveCheck check = new IsTailRecursiveCheck();
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/istailrecursive.erl"), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())

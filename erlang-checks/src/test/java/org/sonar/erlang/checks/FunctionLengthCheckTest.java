@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class FunctionLengthCheckTest {
   public void test() {
     FunctionLengthCheck check = new FunctionLengthCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/complexity.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
         "Function has 34 lines of code which is greater than 20 authorized.").noMore();

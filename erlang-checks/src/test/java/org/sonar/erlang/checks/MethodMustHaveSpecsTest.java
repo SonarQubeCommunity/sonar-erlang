@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class MethodMustHaveSpecsTest {
   public void test() {
     MethodMustHaveSpecs check = new MethodMustHaveSpecs();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/methodmusthavespecs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(15).withMessage("Function has no specs in type: both.")
@@ -43,7 +42,7 @@ public class MethodMustHaveSpecsTest {
   public void test2() {
     MethodMustHaveSpecs check = new MethodMustHaveSpecs();
     check.setDefaultSpecsType("attribute");
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/methodmusthavespecs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(15).withMessage("Function has no specs in type: attribute.")
@@ -55,7 +54,7 @@ public class MethodMustHaveSpecsTest {
   public void test3() {
     MethodMustHaveSpecs check = new MethodMustHaveSpecs();
     check.setDefaultSpecsType("comment");
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/methodmusthavespecs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(6).withMessage("Function has no specs in type: comment.")

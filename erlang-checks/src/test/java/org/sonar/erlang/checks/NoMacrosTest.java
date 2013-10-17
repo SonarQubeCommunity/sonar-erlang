@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class NoMacrosTest {
   public void test() {
     NoMacrosCheck check = new NoMacrosCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(9).withMessage("Do not use macros.")
@@ -43,7 +42,7 @@ public class NoMacrosTest {
   public void test2() {
     NoMacrosCheck check = new NoMacrosCheck();
     check.setSkipDefineInFlowControl(false);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(4).withMessage("Do not use macros.")
@@ -59,7 +58,7 @@ public class NoMacrosTest {
     check.setAllowLiteralMacros(false);
     check.setIgnoredMacroNames("");
     check.setSkipDefineInFlowControl(false);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(2).withMessage("Do not use macros.")
@@ -76,7 +75,7 @@ public class NoMacrosTest {
     check.setAllowLiteralMacros(false);
     check.setIgnoredMacroNames("");
     check.setSkipDefineInFlowControl(true);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(2).withMessage("Do not use macros.")
@@ -90,7 +89,7 @@ public class NoMacrosTest {
     check.setAllowLiteralMacros(true);
     check.setIgnoredMacroNames("");
     check.setSkipDefineInFlowControl(false);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(4).withMessage("Do not use macros.")
@@ -106,7 +105,7 @@ public class NoMacrosTest {
     check.setAllowLiteralMacros(true);
     check.setIgnoredMacroNames("");
     check.setSkipDefineInFlowControl(true);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(9).withMessage("Do not use macros.")
@@ -119,7 +118,7 @@ public class NoMacrosTest {
     check.setAllowLiteralMacros(false);
     check.setIgnoredMacroNames("IGNOREME,B");
     check.setSkipDefineInFlowControl(false);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(2).withMessage("Do not use macros.")
@@ -133,7 +132,7 @@ public class NoMacrosTest {
     check.setAllowLiteralMacros(true);
     check.setIgnoredMacroNames("IGNOREME,B");
     check.setSkipDefineInFlowControl(false);
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(4).withMessage("Do not use macros.")

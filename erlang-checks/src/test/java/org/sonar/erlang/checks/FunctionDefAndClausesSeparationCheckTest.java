@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class FunctionDefAndClausesSeparationCheckTest {
   public void test() {
     FunctionDefAndClausesSeparationCheck check = new FunctionDefAndClausesSeparationCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/functionseparation.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(12).withMessage("The line has 0 precending blank line and it should be: 1.")

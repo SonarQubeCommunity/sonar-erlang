@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class SpaceAfterBeforeOperatorsCheckTest {
   public void test() {
     SpaceAfterBeforeOperatorsCheck check = new SpaceAfterBeforeOperatorsCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/spaceafteroperator.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
         .atLine(4).withMessage("No space after operator in column: 9.").next()

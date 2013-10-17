@@ -19,6 +19,9 @@
  */
 package org.sonar.erlang.checks;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
@@ -28,22 +31,25 @@ import org.sonar.check.Rule;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Rule(key = "DoNotUseEmptyFlowControl", priority = Priority.MINOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class DoNotUseEmptyFlowControlCheck extends SquidCheck<LexerlessGrammar> {
 
-  List<ErlangGrammarImpl> flowControls = new ArrayList<ErlangGrammarImpl>();
+  List<ErlangGrammarImpl> flowControls = ImmutableList.of(
+      ErlangGrammarImpl.ifdefAttr,
+      ErlangGrammarImpl.ifndefAttr,
+      ErlangGrammarImpl.elseAttr,
+      ErlangGrammarImpl.endifAttr
+      );
 
   @Override
   public void init() {
-    flowControls.add(ErlangGrammarImpl.ifdefAttr);
-    flowControls.add(ErlangGrammarImpl.ifndefAttr);
-    flowControls.add(ErlangGrammarImpl.elseAttr);
-    subscribeTo(flowControls.toArray(new ErlangGrammarImpl[flowControls.size()]));
-    flowControls.add(ErlangGrammarImpl.endifAttr);
+    subscribeTo(ImmutableList.copyOf(Collections2.filter(flowControls,
+        Predicates.not(Predicates.equalTo(ErlangGrammarImpl.endifAttr)))
+        ).toArray(new ErlangGrammarImpl[flowControls.size() - 1]));
+
   }
 
   @Override

@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -31,8 +30,7 @@ public class DoNotUseEmptyFlowControlCheckTest {
   @Test
   public void test() {
     DoNotUseEmptyFlowControlCheck check = new DoNotUseEmptyFlowControlCheck();
-
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/emptyflowcontrol.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(6).withMessage("Do not use empty flow control.")

@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -32,7 +31,7 @@ public class CommentRegularExpressionCheckTest {
   public void test() {
     CommentRegularExpressionCheck check = new CommentRegularExpressionCheck();
 
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/commentcheck.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
@@ -41,7 +40,7 @@ public class CommentRegularExpressionCheckTest {
   public void testDifferentValue() {
     CommentRegularExpressionCheck check = new CommentRegularExpressionCheck();
     check.regularExpression = "(?i).*TODO.*";
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/commentcheck.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
         "The violation message").next().atLine(9);
@@ -52,7 +51,7 @@ public class CommentRegularExpressionCheckTest {
     CommentRegularExpressionCheck check = new CommentRegularExpressionCheck();
     check.regularExpression = "(?i).*XXX.*";
     check.message = "XXX found";
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/commentcheck.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(8).withMessage(
         "XXX found").noMore();

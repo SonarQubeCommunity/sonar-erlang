@@ -21,7 +21,6 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.squid.checks.CheckMessagesVerifier;
 import org.junit.Test;
-import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.squid.api.SourceFile;
 
 import java.io.File;
@@ -31,7 +30,7 @@ public class FixmeCommentCheckTest {
   @Test
   public void test() {
     FixmeCommentCheck check = new FixmeCommentCheck();
-    SourceFile file = ErlangAstScanner.scanSingleFile(new File(
+    SourceFile file = TestHelper.scanSingleFile(new File(
         "src/test/resources/checks/fixme.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(4).withMessage("Take the required action to fix the issue indicated by this comment.")
