@@ -56,10 +56,10 @@ public class EunitXmlSensorTest {
             ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
         ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
 
-    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-        Arrays.asList(new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src")),
-        Arrays.asList(new File("/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"),
-            new File("/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl")));
+    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(null,
+        Arrays.asList(
+            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"),
+            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl")));
 
     new EunitXmlSensor(new Erlang(configuration), fileSystem).analyse(new Project("dummy"), context);
 

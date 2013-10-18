@@ -2,17 +2,17 @@
  * Sonar Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
@@ -22,7 +22,6 @@ package org.sonar.plugins.erlang.dialyzer;
 
 import org.sonar.api.BatchExtension;
 import org.sonar.api.ServerExtension;
-import org.sonar.api.rules.Rule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,24 +38,6 @@ public class ErlangRuleManager implements ServerExtension, BatchExtension {
         .getResourceAsStream(rulesPath));
   }
 
-  public Rule getRuleByKey(String key) {
-    for (ErlangRule rule : rules) {
-      if (rule.getRule().getKey().equals(key)) {
-        return rule.getRule();
-      }
-    }
-    return null;
-  }
-
-  public ErlangRule getErlangRuleByKey(String key) {
-    for (ErlangRule rule : rules) {
-      if (rule.getRule().getKey().equals(key)) {
-        return rule;
-      }
-    }
-    return null;
-  }
-
   public String getRuleKeyByMessage(String message) {
     for (ErlangRule rule : rules) {
       if (rule.hasMessage(message)) {
@@ -66,25 +47,4 @@ public class ErlangRuleManager implements ServerExtension, BatchExtension {
     return OTHER_RULES_KEY;
   }
 
-  public List<ErlangRule> getErlangRules() {
-    return rules;
-  }
-
-  public String getRuleKeyByName(String name) {
-    for (ErlangRule rule : rules) {
-      if (rule.getRule().getName().equals(name)) {
-        return rule.getRule().getKey();
-      }
-    }
-    return OTHER_RULES_KEY;
-  }
-
-  public Rule getRuleByName(String name) {
-    for (ErlangRule rule : rules) {
-      if (rule.getRule().getName().equals(name)) {
-        return rule.getRule();
-      }
-    }
-    return null;
-  }
 }

@@ -67,8 +67,7 @@ public class EunitXmlSensor implements Sensor {
 
         @Override
         protected Resource<?> getUnitTestResource(String classKey) {
-          List<File> testDirectories = moduleFileSystem.testDirs();
-          File unitTestFile = getUnitTestFile(testDirectories, classKey);
+          File unitTestFile = getUnitTestFile(moduleFileSystem.files(Erlang.testQuery), classKey);
 
           org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
           unitTestFileResource.setLanguage(erlang);
@@ -114,16 +113,14 @@ public class EunitXmlSensor implements Sensor {
     }
   }
 
-  protected File getUnitTestFile(List<File> testDirectories, String name) {
+  protected File getUnitTestFile(List<File> testFiles, String name) {
     String fileName = getUnitTestFileName(name);
-    File unitTestFile = new File("");
-    for (File dir : testDirectories) {
-      unitTestFile = new File(dir, fileName);
-      if (unitTestFile.exists()) {
-        break;
+    for (File testFile : testFiles) {
+      if (testFile.getAbsolutePath().endsWith(fileName)) {
+        return testFile;
       }
     }
-    return unitTestFile;
+    return new File("");
   }
 
   @Override

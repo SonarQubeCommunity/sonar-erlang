@@ -68,10 +68,10 @@ public class DialyzerSensorTest {
     project = new Project("dummy");
 
     RulesProfile rp = mock(RulesProfile.class);
-    ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019", null);
+    ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019");
     when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D019"))
         .thenReturn(activeRule);
-    activeRule = RuleUtil.generateActiveRule("callback_missing", "D041", null);
+    activeRule = RuleUtil.generateActiveRule("callback_missing", "D041");
     when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D041"))
         .thenReturn(activeRule);
 
