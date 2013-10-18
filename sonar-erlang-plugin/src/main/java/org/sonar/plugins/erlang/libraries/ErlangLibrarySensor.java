@@ -66,16 +66,18 @@ public class ErlangLibrarySensor implements Sensor {
       for (Object dependencyObj : dependencies) {
         AstNode dependency = (AstNode) dependencyObj;
         List<Object> dependencyElementObjs = AstNodeXPathQuery.create("./tupleLiteral/expression").selectNodes(dependency);
-        ErlangDependency erlangDep = new ErlangDependency();
-        erlangDep.setName(((AstNode)dependencyElementObjs.get(0)).getTokenValue());
-        erlangDep.parseVersionInfo(((AstNode)dependencyElementObjs.get(2)));
+        if (dependencyElementObjs.size() > 0) {
+          ErlangDependency erlangDep = new ErlangDependency();
+          erlangDep.setName(((AstNode) dependencyElementObjs.get(0)).getTokenValue());
+          erlangDep.parseVersionInfo(((AstNode) dependencyElementObjs.get(2)));
 
-        Library depLib = erlangDep.getAsLibrary();
-        Resource<?> to = getResourceFromLibrary(context, depLib);
-        saveDependency(projectResource, context, to);
-        File depRebarConfig = new File(baseDir.getPath().concat(File.separator + depsDir)
-            .concat(File.separator + erlangDep.getName()));
-        analyzeRebarConfigFile(to, context, depRebarConfig);
+          Library depLib = erlangDep.getAsLibrary();
+          Resource<?> to = getResourceFromLibrary(context, depLib);
+          saveDependency(projectResource, context, to);
+          File depRebarConfig = new File(baseDir.getPath().concat(File.separator + depsDir)
+              .concat(File.separator + erlangDep.getName()));
+          analyzeRebarConfigFile(to, context, depRebarConfig);
+        }
       }
     }
     LOG.debug("Libraries added: " + context);
@@ -101,8 +103,8 @@ public class ErlangLibrarySensor implements Sensor {
     // find lib dir: {lib_dirs,["deps"]}. or deps_dir?
     String ret = "deps";
     Object depsSetting = AstNodeXPathQuery.create("//tupleLiteral[.//*/@*='deps_dir']").selectSingleNode(config);
-    if(depsSetting!=null){
-      ret = ((AstNode)AstNodeXPathQuery.create(".//stringLiteral").selectSingleNode((AstNode)depsSetting)).getTokenValue();
+    if (depsSetting != null) {
+      ret = ((AstNode) AstNodeXPathQuery.create(".//stringLiteral").selectSingleNode((AstNode) depsSetting)).getTokenValue();
     }
     return ret.replaceAll("[\\'\\\"]", "");
   }
