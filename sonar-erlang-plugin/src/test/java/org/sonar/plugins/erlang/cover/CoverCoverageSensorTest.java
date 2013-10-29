@@ -69,9 +69,9 @@ public class CoverCoverageSensorTest {
 
     new CoverCoverageSensor(erlang, fileSystem).analyse(project, context);
 
-    verify(context).saveMeasure((Resource<?>) anyObject(), (Measure) anyObject());
-    verify(context).saveMeasure((Resource<?>) anyObject(), (Metric) anyObject(), eq(21.0));
-    verify(context).saveMeasure((Resource<?>) anyObject(), (Metric) anyObject(), eq(2.0));
+    verify(context).saveMeasure((Resource) anyObject(), (Measure) anyObject());
+    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(21.0));
+    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(2.0));
   }
 
   @Test
@@ -87,9 +87,9 @@ public class CoverCoverageSensorTest {
 
     new CoverCoverageSensor(erlang, fileSystem).analyse(project, context);
 
-    verify(context).saveMeasure((Resource<?>) anyObject(), (Measure) anyObject());
-    verify(context).saveMeasure((Resource<?>) anyObject(), (Metric) anyObject(), eq(21.0));
-    verify(context).saveMeasure((Resource<?>) anyObject(), (Metric) anyObject(), eq(2.0));
+    verify(context).saveMeasure((Resource) anyObject(), (Measure) anyObject());
+    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(21.0));
+    verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(2.0));
   }
 
 }

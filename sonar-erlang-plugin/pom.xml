@@ -27,7 +27,7 @@
     <sonar.pluginKey>erlang</sonar.pluginKey>
     <sonar.pluginName>Erlang</sonar.pluginName>
     <sonar.pluginClass>org.sonar.plugins.erlang.ErlangPlugin</sonar.pluginClass>
-    <sonar.runtimeVersion>3.5</sonar.runtimeVersion>
+    <sonar.runtimeVersion>${sonar.version}</sonar.runtimeVersion>
   </properties>
 
   <dependencies>
@@ -39,7 +39,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>erlang-checks</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
       <artifactId>sonar-plugin-api</artifactId>
@@ -56,7 +55,7 @@
     <dependency>
       <groupId>org.codehaus.sonar.common-rules</groupId>
       <artifactId>sonar-common-rules</artifactId>
-      <version>1.0.1</version>
+      <version>1.1</version>
     </dependency>
     <dependency>
       <groupId>org.erlang.otp</groupId>

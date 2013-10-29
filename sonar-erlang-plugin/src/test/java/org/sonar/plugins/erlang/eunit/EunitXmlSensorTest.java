@@ -68,12 +68,12 @@ public class EunitXmlSensorTest {
   @Test
   public void shouldSaveErrorsAndFailuresInXML() throws URISyntaxException {
 
-    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TESTS), eq(7.0));
-    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.SKIPPED_TESTS), eq(0.0));
-    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TEST_ERRORS), eq(0.0));
-    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TEST_FAILURES), eq(1.0));
-    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TEST_EXECUTION_TIME), doubleThat(Matchers.greaterThan(1.0)));
-    verify(context, times(2)).saveMeasure((Resource<?>) anyObject(), eq(CoreMetrics.TEST_SUCCESS_DENSITY), eq(85.71));
+    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TESTS), eq(7.0));
+    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.SKIPPED_TESTS), eq(0.0));
+    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_ERRORS), eq(0.0));
+    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_FAILURES), eq(1.0));
+    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_EXECUTION_TIME), doubleThat(Matchers.greaterThan(1.0)));
+    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_SUCCESS_DENSITY), eq(85.71));
   }
 
 }

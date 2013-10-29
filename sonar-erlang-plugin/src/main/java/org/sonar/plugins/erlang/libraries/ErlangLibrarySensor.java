@@ -51,7 +51,7 @@ public class ErlangLibrarySensor implements Sensor {
     analyzeRebarConfigFile(project, context, moduleFileSystem.baseDir());
   }
 
-  private void analyzeRebarConfigFile(Resource<?> projectResource, SensorContext context, File baseDir) {
+  private void analyzeRebarConfigFile(Resource projectResource, SensorContext context, File baseDir) {
     String rebarConfigUrl = erlang.getConfiguration().getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
         ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
     File rebarConfigFile = new File(baseDir, rebarConfigUrl);
@@ -72,7 +72,7 @@ public class ErlangLibrarySensor implements Sensor {
           erlangDep.parseVersionInfo(((AstNode) dependencyElementObjs.get(2)));
 
           Library depLib = erlangDep.getAsLibrary();
-          Resource<?> to = getResourceFromLibrary(context, depLib);
+          Resource to = getResourceFromLibrary(context, depLib);
           saveDependency(projectResource, context, to);
           File depRebarConfig = new File(baseDir.getPath().concat(File.separator + depsDir)
               .concat(File.separator + erlangDep.getName()));
@@ -83,8 +83,8 @@ public class ErlangLibrarySensor implements Sensor {
     LOG.debug("Libraries added: " + context);
   }
 
-  private Resource<?> getResourceFromLibrary(SensorContext context, Library depLib) {
-    Resource<?> to = context.getResource(depLib);
+  private Resource getResourceFromLibrary(SensorContext context, Library depLib) {
+    Resource to = context.getResource(depLib);
     if (to == null) {
       context.index(depLib);
       to = context.getResource(depLib);
@@ -92,7 +92,7 @@ public class ErlangLibrarySensor implements Sensor {
     return to;
   }
 
-  private void saveDependency(Resource<?> projectResource, SensorContext context, Resource<?> to) {
+  private void saveDependency(Resource projectResource, SensorContext context, Resource to) {
     Dependency dependency = new Dependency(projectResource, to);
     dependency.setUsage("compile");
     dependency.setWeight(1);

@@ -66,7 +66,7 @@ public class EunitXmlSensor implements Sensor {
       new AbstractSurefireParser() {
 
         @Override
-        protected Resource<?> getUnitTestResource(String classKey) {
+        protected Resource getUnitTestResource(String classKey) {
           File unitTestFile = getUnitTestFile(moduleFileSystem.files(Erlang.testQuery), classKey);
 
           org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
@@ -89,6 +89,7 @@ public class EunitXmlSensor implements Sensor {
 
           return unitTestFileResource;
         }
+
       }.collect(project, context, reportsDir);
     } else {
       LOG.debug("Eunit folder {} or test folder does not exists. Skip.", reportsDir);
