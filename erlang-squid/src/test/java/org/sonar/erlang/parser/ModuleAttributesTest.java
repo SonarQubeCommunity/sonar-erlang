@@ -87,7 +87,8 @@ public class ModuleAttributesTest {
         .matches("-type ascii_string() :: [1..255].")
         .matches(code("-type timestamp() :: {MegaSecs::non_neg_integer(), Secs::non_neg_integer(), MicroSecs::non_neg_integer()}."))
         .matches(code("-opaque my_opaq_type() :: Type."))
-        .matches(code("-opaque codeserver() :: #codeserver{}."));
+        .matches(code("-opaque codeserver() :: #codeserver{}."))
+        .matches("-type http_version() :: 'HTTP/1.1' | 'HTTP/1.0'.");
   }
 
   @Test

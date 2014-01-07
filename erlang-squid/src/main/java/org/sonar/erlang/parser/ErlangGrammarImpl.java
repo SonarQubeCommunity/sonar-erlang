@@ -385,16 +385,12 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(moduleHeadAttr).is(b.firstOf(moduleAttr, fileAttr, exportAttr, compileAttr, defineAttr,
         importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr, anyAttr)).skipIfOneChild();
 
-    b.rule(recordAttr).is(minus, semiKeyword("record", b),lparenthesis, b.zeroOrMore(b.regexp("[^\\.]"), spacing), dot);
-    /*
-    b.rule(recordAttr).is(minus, semiKeyword("record", b), lparenthesis, identifier, comma, lcurlybrace, b.optional(b.sequence(
-        recordField, b.optional(matchop, recordField)), b.zeroOrMore(b.firstOf(comma, pipe), b.sequence(recordField,
-        b.optional(matchop, recordField)))), rcurlybrace, rparenthesis, dot);
+    b.rule(recordAttr).is(minus, semiKeyword("record", b), lparenthesis,
+        b.zeroOrMore(
+            b.nextNot(b.sequence(rparenthesis, spacing, dot)),
+            b.regexp("."), spacing),
+        rparenthesis, dot);
 
-    b.rule(recordField).is(b.firstOf(b.sequence(b.firstOf(lcurlybrace, lbracket), recordField, b.zeroOrMore(comma,
-        recordField), b.firstOf(rcurlybrace, rbracket)),
-        b.firstOf(specFun, callExpression)), b.optional(colon, colon, recordField));
-*/
     b.rule(flowControlAttr).is(b.firstOf(ifdefAttr, ifndefAttr), b.zeroOrMore(b.firstOf(moduleHeadAttr,
         functionDeclaration)), b.optional(elseAttr, b.zeroOrMore(b.firstOf(moduleHeadAttr,
         functionDeclaration))), endifAttr);
@@ -436,8 +432,11 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   }
 
   private static void functions(LexerlessGrammarBuilder b) {
-    b.rule(spec).is(minus, b.firstOf(semiKeyword("spec", b), semiKeyword("callback", b)), b.zeroOrMore(b.firstOf(b.regexp("\\.\\.+"), b.regexp("[^\\.]")), spacing), dot);
-    b.rule(typeSpec).is(minus, b.firstOf(semiKeyword("type", b), semiKeyword("opaque", b)), b.zeroOrMore(b.firstOf(b.regexp("\\.\\.+"), b.regexp("[^\\.]")), spacing), dot);
+    b.rule(spec).is(minus, b.firstOf(semiKeyword("spec", b), semiKeyword("callback", b)),
+        b.zeroOrMore(b.firstOf(b.regexp("\\.(\\.+|.)"), b.regexp("[^\\.]")), spacing), dot);
+
+    b.rule(typeSpec).is(minus, b.firstOf(semiKeyword("type", b), semiKeyword("opaque", b)),
+        b.zeroOrMore(b.firstOf(b.regexp("\\.(\\.+|.)"), b.regexp("[^\\.]")), spacing), dot);
 
     b.rule(functionDeclaration).is(functionClause, b.zeroOrMore(semi, functionClause),
 

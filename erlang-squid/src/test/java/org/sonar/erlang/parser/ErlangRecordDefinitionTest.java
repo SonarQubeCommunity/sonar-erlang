@@ -50,7 +50,20 @@ public class ErlangRecordDefinitionTest {
             "arity=[],			%Arity for current function",
             "fcount=0,			%Local fun count",
             "fun_index=0,			%Global index for funs", "bitdefault,", "bittypes",
-            "})."));
+            "})."))
+        .matches(code(
+            "-record(client, {",
+            "  state = wait :: wait | request | response | response_body,",
+            "  opts = [] :: [any()],",
+            "  socket = undefined :: undefined | inet:socket(),",
+            "  transport = undefined :: module(),",
+            "  timeout = 5000 :: timeout(), %% @todo Configurable.",
+            "  buffer = <<>> :: binary(),",
+            "  connection = keepalive :: keepalive | close,",
+            "  version = 'HTTP/1.1' :: cowboy:http_version(),",
+            "  response_body = undefined :: undefined | non_neg_integer()",
+            " })."
+            ));
   }
 
   private static String code(String... lines) {
