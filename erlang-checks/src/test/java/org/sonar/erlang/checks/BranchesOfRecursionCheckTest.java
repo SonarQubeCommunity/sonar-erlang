@@ -45,6 +45,7 @@ public class BranchesOfRecursionCheckTest {
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
         .next().atLine(2).withMessage("Function has 2 branches of recursion which is greater than 1 authorized.")
+        .next().atLine(19).withMessage("Function has 3 branches of recursion which is greater than 1 authorized.")
         .noMore();
   }
 }

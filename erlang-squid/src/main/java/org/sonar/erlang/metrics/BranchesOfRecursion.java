@@ -65,8 +65,14 @@ public class BranchesOfRecursion extends SquidCheck<LexerlessGrammar> {
       }
       return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
     } else {
-      return ast.getFirstChild(ErlangGrammarImpl.primaryExpression).getFirstChild(ErlangGrammarImpl.literal).getTokenOriginalValue() + "/"
-        + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+      try {
+        return ast.getFirstChild(ErlangGrammarImpl.primaryExpression).getFirstChild(ErlangGrammarImpl.literal).getTokenOriginalValue() + "/"
+          + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+      } catch (Exception e) {
+        //If we reach this part it means we are in call where the function is a return value of another function:
+        //like: (Fun2())(1)
+        return "*"+getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+      }
     }
   }
 

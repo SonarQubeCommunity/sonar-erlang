@@ -12,3 +12,16 @@ split(Pivot, [H|T], {Acc_S, Acc_L}) ->
     end,
     split(Pivot,T,New_Acc);
 split(_,[],Acc) -> Acc.
+
+acc_multipart(V) ->
+	acc_multipart((parser(<<"boundary">>))(V), []).
+
+acc_multipart({headers, Headers, Cont}, Acc) ->
+	acc_multipart(Cont(), [{Headers, []}|Acc]);
+acc_multipart({body, Body, Cont}, [{Headers, BodyAcc}|Acc]) ->
+	acc_multipart(Cont(), [{Headers, [Body|BodyAcc]}|Acc]);
+acc_multipart({end_of_part, Cont}, [{Headers, BodyAcc}|Acc]) ->
+	Body = list_to_binary(lists:reverse(BodyAcc)),
+	acc_multipart(Cont(), [{Headers, Body}|Acc]);
+acc_multipart(eof, Acc) ->
+	lists:reverse(Acc).
