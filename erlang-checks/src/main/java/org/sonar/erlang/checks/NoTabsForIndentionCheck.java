@@ -36,8 +36,6 @@ import java.util.Scanner;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoTabsForIndentionCheck extends SquidCheck<LexerlessGrammar> {
 
-  private int numOfViolations = 0;
-
   @Override
   public void visitFile(AstNode astNode) {
     try {
@@ -48,10 +46,12 @@ public class NoTabsForIndentionCheck extends SquidCheck<LexerlessGrammar> {
 
   private void checkFileIndention(File source) throws FileNotFoundException {
     Scanner scanner = new Scanner(new FileInputStream(source));
+    int numOfViolations = 0;
     try {
       int lineNumber = 1;
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
+
         if (line.matches("^ *\t+.*")) {
           getContext().createLineViolation(this, "Line has tabs as indention.",
               lineNumber);

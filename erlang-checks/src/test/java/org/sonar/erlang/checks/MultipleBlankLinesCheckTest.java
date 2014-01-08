@@ -50,4 +50,14 @@ public class MultipleBlankLinesCheckTest {
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 
+  @Test
+  public void test3() {
+    MultipleBlankLinesCheck check = new MultipleBlankLinesCheck();
+    check.maxBlankLinesInsideFunctions = 1;
+    check.maxBlankLinesOutsideFunctions = 2;
+    SourceFile file = TestHelper.scanSingleFile(new File(
+        "src/test/resources/checks/cowboy_req.erl"), check);
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  }
+
 }

@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import javax.annotation.Nullable;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
@@ -41,6 +43,12 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> 
   @Override
   public void init() {
     subscribeTo(ErlangGrammarImpl.exportAttr);
+    previousLineNum = 0;
+    previousFuncArity = null;
+  }
+
+  @Override
+  public void visitFile(@Nullable AstNode astNode) {
     previousLineNum = 0;
     previousFuncArity = null;
   }

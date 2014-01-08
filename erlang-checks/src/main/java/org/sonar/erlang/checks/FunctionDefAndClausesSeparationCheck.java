@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import javax.annotation.Nullable;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
@@ -50,6 +52,11 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<LexerlessGr
   @Override
   public void init() {
     subscribeTo(ErlangGrammarImpl.functionDeclaration);
+  }
+
+  @Override
+  public void visitFile(@Nullable AstNode astNode) {
+    previousDefinition = null;
   }
 
   @Override

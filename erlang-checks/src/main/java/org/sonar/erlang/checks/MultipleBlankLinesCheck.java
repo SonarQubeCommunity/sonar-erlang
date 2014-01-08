@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import javax.annotation.Nullable;
+
 import com.sonar.sslr.api.AstAndTokenVisitor;
 
 import com.sonar.sslr.api.AstNode;
@@ -52,6 +54,12 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
   @Override
   public void init() {
     subscribeTo(ErlangGrammarImpl.clauseBody);
+  }
+
+  @Override
+  public void visitFile(@Nullable AstNode astNode) {
+    checkedLines.clear();
+    isInsideFunction = false;
   }
 
   @Override

@@ -43,6 +43,7 @@ public class IndentionSizeCheck extends SquidCheck<LexerlessGrammar> implements 
   @Override
   public void visitFile(AstNode astNode) {
     previousToken = null;
+    numOfViolations = 0;
   }
 
   @Override

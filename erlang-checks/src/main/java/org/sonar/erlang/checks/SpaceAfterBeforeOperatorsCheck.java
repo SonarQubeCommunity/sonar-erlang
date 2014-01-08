@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import javax.annotation.Nullable;
+
 import org.sonar.check.BelongsToProfile;
 
 import com.google.common.collect.ImmutableList;
@@ -48,6 +50,11 @@ public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar>
   @Override
   public void init() {
     subscribeTo(ErlangGrammarImpl.primaryExpression);
+  }
+
+  @Override
+  public void visitFile(@Nullable AstNode astNode) {
+    numOfViolations = 0;
   }
 
   @Override
