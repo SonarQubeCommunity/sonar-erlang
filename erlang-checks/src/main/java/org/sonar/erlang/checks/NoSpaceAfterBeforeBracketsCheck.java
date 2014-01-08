@@ -23,7 +23,6 @@ import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.squid.checks.SquidCheck;
-import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -35,7 +34,10 @@ import java.util.List;
 
 @Rule(key = "NoSpaceAfterBeforeBrackets", priority = Priority.MAJOR,
   cardinality = Cardinality.SINGLE)
-@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
+/**
+ * The rule generates a lot of false positives (record calls, etc). It is deactivated by default.
+ */
+//@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar> {
 
   List<ErlangGrammarImpl> noSpaceBefore = ImmutableList.of(ErlangGrammarImpl.rbracket,

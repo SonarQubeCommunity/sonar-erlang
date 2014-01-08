@@ -145,16 +145,19 @@ public class ErlangParserExpressionTest {
         .matches("S = #person{name=Name, _='_'}")
         .matches("User#user{ibuttons = User#user.ibuttons ++ [IButton]}")
         .matches("#input{field=#person{name=Name}=Boss, partner=Partner}")
-        .matches("N2#nrec2.nrec1#nrec1.nrec0#nrec0{name = \"nested0a\"}");
+        .matches("N2#nrec2.nrec1#nrec1.nrec0#nrec0{name = \"nested0a\"}")
+        ;
   }
 
   @Test
   public void recordAccess() {
     assertThat(g.rule(ErlangGrammarImpl.expression))
         .matches("#person.name")
+        .notMatches("Rec#a.key.\nasd")
         .matches("Expr#Name.Field")
         .matches("N2#nrec2.nrec1#nrec1.nrec0.nrec00#nrec0.name.first")
-        .matches("(PartialMsg#'MegacoMessage'.mess)#'Message'.version");
+        .matches("(PartialMsg#'MegacoMessage'.mess)#'Message'.version")
+        .matches("Record#my_record.key1");
   }
 
   @Test

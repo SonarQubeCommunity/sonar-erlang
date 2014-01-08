@@ -298,6 +298,52 @@ public class ErlangParserModulesTest {
             "a() -> error."));
   }
 
+  @Test
+  public void bugWithRecord() {
+    assertThat(b.getRootRule())
+        .matches(code(
+            "get_key1 (Record) ->",
+            "  Record#my_record.key1."
+            ))
+        .matches(code(
+            "-module (sonar_erlang_failure_1).",
+            "-export ([get_key1/1, get_key2/1 ]).",
+            "-record(my_record,{key1,key2}).",
+            "get_key1 (Record) ->",
+            "  Record#my_record.key1.",
+            "get_key2 (Record) ->",
+            "  Record#my_record.key2."
+            ))
+        .matches(code(
+            "-module (sonar_erlang_failure_1).",
+            "-export ([get_key1/1, get_key2/1 ]).",
+            "-record(my_record,{key1,key2}).",
+            "get_key1 (Record) ->",
+            "  Record#my_record.key1;",
+            "get_key1 (a) ->",
+            "  Record#my_record.key1.",
+            "",
+            "get_key2 (Record) ->",
+            "  Record#my_record.key2."
+            ));
+  }
+
+  @Test
+  public void bugWithSpacingInArgs() {
+    assertThat(b.getRootRule())
+        .matches(code(
+            "    -module (sonar_erlang_failure_2).",
+            "    -export ([fail/1]).",
+            "    -define(THING, \"foo\").",
+            "    fail (Thing) ->",
+            "      OtherThing = \"bar\",",
+            "      re:replace (Thing,",
+            "              ?THING \"=([^&]+)\",",
+            "                  [ ?THING \"=\", OtherThing ],",
+            "                  [ {return, list } ])."
+            ));
+  }
+
   private static String code(String... lines) {
     return Joiner.on("\n").join(lines);
   }

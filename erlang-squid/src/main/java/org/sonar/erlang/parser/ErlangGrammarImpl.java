@@ -298,8 +298,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(letterOrDigit).is(b.regexp("\\p{javaJavaIdentifierPart}"));
 
     b.rule(spacing).is(
-        b.skippedTrivia(b.regexp(WHITESPACE + "*+")),
-        b.zeroOrMore(b.commentTrivia(b.regexp(COMMENT)), b.skippedTrivia(b.regexp(WHITESPACE + "*+")))
+        b.skippedTrivia(b.regexp(WHITESPACE + "*")),
+        b.zeroOrMore(b.commentTrivia(b.regexp(COMMENT)), b.skippedTrivia(b.regexp(WHITESPACE + "*")))
         ).skip();
   }
 
@@ -468,7 +468,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             b.optional(assignmentExpression,
                 b.zeroOrMore(comma, assignmentExpression)
                 ), rcurlybrace));
-    b.rule(recordLiteralHead).is(numbersign, identifier, b.zeroOrMore(dot, identifier));
+    //Cannot use dot here, it also includes the spacing. in this case no spacing allowed after '.'
+    b.rule(recordLiteralHead).is(numbersign, identifier, b.zeroOrMore(b.sequence(".", b.nextNot(b.regexp(WHITESPACE+"+")), identifier)));
 
     b.rule(macroLiteral).is(questionmark, identifier, b.optional(arguments));
     b.rule(tupleLiteral).is(lcurlybrace, b.zeroOrMore(b.firstOf(comma, expression)), rcurlybrace);
@@ -478,7 +479,6 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(binaryQualifier).is(b.firstOf(
         b.sequence(binaryLiteral, doublearrowback, expression), b.sequence(
             primaryExpression, arrowback, expression, b.zeroOrMore(comma, expression)
-
             )));
 
     b.rule(binaryElement).is(
@@ -501,7 +501,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             )
         );
     b.rule(memberExpression).is(
-        b.firstOf(recordLiteral, macroLiteral, ifExpression, funExpression, caseExpression,
+        b.firstOf(recordLiteral, ifExpression, funExpression, caseExpression,
             tryExpression, receiveExpression, blockExpression, primaryExpression))
         .skipIfOneChild();
     /**
