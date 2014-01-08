@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
+import org.sonar.api.scan.filesystem.FileQuery;
+
 import org.apache.commons.io.FileUtils;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
@@ -117,7 +119,7 @@ public class EunitXmlSensor implements Sensor {
   protected File getUnitTestFile(List<File> testFiles, String name) {
     String fileName = getUnitTestFileName(name);
     for (File testFile : testFiles) {
-      if (testFile.getAbsolutePath().endsWith(fileName)) {
+      if (testFile.getAbsolutePath().endsWith(fileName) || testFile.getAbsolutePath().endsWith(fileName.replaceAll("_(eunit|tests)", ""))) {
         return testFile;
       }
     }

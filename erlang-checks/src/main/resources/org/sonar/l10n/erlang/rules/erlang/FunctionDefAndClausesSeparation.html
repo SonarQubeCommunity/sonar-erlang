@@ -12,12 +12,16 @@ Like:
 -export([int/0]).
 
 -spec int(value()) -> ConvertedValue::term().
-  int(Var) -> to_type(int, Var).
+int(Var) -> to_type(int, Var).
 
 -spec hello() -> atom().
 hello([])->
   Code;
 hello(A) ->
+  Code.
+hello(a,b) -> %issue, no blank line before declaration
+  Code;
+hello(c, _) ->
   Code.
 bello([])-> %issue, no blank line before declaration
   code;
@@ -26,10 +30,10 @@ bello(A) ->
 
 %comment is
 %not an issue
-hello2()->
+hello2(a)->
   Code;
 
-hello2(A) -> %issue, blank line before function clause
+hello2(_) -> %issue, blank line before function clause
   Code.
 
 

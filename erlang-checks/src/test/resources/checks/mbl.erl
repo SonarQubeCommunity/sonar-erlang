@@ -1290,3 +1290,40 @@ http_range_test_() ->
 	[fun() -> R = range(V) end ||{V, R} <- Tests].
 
 -endif.
+
+%% @doc Return the cookie value for the given key, or a default if
+%% missing.
+-spec cookie(binary(), Req, Default)
+	-> {binary() | Default, Req} when Req::req(), Default::any().
+cookie(Name, Req=#http_req{cookies=undefined}, Default) when is_binary(Name) ->
+	case parse_header(<<"cookie">>, Req) of
+		{ok, undefined, Req2} ->
+			{Default, Req2#http_req{cookies=[]}};
+		{ok, Cookies, Req2} ->
+			cookie(Name, Req2#http_req{cookies=Cookies}, Default)
+	end;
+cookie(Name, Req, Default) ->
+	case lists:keyfind(Name, 1, Req#http_req.cookies) of
+		{Name, Value} -> {Value, Req};
+		false -> {Default, Req}
+	end.
+
+%% @doc Return the full list of cookie values.
+-spec cookies(Req) -> {list({binary(), binary()}), Req} when Req::req().
+cookies(Req=#http_req{cookies=undefined}) ->
+	case parse_header(<<"cookie">>, Req) of
+		{ok, undefined, Req2} ->
+			{[], Req2#http_req{cookies=[]}};
+		{ok, Cookies, Req2} ->
+			cookies(Req2#http_req{cookies=Cookies});
+		%% Flash player incorrectly sends an empty Cookie header.
+		{error, badarg} ->
+			{[], Req#http_req{cookies=[]}}
+	end;
+cookies(Req=#http_req{cookies=Cookies}) ->
+	{Cookies, Req}.
+
+%% @equiv meta(Name, Req, undefined)
+-spec meta(atom(), Req) -> {any() | undefined, Req} when Req::req().
+meta(Name, Req) ->
+	meta(Name, Req, undefined).
