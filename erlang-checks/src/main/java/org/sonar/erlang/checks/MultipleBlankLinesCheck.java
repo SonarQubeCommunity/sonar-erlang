@@ -19,6 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
+import com.sonar.sslr.api.AstAndTokenVisitor;
+
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
@@ -36,7 +38,7 @@ import java.util.List;
 
 @Rule(key = "MultipleBlankLines", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
-public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> {
+public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
   @RuleProperty(key = "maxBlankLinesInsideFunctions", defaultValue = "1")
   public int maxBlankLinesInsideFunctions = 1;
@@ -45,52 +47,42 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> {
   public int maxBlankLinesOutsideFunctions = 2;
 
   private List<Integer> checkedLines = new ArrayList<Integer>();
+  private boolean isInsideFunction = false;
 
   @Override
   public void init() {
-
-    subscribeTo(ErlangGrammarImpl.identifier);
+    subscribeTo(ErlangGrammarImpl.clauseBody);
   }
 
   @Override
-  public void visitNode(AstNode ast) {
-    if (!ast.getToken().isGeneratedCode() && !checkedLines.contains(ast.getToken().getLine())) {
-      Token previousToken = getPreviousToken(ast);
-      if (previousToken != null) {
-        int previousLine = previousToken.getLine();
-        if (checkBlankLines(ast, previousLine)) {
-          getContext().createLineViolation(this,
-              "Too many blank lines found, the threshold is {0}.",
-              ast.getToken().getLine(), getMaxFor(ast));
-        }
-      }
-      checkedLines.add(ast.getToken().getLine());
-    }
-
+  public void visitNode(AstNode astNode) {
+    isInsideFunction = true;
   }
 
-  private Token getPreviousToken(AstNode ast) {
-    AstNode node = ast.getPreviousAstNode();
-    while (node != null && ast.getTokenLine() == node.getLastToken().getLine()) {
-      node = node.getPreviousAstNode();
+  @Override
+  public void leaveNode(AstNode astNode) {
+    isInsideFunction = false;
+  }
+
+  public void visitToken(Token token) {
+    if (!token.isGeneratedCode() && !checkedLines.contains(token.getLine())) {
+      int previousLine = (checkedLines.size() == 0) ? 0 : checkedLines.get(checkedLines.size() - 1);
+      if (checkBlankLines(token, previousLine)) {
+        getContext().createLineViolation(this,
+            "Too many blank lines found, the threshold is {0}.",
+            token.getLine(), getMaxFor(token));
+      }
+      checkedLines.add(token.getLine());
     }
-    if (node != null) {
-      return node.getLastToken();
-    } else {
-      return null;
-    }
+
   }
 
   private boolean compare(int line1, int line2, int comp) {
     return (line1 - line2 - 1 > comp);
   }
 
-  private int getMaxFor(AstNode ast) {
-    if (ast.getFirstAncestor(ErlangGrammarImpl.clauseBody) != null) {
-      return maxBlankLinesInsideFunctions;
-    } else {
-      return maxBlankLinesOutsideFunctions;
-    }
+  private int getMaxFor(Token token) {
+    return (isInsideFunction) ? maxBlankLinesInsideFunctions : maxBlankLinesOutsideFunctions;
   }
 
   private boolean checkTrivias(int previousLine, Token token, int compTo) {
@@ -104,15 +96,13 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> {
     return compare(token.getLine(), prevLine, compTo);
   }
 
-  private boolean checkBlankLines(AstNode ast, int previousLine) {
-    int compTo = getMaxFor(ast);
+  private boolean checkBlankLines(Token token, int previousLine) {
+    int compTo = getMaxFor(token);
 
-    boolean check = compare(ast.getToken().getLine(), previousLine, compTo);
+    boolean check = compare(token.getLine(), previousLine, compTo);
     if (check) {
-      Token tokenWithTrivias = (ast.getToken().hasTrivia()) ? ast.getToken() : ast
-          .getParent().getToken();
-      if (tokenWithTrivias.hasTrivia()) {
-        return checkTrivias(previousLine, tokenWithTrivias, compTo);
+      if (token.hasTrivia()) {
+        return checkTrivias(previousLine, token, compTo);
       }
     }
     return check;

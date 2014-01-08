@@ -36,9 +36,18 @@ public class MultipleBlankLinesCheckTest {
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
         .atLine(5).withMessage("Too many blank lines found, the threshold is 2.").next()
         .atLine(12).withMessage("Too many blank lines found, the threshold is 1.").next()
-        .atLine(21).withMessage("Too many blank lines found, the threshold is 1.").next()
-        .atLine(26).withMessage("Too many blank lines found, the threshold is 1.")
+        .atLine(25).withMessage("Too many blank lines found, the threshold is 1.").next()
+        .atLine(32).withMessage("Too many blank lines found, the threshold is 1.")
         .noMore();
+  }
+
+  @Test
+  public void test2() {
+    MultipleBlankLinesCheck check = new MultipleBlankLinesCheck();
+
+    SourceFile file = TestHelper.scanSingleFile(new File(
+        "src/test/resources/checks/mbl.erl"), check);
+    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 
 }

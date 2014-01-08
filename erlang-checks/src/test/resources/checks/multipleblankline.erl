@@ -12,14 +12,20 @@ hello()->
 	Code,
 
  	%comment
+	%comment
+	%comment
 
 	DifferentBlock,
 
 	
 	%comment
+	%comment
+	%comment	
 	
 	Whatever1,
 
+	%comment
+	%comment
 	%comment
 
 
@@ -45,4 +51,7 @@ hello([])->
 %% Returns a function to stop every application that was started by this call
 -spec start(atom()) -> {ok, fun(() -> ok)}.
 bello() ->
+	%so
+	%this comment
+	%is still ok
 	Code.

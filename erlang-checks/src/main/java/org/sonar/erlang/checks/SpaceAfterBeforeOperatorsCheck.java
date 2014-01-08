@@ -19,10 +19,11 @@
  */
 package org.sonar.erlang.checks;
 
+import org.sonar.check.BelongsToProfile;
+
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
-import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
