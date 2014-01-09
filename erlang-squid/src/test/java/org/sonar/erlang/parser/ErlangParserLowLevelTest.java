@@ -63,6 +63,7 @@ public class ErlangParserLowLevelTest {
         .matches("2#12")
         .matches("16#1f")
         .matches("$\\n")
+        .matches("$\\]")
         .matches("$\\")
         .matches("$w")
         .matches("$\\b")

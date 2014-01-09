@@ -37,7 +37,8 @@ public class ErlangParserFunctionCallExpressionTest {
         .matches("method(\"hello\")")
         .matches("io:format(\"assert error in module ~p on line ~p~n\")")
         .matches(
-            "string:strip(erlang:system_info(system_architecture),right,$\n)");
+            "string:strip(erlang:system_info(system_architecture),right,$\n)")
+        .matches("lists:reverse ([$\\] | L])");
   }
 
 }

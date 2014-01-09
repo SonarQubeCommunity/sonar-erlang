@@ -210,7 +210,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     + "|[0-9]++\\#([0-9A-Fa-f]++)?+"
     + "|[0-9]++"
     + "|" + ESCAPE_SEQUENCE
-    + "|\\$[\\x00-\\x7F]"
+    //parsing things like: '$a' or '$\]' '$\n'
+    + "|\\$\\\\?[\\x00-\\x7F]"
     + ")";
 
   public static final String LITERAL = "(?:"
