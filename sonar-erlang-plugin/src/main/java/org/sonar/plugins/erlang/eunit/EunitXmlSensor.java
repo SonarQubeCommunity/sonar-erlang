@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
+import org.sonar.api.resources.DuplicatedSourceException;
+
 import org.sonar.api.scan.filesystem.FileQuery;
 
 import org.apache.commons.io.FileUtils;
@@ -73,7 +75,7 @@ public class EunitXmlSensor implements Sensor {
 
         @Override
         protected Resource getUnitTestResource(String classKey) {
-          File unitTestFile = getUnitTestFile(moduleFileSystem.files(Erlang.testQuery), classKey);
+          File unitTestFile = getUnitTestFile(moduleFileSystem.files(Erlang.testQuery), moduleFileSystem.files(Erlang.sourceQuery), classKey);
 
           org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
           unitTestFileResource.setLanguage(erlang);
@@ -91,7 +93,11 @@ public class EunitXmlSensor implements Sensor {
             Log.debug(source, e);
           }
 
-          context.saveSource(unitTestFileResource, source);
+          try {
+            context.saveSource(unitTestFileResource, source);
+          } catch (DuplicatedSourceException e) {
+            unitTestFileResource = org.sonar.api.resources.File.fromIOFile(unitTestFile, moduleFileSystem.sourceDirs());
+          }
 
           return unitTestFileResource;
         }
@@ -120,14 +126,25 @@ public class EunitXmlSensor implements Sensor {
     }
   }
 
-  protected File getUnitTestFile(List<File> testFiles, String name) {
+  protected File getUnitTestFile(List<File> testFiles, List<File> srcFiles, String name) {
     String fileName = getUnitTestFileName(name);
+    File file = findFileByName(testFiles, fileName);
+    if(file==null){
+      file = findFileByName(srcFiles, fileName);
+    }
+    if(file==null){
+      file = new File("");
+    }
+    return file;
+  }
+
+  private File findFileByName(List<File> testFiles, String fileName) {
     for (File testFile : testFiles) {
       if (testFile.getAbsolutePath().endsWith(fileName) || testFile.getAbsolutePath().endsWith(fileName.replaceAll("_(eunit|tests)", ""))) {
         return testFile;
       }
     }
-    return new File("");
+    return null;
   }
 
   @Override

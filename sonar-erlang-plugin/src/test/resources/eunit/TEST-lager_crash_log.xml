@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite tests="5" failures="0" errors="0" skipped="0" time="0.567" name="module 'lager_crash_log'">
+  <testcase time="0.001" name="lager_crash_log:filesystem_test_/0_0" description="under normal circumstances, file should be opened"/>
+  <testcase time="0.001" name="lager_crash_log:filesystem_test_/0_0" description="file can't be opened on startup triggers an error message"/>
+  <testcase time="0.001" name="lager_crash_log:filesystem_test_/0_0" description="file that becomes unavailable at runtime should trigger an error message"/>
+  <testcase time="0.002" name="lager_crash_log:filesystem_test_/0_0" description="unavailable files that are fixed at runtime should start having log messages written"/>
+  <testcase time="0.003" name="lager_crash_log:filesystem_test_/0_0" description="external logfile rotation/deletion should be handled"/>
+</testsuite>
