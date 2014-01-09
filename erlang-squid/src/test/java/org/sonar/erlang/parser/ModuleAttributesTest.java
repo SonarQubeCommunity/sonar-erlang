@@ -65,14 +65,15 @@ public class ModuleAttributesTest {
 
   @Test
   public void defineTest() {
-    assertThat(b.rule(ErlangGrammarImpl.module))
+    assertThat(b.rule(ErlangGrammarImpl.defineAttr))
         .matches(code("-define(TC_AWAIT_CANCEL_EVENT(),",
             "case megaco_tc_controller:lookup(block_on_cancel) of",
             "{value, {Tag, Pid}} when is_pid(Pid) ->", "Pid ! {Tag, self()},",
             "receive", "{Tag, Pid} ->", "ok", "end;",
             "{value, {sleep, To}} when is_integer(To) andalso (To > 0) ->",
             "receive after To -> ok end;", "_ ->", "ok", "end)."))
-        .matches("-define(PARAM_TOKEN_TIMEOUT,                    60*15).");
+        .matches("-define(PARAM_TOKEN_TIMEOUT,                    60*15).")
+        .matches("-define (is_uint16 (V), V >= 0, V =< 65535).");
   }
 
   @Test
