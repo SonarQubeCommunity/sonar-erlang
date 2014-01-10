@@ -210,7 +210,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     + "|[0-9]++\\#([0-9A-Fa-f]++)?+"
     + "|[0-9]++"
     + "|" + ESCAPE_SEQUENCE
-    //parsing things like: '$a' or '$\]' '$\n'
+    // parsing things like: '$a' or '$\]' '$\n'
     + "|\\$\\\\?[\\x00-\\x7F]"
     + ")";
 
@@ -469,8 +469,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             b.optional(assignmentExpression,
                 b.zeroOrMore(comma, assignmentExpression)
                 ), rcurlybrace));
-    //Cannot use dot here, it also includes the spacing. in this case no spacing allowed after '.'
-    b.rule(recordLiteralHead).is(numbersign, identifier, b.zeroOrMore(b.sequence(".", b.nextNot(b.regexp(WHITESPACE+"+")), identifier)));
+    // Cannot use dot here, it also includes the spacing. in this case no spacing allowed after '.'
+    b.rule(recordLiteralHead).is(numbersign, identifier, b.zeroOrMore(b.sequence(".", b.nextNot(b.regexp(WHITESPACE + "+")), identifier)));
 
     b.rule(macroLiteral).is(questionmark, identifier, b.optional(arguments));
     b.rule(tupleLiteral).is(lcurlybrace, b.zeroOrMore(b.firstOf(comma, expression)), rcurlybrace);
@@ -498,7 +498,9 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
                         identifier,
                         b.oneOrMore(minus, identifier)),
                     identifier)
-                )
+                ),
+                //and for things like: Part1:4/big-unsigned-integer-unit:8
+            b.optional(colon, numericLiteral)
             )
         );
     b.rule(memberExpression).is(
