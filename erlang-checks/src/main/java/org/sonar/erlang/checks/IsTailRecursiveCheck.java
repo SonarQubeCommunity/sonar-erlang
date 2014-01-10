@@ -57,16 +57,21 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
   public void visitNode(AstNode node) {
     if (node.getType().equals(ErlangGrammarImpl.functionDeclaration)) {
       actualArity = getArity(node.getFirstChild(ErlangGrammarImpl.functionClause));
-    }
-    if (node.getType().equals(ErlangGrammarImpl.callExpression)
+    } else if (node.getType().equals(ErlangGrammarImpl.callExpression)
       /**
-       * Recursive call where we have not record a non tail recursive call
+       * Recursive call
        */
-      && (getArityFromCall(node).equals(actualArity) && node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine() != lastClauseLine)) {
+      && (getArityFromCall(node).equals(actualArity)
+      /**
+       * where we have not record a non tail recursive call so far
+       */
+      && node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine() != lastClauseLine)) {
+
       /**
        * Not a standalone statement
        */
-      if (!node.getParent().getType().equals(ErlangGrammarImpl.expression)) {
+      if (!node.getParent().getType().equals(ErlangGrammarImpl.expression)
+          || (node.getParent().getType().equals(ErlangGrammarImpl.expression) && !node.getParent().getParent().getType().equals(ErlangGrammarImpl.expressionStatement))) {
         getContext().createLineViolation(this, "Function is not tail recursive.", node);
         lastClauseLine = node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine();
         return;
@@ -110,9 +115,9 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
         return ast.getFirstChild(ErlangGrammarImpl.primaryExpression).getFirstChild(ErlangGrammarImpl.literal).getTokenOriginalValue() + "/"
           + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       } catch (Exception e) {
-        //If we reach this part it means we are in call where the function is a return value of another function:
-        //like: (Fun2())(1)
-        return "*"+getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+        // If we reach this part it means we are in call where the function is a return value of another function:
+        // like: (Fun2())(1)
+        return "*" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       }
     }
   }

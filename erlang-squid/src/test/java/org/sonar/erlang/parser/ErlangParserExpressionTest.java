@@ -133,7 +133,8 @@ public class ErlangParserExpressionTest {
         .matches("catch 1+2")
         .matches("catch 1+a")
         .matches("A = (catch 1+2)")
-        .matches("catch throw(hello)");
+        .matches("catch throw(hello)")
+        .matches("catch encode({x,y})");
   }
 
   @Test
@@ -145,8 +146,7 @@ public class ErlangParserExpressionTest {
         .matches("S = #person{name=Name, _='_'}")
         .matches("User#user{ibuttons = User#user.ibuttons ++ [IButton]}")
         .matches("#input{field=#person{name=Name}=Boss, partner=Partner}")
-        .matches("N2#nrec2.nrec1#nrec1.nrec0#nrec0{name = \"nested0a\"}")
-        ;
+        .matches("N2#nrec2.nrec1#nrec1.nrec0#nrec0{name = \"nested0a\"}");
   }
 
   @Test
@@ -168,7 +168,8 @@ public class ErlangParserExpressionTest {
         .matches("?MACRO1(X, 123)")
         .matches("server:call(refserver, Request, ?TIMEOUT)")
         .matches("server:call(refserver, Request, ?MACRO1(a, b))")
-        .matches("?MODULE:report_event(DetailLevel, FromTo, FromTo, Label, Contents)");
+        .matches("?MODULE:report_event(DetailLevel, FromTo, FromTo, Label, Contents)")
+        .matches("?assertEqual({'EXIT',{json_encode,{bad_term,{x,y}}}}, catch encode({x,y}))");
   }
 
   @Test

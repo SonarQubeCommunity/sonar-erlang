@@ -513,7 +513,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             memberExpression)).skipIfOneChild();
     // memberExpression, b.optional(colon, memberExpression), b.optional(arguments)).skipIfOneChild();
 
-    b.rule(arguments).is(lparenthesis, b.optional(assignmentExpression, b.zeroOrMore(comma, assignmentExpression)),
+    b.rule(arguments).is(lparenthesis, b.optional(expression, b.zeroOrMore(comma, expression)),
         rparenthesis);
     b.rule(unaryExpression).is(b.firstOf(
         // handle things like: -12, -A, -func(A), -(6+3)
@@ -562,8 +562,6 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
 
     b.rule(assignmentExpression).is(listOperationExpression, b.optional(matchop, assignmentExpression)).skipIfOneChild();
 
-    b.rule(expression).is(b.optional(catchKeyword), assignmentExpression);
-
     b.rule(funExpression).is(funKeyword, b.firstOf(b.sequence(b.optional(memberExpression, colon), funcArity),
         b.sequence(functionDeclarationsNoName, endKeyword)), b.optional(arguments));
     b.rule(functionDeclarationsNoName).is(functionDeclarationNoName, b.zeroOrMore(semi,
@@ -585,6 +583,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         statements)), b.sequence(afterKeyword, expression, arrow, statements)), endKeyword);
 
     b.rule(blockExpression).is(beginKeyword, statements, endKeyword);
+
+    b.rule(expression).is(b.optional(catchKeyword), assignmentExpression);
   }
 
   /**
@@ -608,7 +608,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(catchPatternStatements).is(catchPatternStatement, b.zeroOrMore(semi, catchPatternStatement));
     b.rule(catchPatternStatement).is(catchPattern, b.optional(guardSequenceStart), arrow, statements);
     b.rule(pattern).is(assignmentExpression);
-    b.rule(catchPattern).is(b.optional(identifier, colon), assignmentExpression);
+    b.rule(catchPattern).is(b.optional(identifier, colon), expression);
 
     b.rule(guardSequenceStart).is(whenKeyword, guardSequence);
 
