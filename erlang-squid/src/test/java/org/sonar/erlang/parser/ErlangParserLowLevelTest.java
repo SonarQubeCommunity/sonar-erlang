@@ -141,4 +141,5 @@ public class ErlangParserLowLevelTest {
     assertThat(b.rule(ErlangGrammarImpl.andalsoKeyword))
         .matches("andalso");
   }
+
 }

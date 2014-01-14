@@ -177,10 +177,10 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   catchPatternStatement,
   catchPatternStatements,
   blockExpression,
-  recordCreateLiteral,
-  recordAccLiteral,
-  recordLiteral,
-  recordLiteralHead,
+  // recordCreateLiteral,
+  // recordAccLiteral,
+  // recordLiteral,
+  // recordLiteralHead,
   macroLiteral,
   otherArithmeticExpression,
   ifdefAttr,
@@ -196,7 +196,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   fileAttr,
   behaviourAttr,
   moduleElements,
-  moduleElement, atom;
+  moduleElement, atom, recordCreate, recordAccess;
 
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
   public static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
@@ -257,8 +257,9 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         b.nextNot(keyword),
         b.regexp(IDENTIFIER), spacing);
 
+    //Skip this for now, everything will be an atom also variables
     b.rule(atom).is(
-        identifier, b.zeroOrMore(b.sequence(".", identifier)), spacing);
+        identifier, b.zeroOrMore(b.sequence(".", identifier)), spacing).skip();
 
     b.rule(numericLiteral).is(
         b.regexp(NUMERIC_LITERAL), spacing);
@@ -459,21 +460,37 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     // well this:
     // "asasd" ?MACRO "asdasd"
     b.rule(literal).is(b.oneOrMore(b.firstOf(stringLiteral, numericLiteral, atom, macroLiteral)));
-    b.rule(primaryExpression).is(b.firstOf(b.sequence(lparenthesis, expression, rparenthesis), literal, listLiteral, tupleLiteral, binaryLiteral));
+    b.rule(primaryExpression).is(
+        b.firstOf(
+            b.sequence(lparenthesis, expression, rparenthesis),
+            literal,
+            listLiteral,
+            tupleLiteral,
+            binaryLiteral));
+
+    b.rule(recordAccess).is(
+        primaryExpression,
+        b.zeroOrMore(
+            numbersign,
+            primaryExpression)
+        ).skipIfOneChild();
+
+    b.rule(recordCreate).is(
+        b.firstOf(
+            recordAccess,
+            b.oneOrMore(numbersign, primaryExpression)),
+        b.optional(
+            lcurlybrace,
+            b.optional(assignmentExpression,
+                b.zeroOrMore(comma, assignmentExpression)),
+            rcurlybrace
+            )
+        ).skipIfOneChild();
 
     b.rule(listLiteral).is(lbracket, b.optional(b.firstOf(b.sequence(assignmentExpression, listcomp, qualifier, b.zeroOrMore(
         comma, qualifier)), b.sequence(assignmentExpression, b.zeroOrMore(b.firstOf(comma,
         assignmentExpression)), b.optional(pipe, assignmentExpression)))), rbracket);
     b.rule(qualifier).is(b.firstOf(b.sequence(assignmentExpression, arrowback, expression), expression));
-    b.rule(recordLiteral).is(
-        b.optional(primaryExpression),
-        b.oneOrMore(recordLiteralHead),
-        b.optional(lcurlybrace,
-            b.optional(assignmentExpression,
-                b.zeroOrMore(comma, assignmentExpression)
-                ), rcurlybrace));
-    // Cannot use dot here, it also includes the spacing. in this case no spacing allowed after '.'
-    b.rule(recordLiteralHead).is(numbersign, identifier, b.zeroOrMore(b.sequence(".", b.nextNot(b.regexp(WHITESPACE + "+")), identifier)));
 
     b.rule(macroLiteral).is(questionmark, identifier, b.optional(arguments));
     b.rule(tupleLiteral).is(lcurlybrace, b.zeroOrMore(b.firstOf(comma, expression)), rcurlybrace);
@@ -502,13 +519,13 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
                         b.oneOrMore(minus, identifier)),
                     identifier)
                 ),
-                //and for things like: Part1:4/big-unsigned-integer-unit:8
+            // and for things like: Part1:4/big-unsigned-integer-unit:8
             b.optional(colon, numericLiteral)
             )
         );
     b.rule(memberExpression).is(
-        b.firstOf(recordLiteral, ifExpression, funExpression, caseExpression,
-            tryExpression, receiveExpression, blockExpression, primaryExpression))
+        b.firstOf(ifExpression, funExpression, caseExpression,
+            tryExpression, receiveExpression, blockExpression, recordCreate))
         .skipIfOneChild();
     /**
      * It can be a record ref (originaly a.b['a']) as well

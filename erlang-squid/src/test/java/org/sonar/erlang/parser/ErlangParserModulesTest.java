@@ -344,6 +344,19 @@ public class ErlangParserModulesTest {
             ));
   }
 
+  @Test
+  public void bugWithMacroInArgs(){
+    assertThat(b.getRootRule())
+    .matches(code(
+    "-module (sonar_erlang_failure_8).",
+    "-export([recordfail/1]).",
+    "-record(foo, {bar, baz}).",
+    "-define(FOO_REC, #foo).",
+    "recordfail (?FOO_REC{bar=true}) ->",
+    "  true."
+    ));
+  }
+
   private static String code(String... lines) {
     return Joiner.on("\n").join(lines);
   }
