@@ -196,7 +196,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   fileAttr,
   behaviourAttr,
   moduleElements,
-  moduleElement;
+  moduleElement, atom;
 
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
   public static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
@@ -256,6 +256,9 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(identifier).is(
         b.nextNot(keyword),
         b.regexp(IDENTIFIER), spacing);
+
+    b.rule(atom).is(
+        identifier, b.zeroOrMore(b.sequence(".", identifier)), spacing);
 
     b.rule(numericLiteral).is(
         b.regexp(NUMERIC_LITERAL), spacing);
@@ -455,7 +458,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     // handle string concetanation ("..."\n[\r\t]"..." is one literal as
     // well this:
     // "asasd" ?MACRO "asdasd"
-    b.rule(literal).is(b.oneOrMore(b.firstOf(stringLiteral, numericLiteral, identifier, macroLiteral)));
+    b.rule(literal).is(b.oneOrMore(b.firstOf(stringLiteral, numericLiteral, atom, macroLiteral)));
     b.rule(primaryExpression).is(b.firstOf(b.sequence(lparenthesis, expression, rparenthesis), literal, listLiteral, tupleLiteral, binaryLiteral));
 
     b.rule(listLiteral).is(lbracket, b.optional(b.firstOf(b.sequence(assignmentExpression, listcomp, qualifier, b.zeroOrMore(

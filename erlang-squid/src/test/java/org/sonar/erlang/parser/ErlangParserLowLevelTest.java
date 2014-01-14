@@ -78,10 +78,13 @@ public class ErlangParserLowLevelTest {
 
   @Test
   public void atomLiteral() {
-    assertThat(b.rule(ErlangGrammarImpl.identifier))
+    assertThat(b.rule(ErlangGrammarImpl.atom))
         .matches("'find/me'")
         .matches("whatShallW3d0")
-        .matches("nonode@nohost");
+        .matches("nonode@nohost")
+        .matches("thi.is.an.atom")
+        .notMatches("this.isnt.an.atom.")
+        .matches("this@is.aswell");
   }
 
   @Test
