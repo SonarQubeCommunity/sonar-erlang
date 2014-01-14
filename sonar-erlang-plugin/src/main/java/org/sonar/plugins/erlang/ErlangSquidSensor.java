@@ -147,6 +147,7 @@ public class ErlangSquidSensor implements Sensor {
         Issue issue = issuable.newIssueBuilder()
             .ruleKey(RuleKey.of(activeRule.getRepositoryKey(), activeRule.getRuleKey()))
             .line(message.getLine())
+            .message(message.formatDefaultMessage())
             .build();
         issuable.addIssue(issue);
       }
