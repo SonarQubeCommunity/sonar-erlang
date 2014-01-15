@@ -170,7 +170,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   patternStatements,
   patternStatement,
   statements,
-  sendStatement,
+  sendExpression,
   catchExpression,
   afterExpression,
   catchPattern,
@@ -254,58 +254,64 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(eof).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
 
     b.rule(identifier).is(
-        b.nextNot(keyword),
-        b.regexp(IDENTIFIER), spacing);
+      b.nextNot(keyword),
+      b.regexp(IDENTIFIER), spacing);
 
-    //Skip this for now, everything will be an atom also variables
+    // Skip this for now, everything will be an atom also variables
     b.rule(atom).is(
-        identifier, b.zeroOrMore(b.sequence(".", identifier)), spacing).skip();
+      identifier, b.zeroOrMore(b.sequence(".", identifier)), spacing).skip();
 
     b.rule(numericLiteral).is(
-        b.regexp(NUMERIC_LITERAL), spacing);
+      b.regexp(NUMERIC_LITERAL), spacing);
 
+    // handle string concetanation ("..."\n[\r\t]"..." is one literal as
+    // well this:
+    // "asasd" ?MACRO "asdasd"
     b.rule(stringLiteral).is(
-        b.regexp(LITERAL), spacing);
+      b.oneOrMore(
+        b.firstOf(
+          macroLiteral,
+          b.sequence(b.regexp(LITERAL), spacing))));
 
     /*
      * TODO use the keywords directly
      */
     b.rule(keyword).is(b.firstOf(
-        "after",
-        "andalso",
-        "and",
-        "band",
-        "begin",
-        "bnot",
-        "bor",
-        "bsl",
-        "bsr",
-        "bxor",
-        "case",
-        "catch",
-        "cond",
-        "div",
-        "end",
-        "fun",
-        "if",
-        "let",
-        "not",
-        "of",
-        "orelse",
-        "or",
-        "query",
-        "receive",
-        "rem",
-        "try",
-        "when",
-        "xor"), b.nextNot(letterOrDigit));
+      "after",
+      "andalso",
+      "and",
+      "band",
+      "begin",
+      "bnot",
+      "bor",
+      "bsl",
+      "bsr",
+      "bxor",
+      "case",
+      "catch",
+      "cond",
+      "div",
+      "end",
+      "fun",
+      "if",
+      "let",
+      "not",
+      "of",
+      "orelse",
+      "or",
+      "query",
+      "receive",
+      "rem",
+      "try",
+      "when",
+      "xor"), b.nextNot(letterOrDigit));
 
     b.rule(letterOrDigit).is(b.regexp("\\p{javaJavaIdentifierPart}"));
 
     b.rule(spacing).is(
-        b.skippedTrivia(b.regexp(WHITESPACE + "*")),
-        b.zeroOrMore(b.commentTrivia(b.regexp(COMMENT)), b.skippedTrivia(b.regexp(WHITESPACE + "*")))
-        ).skip();
+      b.skippedTrivia(b.regexp(WHITESPACE + "*")),
+      b.zeroOrMore(b.commentTrivia(b.regexp(COMMENT)), b.skippedTrivia(b.regexp(WHITESPACE + "*")))
+      ).skip();
   }
 
   private static void punctuators(LexerlessGrammarBuilder b) {
@@ -382,23 +388,23 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   private static void module(LexerlessGrammarBuilder b) {
     b.rule(module).is(spacing, b.optional(moduleElements), eof);
     b.rule(moduleElements).is(b.oneOrMore(
-        moduleElement
-        ));
+      moduleElement
+      ));
 
     b.rule(moduleElement).is(b.firstOf(moduleHeadAttr, b.sequence(macroLiteral, dot), functionDeclaration)).skipIfOneChild();
 
     b.rule(moduleHeadAttr).is(b.firstOf(moduleAttr, fileAttr, exportAttr, compileAttr, defineAttr,
-        importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr, anyAttr)).skipIfOneChild();
+      importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr, anyAttr)).skipIfOneChild();
 
     b.rule(recordAttr).is(minus, semiKeyword("record", b), lparenthesis,
-        b.zeroOrMore(
-            b.nextNot(b.sequence(rparenthesis, spacing, dot)),
-            b.regexp("."), spacing),
-        rparenthesis, dot);
+      b.zeroOrMore(
+        b.nextNot(b.sequence(rparenthesis, spacing, dot)),
+        b.regexp("."), spacing),
+      rparenthesis, dot);
 
     b.rule(flowControlAttr).is(b.firstOf(ifdefAttr, ifndefAttr), b.zeroOrMore(b.firstOf(moduleHeadAttr,
-        functionDeclaration)), b.optional(elseAttr, b.zeroOrMore(b.firstOf(moduleHeadAttr,
-        functionDeclaration))), endifAttr);
+      functionDeclaration)), b.optional(elseAttr, b.zeroOrMore(b.firstOf(moduleHeadAttr,
+      functionDeclaration))), endifAttr);
 
     b.rule(ifdefAttr).is(minus, semiKeyword("ifdef", b), lparenthesis, identifier, rparenthesis, dot);
 
@@ -413,22 +419,22 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(compileAttr).is(minus, semiKeyword("compile", b), lparenthesis, primaryExpression, rparenthesis, dot);
 
     b.rule(defineAttr).is(minus, semiKeyword("define", b), lparenthesis, b.firstOf(b.sequence(identifier, comma,
-        statement), b.sequence(funcDecl, comma, b.firstOf(b.sequence(statement, b.nextNot(comma)), guard))), rparenthesis, dot);
+      statement), b.sequence(funcDecl, comma, b.firstOf(b.sequence(statement, b.nextNot(comma)), guard))), rparenthesis, dot);
 
     b.rule(importAttr).is(minus, semiKeyword("import", b), lparenthesis, b.firstOf(macroLiteral, identifier), comma,
-        lbracket, funcArity, b.zeroOrMore(comma, funcArity), rbracket, rparenthesis, dot);
+      lbracket, funcArity, b.zeroOrMore(comma, funcArity), rbracket, rparenthesis, dot);
 
     b.rule(fileAttr).is(minus, semiKeyword("file", b), lparenthesis, primaryExpression, comma, primaryExpression,
-        rparenthesis, dot);
+      rparenthesis, dot);
 
     b.rule(behaviourAttr).is(minus, semiKeyword("behaviour", b), lparenthesis, identifier, rparenthesis, dot);
 
     b.rule(genericAttr).is(
-        minus,
-        b.firstOf(semiKeyword("vsn", b), semiKeyword("on_load", b), semiKeyword("include", b), semiKeyword("file", b),
-            semiKeyword("ignore_xref", b), semiKeyword("include_lib", b), semiKeyword("author", b), semiKeyword("export_type", b), semiKeyword("deprecated", b),
-            semiKeyword("asn1_info", b)),
-        lparenthesis, b.firstOf(funcArity, primaryExpression), rparenthesis, dot);
+      minus,
+      b.firstOf(semiKeyword("vsn", b), semiKeyword("on_load", b), semiKeyword("include", b), semiKeyword("file", b),
+        semiKeyword("ignore_xref", b), semiKeyword("include_lib", b), semiKeyword("author", b), semiKeyword("export_type", b), semiKeyword("deprecated", b),
+        semiKeyword("asn1_info", b)),
+      lparenthesis, b.firstOf(funcArity, primaryExpression), rparenthesis, dot);
 
     b.rule(anyAttr).is(minus, identifier, lparenthesis, primaryExpression, rparenthesis, dot);
 
@@ -438,14 +444,14 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
 
   private static void functions(LexerlessGrammarBuilder b) {
     b.rule(spec).is(minus, b.firstOf(semiKeyword("spec", b), semiKeyword("callback", b)),
-        b.zeroOrMore(b.firstOf(b.regexp("\\.(\\.+|.)"), b.regexp("[^\\.]")), spacing), dot);
+      b.zeroOrMore(b.firstOf(b.regexp("\\.(\\.+|.)"), b.regexp("[^\\.]")), spacing), dot);
 
     b.rule(typeSpec).is(minus, b.firstOf(semiKeyword("type", b), semiKeyword("opaque", b)),
-        b.zeroOrMore(b.firstOf(b.regexp("\\.(\\.+|.)"), b.regexp("[^\\.]")), spacing), dot);
+      b.zeroOrMore(b.firstOf(b.regexp("\\.(\\.+|.)"), b.regexp("[^\\.]")), spacing), dot);
 
     b.rule(functionDeclaration).is(functionClause, b.zeroOrMore(semi, functionClause),
 
-        dot);
+      dot);
     b.rule(functionClause).is(clauseHead, arrow, clauseBody);
     b.rule(clauseHead).is(funcDecl, b.optional(guardSequenceStart));
     b.rule(clauseBody).is(statements);
@@ -456,157 +462,161 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   }
 
   private static void expressions(LexerlessGrammarBuilder b) {
-    // handle string concetanation ("..."\n[\r\t]"..." is one literal as
-    // well this:
-    // "asasd" ?MACRO "asdasd"
-    b.rule(literal).is(b.oneOrMore(b.firstOf(stringLiteral, numericLiteral, atom, macroLiteral)));
+    b.rule(literal).is(b.firstOf(stringLiteral, numericLiteral, atom, macroLiteral));
     b.rule(primaryExpression).is(
-        b.firstOf(
-            b.sequence(lparenthesis, expression, rparenthesis),
-            literal,
-            listLiteral,
-            tupleLiteral,
-            binaryLiteral));
+      b.firstOf(
+        b.sequence(lparenthesis, expression, rparenthesis),
+        literal,
+        listLiteral,
+        tupleLiteral,
+        binaryLiteral));
 
     b.rule(recordAccess).is(
-        primaryExpression,
-        b.zeroOrMore(
-            numbersign,
-            primaryExpression)
-        ).skipIfOneChild();
+      primaryExpression,
+      b.zeroOrMore(
+        b.firstOf(
+          b.sequence(numbersign, primaryExpression),
+          b.sequence(macroLiteral, ".", primaryExpression))
+        )
+      ).skipIfOneChild();
 
     b.rule(recordCreate).is(
-        b.firstOf(
-            recordAccess,
-            b.oneOrMore(numbersign, primaryExpression)),
-        b.optional(
-            lcurlybrace,
-            b.optional(assignmentExpression,
-                b.zeroOrMore(comma, assignmentExpression)),
-            rcurlybrace
-            )
-        ).skipIfOneChild();
+      b.firstOf(
+        recordAccess,
+        b.oneOrMore(numbersign, primaryExpression)),
+      b.optional(
+        lcurlybrace,
+        b.optional(assignmentExpression,
+          b.zeroOrMore(comma, assignmentExpression)),
+        rcurlybrace
+        )
+      ).skipIfOneChild();
 
-    b.rule(listLiteral).is(lbracket, b.optional(b.firstOf(b.sequence(assignmentExpression, listcomp, qualifier, b.zeroOrMore(
-        comma, qualifier)), b.sequence(assignmentExpression, b.zeroOrMore(b.firstOf(comma,
-        assignmentExpression)), b.optional(pipe, assignmentExpression)))), rbracket);
-    b.rule(qualifier).is(b.firstOf(b.sequence(assignmentExpression, arrowback, expression), expression));
+    // should be refactored
+    b.rule(listLiteral).is(lbracket, b.optional(
+      b.firstOf(
+        b.sequence(expression, listcomp, qualifier, b.zeroOrMore(comma, qualifier)),
+        b.sequence(expression, b.zeroOrMore(b.firstOf(comma, expression)), b.optional(pipe, expression)))),
+      rbracket);
+    // this does not work
+    b.rule(qualifier).is(b.firstOf(b.sequence(expression, arrowback, expression), expression));
 
     b.rule(macroLiteral).is(questionmark, identifier, b.optional(arguments));
     b.rule(tupleLiteral).is(lcurlybrace, b.zeroOrMore(b.firstOf(comma, expression)), rcurlybrace);
     b.rule(binaryLiteral).is(binstart, b.firstOf(b.sequence(b.sequence(assignmentExpression, listcomp,
-        b.oneOrMore(binaryQualifier)), b.zeroOrMore(b.firstOf(comma, assignmentExpression))), b.zeroOrMore(b.firstOf(
-        comma, binaryElement))), binend);
+      b.oneOrMore(binaryQualifier)), b.zeroOrMore(b.firstOf(comma, assignmentExpression))), b.zeroOrMore(b.firstOf(
+      comma, binaryElement))), binend);
     b.rule(binaryQualifier).is(b.firstOf(
-        b.sequence(binaryLiteral, doublearrowback, expression), b.sequence(
-            primaryExpression, arrowback, expression, b.zeroOrMore(comma, expression)
-            )));
+      b.sequence(binaryLiteral, doublearrowback, expression), b.sequence(
+        primaryExpression, arrowback, expression, b.zeroOrMore(comma, expression)
+        )));
 
     b.rule(binaryElement).is(
-        b.sequence(expression,
-            b.optional(
-                colon,
-                b.firstOf(numericLiteral, identifier, macroLiteral)),
-            b.optional(
-                div,
-                /*
-                 * Hack for things like: 1024:32/little-float-dafaq
-                 */
-                b.firstOf(
-                    numericLiteral,
-                    b.sequence(
-                        identifier,
-                        b.oneOrMore(minus, identifier)),
-                    identifier)
-                ),
-            // and for things like: Part1:4/big-unsigned-integer-unit:8
-            b.optional(colon, numericLiteral)
-            )
-        );
+      b.sequence(expression,
+        b.optional(
+          colon,
+          b.firstOf(numericLiteral, identifier, macroLiteral)),
+        b.optional(
+          div,
+          /*
+           * Hack for things like: 1024:32/little-float-dafaq
+           */
+          b.firstOf(
+            numericLiteral,
+            b.sequence(
+              identifier,
+              b.oneOrMore(minus, identifier)),
+            identifier)
+          ),
+        // and for things like: Part1:4/big-unsigned-integer-unit:8
+        b.optional(colon, numericLiteral)
+        )
+      );
     b.rule(memberExpression).is(
-        b.firstOf(ifExpression, funExpression, caseExpression,
-            tryExpression, receiveExpression, blockExpression, recordCreate))
-        .skipIfOneChild();
+      b.firstOf(ifExpression, funExpression, caseExpression, tryExpression, receiveExpression, blockExpression, recordCreate))
+      .skipIfOneChild();
     /**
      * It can be a record ref (originaly a.b['a']) as well
      */
     b.rule(callExpression).is(
-        b.firstOf(b.sequence(b.optional(memberExpression, colon), memberExpression, arguments),
-            memberExpression)).skipIfOneChild();
+      b.firstOf(b.sequence(b.optional(memberExpression, colon), memberExpression, arguments),
+        memberExpression)).skipIfOneChild();
     // memberExpression, b.optional(colon, memberExpression), b.optional(arguments)).skipIfOneChild();
 
     b.rule(arguments).is(lparenthesis, b.optional(expression, b.zeroOrMore(comma, expression)),
-        rparenthesis);
+      rparenthesis);
     b.rule(unaryExpression).is(b.firstOf(
-        // handle things like: -12, -A, -func(A), -(6+3)
-        b.sequence(b.optional(minus), callExpression), b.sequence(notKeyword, callExpression))).skipIfOneChild();
+      // handle things like: -12, -A, -func(A), -(6+3)
+      b.sequence(b.optional(minus), callExpression), b.sequence(notKeyword, callExpression))).skipIfOneChild();
     b.rule(otherArithmeticExpression).is(unaryExpression,
-        b.zeroOrMore(b.firstOf(bnotKeyword, divKeyword, remKeyword), unaryExpression)).skipIfOneChild();
+      b.zeroOrMore(b.firstOf(bnotKeyword, divKeyword, remKeyword), unaryExpression)).skipIfOneChild();
     b.rule(multiplicativeExpression).is(otherArithmeticExpression,
-        b.zeroOrMore(b.firstOf(star, div), otherArithmeticExpression)).skipIfOneChild();
+      b.zeroOrMore(b.firstOf(star, div), otherArithmeticExpression)).skipIfOneChild();
     b.rule(additiveExpression).is(multiplicativeExpression,
-        b.zeroOrMore(b.firstOf(plus, minus), multiplicativeExpression)).skipIfOneChild();
+      b.zeroOrMore(b.firstOf(plus, minus), multiplicativeExpression)).skipIfOneChild();
 
     b.rule(shiftExpression).is(additiveExpression, b.zeroOrMore(b.firstOf(bslKeyword, bsrKeyword), additiveExpression))
-        .skipIfOneChild();
+      .skipIfOneChild();
     b.rule(relationalExpression).is(shiftExpression, b.zeroOrMore(b.firstOf(lt, gt, le, ge), shiftExpression))
-        .skipIfOneChild();
+      .skipIfOneChild();
 
     b.rule(equalityExpression).is(relationalExpression,
-        b.zeroOrMore(b.firstOf(equal, notequal, equal2, notequal2), relationalExpression))
-        .skipIfOneChild();
+      b.zeroOrMore(b.firstOf(equal, notequal, equal2, notequal2), relationalExpression))
+      .skipIfOneChild();
 
     b.rule(bitwiseAndExpression).is(equalityExpression, b.zeroOrMore(bandKeyword, equalityExpression)).skipIfOneChild();
 
     b.rule(bitwiseXorExpression).is(bitwiseAndExpression, b.zeroOrMore(bxorKeyword, bitwiseAndExpression))
-        .skipIfOneChild();
+      .skipIfOneChild();
 
     b.rule(bitwiseOrExpression).is(bitwiseXorExpression, b.zeroOrMore(borKeyword, bitwiseXorExpression))
-        .skipIfOneChild();
+      .skipIfOneChild();
 
     b.rule(logicalAndExpression).is(bitwiseOrExpression, b.zeroOrMore(andKeyword, bitwiseOrExpression))
-        .skipIfOneChild();
+      .skipIfOneChild();
 
     b.rule(logicalOrExpression).is(logicalAndExpression, b.zeroOrMore(orKeyword, logicalAndExpression))
-        .skipIfOneChild();
+      .skipIfOneChild();
 
     b.rule(logicalXorExpression).is(logicalOrExpression, b.zeroOrMore(xorKeyword, logicalOrExpression))
-        .skipIfOneChild();
+      .skipIfOneChild();
 
     b.rule(shortCircuitOrElseExpression).is(logicalXorExpression, b.zeroOrMore(orelseKeyword, logicalXorExpression))
-        .skipIfOneChild();
+      .skipIfOneChild();
 
     b.rule(shortCircuitAndAlsoExpression).is(shortCircuitOrElseExpression,
-        b.zeroOrMore(andalsoKeyword, shortCircuitOrElseExpression)).skipIfOneChild();
+      b.zeroOrMore(andalsoKeyword, shortCircuitOrElseExpression)).skipIfOneChild();
 
     b.rule(listOperationExpression).is(shortCircuitAndAlsoExpression,
-        b.zeroOrMore(b.firstOf(plusplus, minusminus), shortCircuitAndAlsoExpression)).skipIfOneChild();
+      b.zeroOrMore(b.firstOf(plusplus, minusminus), shortCircuitAndAlsoExpression)).skipIfOneChild();
 
-    b.rule(assignmentExpression).is(listOperationExpression, b.optional(matchop, assignmentExpression)).skipIfOneChild();
+    b.rule(assignmentExpression).is(listOperationExpression, b.optional(matchop, expression)).skipIfOneChild();
 
     b.rule(funExpression).is(funKeyword, b.firstOf(b.sequence(b.optional(memberExpression, colon), funcArity),
-        b.sequence(functionDeclarationsNoName, endKeyword)), b.optional(arguments));
+      b.sequence(functionDeclarationsNoName, endKeyword)), b.optional(arguments));
     b.rule(functionDeclarationsNoName).is(functionDeclarationNoName, b.zeroOrMore(semi,
-        functionDeclarationNoName));
+      functionDeclarationNoName));
     b.rule(functionDeclarationNoName).is(arguments, b.optional(guardSequenceStart), arrow, statements);
+
+    b.rule(sendExpression).is(assignmentExpression, b.optional(exclamation, assignmentExpression)).skipIfOneChild();
 
     b.rule(caseExpression).is(caseKeyword, expression, ofKeyword, patternStatements, endKeyword);
 
     b.rule(ifExpression).is(ifKeyword, branchExps, endKeyword);
 
     b.rule(tryExpression).is(tryKeyword, statements, b.optional(ofKeyword, patternStatements), b.firstOf(b.sequence(catchExpression,
-        afterExpression), catchExpression, afterExpression), endKeyword);
+      afterExpression), catchExpression, afterExpression), endKeyword);
 
     b.rule(afterExpression).is(afterKeyword, statements);
 
     b.rule(catchExpression).is(catchKeyword, catchPatternStatements);
 
     b.rule(receiveExpression).is(receiveKeyword, b.firstOf(b.sequence(patternStatements, b.optional(afterKeyword, expression, arrow,
-        statements)), b.sequence(afterKeyword, expression, arrow, statements)), endKeyword);
+      statements)), b.sequence(afterKeyword, expression, arrow, statements)), endKeyword);
 
     b.rule(blockExpression).is(beginKeyword, statements, endKeyword);
 
-    b.rule(expression).is(b.optional(catchKeyword), assignmentExpression);
+    b.rule(expression).is(b.optional(catchKeyword), sendExpression);
   }
 
   /**
@@ -614,10 +624,9 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
    **/
   private static void statements(LexerlessGrammarBuilder b) {
     b.rule(expressionStatement).is(expression);
-    b.rule(statement).is(b.firstOf(sendStatement, expressionStatement));
+    b.rule(statement).is(expressionStatement);
     b.rule(statements).is(statement, b.zeroOrMore(comma, statement));
 
-    b.rule(sendStatement).is(expression, exclamation, expression);
   }
 
   public static void branchAndGuardExpressions(LexerlessGrammarBuilder b) {

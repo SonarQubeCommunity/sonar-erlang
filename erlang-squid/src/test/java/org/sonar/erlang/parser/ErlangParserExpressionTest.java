@@ -111,7 +111,8 @@ public class ErlangParserExpressionTest {
         .matches("[{A,B} || {A, B} <- method(), method2(File)]")
         .matches("[Call || {_From, To} = Call <- ExtCalls, lists:member(To, RelevantAPICalls)]")
         .matches("[{M, F, A} || {nowarn_unused_function, FAs} <- Opts,  {F, A} <- lists:flatten([FAs])]")
-        .matches("[Call || Call = {_From, To} <- ExtCalls, not dialyzer_plt:contains_mfa(InitPlt, To)]");
+        .matches("[Call || Call = {_From, To} <- ExtCalls, not dialyzer_plt:contains_mfa(InitPlt, To)]")
+        .matches("[ Pid ! Msg || Pid <- ListOfPids ]");
   }
 
   @Test
@@ -159,7 +160,9 @@ public class ErlangParserExpressionTest {
         .matches("N2#nrec2.nrec1#nrec1.nrec0.nrec00#nrec0.name.first")
         .matches("(PartialMsg#'MegacoMessage'.mess)")
         .matches("(PartialMsg#'MegacoMessage'.mess)#'Message'.version")
-        .matches("Record#my_record.key1");
+        .matches("Record#my_record.key1")
+        .matches("Rec?FOO_REC.bar");
+
   }
 
   @Test

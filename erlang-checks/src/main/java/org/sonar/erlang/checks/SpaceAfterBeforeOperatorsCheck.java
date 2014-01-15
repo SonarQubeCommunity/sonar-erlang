@@ -61,12 +61,12 @@ public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar>
   public void visitNode(AstNode ast) {
     AstNode compTo;
     if (numOfViolations < 100 && !failedLines.contains(ast.getTokenLine())) {
-      if (ast.getNextSibling() != null && operators.contains(ast.getNextSibling().getType())) {
-        compTo = ast.getNextSibling();
+      if (ast.getNextAstNode() != null && operators.contains(ast.getNextAstNode().getType())) {
+        compTo = ast.getNextAstNode();
         failedLines.add(check(ast, compTo, false));
-      } else if (ast.getPreviousSibling() != null
-        && operators.contains(ast.getPreviousSibling().getType())) {
-        compTo = ast.getPreviousSibling();
+      } else if (ast.getPreviousAstNode() != null
+        && operators.contains(ast.getPreviousAstNode().getType())) {
+        compTo = ast.getPreviousAstNode();
         failedLines.add(check(ast, compTo, true));
       }
     }

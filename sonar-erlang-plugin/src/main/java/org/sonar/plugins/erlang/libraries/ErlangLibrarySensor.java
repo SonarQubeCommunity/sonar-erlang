@@ -62,7 +62,7 @@ public class ErlangLibrarySensor implements Sensor {
 
       String depsDir = getDepsDir(config);
 
-      List<Object> dependencies = AstNodeXPathQuery.create("//tupleLiteral[.//*/@*='deps']//listLiteral/primaryExpression").selectNodes(config);
+      List<Object> dependencies = AstNodeXPathQuery.create("//tupleLiteral[.//*/@*='deps']//listLiteral/expression/primaryExpression").selectNodes(config);
       for (Object dependencyObj : dependencies) {
         AstNode dependency = (AstNode) dependencyObj;
         List<Object> dependencyElementObjs = AstNodeXPathQuery.create("./tupleLiteral/expression").selectNodes(dependency);
