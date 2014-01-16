@@ -89,7 +89,7 @@ public class ErlangParserLowLevelTest {
 
   @Test
   public void stringLiteral() {
-    assertThat(b.rule(ErlangGrammarImpl.literal))
+    assertThat(b.rule(ErlangGrammarImpl.stringLiteral))
       .matches("\"\"")
       .matches("\"hello world\"")
       .matches("\"\\\"\"")

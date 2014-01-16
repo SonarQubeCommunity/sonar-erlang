@@ -63,7 +63,16 @@ public class ErlangRecordDefinitionTest {
             "  version = 'HTTP/1.1' :: cowboy:http_version(),",
             "  response_body = undefined :: undefined | non_neg_integer()",
             " })."
-            ));
+            ))
+        .matches("-record(state, {last::calendar:datetime(), tref::timer:tref()}).")
+        .matches("-record(auth, {\ntoken :: string() | binary()\n}).")
+        .matches(code("-record(map, {dict = dict:new()   :: dict(),",
+            "subst = dict:new()  :: dict(),",
+            "modified = []       :: [Key :: term()],",
+            "modified_stack = [] :: [{[Key :: term()],reference()}],",
+            "ref = undefined     :: reference() | undefined})."))
+        .matches("-record(fun_var, {'fun' :: fun((_) -> erl_types:erl_type()), deps :: [dep()], origin :: integer()}).")
+        .matches((code("-record(cat, {}).")));;
   }
 
   private static String code(String... lines) {

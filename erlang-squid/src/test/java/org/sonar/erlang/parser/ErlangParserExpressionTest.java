@@ -148,13 +148,14 @@ public class ErlangParserExpressionTest {
         .matches("S = #person{name=Name, _='_'}")
         .matches("User#user{ibuttons = User#user.ibuttons ++ [IButton]}")
         .matches("#input{field=#person{name=Name}=Boss, partner=Partner}")
-        .matches("N2#nrec2.nrec1#nrec1.nrec0#nrec0{name = \"nested0a\"}");
+        .matches("N2#nrec2.nrec1#nrec1.nrec0#nrec0{name = \"nested0a\"}")
+        .matches("Rec?FOO_REC{bar = \"hello\"}");
   }
 
   @Test
   public void recordAccess() {
     assertThat(g.rule(ErlangGrammarImpl.expression))
-       // .matches("#person.name")
+        // .matches("#person.name")
         .notMatches("Rec#a.key.\nasd")
         .matches("Expr#Name.Field")
         .matches("N2#nrec2.nrec1#nrec1.nrec0.nrec00#nrec0.name.first")
@@ -174,7 +175,8 @@ public class ErlangParserExpressionTest {
         .matches("server:call(refserver, Request, ?TIMEOUT)")
         .matches("server:call(refserver, Request, ?MACRO1(a, b))")
         .matches("?MODULE:report_event(DetailLevel, FromTo, FromTo, Label, Contents)")
-        .matches("?assertEqual({'EXIT',{json_encode,{bad_term,{x,y}}}}, catch encode({x,y}))");
+        .matches("?assertEqual({'EXIT',{json_encode,{bad_term,{x,y}}}}, catch encode({x,y}))")
+        .matches("??A");
   }
 
   @Test

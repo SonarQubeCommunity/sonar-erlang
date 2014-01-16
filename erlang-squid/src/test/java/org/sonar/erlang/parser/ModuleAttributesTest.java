@@ -50,20 +50,6 @@ public class ModuleAttributesTest {
   }
 
   @Test
-  public void recordDefTest() {
-    assertThat(b.rule(ErlangGrammarImpl.module))
-        .matches("-record(state, {last::calendar:datetime(), tref::timer:tref()}).")
-        .matches("-record(auth, {\ntoken :: string() | binary()\n}).")
-        .matches(code("-record(map, {dict = dict:new()   :: dict(),",
-            "subst = dict:new()  :: dict(),",
-            "modified = []       :: [Key :: term()],",
-            "modified_stack = [] :: [{[Key :: term()],reference()}],",
-            "ref = undefined     :: reference() | undefined})."))
-        .matches("-record(fun_var, {'fun' :: fun((_) -> erl_types:erl_type()), deps :: [dep()], origin :: integer()}).")
-        .matches((code("-record(cat, {}).")));
-  }
-
-  @Test
   public void defineTest() {
     assertThat(b.rule(ErlangGrammarImpl.defineAttr))
         .matches(code("-define(TC_AWAIT_CANCEL_EVENT(),",
@@ -73,7 +59,8 @@ public class ModuleAttributesTest {
             "{value, {sleep, To}} when is_integer(To) andalso (To > 0) ->",
             "receive after To -> ok end;", "_ ->", "ok", "end)."))
         .matches("-define(PARAM_TOKEN_TIMEOUT,                    60*15).")
-        .matches("-define (is_uint16 (V), V >= 0, V =< 65535).");
+        .matches("-define (is_uint16 (V), V >= 0, V =< 65535).")
+        .matches("-define(TEST(B), ?LOG(??B ++ \" ~p~n\", [B])).");
   }
 
   @Test
