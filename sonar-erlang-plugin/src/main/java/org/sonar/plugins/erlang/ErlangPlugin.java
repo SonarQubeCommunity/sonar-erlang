@@ -71,13 +71,13 @@ import java.util.List;
 })
 public class ErlangPlugin extends SonarPlugin {
 
-  public static final String EUNIT_FOLDER_KEY = "sonar.erlang.eunit.repotsfolder";
+  public static final String EUNIT_FOLDER_KEY = "sonar.erlang.eunit.reportsfolder";
   public static final String EUNIT_DEFAULT_FOLDER = ".eunit/";
 
   public static final String DIALYZER_FILENAME_KEY = "sonar.erlang.dialyzer.filename";
   public static final String DIALYZER_DEFAULT_FILENAME = "dialyzer.log";
 
-  public static final String COVERDATA_FILENAME_KEY = "sonar.erlang.dialyzer.filename";
+  public static final String COVERDATA_FILENAME_KEY = "sonar.erlang.coverdata.filename";
   public static final String COVERDATA_DEFAULT_FILENAME = "eunit.coverdata";
 
   public static final String NAME = "Erlang";
