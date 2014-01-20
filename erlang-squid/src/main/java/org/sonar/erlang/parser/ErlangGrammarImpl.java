@@ -19,8 +19,6 @@
  */
 package org.sonar.erlang.parser;
 
-import com.sonar.sslr.impl.ast.SkipFromAstIfOnlyOneChild;
-
 import com.sonar.sslr.api.GenericTokenType;
 import org.sonar.sslr.grammar.GrammarRuleKey;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
@@ -70,7 +68,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   whenKeyword,
   xorKeyword,
 
-  // Puncators
+  // Punctuators
   arrow,
   arrowback,
   doublearrowback,
