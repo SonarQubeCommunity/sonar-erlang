@@ -198,7 +198,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   fileAttr,
   behaviourAttr,
   moduleElements,
-  moduleElement, atom, recordCreate, recordAccess, macroLiteralSimple, macroLiteralFunction, macroLiteralVarName, stringLiterals, stringConcatenation;
+  moduleElement, atom, recordCreate, recordAccess, macroLiteralSimple, macroLiteralFunction, macroLiteralVarName, stringLiterals, stringConcatenation, guardedPattern;
 
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
   public static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
@@ -508,6 +508,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             )
         ).skipIfOneChild();
 
+    b.rule(guardedPattern).is(recordCreate, b.optional(guardSequenceStart)).skipIfOneChild();;
+
     // should be refactored
     b.rule(listLiteral).is(lbracket, b.optional(
         b.firstOf(
@@ -559,8 +561,10 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             )
         );
     b.rule(memberExpression).is(
-        b.firstOf(ifExpression, funExpression, caseExpression, tryExpression, receiveExpression, blockExpression, recordCreate))
+        b.firstOf(ifExpression, funExpression, caseExpression, tryExpression, receiveExpression, blockExpression, guardedPattern))
         .skipIfOneChild();
+
+
     /**
      * It can be a record ref (originaly a.b['a']) as well
      */
