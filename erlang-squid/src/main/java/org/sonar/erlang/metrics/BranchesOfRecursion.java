@@ -44,7 +44,7 @@ public class BranchesOfRecursion extends SquidCheck<LexerlessGrammar> {
     }
     actualArity = "";
     actualModule = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr)
-        .getFirstChild(ErlangGrammarImpl.identifier).getTokenOriginalValue();
+        .getFirstChild(ErlangGrammarImpl.atom).getTokenOriginalValue();
   }
 
   @Override

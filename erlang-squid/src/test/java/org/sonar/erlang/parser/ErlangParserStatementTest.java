@@ -93,7 +93,15 @@ public class ErlangParserStatementTest {
             "file:close(F)", "end"))
         .matches(code("try Expr", "catch", "throw:Term -> Term;",
             "exit:Reason -> {'EXIT',Reason};",
-            "error:Reason -> {'EXIT',{Reason,erlang:get_stacktrace()}}", "end"));
+            "error:Reason -> {'EXIT',{Reason,erlang:get_stacktrace()}}", "end"))
+        .matches(code("try beam_disasm:file(Name) of %+2 statement try and call (beam_disasm:file/1) --> guess its wrong...",
+            "{error,beam_lib,Reason} -> [{beam_lib,Reason}]; %+1 statement",
+            "{beam_file,L} ->",
+            "    {value,{code,Code0}} = lists:keysearch(code, 1, L), %+1 expression statement",
+            "    Code = beam_file_1(Code0, []), %+1 statement",
+            "    validate(Code) %+1 statement",
+            "  catch _:_ -> [disassembly_failed] %+1 statement",
+            "end"));
   }
 
   @Test

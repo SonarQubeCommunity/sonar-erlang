@@ -257,8 +257,15 @@ public class ErlangParserModulesTest {
 
   @Test
   public void moduleEverythingInIfTest() {
-    assertThat(b.getRootRule()).matches(code("-module(m).", "-ifdef(A).", "dodo(A) ->", "{a, node()}.", "-else.",
-        "dodo(A) ->", "{a, node()}.", "-endif."));
+    assertThat(b.getRootRule()).matches(code(
+        "-module(m).",
+        "-ifdef(A).",
+        "dodo(A) ->",
+        "{a, node()}.",
+        "-else.",
+        "dodo(A) ->",
+        "{a, node()}.",
+        "-endif."));
   }
 
   @Test
@@ -345,16 +352,16 @@ public class ErlangParserModulesTest {
   }
 
   @Test
-  public void bugWithMacroInArgs(){
+  public void bugWithMacroInArgs() {
     assertThat(b.getRootRule())
-    .matches(code(
-    "-module (sonar_erlang_failure_8).",
-    "-export([recordfail/1]).",
-    "-record(foo, {bar, baz}).",
-    "-define(FOO_REC, #foo).",
-    "recordfail (?FOO_REC{bar=true}) ->",
-    "  true."
-    ));
+        .matches(code(
+            "-module (sonar_erlang_failure_8).",
+            "-export([recordfail/1]).",
+            "-record(foo, {bar, baz}).",
+            "-define(FOO_REC, #foo).",
+            "recordfail (?FOO_REC{bar=true}) ->",
+            "  true."
+            ));
   }
 
   private static String code(String... lines) {

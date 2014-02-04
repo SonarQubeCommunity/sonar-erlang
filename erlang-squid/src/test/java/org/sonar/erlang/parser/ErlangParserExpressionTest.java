@@ -47,8 +47,9 @@ public class ErlangParserExpressionTest {
 
   @Test
   public void varMatch() {
-    assertThat(g.rule(ErlangGrammarImpl.expression))
+    assertThat(g.rule(ErlangGrammarImpl.assignmentExpression))
         .matches("A=2")
+        .matches("A = 3")
         .matches("A=-2")
         .matches("A=N-2")
         .matches("A=N--2")
@@ -157,7 +158,7 @@ public class ErlangParserExpressionTest {
     assertThat(g.rule(ErlangGrammarImpl.expression))
         // .matches("#person.name")
         .notMatches("Rec#a.key.\nasd")
-        .matches("Expr#Name.Field")
+        .matches("Expr#person.name")
         .matches("N2#nrec2.nrec1#nrec1.nrec0.nrec00#nrec0.name.first")
         .matches("(PartialMsg#'MegacoMessage'.mess)")
         .matches("(PartialMsg#'MegacoMessage'.mess)#'Message'.version")

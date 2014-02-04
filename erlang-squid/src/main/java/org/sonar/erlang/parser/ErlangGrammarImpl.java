@@ -177,10 +177,6 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   catchPatternStatement,
   catchPatternStatements,
   blockExpression,
-  // recordCreateLiteral,
-  // recordAccLiteral,
-  // recordLiteral,
-  // recordLiteralHead,
   macroLiteral,
   otherArithmeticExpression,
   ifdefAttr,
@@ -196,7 +192,16 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   fileAttr,
   behaviourAttr,
   moduleElements,
-  moduleElement, atom, recordCreate, recordAccess, macroLiteralSimple, macroLiteralFunction, macroLiteralVarName, stringLiterals, stringConcatenation, guardedPattern;
+  moduleElement,
+  atom,
+  recordCreate,
+  recordAccess,
+  macroLiteralSimple,
+  macroLiteralFunction,
+  macroLiteralVarName,
+  stringLiterals,
+  stringConcatenation,
+  guardedPattern, atomOrIdentifier, moduleAttrTags;
 
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
   public static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
@@ -222,8 +227,12 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
 
   public static final String WHITESPACE = "[\\n\\r\\t\\u000B\\f\\u0020\\u00A0\\uFEFF\\p{Zs}]";
 
-  public static final String IDENTIFIER = "('[^'\n\r]*')"
-    + "|^(?!\\$)(\\p{javaJavaIdentifierStart}++[\\p{javaJavaIdentifierPart}@]*+)";
+  public static final String IDENTIFIER = "^[A-Z_][a-zA-Z0-9_@]*";
+
+  public static final String ATOM = "('[^'\\n\\r]*')|^[a-z][a-zA-Z0-9_@]*";
+
+  // public static final String IDENTIFIER = "('[^'\n\r]*')"
+  // + "|^(?!\\$)(\\p{javaJavaIdentifierStart}++[\\p{javaJavaIdentifierPart}@]*+)";
 
   public static LexerlessGrammar createGrammar() {
     return createGrammarBuilder().build();
@@ -253,13 +262,14 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   private static void lexical(LexerlessGrammarBuilder b) {
     b.rule(eof).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
 
+    // variable name (identifier): Uppercase letter or _ and may contain alphanumeric chars, underscore, and @
     b.rule(identifier).is(
-        b.nextNot(keyword),
         b.regexp(IDENTIFIER), spacing);
 
-    // Skip this for now, everything will be an atom also variables
+    // atom: lowercase letter and alphanumeric chars, underscore, and @ or anything between ''
     b.rule(atom).is(
-        identifier, b.zeroOrMore(b.sequence(".", identifier)), spacing).skip();
+        b.nextNot(keyword),
+        b.regexp(ATOM), b.zeroOrMore(b.sequence(".", b.regexp(ATOM))), spacing);
 
     b.rule(numericLiteral).is(
         b.regexp(NUMERIC_LITERAL), spacing);
@@ -302,6 +312,29 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         "try",
         "when",
         "xor"), b.nextNot(letterOrDigit));
+
+    b.rule(moduleAttrTags).is(b.firstOf(
+        "ifdef",
+        "ifndef",
+        "else",
+        "endif",
+        "module",
+        "export",
+        "compile",
+        "define",
+        "import",
+        "file",
+        "behaviour",
+        "on_load",
+        "file",
+        "include",
+        "ignore_xref",
+        "author",
+        "include_lib",
+        "export_type",
+        "deprecated",
+        "asn1_info"
+        ));
 
     b.rule(letterOrDigit).is(b.regexp("\\p{javaJavaIdentifierPart}"));
 
@@ -399,34 +432,37 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             b.regexp("."), spacing),
         rparenthesis, dot);
 
-    b.rule(flowControlAttr).is(b.firstOf(ifdefAttr, ifndefAttr), b.zeroOrMore(b.firstOf(moduleHeadAttr,
-        functionDeclaration)), b.optional(elseAttr, b.zeroOrMore(b.firstOf(moduleHeadAttr,
-        functionDeclaration))), endifAttr);
+    b.rule(flowControlAttr).is(
+        b.firstOf(ifdefAttr, ifndefAttr),
+        b.zeroOrMore(b.firstOf(moduleHeadAttr, functionDeclaration)),
+        b.optional(elseAttr,
+            b.zeroOrMore(b.firstOf(moduleHeadAttr, functionDeclaration))),
+        endifAttr);
 
-    b.rule(ifdefAttr).is(minus, semiKeyword("ifdef", b), lparenthesis, identifier, rparenthesis, dot);
+    b.rule(ifdefAttr).is(minus, semiKeyword("ifdef", b), lparenthesis, atomOrIdentifier, rparenthesis, dot);
 
-    b.rule(ifndefAttr).is(minus, semiKeyword("ifndef", b), lparenthesis, identifier, rparenthesis, dot);
+    b.rule(ifndefAttr).is(minus, semiKeyword("ifndef", b), lparenthesis, atomOrIdentifier, rparenthesis, dot);
 
     b.rule(elseAttr).is(minus, semiKeyword("else", b), dot);
 
     b.rule(endifAttr).is(minus, semiKeyword("endif", b), dot);
 
-    b.rule(moduleAttr).is(minus, semiKeyword("module", b), lparenthesis, identifier, rparenthesis, dot);
+    b.rule(moduleAttr).is(minus, semiKeyword("module", b), lparenthesis, atom, rparenthesis, dot);
     b.rule(exportAttr).is(minus, semiKeyword("export", b), lparenthesis, funcExport, rparenthesis, dot);
     b.rule(compileAttr).is(minus, semiKeyword("compile", b), lparenthesis, primaryExpression, rparenthesis, dot);
 
     b.rule(defineAttr).is(minus, semiKeyword("define", b),
         lparenthesis, b.firstOf(
-            b.sequence(identifier, comma, statement),
+            b.sequence(primaryExpression, comma, statement),
             b.sequence(funcDecl, comma, guardSequence)), rparenthesis, dot);
 
-    b.rule(importAttr).is(minus, semiKeyword("import", b), lparenthesis, b.firstOf(macroLiteral, identifier), comma,
+    b.rule(importAttr).is(minus, semiKeyword("import", b), lparenthesis, b.firstOf(macroLiteral, atom), comma,
         lbracket, funcArity, b.zeroOrMore(comma, funcArity), rbracket, rparenthesis, dot);
 
     b.rule(fileAttr).is(minus, semiKeyword("file", b), lparenthesis, primaryExpression, comma, primaryExpression,
         rparenthesis, dot);
 
-    b.rule(behaviourAttr).is(minus, semiKeyword("behaviour", b), lparenthesis, identifier, rparenthesis, dot);
+    b.rule(behaviourAttr).is(minus, semiKeyword("behaviour", b), lparenthesis, atom, rparenthesis, dot);
 
     b.rule(genericAttr).is(
         minus,
@@ -435,7 +471,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             semiKeyword("asn1_info", b)),
         lparenthesis, b.firstOf(funcArity, primaryExpression), rparenthesis, dot);
 
-    b.rule(anyAttr).is(minus, identifier, lparenthesis, primaryExpression, rparenthesis, dot);
+    b.rule(anyAttr).is(minus, b.sequence(b.nextNot(moduleAttrTags), atom), lparenthesis, primaryExpression, rparenthesis, dot);
 
     // TODO: is it possible to have something like: -export().?
     b.rule(funcExport).is(lbracket, b.zeroOrMore(funcArity, b.zeroOrMore(comma, funcArity)), rbracket);
@@ -457,11 +493,12 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
 
     b.rule(funcArity).is(b.optional(literal, colon), literal, div, literal);
 
-    b.rule(funcDecl).is(identifier, arguments);
+    b.rule(funcDecl).is(literal, arguments);
   }
 
   private static void expressions(LexerlessGrammarBuilder b) {
-    b.rule(literal).is(b.firstOf(numericLiteral, atom, macroLiteral));
+    b.rule(literal).is(b.firstOf(numericLiteral, atomOrIdentifier, macroLiteral));
+    b.rule(atomOrIdentifier).is(b.firstOf(identifier, atom)).skip();
 
     b.rule(primaryExpression).is(
         b.firstOf(
@@ -477,7 +514,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             macroLiteralSimple,
             macroLiteralVarName,
             stringLiteral
-        )).skip();
+            )).skip();
 
     b.rule(stringConcatenation).is(
         b.firstOf(
@@ -506,7 +543,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             )
         ).skipIfOneChild();
 
-    b.rule(guardedPattern).is(recordCreate, b.optional(guardSequenceStart)).skipIfOneChild();;
+    b.rule(guardedPattern).is(recordCreate, b.optional(guardSequenceStart)).skipIfOneChild();
 
     // should be refactored
     b.rule(listLiteral).is(lbracket, b.optional(
@@ -522,10 +559,10 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
             macroLiteralVarName,
             macroLiteralFunction,
             macroLiteralSimple
-        ));
+            ));
 
-    b.rule(macroLiteralSimple).is(questionmark, identifier);
-    b.rule(macroLiteralFunction).is(questionmark, identifier, arguments);
+    b.rule(macroLiteralSimple).is(questionmark, atomOrIdentifier);
+    b.rule(macroLiteralFunction).is(questionmark, atomOrIdentifier, arguments);
     b.rule(macroLiteralVarName).is(questionmark, questionmark, identifier);
 
     b.rule(tupleLiteral).is(lcurlybrace, b.zeroOrMore(b.firstOf(comma, expression)), rcurlybrace);
@@ -541,7 +578,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         b.sequence(expression,
             b.optional(
                 colon,
-                b.firstOf(numericLiteral, identifier, macroLiteral)),
+                b.firstOf(numericLiteral, atom, identifier, macroLiteral)),
             b.optional(
                 div,
                 /*
@@ -550,9 +587,9 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
                 b.firstOf(
                     numericLiteral,
                     b.sequence(
-                        identifier,
-                        b.oneOrMore(minus, identifier)),
-                    identifier)
+                        atom,
+                        b.oneOrMore(minus, atom)),
+                    atom)
                 ),
             // and for things like: Part1:4/big-unsigned-integer-unit:8
             b.optional(colon, numericLiteral)
@@ -562,7 +599,6 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         b.firstOf(ifExpression, funExpression, caseExpression, tryExpression, receiveExpression, blockExpression, guardedPattern))
         .skipIfOneChild();
 
-
     /**
      * It can be a record ref (originaly a.b['a']) as well
      */
@@ -570,12 +606,12 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         b.firstOf(
             b.sequence(b.optional(memberExpression, colon), memberExpression, arguments),
             memberExpression)).skipIfOneChild();
-    // memberExpression, b.optional(colon, memberExpression), b.optional(arguments)).skipIfOneChild();
 
     b.rule(arguments).is(lparenthesis, b.optional(expression, b.zeroOrMore(comma, expression)),
         rparenthesis);
     b.rule(unaryExpression).is(b.firstOf(
         // handle things like: -12, -A, -func(A), -(6+3)
+        // TODO why do we have notKeyword here??
         b.sequence(b.optional(minus), callExpression), b.sequence(notKeyword, callExpression))).skipIfOneChild();
     b.rule(otherArithmeticExpression).is(unaryExpression,
         b.zeroOrMore(b.firstOf(bnotKeyword, divKeyword, remKeyword), unaryExpression)).skipIfOneChild();
@@ -668,7 +704,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(catchPatternStatements).is(catchPatternStatement, b.zeroOrMore(semi, catchPatternStatement));
     b.rule(catchPatternStatement).is(catchPattern, b.optional(guardSequenceStart), arrow, statements);
     b.rule(pattern).is(assignmentExpression);
-    b.rule(catchPattern).is(b.optional(identifier, colon), expression);
+    b.rule(catchPattern).is(b.optional(atomOrIdentifier, colon), expression);
 
     b.rule(guardSequenceStart).is(whenKeyword, guardSequence);
 

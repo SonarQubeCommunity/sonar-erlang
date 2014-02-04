@@ -74,7 +74,7 @@ public final class ErlangAstScanner {
     builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<LexerlessGrammar>(
         new SourceCodeBuilderCallback() {
           public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
-            String className = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr).getChild(3).getTokenValue();
+            String className = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr).getFirstChild(ErlangGrammarImpl.atom).getTokenValue();
             SourceClass cls = new SourceClass(className + ":"
               + astNode.getToken().getLine());
             cls.setStartAtLine(astNode.getTokenLine());

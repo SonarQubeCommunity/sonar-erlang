@@ -57,7 +57,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<LexerlessGrammar
       for (AstNode export : exports) {
         AstNode func = findFunctionByArity(getArity(export));
         if (func != null) {
-          List<Trivia> comments = func.getFirstDescendant(ErlangGrammarImpl.identifier)
+          List<Trivia> comments = func.getFirstDescendant(ErlangGrammarImpl.atom)
               .getToken().getTrivia();
           if (comments.size() > 0) {
             for (Trivia trivia : comments) {

@@ -30,7 +30,7 @@ public class XPathCheckTest {
   @Test
   public void check() {
     XPathCheck check = new XPathCheck();
-    check.xpathQuery = "//identifier[@tokenValue = 'really_retain']";
+    check.xpathQuery = "//*[@tokenValue = 'really_retain']";
     check.message = "Do not use name: really_retain";
 
     SourceFile file = TestHelper.scanSingleFile(new File(

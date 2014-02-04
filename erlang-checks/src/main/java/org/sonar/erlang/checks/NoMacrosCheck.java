@@ -85,9 +85,9 @@ public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
   }
 
   private String getMacroName(AstNode astNode) {
-    AstNode token = (astNode.getFirstChild(ErlangGrammarImpl.funcDecl) != null) ? astNode.getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(ErlangGrammarImpl.identifier)
+    AstNode token = (astNode.getFirstChild(ErlangGrammarImpl.funcDecl) != null) ? astNode.getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(ErlangGrammarImpl.literal)
         : astNode
-            .getFirstChild(ErlangGrammarImpl.identifier);
+            .getFirstChild(ErlangGrammarImpl.primaryExpression);
     return token.getTokenOriginalValue();
   }
 
