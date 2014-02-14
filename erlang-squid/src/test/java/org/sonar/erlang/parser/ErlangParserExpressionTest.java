@@ -126,7 +126,9 @@ public class ErlangParserExpressionTest {
         .matches("A orelse B")
         .matches("A andalso B")
         .matches("not A andalso B or false")
-        .matches("(not (A andalso B)) or false");
+        .matches("(not (A andalso B)) or false")
+        .matches("bnot A")
+        .matches("Z band (bnot D)");
   }
 
   @Test

@@ -32,7 +32,8 @@ public class ErlangParserStatementTest {
   public void statements() {
     assertThat(b.rule(ErlangGrammarImpl.statements))
         .matches(code("1,", "A"))
-        .matches(code("1+3,", "<<A>>"));
+        .matches(code("1+3,", "<<A>>"))
+        .matches("Flags band (bnot Flag)");
   }
 
   @Test

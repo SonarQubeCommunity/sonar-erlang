@@ -426,7 +426,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(moduleHeadAttr).is(b.firstOf(moduleAttr, fileAttr, exportAttr, compileAttr, defineAttr,
         importAttr, typeSpec, spec, recordAttr, flowControlAttr, behaviourAttr, genericAttr, anyAttr)).skipIfOneChild();
 
-    b.rule(recordAttr).is(minus, semiKeyword("record", b), lparenthesis,
+    b.rule(recordAttr).is(minus, semiKeyword("record", b),
+        lparenthesis,
         b.zeroOrMore(
             b.nextNot(b.sequence(rparenthesis, spacing, dot)),
             b.regexp("."), spacing),
@@ -466,8 +467,16 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
 
     b.rule(genericAttr).is(
         minus,
-        b.firstOf(semiKeyword("vsn", b), semiKeyword("on_load", b), semiKeyword("include", b), semiKeyword("file", b),
-            semiKeyword("ignore_xref", b), semiKeyword("include_lib", b), semiKeyword("author", b), semiKeyword("export_type", b), semiKeyword("deprecated", b),
+        b.firstOf(
+            semiKeyword("vsn", b),
+            semiKeyword("on_load", b),
+            semiKeyword("include", b),
+            semiKeyword("file", b),
+            semiKeyword("ignore_xref", b),
+            semiKeyword("include_lib", b),
+            semiKeyword("author", b),
+            semiKeyword("export_type", b),
+            semiKeyword("deprecated", b),
             semiKeyword("asn1_info", b)),
         lparenthesis, b.firstOf(funcArity, primaryExpression), rparenthesis, dot);
 
@@ -610,11 +619,12 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(arguments).is(lparenthesis, b.optional(expression, b.zeroOrMore(comma, expression)),
         rparenthesis);
     b.rule(unaryExpression).is(b.firstOf(
-        // handle things like: -12, -A, -func(A), -(6+3)
-        // TODO why do we have notKeyword here??
-        b.sequence(b.optional(minus), callExpression), b.sequence(notKeyword, callExpression))).skipIfOneChild();
+        // handle things like: -12, -A, -func(A), -(6+3), bnot A
+        // TODO why do we have notKeyword and minus here??
+        b.sequence(b.optional(b.firstOf(bnotKeyword, minus)), callExpression),
+        b.sequence(notKeyword, callExpression))).skipIfOneChild();
     b.rule(otherArithmeticExpression).is(unaryExpression,
-        b.zeroOrMore(b.firstOf(bnotKeyword, divKeyword, remKeyword), unaryExpression)).skipIfOneChild();
+        b.zeroOrMore(b.firstOf(divKeyword, remKeyword), unaryExpression)).skipIfOneChild();
     b.rule(multiplicativeExpression).is(otherArithmeticExpression,
         b.zeroOrMore(b.firstOf(star, div), otherArithmeticExpression)).skipIfOneChild();
     b.rule(additiveExpression).is(multiplicativeExpression,
