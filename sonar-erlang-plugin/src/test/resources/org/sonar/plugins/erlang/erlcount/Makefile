@@ -1,6 +1,6 @@
 PATH := ${PATH}:/home/tkende/dev/erlang/rebar
 
-all: clean compile dialyzer test
+all: clean compile test dialyzer
 
 # Compiles the whole application
 compile:
@@ -28,5 +28,32 @@ shell: compile
 getdeps:
 	rebar get-deps
 
-dialyzer:
-	dialyzer ebin -o  .eunit/dialyzer.log
+### Dialyzer / static-analysis stuff ###
+
+DIALYZER_LOG_FILE ?= $(PWD)/.eunit/dialyzer.log
+DIALYZER_REPORT_ARG := -o $(DIALYZER_LOG_FILE)
+
+
+DIALYZER_OTP_APPS = kernel stdlib sasl erts ssl tools os_mon runtime_tools \
+crypto inets xmerl webtool snmp public_key mnesia eunit syntax_tools \
+compiler
+
+OTP_PLT ?= $(HOME)/.dialyzer_plt
+LOCAL_PLT ?= $(PWD)/.dialyzer_plt
+
+$(OTP_PLT):
+	dialyzer --build_plt --apps $(DIALYZER_OTP_APPS) --output_plt $(OTP_PLT)
+
+$(LOCAL_PLT): $(OTP_PLT)
+	dialyzer --add_to_plt \
+		--plt $(OTP_PLT) \
+		--output_plt $(LOCAL_PLT)
+
+dialyzer: $(LOCAL_PLT)
+	rebar co skip_deps=true
+	dialyzer --plt $(LOCAL_PLT) \
+		-c $(PWD)/ebin \
+		-Wunmatched_returns \
+		-Werror_handling \
+		-Wrace_conditions \
+		$(DIALYZER_REPORT_ARG)
