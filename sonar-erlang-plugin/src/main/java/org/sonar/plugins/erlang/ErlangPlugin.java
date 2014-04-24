@@ -100,7 +100,7 @@ public class ErlangPlugin extends SonarPlugin {
         DialyzerRuleRepository.class,
         ErlangProfile.class,
 
-        ErlangCommonRulesEngineProvider.class,
+        ErlangCommonRulesEngine.class,
 
         EunitXmlSensor.class,
 
