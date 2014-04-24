@@ -37,14 +37,12 @@ public class DialyzerSensor extends AbstractErlangSensor {
   private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(
       DialyzerRuleRepository.DIALYZER_PATH);
   private RulesProfile rulesProfile;
-  private ModuleFileSystem moduleFileSystem;
   private ResourcePerspectives resourcePerspectives;
 
 
   public DialyzerSensor(Erlang erlang, RulesProfile rulesProfile, ModuleFileSystem moduleFileSystem, ResourcePerspectives resourcePerspectives) {
-    super(erlang);
+    super(erlang, moduleFileSystem);
     this.rulesProfile = rulesProfile;
-    this.moduleFileSystem = moduleFileSystem;
     this.resourcePerspectives = resourcePerspectives;
   }
 

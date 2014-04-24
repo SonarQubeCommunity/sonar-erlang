@@ -110,7 +110,7 @@ public class ErlangLibrarySensor implements Sensor {
   }
 
   public final boolean shouldExecuteOnProject(Project project) {
-    return project.getLanguage().equals(erlang);
+    return !moduleFileSystem.files(Erlang.sourceQuery).isEmpty();
   }
 
 }

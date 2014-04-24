@@ -50,7 +50,7 @@ public class CoverCoverageSensor implements Sensor {
   private static final Logger LOG = LoggerFactory.getLogger(CoverCoverageSensor.class);
 
   public boolean shouldExecuteOnProject(Project project) {
-    return erlang.equals(project.getLanguage());
+    return !moduleFileSystem.files(Erlang.sourceQuery).isEmpty();
   }
 
   public void analyse(Project project, SensorContext context) {
