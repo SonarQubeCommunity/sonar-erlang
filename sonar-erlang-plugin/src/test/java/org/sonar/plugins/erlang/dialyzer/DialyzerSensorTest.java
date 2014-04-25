@@ -66,6 +66,7 @@ public class DialyzerSensorTest {
     when(resourcePerspectives.as(Mockito.eq(Issuable.class), Mockito.any(Resource.class))).thenReturn(issuable);
 
     project = new Project("dummy");
+    ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
 
     RulesProfile rp = mock(RulesProfile.class);
     ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019");

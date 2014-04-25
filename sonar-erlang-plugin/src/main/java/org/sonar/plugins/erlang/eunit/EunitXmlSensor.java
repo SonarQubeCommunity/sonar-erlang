@@ -96,7 +96,7 @@ public class EunitXmlSensor implements Sensor {
           try {
             context.saveSource(unitTestFileResource, source);
           } catch (DuplicatedSourceException e) {
-            unitTestFileResource = org.sonar.api.resources.File.fromIOFile(unitTestFile, moduleFileSystem.sourceDirs());
+            unitTestFileResource = org.sonar.api.resources.File.fromIOFile(unitTestFile, project);
           }
 
           return unitTestFileResource;

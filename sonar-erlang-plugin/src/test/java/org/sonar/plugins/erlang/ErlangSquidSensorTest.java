@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.erlang;
 
+import com.google.common.collect.ImmutableList;
+import org.apache.commons.collections.ListUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -28,7 +30,6 @@ import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
 import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Language;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.scan.filesystem.FileQuery;
@@ -61,24 +62,23 @@ public class ErlangSquidSensorTest {
   @Test
   public void should_execute_on_erlang_project() {
     Project project = new Project("key");
+    ModuleFileSystem fs = mock(ModuleFileSystem.class);
+    ErlangSquidSensor erlangSensor = new ErlangSquidSensor(mock(RulesProfile.class), fs, null);
 
-    Language java = mock(Language.class);
-    when(java.getKey()).thenReturn("java");
-    project.setLanguage(java);
-    assertThat(sensor.shouldExecuteOnProject(project)).isFalse();
+    when(fs.files(Mockito.any(FileQuery.class))).thenReturn(ListUtils.EMPTY_LIST);
+    assertThat(erlangSensor.shouldExecuteOnProject(project)).isFalse();
 
-    Language erl = mock(Language.class);
-    when(erl.getKey()).thenReturn("erlang");
-    project.setLanguage(erl);
-    assertThat(sensor.shouldExecuteOnProject(project)).isTrue();
+    when(fs.files(Mockito.any(FileQuery.class))).thenReturn(ImmutableList.of(new File("/tmp")));
+    assertThat(erlangSensor.shouldExecuteOnProject(project)).isTrue();
   }
 
   @Test
   public void should_analyse() {
     when(fileSystem.files(Mockito.any(FileQuery.class))).thenReturn(Arrays.asList(
-        new File("src/test/resources/cpd/person.erl")));
+      new File("src/test/resources/cpd/person.erl")));
 
     Project project = new Project("key");
+    ProjectUtil.addProjectFileSystem(project, "src/test/resources/cpd/");
     SensorContext context = mock(SensorContext.class);
 
     sensor.analyse(project, context);
@@ -98,6 +98,7 @@ public class ErlangSquidSensorTest {
         new File("src/test/resources/megaco_ber_bin_encoder.erl")));
 
     Project project = new Project("key");
+    ProjectUtil.addProjectFileSystem(project, "src/test/resources/");
     SensorContext context = mock(SensorContext.class);
 
     sensor.analyse(project, context);

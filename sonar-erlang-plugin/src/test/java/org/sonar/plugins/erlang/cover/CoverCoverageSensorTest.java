@@ -54,14 +54,14 @@ public class CoverCoverageSensorTest {
     configuration = ProjectUtil.mockConfiguration();
     erlang = new Erlang(configuration);
     context = ProjectUtil.mockContext();
+    project = new Project("dummy");
+    ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
   }
 
   @Test
   public void checkCoverSensor() throws URISyntaxException {
-    when(
-        configuration.getString(ErlangPlugin.COVERDATA_FILENAME_KEY,
-            ErlangPlugin.COVERDATA_DEFAULT_FILENAME)).thenReturn(
-        "non_existing.coverdata");
+    when(configuration.getString(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME))
+      .thenReturn("non_existing.coverdata");
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
         Arrays.asList(
@@ -76,10 +76,8 @@ public class CoverCoverageSensorTest {
 
   @Test
   public void checkCoverSensorWithDataFile() throws URISyntaxException {
-    when(
-        configuration.getString(ErlangPlugin.COVERDATA_FILENAME_KEY,
-            ErlangPlugin.COVERDATA_DEFAULT_FILENAME)).thenReturn(
-        ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
+    when(configuration.getString(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME))
+      .thenReturn(ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
         Arrays.asList(

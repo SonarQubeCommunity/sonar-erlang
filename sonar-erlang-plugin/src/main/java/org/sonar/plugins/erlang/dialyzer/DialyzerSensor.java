@@ -47,6 +47,6 @@ public class DialyzerSensor extends AbstractErlangSensor {
   }
 
   public void analyse(Project project, SensorContext context) {
-    new DialyzerReportParser(moduleFileSystem, resourcePerspectives).dialyzer(getErlang(), context, dialyzerRuleManager, rulesProfile);
+    new DialyzerReportParser(moduleFileSystem, resourcePerspectives).dialyzer(getErlang(), context, dialyzerRuleManager, rulesProfile, project);
   }
 }

@@ -73,7 +73,7 @@ public class ErlangSquidSensor implements Sensor {
   }
 
   public boolean shouldExecuteOnProject(Project project) {
-    return Erlang.KEY.equals(project.getLanguage().getKey());
+    return !moduleFileSystem.files(Erlang.sourceQuery).isEmpty();
   }
 
   public void analyse(Project project, SensorContext context) {
@@ -96,7 +96,7 @@ public class ErlangSquidSensor implements Sensor {
     for (SourceCode squidSourceFile : squidSourceFiles) {
       SourceFile squidFile = (SourceFile) squidSourceFile;
 
-      File sonarFile = File.fromIOFile(new java.io.File(squidFile.getKey()), moduleFileSystem.sourceDirs());
+      File sonarFile = File.fromIOFile(new java.io.File(squidFile.getKey()), project);
 
       saveFilesComplexityDistribution(sonarFile, squidFile);
       saveFunctionsComplexityDistribution(sonarFile, squidFile);

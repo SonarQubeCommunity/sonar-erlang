@@ -24,6 +24,7 @@ import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.profiles.RulesProfile;
+import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
@@ -66,7 +67,7 @@ public class DialyzerReportParser {
    * @param rulesProfile
    * @return
    */
-  public void dialyzer(Erlang erlang, SensorContext context, ErlangRuleManager dialyzerRuleManager, RulesProfile rulesProfile) {
+  public void dialyzer(Erlang erlang, SensorContext context, ErlangRuleManager dialyzerRuleManager, RulesProfile rulesProfile, Project project) {
     /**
      * Read dialyzer results
      */
@@ -89,7 +90,7 @@ public class DialyzerReportParser {
           String[] res = strLine.split(":");
           String ruleKey = dialyzerRuleManager.getRuleKeyByMessage(res[2].trim());
           if (rulesProfile.getActiveRule(REPO_KEY, ruleKey) != null) {
-            org.sonar.api.resources.File resource = getResourceByFileName(res[0]);
+            org.sonar.api.resources.File resource = getResourceByFileName(res[0], project);
             if (resource != null) {
               Issuable issuable = resourcePerspectives.as(Issuable.class, resource);
               Issue issue = issuable.newIssueBuilder()
@@ -108,11 +109,11 @@ public class DialyzerReportParser {
     }
   }
 
-  protected org.sonar.api.resources.File getResourceByFileName(String fileName) {
+  protected org.sonar.api.resources.File getResourceByFileName(String fileName, Project project) {
     for (File sourceDir : moduleFileSystem.sourceDirs()) {
       File file = new File(sourceDir, fileName);
       if (file.exists()) {
-        return org.sonar.api.resources.File.fromIOFile(file, moduleFileSystem.sourceDirs());
+        return org.sonar.api.resources.File.fromIOFile(file, project);
       }
     }
     return null;

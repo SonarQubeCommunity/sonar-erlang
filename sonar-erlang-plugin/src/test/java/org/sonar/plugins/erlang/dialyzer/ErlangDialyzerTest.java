@@ -29,6 +29,7 @@ import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.profiles.RulesProfile;
+import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.ActiveRule;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
@@ -51,6 +52,9 @@ public class ErlangDialyzerTest {
 
   @Before
   public void setup() throws URISyntaxException, IOException {
+    Project project = new Project("dummy");
+    ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
+
     Configuration configuration = ProjectUtil.mockConfiguration();
     Erlang erlang = new Erlang(configuration);
     SensorContext context = ProjectUtil.mockContext();
@@ -72,7 +76,7 @@ public class ErlangDialyzerTest {
     when(resourcePerspectives.as(Mockito.eq(Issuable.class), Mockito.any(Resource.class))).thenReturn(issuable);
 
     new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(erlang, context, new ErlangRuleManager(
-        DialyzerRuleRepository.DIALYZER_PATH), rp);
+        DialyzerRuleRepository.DIALYZER_PATH), rp, project);
   }
 
   @Test

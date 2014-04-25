@@ -62,22 +62,22 @@ public class CoverCoverageSensor implements Sensor {
     File coverDataFile = new File(reportsDir, coverDataFilename);
 
     if(coverDataFile.exists()){
-      parseCoverdataFile(moduleFileSystem, context, coverDataFile);
+      parseCoverdataFile(moduleFileSystem, context, coverDataFile, project);
     } else{
-      parseCoverHtmlOutput(moduleFileSystem, context, reportsDir);
+      parseCoverHtmlOutput(moduleFileSystem, context, reportsDir, project);
     }
   }
 
-  private void parseCoverdataFile(ModuleFileSystem moduleFileSystem, SensorContext context, File coverDataFile) {
+  private void parseCoverdataFile(ModuleFileSystem moduleFileSystem, SensorContext context, File coverDataFile, Project project) {
     try {
       List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile, null);
-      analyseCoveredFiles(moduleFileSystem, context, coveredFiles);
+      analyseCoveredFiles(moduleFileSystem, context, coveredFiles, project);
     } catch (IOException e) {
       LOG.error("Cannot parse coverdata file: "+coverDataFile.getAbsolutePath());
     }
   }
 
-  private void parseCoverHtmlOutput(ModuleFileSystem moduleFileSystem, SensorContext context, File reportsDir) {
+  private void parseCoverHtmlOutput(ModuleFileSystem moduleFileSystem, SensorContext context, File reportsDir, Project project) {
     LOG.debug("Parsing coverage results in html format from folder {}", reportsDir);
 
     GenericExtFilter filter = new GenericExtFilter(".html");
@@ -94,7 +94,7 @@ public class CoverCoverageSensor implements Sensor {
       }
       coveredFiles.add(analyseHtml(moduleFileSystem, context, file));
     }
-    analyseCoveredFiles(moduleFileSystem, context, coveredFiles);
+    analyseCoveredFiles(moduleFileSystem, context, coveredFiles, project);
   }
 
   public ErlangFileCoverage analyseHtml(ModuleFileSystem moduleFileSystem, SensorContext sensorContext,
@@ -106,12 +106,12 @@ public class CoverCoverageSensor implements Sensor {
   }
 
   protected void analyseCoveredFiles(ModuleFileSystem moduleFileSystem, SensorContext sensorContext,
-      List<ErlangFileCoverage> coveredFiles) {
+      List<ErlangFileCoverage> coveredFiles, Project project) {
 
     for (File file : moduleFileSystem.files(Erlang.sourceQuery)) {
       try {
         ErlangFileCoverage fileCoverage = getFileCoverage(file, coveredFiles);
-        org.sonar.api.resources.File resource = org.sonar.api.resources.File.fromIOFile(file, moduleFileSystem.sourceDirs());
+        org.sonar.api.resources.File resource = org.sonar.api.resources.File.fromIOFile(file, project);
         PropertiesBuilder<Integer, Integer> lineHitsData = new PropertiesBuilder<Integer, Integer>(
             CoreMetrics.COVERAGE_LINE_HITS_DATA);
 

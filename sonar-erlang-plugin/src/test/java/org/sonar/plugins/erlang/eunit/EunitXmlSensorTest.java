@@ -39,6 +39,7 @@ import java.util.Arrays;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.doubleThat;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -49,6 +50,9 @@ public class EunitXmlSensorTest {
 
   @Before
   public void setup() throws URISyntaxException {
+    Project project = new Project("dummy");
+    ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/test/");
+
     context = ProjectUtil.mockContext();
     Configuration configuration = ProjectUtil.mockConfiguration();
     when(

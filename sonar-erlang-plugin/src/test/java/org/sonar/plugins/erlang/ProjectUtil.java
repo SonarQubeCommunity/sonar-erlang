@@ -27,6 +27,8 @@ import org.sonar.api.issue.Issuable.IssueBuilder;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.resources.InputFile;
 import org.sonar.api.resources.InputFileUtils;
+import org.sonar.api.resources.Project;
+import org.sonar.api.resources.ProjectFileSystem;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
@@ -105,6 +107,16 @@ public class ProjectUtil {
       ret.add(getInputFileByPath(file.getAbsolutePath()));
     }
     return ret;
+  }
+
+  /**
+   * This is unavoidable in order to be compatible with sonarqube 4.2
+   */
+  public static void addProjectFileSystem(Project project, String srcDir) {
+    ProjectFileSystem fs = mock(ProjectFileSystem.class);
+    when(fs.getSourceDirs()).thenReturn(Arrays.asList(new File(srcDir)));
+
+    project.setFileSystem(fs);
   }
 
 }
