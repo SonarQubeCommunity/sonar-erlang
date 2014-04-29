@@ -73,8 +73,7 @@ public class CoverCoverageSensor implements Sensor {
       List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile);
       analyseCoveredFiles(moduleFileSystem, context, coveredFiles, project);
     } catch (IOException e) {
-      LOG.error("Cannot parse coverdata file: " + coverDataFile.getAbsolutePath());
-      LOG.error(e.getMessage());
+      LOG.error("Cannot parse coverdata file: " + coverDataFile.getAbsolutePath(), e);
     }
   }
 

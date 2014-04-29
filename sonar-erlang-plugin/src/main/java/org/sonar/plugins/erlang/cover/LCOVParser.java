@@ -39,8 +39,7 @@ public final class LCOVParser {
     try {
       lines = FileUtils.readLines(file);
     } catch (IOException e) {
-      LOG.debug("Cound not read content from file: " + file.getName());
-      LOG.debug(e.getMessage());
+      LOG.debug("Cound not read content from file: " + file.getName(), e);
     }
 
     ErlangFileCoverage fileCoverage = new ErlangFileCoverage();
