@@ -93,8 +93,7 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<LexerlessGr
   private void check(AstNode ast, AstNode previous, int threshold) {
     if (diff(ast.getTokenLine(), previous.getLastToken().getLine(), threshold)) {
       boolean hasTrivias = ast.getToken().hasTrivia();
-      if ((hasTrivias && checkTrivias(ast.getToken(), previous.getToken(), threshold))
-        || !hasTrivias) {
+      if ((hasTrivias && checkTrivias(ast.getToken(), previous.getToken(), threshold)) || !hasTrivias) {
         if (ast.getTokenLine() - previous.getLastToken().getLine() - 1 >= 0) {
           if (!ast.getPreviousAstNode().equals(previous)) {
             check(ast, ast.getPreviousAstNode(), 0);

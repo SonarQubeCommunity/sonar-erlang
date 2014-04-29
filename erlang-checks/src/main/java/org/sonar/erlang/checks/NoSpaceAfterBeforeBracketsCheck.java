@@ -59,14 +59,12 @@ public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar
   public void visitNode(AstNode ast) {
     Token compTo;
     if (numOfViolations < 100 && !failedLines.contains(ast.getTokenLine())) {
-      if (ast.hasAncestor(ErlangGrammarImpl.clauseBody)) {
-        if (noSpaceAfter.contains(ast.getType())) {
-          compTo = ast.getNextSibling().getToken();
-          failedLines.add(check(ast, compTo, false));
-        } else if (noSpaceBefore.contains(ast.getType())) {
-          compTo = ast.getPreviousSibling().getLastToken();
-          failedLines.add(check(ast, compTo, true));
-        }
+      if (ast.hasAncestor(ErlangGrammarImpl.clauseBody) && noSpaceAfter.contains(ast.getType())) {
+        compTo = ast.getNextSibling().getToken();
+        failedLines.add(check(ast, compTo, false));
+      } else if (noSpaceBefore.contains(ast.getType())) {
+        compTo = ast.getPreviousSibling().getLastToken();
+        failedLines.add(check(ast, compTo, true));
       }
     }
   }

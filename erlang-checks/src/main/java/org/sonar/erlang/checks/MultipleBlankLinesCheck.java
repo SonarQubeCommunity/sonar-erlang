@@ -106,10 +106,8 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
     int compTo = getMaxFor(token);
 
     boolean check = compare(token.getLine(), previousLine, compTo);
-    if (check) {
-      if (token.hasTrivia()) {
-        return checkTrivias(previousLine, token, compTo);
-      }
+    if (check && token.hasTrivia()) {
+      return checkTrivias(previousLine, token, compTo);
     }
     return check;
   }
