@@ -87,7 +87,7 @@ public class ErlangPlugin extends SonarPlugin {
   public static final String REBAR_CONFIG_FILENAME_KEY = "sonar.erlang.rebar.config";
   public static final String REBAR_DEFAULT_CONFIG_FILENAME = "rebar.config";
 
-  public List<Class<? extends Extension>> getExtensions() {
+  public List getExtensions() {
     return ImmutableList.of(
       Erlang.class,
       ErlangSourceImporter.class,

@@ -111,7 +111,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<LexerlessGrammar
   }
 
   private String getArity(AstNode node) {
-    StringBuffer ret = new StringBuffer();
+    StringBuilder ret = new StringBuilder();
     if ("funcArity".equalsIgnoreCase(node.getName())) {
       for (AstNode arity : node.getChildren()) {
         ret.append(arity.getTokenOriginalValue());

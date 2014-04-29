@@ -60,7 +60,7 @@ public class ErlangConfigurationModel extends AbstractConfigurationModel {
   }
 
   @Override
-  public Parser<? extends Grammar> doGetParser() {
+  public Parser doGetParser() {
     return new ParserAdapter<LexerlessGrammar>(getCharset(), ErlangGrammarImpl.createGrammar());
   }
 

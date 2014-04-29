@@ -51,6 +51,7 @@ public class FixedOtpInputStream extends OtpInputStream {
     this.flags = flags;
   }
 
+  @Override
   public OtpErlangObject read_compressed() throws OtpErlangDecodeException {
     final int tag = read1skip_version();
 

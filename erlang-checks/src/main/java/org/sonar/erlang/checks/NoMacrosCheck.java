@@ -57,8 +57,6 @@ public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
     public String apply(String arg0) {
       return arg0.trim();
     }
-
-    ;
   };
 
   @Override

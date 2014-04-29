@@ -96,7 +96,7 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> 
   }
 
   private String getArity(AstNode arityNode) {
-    StringBuffer ret = new StringBuffer();
+    StringBuilder ret = new StringBuilder();
     for (AstNode arity : arityNode.getChildren()) {
       ret.append(arity.getTokenOriginalValue());
     }
