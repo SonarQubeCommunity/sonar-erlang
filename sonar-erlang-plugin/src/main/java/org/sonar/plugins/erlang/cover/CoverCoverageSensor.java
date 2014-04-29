@@ -50,7 +50,7 @@ public class CoverCoverageSensor implements Sensor {
   private static final Logger LOG = LoggerFactory.getLogger(CoverCoverageSensor.class);
 
   public boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.sourceQuery).isEmpty();
+    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
   public void analyse(Project project, SensorContext context) {
@@ -108,7 +108,7 @@ public class CoverCoverageSensor implements Sensor {
   protected void analyseCoveredFiles(ModuleFileSystem moduleFileSystem, SensorContext sensorContext,
                                      List<ErlangFileCoverage> coveredFiles, Project project) {
 
-    for (File file : moduleFileSystem.files(Erlang.sourceQuery)) {
+    for (File file : moduleFileSystem.files(Erlang.SOURCE_QUERY)) {
       try {
         ErlangFileCoverage fileCoverage = getFileCoverage(file, coveredFiles);
         org.sonar.api.resources.File resource = org.sonar.api.resources.File.fromIOFile(file, project);

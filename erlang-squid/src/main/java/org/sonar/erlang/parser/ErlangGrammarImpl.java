@@ -204,7 +204,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   guardedPattern, atomOrIdentifier, moduleAttrTags;
 
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
-  public static final String ESCAPE_SEQUENCE = "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
+  public static final String ESCAPE_SEQUENCE =
+    "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
     + "|(\\$\\\\\\^[A-Za-z])"
     + "|(\\$\\\\x\\{[A-F0-9]+\\})"
     + "|(\\$\\\\x[A-F0-9]{1,2})"

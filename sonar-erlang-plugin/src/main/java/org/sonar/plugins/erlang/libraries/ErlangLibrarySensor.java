@@ -38,7 +38,7 @@ import java.util.List;
 
 public class ErlangLibrarySensor implements Sensor {
 
-  private final static Logger LOG = LoggerFactory.getLogger(ErlangLibrarySensor.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ErlangLibrarySensor.class);
   private Erlang erlang;
   private ModuleFileSystem moduleFileSystem;
 
@@ -110,7 +110,7 @@ public class ErlangLibrarySensor implements Sensor {
   }
 
   public final boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.sourceQuery).isEmpty();
+    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
 }

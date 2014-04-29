@@ -29,8 +29,8 @@ public class Erlang extends AbstractLanguage {
 
   public static final String KEY = "erlang";
 
-  public static final FileQuery sourceQuery = FileQuery.onSource().onLanguage(KEY);
-  public static final FileQuery testQuery = FileQuery.onTest().onLanguage(KEY);
+  public static final FileQuery SOURCE_QUERY = FileQuery.onSource().onLanguage(KEY);
+  public static final FileQuery TEST_QUERY = FileQuery.onTest().onLanguage(KEY);
 
   private Configuration configuration;
 

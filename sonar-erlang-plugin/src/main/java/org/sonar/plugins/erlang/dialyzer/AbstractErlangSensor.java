@@ -41,7 +41,7 @@ public abstract class AbstractErlangSensor implements Sensor {
   }
 
   public final boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.sourceQuery).isEmpty();
+    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
   public final Erlang getErlang() {

@@ -51,7 +51,7 @@ public class EunitXmlSensor implements Sensor {
   private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
 
   public boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.sourceQuery).isEmpty();
+    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
   public void analyse(Project project, SensorContext context) {
@@ -72,7 +72,7 @@ public class EunitXmlSensor implements Sensor {
 
         @Override
         protected Resource getUnitTestResource(String classKey) {
-          File unitTestFile = getUnitTestFile(moduleFileSystem.files(Erlang.testQuery), moduleFileSystem.files(Erlang.sourceQuery), classKey);
+          File unitTestFile = getUnitTestFile(moduleFileSystem.files(Erlang.TEST_QUERY), moduleFileSystem.files(Erlang.SOURCE_QUERY), classKey);
 
           org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
           unitTestFileResource.setLanguage(erlang);

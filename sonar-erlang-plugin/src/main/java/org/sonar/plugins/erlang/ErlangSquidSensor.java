@@ -73,7 +73,7 @@ public class ErlangSquidSensor implements Sensor {
   }
 
   public boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.sourceQuery).isEmpty();
+    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
   public void analyse(Project project, SensorContext context) {
@@ -85,7 +85,7 @@ public class ErlangSquidSensor implements Sensor {
     this.scanner = ErlangAstScanner.create(moduleFileSystem.sourceCharset(), visitors
       .toArray(new SquidAstVisitor[visitors.size()]));
 
-    scanner.scanFiles(moduleFileSystem.files(Erlang.sourceQuery));
+    scanner.scanFiles(moduleFileSystem.files(Erlang.SOURCE_QUERY));
 
     Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(
       new QueryByType(SourceFile.class));
