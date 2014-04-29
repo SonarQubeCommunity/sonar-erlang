@@ -20,6 +20,8 @@
 package org.sonar.plugins.erlang.dialyzer;
 
 import org.dom4j.DocumentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.ServerComponent;
 import org.xml.sax.SAXException;
 
@@ -31,6 +33,8 @@ import java.io.InputStream;
 import java.util.List;
 
 public final class ErlangXmlRuleParser implements ServerComponent {
+
+  private static final Logger LOG = LoggerFactory.getLogger("ErlangXmlRuleParser");
 
   /**
    * Warning : the input stream is closed in this method
@@ -48,8 +52,11 @@ public final class ErlangXmlRuleParser implements ServerComponent {
       saxParser = factory.newSAXParser();
       saxParser.parse(input, a);
     } catch (ParserConfigurationException e) {
+      LOG.error("Error in configuration", e);
     } catch (SAXException e) {
+      LOG.error("Error while parsing the Erlang's rules xml file", e);
     } catch (IOException e) {
+      LOG.error("Error while reading the file", e);
     }
 
     return a.getRules();

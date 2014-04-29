@@ -21,6 +21,8 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
@@ -36,11 +38,15 @@ import java.util.Scanner;
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class NoTabsForIndentionCheck extends SquidCheck<LexerlessGrammar> {
 
+  private static final Logger LOG = LoggerFactory.getLogger(NoTabsForIndentionCheck.class);
+
   @Override
   public void visitFile(AstNode astNode) {
+    File file = getContext().getFile();
     try {
-      checkFileIndention(getContext().getFile());
+      checkFileIndention(file);
     } catch (FileNotFoundException e) {
+      LOG.error("File not found: " + file.getAbsolutePath(), e);
     }
   }
 

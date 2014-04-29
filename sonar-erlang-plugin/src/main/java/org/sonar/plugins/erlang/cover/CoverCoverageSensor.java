@@ -74,6 +74,7 @@ public class CoverCoverageSensor implements Sensor {
       analyseCoveredFiles(moduleFileSystem, context, coveredFiles, project);
     } catch (IOException e) {
       LOG.error("Cannot parse coverdata file: " + coverDataFile.getAbsolutePath());
+      LOG.error(e.getMessage());
     }
   }
 

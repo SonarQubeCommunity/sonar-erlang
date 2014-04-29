@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.issue.Issuable;
@@ -46,6 +48,7 @@ import java.io.InputStreamReader;
 public class DialyzerReportParser {
   private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?)(:[0-9]+:)(.*)";
   private static final String REPO_KEY = DialyzerRuleRepository.REPOSITORY_KEY;
+  private static final Logger LOG = LoggerFactory.getLogger(DialyzerReportParser.class);
 
   private ModuleFileSystem moduleFileSystem;
   private ResourcePerspectives resourcePerspectives;
@@ -70,11 +73,13 @@ public class DialyzerReportParser {
     /**
      * Read dialyzer results
      */
+    String dialyzerFileName = null;
+
     try {
       File reportsDir = new File(moduleFileSystem.baseDir(), erlang.getConfiguration()
         .getString(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
-      String dialyzerFileName = erlang.getConfiguration().getString(
+      dialyzerFileName = erlang.getConfiguration().getString(
         ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
       File file = new File(reportsDir, dialyzerFileName);
 
@@ -104,7 +109,9 @@ public class DialyzerReportParser {
       }
       breader.close();
     } catch (FileNotFoundException e) {
+      LOG.error("Dialyser file not found: " + dialyzerFileName, e);
     } catch (IOException e) {
+      LOG.error("Error while trying to read the file: "  + dialyzerFileName, e);
     }
   }
 
