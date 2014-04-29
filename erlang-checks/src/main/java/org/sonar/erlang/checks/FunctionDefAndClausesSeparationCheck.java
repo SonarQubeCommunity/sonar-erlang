@@ -101,8 +101,7 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<LexerlessGr
           } else {
             getContext().createLineViolation(this,
               "The line has {0} precending blank line and it should be: {1}.",
-              ast.getTokenLine(),
-              (ast.getTokenLine() - previous.getLastToken().getLine() - 1),
+              ast.getTokenLine(), ast.getTokenLine() - previous.getLastToken().getLine() - 1,
               threshold);
           }
         }

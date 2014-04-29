@@ -50,7 +50,7 @@ public class DoNotUseExportAllCheck extends SquidCheck<LexerlessGrammar> {
   }
 
   private boolean hasFlowControlParent(AstNode astNode) {
-    return (!astNode.hasAncestor(ErlangGrammarImpl.flowControlAttr) || !skipInFlowControl);
+    return !astNode.hasAncestor(ErlangGrammarImpl.flowControlAttr) || !skipInFlowControl;
   }
 
   public void setsSkipInFlowControl(boolean skipInFlowControl) {

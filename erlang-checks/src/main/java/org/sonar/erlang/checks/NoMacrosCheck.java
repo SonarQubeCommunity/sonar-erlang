@@ -83,7 +83,7 @@ public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
   }
 
   private boolean hasFlowControlParent(AstNode astNode) {
-    return (!astNode.hasAncestor(ErlangGrammarImpl.flowControlAttr) || !skipDefineInFlowControl);
+    return !astNode.hasAncestor(ErlangGrammarImpl.flowControlAttr) || !skipDefineInFlowControl;
   }
 
   private String getMacroName(AstNode astNode) {

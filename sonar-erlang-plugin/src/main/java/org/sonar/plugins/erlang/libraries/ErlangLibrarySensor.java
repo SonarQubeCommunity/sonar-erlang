@@ -69,7 +69,7 @@ public class ErlangLibrarySensor implements Sensor {
         if (dependencyElementObjs.size() > 0) {
           ErlangDependency erlangDep = new ErlangDependency();
           erlangDep.setName(((AstNode) dependencyElementObjs.get(0)).getTokenValue());
-          erlangDep.parseVersionInfo(((AstNode) dependencyElementObjs.get(2)));
+          erlangDep.parseVersionInfo((AstNode) dependencyElementObjs.get(2));
 
           Library depLib = erlangDep.getAsLibrary();
           Resource to = getResourceFromLibrary(context, depLib);
