@@ -66,7 +66,7 @@ public class ErlangLibrarySensor implements Sensor {
       for (Object dependencyObj : dependencies) {
         AstNode dependency = (AstNode) dependencyObj;
         List<Object> dependencyElementObjs = AstNodeXPathQuery.create("./tupleLiteral/expression").selectNodes(dependency);
-        if (dependencyElementObjs.size() > 0) {
+        if (!dependencyElementObjs.isEmpty()) {
           ErlangDependency erlangDep = new ErlangDependency();
           erlangDep.setName(((AstNode) dependencyElementObjs.get(0)).getTokenValue());
           erlangDep.parseVersionInfo((AstNode) dependencyElementObjs.get(2));

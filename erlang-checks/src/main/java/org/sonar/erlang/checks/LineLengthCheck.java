@@ -74,7 +74,7 @@ public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements Ast
     int lineLength = token.getColumn() + token.getValue().length();
     if (lineLength > maximumLineLength) {
       return token.getLine();
-    } else if (token.getTrivia().size() > 0) {
+    } else if (!token.getTrivia().isEmpty()) {
       for (Trivia trivia : token.getTrivia()) {
         if (trivia.isComment()
           && trivia.getToken().getColumn() + trivia.getToken().getValue().length() > maximumLineLength) {

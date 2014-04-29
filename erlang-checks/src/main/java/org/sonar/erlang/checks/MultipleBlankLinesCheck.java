@@ -72,7 +72,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
 
   public void visitToken(Token token) {
     if (!token.isGeneratedCode() && !checkedLines.contains(token.getLine())) {
-      int previousLine = (checkedLines.size() == 0) ? 0 : checkedLines.get(checkedLines.size() - 1);
+      int previousLine = checkedLines.isEmpty() ? 0 : checkedLines.get(checkedLines.size() - 1);
       if (checkBlankLines(token, previousLine)) {
         getContext().createLineViolation(this,
           "Too many blank lines found, the threshold is {0}.",

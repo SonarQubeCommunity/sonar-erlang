@@ -59,7 +59,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<LexerlessGrammar
         if (func != null) {
           List<Trivia> comments = func.getFirstDescendant(ErlangGrammarImpl.atom)
             .getToken().getTrivia();
-          if (comments.size() > 0) {
+          if (!comments.isEmpty()) {
             for (Trivia trivia : comments) {
               /**
                * Try to filter out those comments what has only

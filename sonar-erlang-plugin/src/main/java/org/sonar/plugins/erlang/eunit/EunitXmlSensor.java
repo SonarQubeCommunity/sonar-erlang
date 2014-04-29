@@ -67,7 +67,7 @@ public class EunitXmlSensor implements Sensor {
 
   protected void collect(final Project project, final SensorContext context, File reportsDir) {
     LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
-    if (reportsDir.exists() && moduleFileSystem.testDirs().size() > 0) {
+    if (reportsDir.exists() && !moduleFileSystem.testDirs().isEmpty()) {
       new AbstractSurefireParser() {
 
         @Override
