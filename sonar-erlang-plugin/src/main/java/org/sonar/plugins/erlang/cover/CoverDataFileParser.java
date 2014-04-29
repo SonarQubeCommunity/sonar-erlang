@@ -71,12 +71,12 @@ public class CoverDataFileParser {
   private CoverDataFileParser() {
   }
 
-  public static List<ErlangFileCoverage> parse(File inFile, ErlangFileCoverage cumulative) throws IOException {
+  public static List<ErlangFileCoverage> parse(File inFile) throws IOException {
     InputStream fin = new FileInputStream(inFile);
     try {
       InputStream in = new BufferedInputStream(fin);
       try {
-        return parse(in, cumulative);
+        return parse(in);
       } finally {
         Closeables.closeQuietly(in);
       }
@@ -85,12 +85,10 @@ public class CoverDataFileParser {
     }
   }
 
-  public static List<ErlangFileCoverage> parse(InputStream in, ErlangFileCoverage rootCoverage) throws IOException {
+  public static List<ErlangFileCoverage> parse(InputStream in) throws IOException {
     Preconditions.checkNotNull(in);
     List<ErlangFileCoverage> ret = new ArrayList<ErlangFileCoverage>();
-    if (rootCoverage == null) {
-      rootCoverage = new ErlangFileCoverage();
-    }
+
     try {
 
       OtpErlangObject term;
@@ -103,7 +101,7 @@ public class CoverDataFileParser {
             String module = eatom(tuple, 1);
 
             moduleResult = new ErlangFileCoverage();
-            moduleResult.setFilePath(module+".erl");
+            moduleResult.setFilePath(module + ".erl");
             ret.add(moduleResult);
 
           } else if (tuple.arity() == 2 && tuple.elementAt(0) instanceof OtpErlangTuple) {

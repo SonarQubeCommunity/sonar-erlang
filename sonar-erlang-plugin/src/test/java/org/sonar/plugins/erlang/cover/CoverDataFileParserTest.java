@@ -35,7 +35,7 @@ public class CoverDataFileParserTest {
 
   @Test
   public void test() throws IOException, URISyntaxException, OtpErlangDecodeException{
-    List<ErlangFileCoverage> coverageResult = CoverDataFileParser.parse(new File(ProjectUtil.class.getResource("/org/sonar/plugins/erlang/erlcount/.eunit/eunit.coverdata").toURI()), null);
+    List<ErlangFileCoverage> coverageResult = CoverDataFileParser.parse(new File(ProjectUtil.class.getResource("/org/sonar/plugins/erlang/erlcount/.eunit/eunit.coverdata").toURI()));
     assertThat(coverageResult.get(0), Matchers.notNullValue());
     ErlangFileCoverage cov = getResultOfModule("erlcount_lib.erl", coverageResult);
     assertThat(cov.getCoveredLines(), Matchers.equalTo(19));

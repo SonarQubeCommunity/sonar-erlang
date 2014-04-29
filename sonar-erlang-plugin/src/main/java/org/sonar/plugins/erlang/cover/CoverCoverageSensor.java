@@ -70,7 +70,7 @@ public class CoverCoverageSensor implements Sensor {
 
   private void parseCoverdataFile(ModuleFileSystem moduleFileSystem, SensorContext context, File coverDataFile, Project project) {
     try {
-      List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile, null);
+      List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile);
       analyseCoveredFiles(moduleFileSystem, context, coveredFiles, project);
     } catch (IOException e) {
       LOG.error("Cannot parse coverdata file: "+coverDataFile.getAbsolutePath());
