@@ -52,15 +52,15 @@ public class EunitXmlSensorTestInSrc {
     context = ProjectUtil.mockContext();
     Configuration configuration = ProjectUtil.mockConfiguration();
     when(
-        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-        "eunit");
+      configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
+        ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
+      "eunit");
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-        Arrays.asList(
-            new File("src/test/resources/eunit/lager_crash_log.erl")),
-            Arrays.asList(
-                new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl")));
+      Arrays.asList(
+        new File("src/test/resources/eunit/lager_crash_log.erl")),
+      Arrays.asList(
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl")));
     when(fileSystem.baseDir()).thenReturn(new File("src/test/resources/"));
     when(fileSystem.sourceDirs()).thenReturn(Arrays.asList(new File("src/test/resources")));
     when(fileSystem.testDirs()).thenReturn(Arrays.asList(new File("src/test/resources")));

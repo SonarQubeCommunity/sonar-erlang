@@ -47,8 +47,8 @@ public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements Ast
   public void init() {
     if (maximumLineLength <= 0) {
       throw new SonarException(
-          "[AbstractLineLengthCheck] The maximal line length must be set to a value greater than 0 ("
-            + maximumLineLength + " given).");
+        "[AbstractLineLengthCheck] The maximal line length must be set to a value greater than 0 ("
+          + maximumLineLength + " given).");
     }
   }
 
@@ -64,8 +64,8 @@ public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements Ast
       if (incorrectLine > -1) {
         lastIncorrectLine = token.getLine();
         getContext().createLineViolation(this,
-            "The line length is greater than {0,number,integer} authorized.",
-            incorrectLine, maximumLineLength);
+          "The line length is greater than {0,number,integer} authorized.",
+          incorrectLine, maximumLineLength);
       }
     }
   }

@@ -32,9 +32,9 @@ public class ParsingErrorCheckTest {
   @Test
   public void check() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/invaliderlangfile.erl"), new ParsingErrorCheck());
+      "src/test/resources/checks/invaliderlangfile.erl"), new ParsingErrorCheck());
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(5).withMessageThat(containsString("Parse error"))
-        .noMore();
+      .noMore();
   }
 
 }

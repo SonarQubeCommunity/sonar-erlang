@@ -35,7 +35,7 @@ public class ErlangRuleManager implements ServerExtension, BatchExtension {
 
   public ErlangRuleManager(String rulesPath) {
     rules = new ErlangXmlRuleParser().parse(ErlangRuleManager.class
-        .getResourceAsStream(rulesPath));
+      .getResourceAsStream(rulesPath));
   }
 
   public String getRuleKeyByMessage(String message) {

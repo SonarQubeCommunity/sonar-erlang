@@ -33,7 +33,7 @@ public class ErlangDependency {
   String version;
   String key;
 
-  public ErlangDependency(){
+  public ErlangDependency() {
     super();
   }
 
@@ -68,12 +68,12 @@ public class ErlangDependency {
   }
 
   public void parseVersionInfo(AstNode astNode) {
-     List<AstNode> vcsElements = astNode.getFirstDescendant(ErlangGrammarImpl.tupleLiteral).getChildren(ErlangGrammarImpl.expression);
-     String urlStr = removeQuotes(vcsElements.get(1).getTokenValue());
-     try {
-      URL url =new URL(urlStr);
-      if(!"git".equals(vcsElements.get(0).getTokenValue())){
-        setKey(url.getHost()+":"+getName());
+    List<AstNode> vcsElements = astNode.getFirstDescendant(ErlangGrammarImpl.tupleLiteral).getChildren(ErlangGrammarImpl.expression);
+    String urlStr = removeQuotes(vcsElements.get(1).getTokenValue());
+    try {
+      URL url = new URL(urlStr);
+      if (!"git".equals(vcsElements.get(0).getTokenValue())) {
+        setKey(url.getHost() + ":" + getName());
       } else {
         setKey(getKeyFromUrl(url.getPath()));
       }
@@ -81,30 +81,30 @@ public class ErlangDependency {
     } catch (MalformedURLException e) {
       // Replace possible protocol settings, like git:// or things, like: git@ from the beginning
       String[] gitUrl = urlStr.replaceAll("^[a-z]+?(@|://)", "").split(":");
-      if(gitUrl.length==1){
+      if (gitUrl.length == 1) {
         gitUrl = gitUrl[0].split("[/\\\\]", 2);
       }
       setKey(getKeyFromUrl(gitUrl[1]));
     }
 
-     if(vcsElements.size()<3){
-       setVersion("HEAD");
-     } else {
-       AstNode versionInfo = vcsElements.get(2);
-       AstNode tuple = versionInfo.getFirstDescendant(ErlangGrammarImpl.tupleLiteral);
-      if(tuple==null){
-         setVersion(removeQuotes(versionInfo.getTokenValue()));
-       } else {
-         setVersion(removeQuotes(tuple.getDescendants(ErlangGrammarImpl.expression).get(1).getTokenValue()));
-       }
-     }
+    if (vcsElements.size() < 3) {
+      setVersion("HEAD");
+    } else {
+      AstNode versionInfo = vcsElements.get(2);
+      AstNode tuple = versionInfo.getFirstDescendant(ErlangGrammarImpl.tupleLiteral);
+      if (tuple == null) {
+        setVersion(removeQuotes(versionInfo.getTokenValue()));
+      } else {
+        setVersion(removeQuotes(tuple.getDescendants(ErlangGrammarImpl.expression).get(1).getTokenValue()));
+      }
+    }
   }
 
-  private String removeQuotes(String str){
+  private String removeQuotes(String str) {
     return str.replaceAll("\"", "");
   }
 
-  private String getKeyFromUrl(String str){
+  private String getKeyFromUrl(String str) {
     return str.replace(".git", "").replaceAll("^[/\\\\]", "").replaceAll("[/\\\\]", ":");
   }
 

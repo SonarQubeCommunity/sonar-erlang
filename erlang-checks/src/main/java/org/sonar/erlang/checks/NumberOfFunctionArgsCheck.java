@@ -51,11 +51,11 @@ public class NumberOfFunctionArgsCheck extends SquidCheck<LexerlessGrammar> {
     SourceFunction function = (SourceFunction) getContext().peekSourceCode();
     if (function.getInt(ErlangMetric.NUM_OF_FUNC_ARGS) > maximumFunctionArgumentThreshold) {
       getContext()
-          .createLineViolation(
-              this,
-              "Function has {0,number,integer} arguments which is greater than {1,number,integer} authorized.",
-              node, function.getInt(ErlangMetric.NUM_OF_FUNC_ARGS),
-              maximumFunctionArgumentThreshold);
+        .createLineViolation(
+          this,
+          "Function has {0,number,integer} arguments which is greater than {1,number,integer} authorized.",
+          node, function.getInt(ErlangMetric.NUM_OF_FUNC_ARGS),
+          maximumFunctionArgumentThreshold);
     }
   }
 

@@ -32,10 +32,10 @@ public class MethodMustHaveSpecsTest {
     MethodMustHaveSpecs check = new MethodMustHaveSpecs();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/methodmusthavespecs.erl"), check);
+      "src/test/resources/checks/methodmusthavespecs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(15).withMessage("Function has no specs in type: both.")
-        .noMore();
+      .next().atLine(15).withMessage("Function has no specs in type: both.")
+      .noMore();
   }
 
   @Test
@@ -43,11 +43,11 @@ public class MethodMustHaveSpecsTest {
     MethodMustHaveSpecs check = new MethodMustHaveSpecs();
     check.setDefaultSpecsType("attribute");
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/methodmusthavespecs.erl"), check);
+      "src/test/resources/checks/methodmusthavespecs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(15).withMessage("Function has no specs in type: attribute.")
-        .next().atLine(19).withMessage("Function has no specs in type: attribute.")
-        .noMore();
+      .next().atLine(15).withMessage("Function has no specs in type: attribute.")
+      .next().atLine(19).withMessage("Function has no specs in type: attribute.")
+      .noMore();
   }
 
   @Test
@@ -55,12 +55,12 @@ public class MethodMustHaveSpecsTest {
     MethodMustHaveSpecs check = new MethodMustHaveSpecs();
     check.setDefaultSpecsType("comment");
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/methodmusthavespecs.erl"), check);
+      "src/test/resources/checks/methodmusthavespecs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(6).withMessage("Function has no specs in type: comment.")
-        .next().atLine(11).withMessage("Function has no specs in type: comment.")
-        .next().atLine(15).withMessage("Function has no specs in type: comment.")
-        .noMore();
+      .next().atLine(6).withMessage("Function has no specs in type: comment.")
+      .next().atLine(11).withMessage("Function has no specs in type: comment.")
+      .next().atLine(15).withMessage("Function has no specs in type: comment.")
+      .noMore();
   }
 
 

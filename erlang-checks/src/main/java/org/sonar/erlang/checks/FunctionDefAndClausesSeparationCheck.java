@@ -19,8 +19,6 @@
  */
 package org.sonar.erlang.checks;
 
-import javax.annotation.Nullable;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
@@ -33,6 +31,7 @@ import org.sonar.check.RuleProperty;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -78,7 +77,7 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<LexerlessGr
        */
       if (ast.getChildren(ErlangGrammarImpl.functionClause).size() > 1) {
         List<AstNode> funcClauses = ast
-            .getChildren(ErlangGrammarImpl.functionClause);
+          .getChildren(ErlangGrammarImpl.functionClause);
         Iterator<AstNode> clauses = funcClauses.iterator();
         AstNode previousClause = clauses.next();
         while (clauses.hasNext()) {
@@ -101,10 +100,10 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<LexerlessGr
             check(ast, ast.getPreviousAstNode(), 0);
           } else {
             getContext().createLineViolation(this,
-                "The line has {0} precending blank line and it should be: {1}.",
-                ast.getTokenLine(),
-                (ast.getTokenLine() - previous.getLastToken().getLine() - 1),
-                threshold);
+              "The line has {0} precending blank line and it should be: {1}.",
+              ast.getTokenLine(),
+              (ast.getTokenLine() - previous.getLastToken().getLine() - 1),
+              threshold);
           }
         }
       }

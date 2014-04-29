@@ -49,7 +49,7 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
     }
     actualArity = "";
     actualModule = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr)
-        .getFirstChild(ErlangGrammarImpl.atom).getTokenOriginalValue();
+      .getFirstChild(ErlangGrammarImpl.atom).getTokenOriginalValue();
     lastClauseLine = 0;
   }
 
@@ -71,7 +71,7 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
        * Not a standalone statement
        */
       if (!node.getParent().getType().equals(ErlangGrammarImpl.expression)
-          || (node.getParent().getType().equals(ErlangGrammarImpl.expression) && !node.getParent().getParent().getType().equals(ErlangGrammarImpl.expressionStatement))) {
+        || (node.getParent().getType().equals(ErlangGrammarImpl.expression) && !node.getParent().getParent().getType().equals(ErlangGrammarImpl.expressionStatement))) {
         getContext().createLineViolation(this, "Function is not tail recursive.", node);
         lastClauseLine = node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine();
         return;
@@ -124,14 +124,14 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
 
   private String getArity(AstNode ast) {
     AstNode args = ast.getFirstChild(ErlangGrammarImpl.clauseHead)
-        .getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(
-            ErlangGrammarImpl.arguments);
+      .getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(
+        ErlangGrammarImpl.arguments);
     return ast.getTokenOriginalValue() + "/" + getNumOfArgs(args);
   }
 
   private String getNumOfArgs(AstNode args) {
     int num = args.getNumberOfChildren() > 3 ? args.getChildren(
-        ErlangGrammarImpl.comma).size() + 1 : args.getNumberOfChildren() - 2;
+      ErlangGrammarImpl.comma).size() + 1 : args.getNumberOfChildren() - 2;
     return String.valueOf(num);
   }
 

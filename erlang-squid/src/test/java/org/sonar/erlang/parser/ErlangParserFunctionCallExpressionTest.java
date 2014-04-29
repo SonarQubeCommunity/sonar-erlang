@@ -30,16 +30,16 @@ public class ErlangParserFunctionCallExpressionTest {
   @Test
   public void functionCallExpressions() {
     assertThat(g.rule(ErlangGrammarImpl.statement))
-        .matches("method(\"hello\")")
-        .matches("method(12)")
-        .matches("method(\"hello\",234234)")
-        .matches("haho:method(\"hello\")")
-        .matches("method(\"hello\")")
-        .matches("io:format(\"assert error in module ~p on line ~p~n\")")
-        .matches(
-            "string:strip(erlang:system_info(system_architecture),right,$\n)")
-        .matches("lists:reverse ([$\\] | L])")
-        .matches("?assertMatch([{ok, 1, Pid}| _] when is_pid(Pid), Result)");
+      .matches("method(\"hello\")")
+      .matches("method(12)")
+      .matches("method(\"hello\",234234)")
+      .matches("haho:method(\"hello\")")
+      .matches("method(\"hello\")")
+      .matches("io:format(\"assert error in module ~p on line ~p~n\")")
+      .matches(
+        "string:strip(erlang:system_info(system_architecture),right,$\n)")
+      .matches("lists:reverse ([$\\] | L])")
+      .matches("?assertMatch([{ok, 1, Pid}| _] when is_pid(Pid), Result)");
   }
 
 }

@@ -39,7 +39,6 @@ import java.util.Arrays;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.doubleThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -56,14 +55,14 @@ public class EunitXmlSensorTest {
     context = ProjectUtil.mockContext();
     Configuration configuration = ProjectUtil.mockConfiguration();
     when(
-        configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
-            ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
-        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
+      configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
+        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
+      ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(null,
-        Arrays.asList(
-            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"),
-            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl")));
+      Arrays.asList(
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"),
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl")));
 
     new EunitXmlSensor(new Erlang(configuration), fileSystem).analyse(new Project("dummy"), context);
 

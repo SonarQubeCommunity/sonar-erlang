@@ -38,17 +38,17 @@ import java.util.List;
 public class DoNotUseEmptyFlowControlCheck extends SquidCheck<LexerlessGrammar> {
 
   List<ErlangGrammarImpl> flowControls = ImmutableList.of(
-      ErlangGrammarImpl.ifdefAttr,
-      ErlangGrammarImpl.ifndefAttr,
-      ErlangGrammarImpl.elseAttr,
-      ErlangGrammarImpl.endifAttr
-      );
+    ErlangGrammarImpl.ifdefAttr,
+    ErlangGrammarImpl.ifndefAttr,
+    ErlangGrammarImpl.elseAttr,
+    ErlangGrammarImpl.endifAttr
+  );
 
   @Override
   public void init() {
     subscribeTo(ImmutableList.copyOf(Collections2.filter(flowControls,
-        Predicates.not(Predicates.equalTo(ErlangGrammarImpl.endifAttr)))
-        ).toArray(new ErlangGrammarImpl[flowControls.size() - 1]));
+      Predicates.not(Predicates.equalTo(ErlangGrammarImpl.endifAttr)))
+    ).toArray(new ErlangGrammarImpl[flowControls.size() - 1]));
 
   }
 

@@ -44,7 +44,7 @@ public class BranchesOfRecursion extends SquidCheck<LexerlessGrammar> {
     }
     actualArity = "";
     actualModule = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr)
-        .getFirstChild(ErlangGrammarImpl.atom).getTokenOriginalValue();
+      .getFirstChild(ErlangGrammarImpl.atom).getTokenOriginalValue();
   }
 
   @Override
@@ -71,21 +71,21 @@ public class BranchesOfRecursion extends SquidCheck<LexerlessGrammar> {
       } catch (Exception e) {
         //If we reach this part it means we are in call where the function is a return value of another function:
         //like: (Fun2())(1)
-        return "*"+getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+        return "*" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       }
     }
   }
 
   private String getArity(AstNode ast) {
     AstNode args = ast.getFirstChild(ErlangGrammarImpl.clauseHead)
-        .getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(
-            ErlangGrammarImpl.arguments);
+      .getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(
+        ErlangGrammarImpl.arguments);
     return ast.getTokenOriginalValue() + "/" + getNumOfArgs(args);
   }
 
   private String getNumOfArgs(AstNode args) {
     int num = args.getNumberOfChildren() > 3 ? args.getChildren(
-        ErlangGrammarImpl.comma).size() + 1 : args.getNumberOfChildren() - 2;
+      ErlangGrammarImpl.comma).size() + 1 : args.getNumberOfChildren() - 2;
     return String.valueOf(num);
   }
 

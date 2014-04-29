@@ -32,8 +32,8 @@ public class FunctionComplexityCheckTest {
     FunctionComplexityCheck check = new FunctionComplexityCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/complexity.erl"), check);
+      "src/test/resources/checks/complexity.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
-        "Function has a complexity of 11 which is greater than 10 authorized.").noMore();
+      "Function has a complexity of 11 which is greater than 10 authorized.").noMore();
   }
 }

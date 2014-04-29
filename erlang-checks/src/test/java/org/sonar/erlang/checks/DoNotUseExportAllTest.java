@@ -32,7 +32,7 @@ public class DoNotUseExportAllTest {
     DoNotUseExportAllCheck check = new DoNotUseExportAllCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/spacesastabs.erl"), check);
+      "src/test/resources/checks/spacesastabs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 
@@ -40,9 +40,9 @@ public class DoNotUseExportAllTest {
   public void test2() {
     DoNotUseExportAllCheck check = new DoNotUseExportAllCheck();
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/exportall.erl"), check);
+      "src/test/resources/checks/exportall.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
-        "Do not use export_all").noMore();
+      "Do not use export_all").noMore();
   }
 
   @Test
@@ -50,9 +50,9 @@ public class DoNotUseExportAllTest {
     DoNotUseExportAllCheck check = new DoNotUseExportAllCheck();
     check.setsSkipInFlowControl(false);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/exportall.erl"), check);
+      "src/test/resources/checks/exportall.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-        .atLine(2).withMessage("Do not use export_all").next()
-        .atLine(5).withMessage("Do not use export_all").noMore();
+      .atLine(2).withMessage("Do not use export_all").next()
+      .atLine(5).withMessage("Do not use export_all").noMore();
   }
 }

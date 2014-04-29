@@ -37,7 +37,7 @@ public class ErlangProfile extends ProfileDefinition {
   private final XMLProfileParser xmlProfileParser;
 
   public ErlangProfile(AnnotationProfileParser annotationProfileParser,
-      XMLProfileParser xmlProfileParser) {
+                       XMLProfileParser xmlProfileParser) {
     this.annotationProfileParser = annotationProfileParser;
     this.xmlProfileParser = xmlProfileParser;
   }
@@ -50,10 +50,10 @@ public class ErlangProfile extends ProfileDefinition {
     RulesProfile ret = RulesProfile.create(PROFILE_NAME, Erlang.KEY);
 
     RulesProfile checks = annotationProfileParser.parse(CheckList.REPOSITORY_KEY,
-        CheckList.REPOSITORY_NAME, Erlang.KEY, CheckList.getChecks(), validation);
+      CheckList.REPOSITORY_NAME, Erlang.KEY, CheckList.getChecks(), validation);
 
     RulesProfile dialyzer = xmlProfileParser.parseResource(getClass().getClassLoader(),
-        "org/sonar/plugins/erlang/profile-default.xml", validation);
+      "org/sonar/plugins/erlang/profile-default.xml", validation);
 
     List<ActiveRule> rules = checks.getActiveRules();
     rules.addAll(dialyzer.getActiveRules());

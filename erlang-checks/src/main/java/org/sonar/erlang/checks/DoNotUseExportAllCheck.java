@@ -19,14 +19,13 @@
  */
 package org.sonar.erlang.checks;
 
-import org.sonar.check.RuleProperty;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
@@ -35,8 +34,8 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 public class DoNotUseExportAllCheck extends SquidCheck<LexerlessGrammar> {
 
   @RuleProperty(key = "skipInFlowControl", defaultValue = "true",
-      description = "Set it false if you want to check export_all in flow controls.")
-    private boolean skipInFlowControl = true;
+    description = "Set it false if you want to check export_all in flow controls.")
+  private boolean skipInFlowControl = true;
 
   @Override
   public void init() {

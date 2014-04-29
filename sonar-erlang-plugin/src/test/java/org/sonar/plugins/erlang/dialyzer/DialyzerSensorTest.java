@@ -71,14 +71,14 @@ public class DialyzerSensorTest {
     RulesProfile rp = mock(RulesProfile.class);
     ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019");
     when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D019"))
-        .thenReturn(activeRule);
+      .thenReturn(activeRule);
     activeRule = RuleUtil.generateActiveRule("callback_missing", "D041");
     when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D041"))
-        .thenReturn(activeRule);
+      .thenReturn(activeRule);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-        Arrays.asList(
-            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
+      Arrays.asList(
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
 
     new DialyzerSensor(erlang, rp, fileSystem, resourcePerspectives).analyse(project, context);
   }

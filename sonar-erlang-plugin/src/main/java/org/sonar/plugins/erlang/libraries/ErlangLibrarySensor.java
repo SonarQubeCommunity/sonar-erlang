@@ -53,7 +53,7 @@ public class ErlangLibrarySensor implements Sensor {
 
   private void analyzeRebarConfigFile(Resource projectResource, SensorContext context, File baseDir) {
     String rebarConfigUrl = erlang.getConfiguration().getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
-        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
+      ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
     File rebarConfigFile = new File(baseDir, rebarConfigUrl);
     LOG.warn("Try get libraries from: " + rebarConfigFile.getAbsolutePath());
 
@@ -75,7 +75,7 @@ public class ErlangLibrarySensor implements Sensor {
           Resource to = getResourceFromLibrary(context, depLib);
           saveDependency(projectResource, context, to);
           File depRebarConfig = new File(baseDir.getPath().concat(File.separator + depsDir)
-              .concat(File.separator + erlangDep.getName()));
+            .concat(File.separator + erlangDep.getName()));
           analyzeRebarConfigFile(to, context, depRebarConfig);
         }
       }

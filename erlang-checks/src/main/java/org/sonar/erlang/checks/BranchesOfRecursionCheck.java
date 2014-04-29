@@ -53,11 +53,11 @@ public class BranchesOfRecursionCheck extends SquidCheck<LexerlessGrammar> {
     int measuredBOR = ChecksHelper.getRecursiveMeasureInt(function, ErlangMetric.BRANCHES_OF_RECURSION);
     if (measuredBOR > maximumBORThreshold) {
       getContext()
-          .createLineViolation(
-              this,
-              "Function has {0,number,integer} branches of recursion which is greater than {1,number,integer} authorized.",
-              node, measuredBOR,
-              maximumBORThreshold);
+        .createLineViolation(
+          this,
+          "Function has {0,number,integer} branches of recursion which is greater than {1,number,integer} authorized.",
+          node, measuredBOR,
+          maximumBORThreshold);
     }
   }
 

@@ -54,13 +54,13 @@ public class NoTabsForIndentionCheck extends SquidCheck<LexerlessGrammar> {
 
         if (line.matches("^ *\t+.*")) {
           getContext().createLineViolation(this, "Line has tabs as indention.",
-              lineNumber);
+            lineNumber);
           numOfViolations++;
         }
         if (numOfViolations == 100) {
           getContext().createLineViolation(this,
-              "File has reached 100 'Line has tabs as indention' violation.",
-              lineNumber);
+            "File has reached 100 'Line has tabs as indention' violation.",
+            lineNumber);
           return;
         }
         lineNumber++;

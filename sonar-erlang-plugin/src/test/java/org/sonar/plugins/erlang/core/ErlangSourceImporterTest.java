@@ -2,17 +2,17 @@
  * Sonar Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
@@ -52,8 +52,8 @@ public class ErlangSourceImporterTest {
   public void init() {
     configuration = mock(Configuration.class);
     when(
-        configuration.getBoolean(CoreProperties.CORE_IMPORT_SOURCES_PROPERTY,
-            CoreProperties.CORE_IMPORT_SOURCES_DEFAULT_VALUE)).thenReturn(true);
+      configuration.getBoolean(CoreProperties.CORE_IMPORT_SOURCES_PROPERTY,
+        CoreProperties.CORE_IMPORT_SOURCES_DEFAULT_VALUE)).thenReturn(true);
   }
 
   @Test
@@ -66,13 +66,13 @@ public class ErlangSourceImporterTest {
     when(fileSystem.getSourceCharset()).thenReturn(Charset.defaultCharset());
 
     File sourceDir = new File(getClass().getResource(
-        "/org/sonar/plugins/erlang/core/filestoimport/src").toURI());
+      "/org/sonar/plugins/erlang/core/filestoimport/src").toURI());
     List<File> sourceDirectories = new ArrayList<File>();
     sourceDirectories.add(sourceDir);
 
     List<File> files = new ArrayList<File>();
     File fileToImport = new File(getClass().getResource(
-        "/org/sonar/plugins/erlang/core/filestoimport/src/person.erl").toURI());
+      "/org/sonar/plugins/erlang/core/filestoimport/src/person.erl").toURI());
     files.add(fileToImport);
 
     when(fileSystem.getSourceDirs()).thenReturn(sourceDirectories);
@@ -101,6 +101,6 @@ public class ErlangSourceImporterTest {
     importer.analyse(project, context);
 
     verify(context).saveSource((Resource) anyObject(),
-        eq("This is content for person.erl Erlang file used in unit tests."));
+      eq("This is content for person.erl Erlang file used in unit tests."));
   }
 }

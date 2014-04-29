@@ -56,7 +56,9 @@ public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
   Function<String, String> trimItems = new Function<String, String>() {
     public String apply(String arg0) {
       return arg0.trim();
-    };
+    }
+
+    ;
   };
 
   @Override
@@ -86,8 +88,8 @@ public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
 
   private String getMacroName(AstNode astNode) {
     AstNode token = (astNode.getFirstChild(ErlangGrammarImpl.funcDecl) != null) ? astNode.getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(ErlangGrammarImpl.literal)
-        : astNode
-            .getFirstChild(ErlangGrammarImpl.primaryExpression);
+      : astNode
+      .getFirstChild(ErlangGrammarImpl.primaryExpression);
     return token.getTokenOriginalValue();
   }
 

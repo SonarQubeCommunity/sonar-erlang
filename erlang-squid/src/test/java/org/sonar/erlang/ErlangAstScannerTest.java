@@ -40,17 +40,17 @@ public class ErlangAstScannerTest {
   @Test
   public void files() {
     AstScanner<LexerlessGrammar> scanner = TestHelper.scanFiles(ImmutableList.of(
-        new File("src/test/resources/metrics/lines.erl"),
-        new File("src/test/resources/metrics/lines_of_code.erl")));
+      new File("src/test/resources/metrics/lines.erl"),
+      new File("src/test/resources/metrics/lines_of_code.erl")));
     SourceProject project = (SourceProject) scanner.getIndex().search(
-        new QueryByType(SourceProject.class)).iterator().next();
+      new QueryByType(SourceProject.class)).iterator().next();
     assertThat(project.getInt(ErlangMetric.FILES)).isEqualTo(2);
   }
 
   @Test
   public void comments() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/functions.erl"));
+      "src/test/resources/metrics/functions.erl"));
     assertThat(file.getInt(ErlangMetric.COMMENT_LINES)).isEqualTo(5);
     assertThat(file.getNoSonarTagLines()).contains(38);
     assertThat(file.getNoSonarTagLines().size()).isEqualTo(1);
@@ -59,9 +59,9 @@ public class ErlangAstScannerTest {
   @Test
   public void modules() {
     AstScanner<LexerlessGrammar> scanner = TestHelper.scanFiles(ImmutableList.of(
-        new File("src/test/resources/metrics/functions.erl")));
+      new File("src/test/resources/metrics/functions.erl")));
     SourceClass module = (SourceClass) scanner.getIndex().search(
-        new QueryByType(SourceClass.class)).iterator().next();
+      new QueryByType(SourceClass.class)).iterator().next();
     assertThat(module.getKey()).isEqualTo("functions:1");
     assertThat(TestHelper.getSourceFile(scanner).getInt(ErlangMetric.MODULES)).isEqualTo(1);
   }
@@ -69,14 +69,14 @@ public class ErlangAstScannerTest {
   @Test
   public void lines() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/lines.erl"));
+      "src/test/resources/metrics/lines.erl"));
     assertThat(file.getInt(ErlangMetric.LINES)).isEqualTo(5);
   }
 
   @Test
   public void publicAPIs() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/functions.erl"));
+      "src/test/resources/metrics/functions.erl"));
     assertThat(file.getInt(ErlangMetric.PUBLIC_API)).isEqualTo(7);
     assertThat(file.getInt(ErlangMetric.PUBLIC_DOC_API)).isEqualTo(4);
     assertThat(file.getInt(ErlangMetric.PUBLIC_DOCUMENTED_API_DENSITY)).isEqualTo((4 / 7));
@@ -85,56 +85,56 @@ public class ErlangAstScannerTest {
   @Test
   public void lines_of_code() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/lines_of_code.erl"));
+      "src/test/resources/metrics/lines_of_code.erl"));
     assertThat(file.getInt(ErlangMetric.LINES_OF_CODE)).isEqualTo(3);
   }
 
   @Test
   public void lines_of_code2() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/lines_of_code2.erl"));
+      "src/test/resources/metrics/lines_of_code2.erl"));
     assertThat(file.getInt(ErlangMetric.LINES_OF_CODE)).isEqualTo(14);
   }
 
   @Test
   public void functions2() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/lines_of_code2.erl"));
+      "src/test/resources/metrics/lines_of_code2.erl"));
     assertThat(file.getInt(ErlangMetric.FUNCTIONS)).isEqualTo(2);
   }
 
   @Test
   public void statements() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/statements.erl"));
+      "src/test/resources/metrics/statements.erl"));
     assertThat(file.getInt(ErlangMetric.STATEMENTS)).isEqualTo(20);
   }
 
   @Test
   public void functions() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/functions.erl"));
+      "src/test/resources/metrics/functions.erl"));
     assertThat(file.getInt(ErlangMetric.FUNCTIONS)).isEqualTo(7);
   }
 
   @Test
   public void complexity() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/complexity.erl"));
+      "src/test/resources/metrics/complexity.erl"));
     assertThat(file.getInt(ErlangMetric.COMPLEXITY)).isEqualTo(10);
   }
 
   @Test
   public void numOfFunExpr() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/funexpressions.erl"));
+      "src/test/resources/metrics/funexpressions.erl"));
     assertThat(file.getInt(ErlangMetric.NUM_OF_FUN_EXRP)).isEqualTo(4);
   }
 
   @Test
   public void numOfFunctionArguments() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/funargs.erl"));
+      "src/test/resources/metrics/funargs.erl"));
     assertThat(file.getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(21);
     Set<SourceCode> children = file.getChildren();
     SourceCode[] classes = children.toArray(new SourceCode[children.size()]);
@@ -144,41 +144,41 @@ public class ErlangAstScannerTest {
     assertThat(functions[2].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(1);
     assertThat(functions[3].getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(14);
     assertThat(
-        functions[3].getChildren().toArray(
-            new SourceCode[functions[3].getChildren().size()])[0]
-            .getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(7);
+      functions[3].getChildren().toArray(
+        new SourceCode[functions[3].getChildren().size()])[0]
+        .getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(7);
     assertThat(
-        functions[3].getChildren().toArray(
-            new SourceCode[functions[3].getChildren().size()])[1]
-            .getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(7);
+      functions[3].getChildren().toArray(
+        new SourceCode[functions[3].getChildren().size()])[1]
+        .getInt(ErlangMetric.NUM_OF_FUNC_ARGS)).isEqualTo(7);
 
   }
 
   @Test
   public void branchesOfRecursion() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/branchesofrecursion.erl"));
+      "src/test/resources/metrics/branchesofrecursion.erl"));
     assertThat(file.getInt(ErlangMetric.BRANCHES_OF_RECURSION)).isEqualTo(3);
   }
 
   @Test
   public void numOfFunctionClauses() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/funargs.erl"));
+      "src/test/resources/metrics/funargs.erl"));
     assertThat(file.getInt(ErlangMetric.NUM_OF_FUN_CLAUSES)).isEqualTo(5);
   }
 
   @Test
   public void numOfMacros() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/metrics/macros.erl"));
+      "src/test/resources/metrics/macros.erl"));
     assertThat(file.getInt(ErlangMetric.NUM_OF_MACROS)).isEqualTo(2);
   }
 
   @Test
   public void megaco() {
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/megaco_ber_media_gateway_control_v1.erl"));
+      "src/test/resources/megaco_ber_media_gateway_control_v1.erl"));
     assertThat(file.getInt(ErlangMetric.FILES)).isEqualTo(1);
   }
 

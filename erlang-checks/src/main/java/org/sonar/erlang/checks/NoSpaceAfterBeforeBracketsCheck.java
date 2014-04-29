@@ -41,9 +41,9 @@ import java.util.List;
 public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar> {
 
   List<ErlangGrammarImpl> noSpaceBefore = ImmutableList.of(ErlangGrammarImpl.rbracket,
-      ErlangGrammarImpl.rcurlybrace, ErlangGrammarImpl.rparenthesis);
+    ErlangGrammarImpl.rcurlybrace, ErlangGrammarImpl.rparenthesis);
   List<ErlangGrammarImpl> noSpaceAfter = ImmutableList.of(ErlangGrammarImpl.lbracket,
-      ErlangGrammarImpl.lcurlybrace, ErlangGrammarImpl.lparenthesis);
+    ErlangGrammarImpl.lcurlybrace, ErlangGrammarImpl.lparenthesis);
   List<Integer> failedLines = new ArrayList<Integer>();
 
   private int numOfViolations = 0;
@@ -51,8 +51,8 @@ public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar
   @Override
   public void init() {
     subscribeTo(ErlangGrammarImpl.rbracket, ErlangGrammarImpl.rcurlybrace,
-        ErlangGrammarImpl.rparenthesis, ErlangGrammarImpl.lbracket,
-        ErlangGrammarImpl.lcurlybrace, ErlangGrammarImpl.lparenthesis);
+      ErlangGrammarImpl.rparenthesis, ErlangGrammarImpl.lbracket,
+      ErlangGrammarImpl.lcurlybrace, ErlangGrammarImpl.lparenthesis);
   }
 
   @Override
@@ -86,12 +86,12 @@ public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar
     int compCheckPoint = (previous) ? compCol + compLength : compCol;
     if (actCheckPoint != compCheckPoint) {
       getContext().createLineViolation(this, "Space after bracket in column: {0}.",
-          ast.getToken().getLine(), actCol + 1);
+        ast.getToken().getLine(), actCol + 1);
       numOfViolations++;
       if (numOfViolations == 100) {
         getContext().createLineViolation(this,
-            "File has reached 100 no space after/before brackets violation.",
-            ast.getToken().getLine(), actCol + 1);
+          "File has reached 100 no space after/before brackets violation.",
+          ast.getToken().getLine(), actCol + 1);
       }
       return ast.getToken().getLine();
     }

@@ -32,9 +32,9 @@ public class LineLengthCheckTest {
     LineLengthCheck check = new LineLengthCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/linelength.erl"), check);
+      "src/test/resources/checks/linelength.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(5).next().atLine(7)
-        .withMessage("The line length is greater than 100 authorized.").next().atLine(8)
-        .noMore();
+      .withMessage("The line length is greater than 100 authorized.").next().atLine(8)
+      .noMore();
   }
 }

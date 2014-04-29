@@ -33,17 +33,17 @@ public final class CheckList {
   }
 
   public static List<Class> getChecks() {
-    return ImmutableList.<Class> of(BlockSeparatorCharacterCheck.class,
-        BranchesOfRecursionCheck.class, CommentRegularExpressionCheck.class,
-        DepthOfCasesCheck.class, DoNotUseEmptyFlowControlCheck.class, DoNotUseImportCheck.class, DoNotUseExportAllCheck.class,
-        ExportOneFunctionPerLineCheck.class, FunctionComplexityCheck.class, FunExpressionComplexityCheck.class,
-        FunctionDefAndClausesSeparationCheck.class, IndentionSizeCheck.class,
-        LineLengthCheck.class, MultipleBlankLinesCheck.class,
-        NoEmacsStyleLeadingCommasCheck.class, NoSpaceAfterBeforeBracketsCheck.class,
-        NoTabsForIndentionCheck.class, NoTrailingWhitespaceCheck.class,
-        NumberOfFunctionArgsCheck.class, ParsingErrorCheck.class, SpaceAfterBeforeOperatorsCheck.class, XPathCheck.class,
-        IsTailRecursiveCheck.class, MethodMustHaveSpecs.class, TodoCommentCheck.class, FixmeCommentCheck.class,
-        FunctionLengthCheck.class);
+    return ImmutableList.<Class>of(BlockSeparatorCharacterCheck.class,
+      BranchesOfRecursionCheck.class, CommentRegularExpressionCheck.class,
+      DepthOfCasesCheck.class, DoNotUseEmptyFlowControlCheck.class, DoNotUseImportCheck.class, DoNotUseExportAllCheck.class,
+      ExportOneFunctionPerLineCheck.class, FunctionComplexityCheck.class, FunExpressionComplexityCheck.class,
+      FunctionDefAndClausesSeparationCheck.class, IndentionSizeCheck.class,
+      LineLengthCheck.class, MultipleBlankLinesCheck.class,
+      NoEmacsStyleLeadingCommasCheck.class, NoSpaceAfterBeforeBracketsCheck.class,
+      NoTabsForIndentionCheck.class, NoTrailingWhitespaceCheck.class,
+      NumberOfFunctionArgsCheck.class, ParsingErrorCheck.class, SpaceAfterBeforeOperatorsCheck.class, XPathCheck.class,
+      IsTailRecursiveCheck.class, MethodMustHaveSpecs.class, TodoCommentCheck.class, FixmeCommentCheck.class,
+      FunctionLengthCheck.class);
   }
 
 }

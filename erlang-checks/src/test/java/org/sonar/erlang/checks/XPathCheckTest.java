@@ -34,9 +34,9 @@ public class XPathCheckTest {
     check.message = "Do not use name: really_retain";
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/complexity.erl"), check);
+      "src/test/resources/checks/complexity.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(18).withMessage(
-        "Do not use name: really_retain").noMore();
+      "Do not use name: really_retain").noMore();
   }
 
 }

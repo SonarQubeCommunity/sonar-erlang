@@ -32,13 +32,13 @@ public class MultipleBlankLinesCheckTest {
     MultipleBlankLinesCheck check = new MultipleBlankLinesCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/multipleblankline.erl"), check);
+      "src/test/resources/checks/multipleblankline.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-        .atLine(5).withMessage("Too many blank lines found, the threshold is 2.").next()
-        .atLine(12).withMessage("Too many blank lines found, the threshold is 1.").next()
-        .atLine(25).withMessage("Too many blank lines found, the threshold is 1.").next()
-        .atLine(32).withMessage("Too many blank lines found, the threshold is 1.")
-        .noMore();
+      .atLine(5).withMessage("Too many blank lines found, the threshold is 2.").next()
+      .atLine(12).withMessage("Too many blank lines found, the threshold is 1.").next()
+      .atLine(25).withMessage("Too many blank lines found, the threshold is 1.").next()
+      .atLine(32).withMessage("Too many blank lines found, the threshold is 1.")
+      .noMore();
   }
 
   @Test
@@ -46,7 +46,7 @@ public class MultipleBlankLinesCheckTest {
     MultipleBlankLinesCheck check = new MultipleBlankLinesCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/mbl.erl"), check);
+      "src/test/resources/checks/mbl.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 
@@ -56,7 +56,7 @@ public class MultipleBlankLinesCheckTest {
     check.maxBlankLinesInsideFunctions = 1;
     check.maxBlankLinesOutsideFunctions = 2;
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/cowboy_req.erl"), check);
+      "src/test/resources/checks/cowboy_req.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 

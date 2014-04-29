@@ -32,8 +32,8 @@ public class FunctionLengthCheckTest {
     FunctionLengthCheck check = new FunctionLengthCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/complexity.erl"), check);
+      "src/test/resources/checks/complexity.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
-        "Function has 34 lines of code which is greater than 20 authorized.").noMore();
+      "Function has 34 lines of code which is greater than 20 authorized.").noMore();
   }
 }

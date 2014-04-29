@@ -59,7 +59,7 @@ public final class LCOVParser {
         String[] lineData = line.split("\\|", 2);
         if (!StringUtils.isBlank(lineData[0].trim())) {
           String executionCount = lineData[0].trim()
-              .replaceAll(COVERAGE_DATA_REGEX, "$2");
+            .replaceAll(COVERAGE_DATA_REGEX, "$2");
           fileCoverage.addLine(lineNumber, Integer.valueOf(executionCount).intValue());
         }
         lineNumber++;

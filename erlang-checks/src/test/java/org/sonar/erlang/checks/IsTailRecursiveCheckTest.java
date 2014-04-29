@@ -32,7 +32,7 @@ public class IsTailRecursiveCheckTest {
     IsTailRecursiveCheck check = new IsTailRecursiveCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/branchesofrecursion.erl"), check);
+      "src/test/resources/checks/branchesofrecursion.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).noMore();
   }
 
@@ -40,11 +40,11 @@ public class IsTailRecursiveCheckTest {
   public void test2() {
     IsTailRecursiveCheck check = new IsTailRecursiveCheck();
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/istailrecursive.erl"), check);
+      "src/test/resources/checks/istailrecursive.erl"), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(7)
-        .next().atLine(12)
-        .noMore();
+      .next().atLine(7)
+      .next().atLine(12)
+      .noMore();
   }
 }

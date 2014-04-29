@@ -30,12 +30,11 @@ import org.sonar.plugins.erlang.core.Erlang;
  * Calls the dialyzer report parser saves violations to sonar
  *
  * @author tkende
- *
  */
 public class DialyzerSensor extends AbstractErlangSensor {
 
   private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(
-      DialyzerRuleRepository.DIALYZER_PATH);
+    DialyzerRuleRepository.DIALYZER_PATH);
   private RulesProfile rulesProfile;
   private ResourcePerspectives resourcePerspectives;
 

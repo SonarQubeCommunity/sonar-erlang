@@ -32,8 +32,8 @@ public class NoTabsForIndentionCheckTest {
     NoTabsForIndentionCheck check = new NoTabsForIndentionCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/spacesastabs.erl"), check);
+      "src/test/resources/checks/spacesastabs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(6).withMessage(
-        "Line has tabs as indention.").next().atLine(13).noMore();
+      "Line has tabs as indention.").next().atLine(13).noMore();
   }
 }

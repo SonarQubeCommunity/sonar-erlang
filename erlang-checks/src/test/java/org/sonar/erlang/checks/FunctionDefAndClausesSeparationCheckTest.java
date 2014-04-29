@@ -32,11 +32,11 @@ public class FunctionDefAndClausesSeparationCheckTest {
     FunctionDefAndClausesSeparationCheck check = new FunctionDefAndClausesSeparationCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/functionseparation.erl"), check);
+      "src/test/resources/checks/functionseparation.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(12).withMessage("The line has 0 precending blank line and it should be: 1.")
-        .next().atLine(22).withMessage("The line has 1 precending blank line and it should be: 0.")
-        .next().atLine(26).withMessage("The line has 2 precending blank line and it should be: 1.")
-        .noMore();
+      .next().atLine(12).withMessage("The line has 0 precending blank line and it should be: 1.")
+      .next().atLine(22).withMessage("The line has 1 precending blank line and it should be: 0.")
+      .next().atLine(26).withMessage("The line has 2 precending blank line and it should be: 1.")
+      .noMore();
   }
 }

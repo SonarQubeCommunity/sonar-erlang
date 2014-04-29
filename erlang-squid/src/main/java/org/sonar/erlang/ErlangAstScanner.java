@@ -53,13 +53,13 @@ public final class ErlangAstScanner {
   }
 
   public static AstScanner<LexerlessGrammar> create(Charset charset,
-      SquidAstVisitor<LexerlessGrammar>... visitors) {
+                                                    SquidAstVisitor<LexerlessGrammar>... visitors) {
     final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<LexerlessGrammar>(
-        new SourceProject("Erlang Project"));
+      new SourceProject("Erlang Project"));
     final Parser<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(charset, ErlangGrammarImpl.createGrammar());
 
-    AstScanner.Builder<LexerlessGrammar> builder = AstScanner.<LexerlessGrammar> builder(context)
-        .setBaseParser(parser);
+    AstScanner.Builder<LexerlessGrammar> builder = AstScanner.<LexerlessGrammar>builder(context)
+      .setBaseParser(parser);
 
     /* Metrics */
     builder.withMetrics(ErlangMetric.values());
@@ -72,84 +72,84 @@ public final class ErlangAstScanner {
 
     /* Classes = modules */
     builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<LexerlessGrammar>(
-        new SourceCodeBuilderCallback() {
-          public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
-            String className = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr).getFirstChild(ErlangGrammarImpl.atom).getTokenValue();
-            SourceClass cls = new SourceClass(className + ":"
-              + astNode.getToken().getLine());
-            cls.setStartAtLine(astNode.getTokenLine());
-            return cls;
-          }
-        }, ErlangGrammarImpl.module));
+      new SourceCodeBuilderCallback() {
+        public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
+          String className = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr).getFirstChild(ErlangGrammarImpl.atom).getTokenValue();
+          SourceClass cls = new SourceClass(className + ":"
+            + astNode.getToken().getLine());
+          cls.setStartAtLine(astNode.getTokenLine());
+          return cls;
+        }
+      }, ErlangGrammarImpl.module));
 
-    builder.withSquidAstVisitor(CounterVisitor.<LexerlessGrammar> builder().setMetricDef(
-        ErlangMetric.MODULES).subscribeTo(ErlangGrammarImpl.module).build());
+    builder.withSquidAstVisitor(CounterVisitor.<LexerlessGrammar>builder().setMetricDef(
+      ErlangMetric.MODULES).subscribeTo(ErlangGrammarImpl.module).build());
 
     /* Functions */
     builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<LexerlessGrammar>(
-        new SourceCodeBuilderCallback() {
-          public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
-            String functionKey = getFunctionKey(astNode);
-            SourceFunction function = new SourceFunction(functionKey);
-            function.setStartAtLine(astNode.getTokenLine());
-            return function;
-          }
+      new SourceCodeBuilderCallback() {
+        public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
+          String functionKey = getFunctionKey(astNode);
+          SourceFunction function = new SourceFunction(functionKey);
+          function.setStartAtLine(astNode.getTokenLine());
+          return function;
+        }
 
-          private String getFunctionKey(AstNode ast) {
-            if (ast.getType().equals(ErlangGrammarImpl.funExpression)) {
-              AstNode funcArity = ast.getFirstChild(ErlangGrammarImpl.funcArity);
-              if (funcArity == null) {
-                AstNode args = ast.getFirstDescendant(ErlangGrammarImpl.functionDeclarationNoName).getFirstChild(ErlangGrammarImpl.arguments);
-                return "FUN/" + countArgs(args) + ":"
-                  + ast.getTokenLine() + "," + ast.getToken().getColumn();
-              } else {
-                return "FUN/" + funcArity.getTokenOriginalValue() + "/"
-                  + funcArity.getChildren(ErlangGrammarImpl.literal).get(1).getTokenOriginalValue();
-              }
+        private String getFunctionKey(AstNode ast) {
+          if (ast.getType().equals(ErlangGrammarImpl.funExpression)) {
+            AstNode funcArity = ast.getFirstChild(ErlangGrammarImpl.funcArity);
+            if (funcArity == null) {
+              AstNode args = ast.getFirstDescendant(ErlangGrammarImpl.functionDeclarationNoName).getFirstChild(ErlangGrammarImpl.arguments);
+              return "FUN/" + countArgs(args) + ":"
+                + ast.getTokenLine() + "," + ast.getToken().getColumn();
             } else {
-              AstNode clause = null;
-              boolean isDec = false;
-              if (ast.getType().equals(ErlangGrammarImpl.functionDeclaration)) {
-                clause = ast.getFirstDescendant(ErlangGrammarImpl.functionClause);
-                isDec = true;
-              } else {
-                clause = ast;
-              }
-              String functionName = clause.getFirstChild(ErlangGrammarImpl.clauseHead)
-                  .getTokenValue();
-              return functionName + "/" + getArity(clause) + ((!isDec) ? "c" : "") + ":"
-                + clause.getTokenLine();
+              return "FUN/" + funcArity.getTokenOriginalValue() + "/"
+                + funcArity.getChildren(ErlangGrammarImpl.literal).get(1).getTokenOriginalValue();
             }
+          } else {
+            AstNode clause = null;
+            boolean isDec = false;
+            if (ast.getType().equals(ErlangGrammarImpl.functionDeclaration)) {
+              clause = ast.getFirstDescendant(ErlangGrammarImpl.functionClause);
+              isDec = true;
+            } else {
+              clause = ast;
+            }
+            String functionName = clause.getFirstChild(ErlangGrammarImpl.clauseHead)
+              .getTokenValue();
+            return functionName + "/" + getArity(clause) + ((!isDec) ? "c" : "") + ":"
+              + clause.getTokenLine();
           }
+        }
 
-          private String getArity(AstNode ast) {
-            AstNode args = ast.getFirstChild(ErlangGrammarImpl.clauseHead)
-                .getFirstChild(ErlangGrammarImpl.funcDecl)
-                .getFirstChild(ErlangGrammarImpl.arguments);
-            return countArgs(args);
-          }
+        private String getArity(AstNode ast) {
+          AstNode args = ast.getFirstChild(ErlangGrammarImpl.clauseHead)
+            .getFirstChild(ErlangGrammarImpl.funcDecl)
+            .getFirstChild(ErlangGrammarImpl.arguments);
+          return countArgs(args);
+        }
 
-          private String countArgs(AstNode args) {
-            int num = args.getNumberOfChildren() > 3
-                ? args.getChildren(ErlangGrammarImpl.comma).size() + 1
-                : args.getNumberOfChildren() - 2;
-            return String.valueOf(num);
-          }
-        }, ErlangGrammarImpl.functionDeclaration, ErlangGrammarImpl.functionClause, ErlangGrammarImpl.funExpression));
+        private String countArgs(AstNode args) {
+          int num = args.getNumberOfChildren() > 3
+            ? args.getChildren(ErlangGrammarImpl.comma).size() + 1
+            : args.getNumberOfChildren() - 2;
+          return String.valueOf(num);
+        }
+      }, ErlangGrammarImpl.functionDeclaration, ErlangGrammarImpl.functionClause, ErlangGrammarImpl.funExpression));
 
-    builder.withSquidAstVisitor(CounterVisitor.<LexerlessGrammar> builder().setMetricDef(
-        ErlangMetric.FUNCTIONS).subscribeTo(ErlangGrammarImpl.functionDeclaration).build());
+    builder.withSquidAstVisitor(CounterVisitor.<LexerlessGrammar>builder().setMetricDef(
+      ErlangMetric.FUNCTIONS).subscribeTo(ErlangGrammarImpl.functionDeclaration).build());
 
     /* Metrics */
 
     builder.withSquidAstVisitor(new LinesVisitor<LexerlessGrammar>(ErlangMetric.LINES));
     builder.withSquidAstVisitor(new LinesOfCodeVisitor<LexerlessGrammar>(
-        ErlangMetric.LINES_OF_CODE));
+      ErlangMetric.LINES_OF_CODE));
 
-    builder.withSquidAstVisitor(CommentsVisitor.<LexerlessGrammar> builder().withCommentMetric(
-        ErlangMetric.COMMENT_LINES)
-        .withNoSonar(true)
-        .withIgnoreHeaderComment(false).build());
+    builder.withSquidAstVisitor(CommentsVisitor.<LexerlessGrammar>builder().withCommentMetric(
+      ErlangMetric.COMMENT_LINES)
+      .withNoSonar(true)
+      .withIgnoreHeaderComment(false).build());
 
     /* Statements */
     builder.withSquidAstVisitor(new ErlangStatementVisitor());
@@ -167,16 +167,16 @@ public final class ErlangAstScanner {
     builder.withSquidAstVisitor(new BranchesOfRecursion());
 
     /* Number of fun expressions */
-    builder.withSquidAstVisitor(ComplexityVisitor.<LexerlessGrammar> builder().setMetricDef(
-        ErlangMetric.NUM_OF_FUN_EXRP).subscribeTo(ErlangGrammarImpl.funExpression).build());
+    builder.withSquidAstVisitor(ComplexityVisitor.<LexerlessGrammar>builder().setMetricDef(
+      ErlangMetric.NUM_OF_FUN_EXRP).subscribeTo(ErlangGrammarImpl.funExpression).build());
 
     /* Number of function clauses */
-    builder.withSquidAstVisitor(ComplexityVisitor.<LexerlessGrammar> builder().setMetricDef(
-        ErlangMetric.NUM_OF_FUN_CLAUSES).subscribeTo(ErlangGrammarImpl.functionClause).build());
+    builder.withSquidAstVisitor(ComplexityVisitor.<LexerlessGrammar>builder().setMetricDef(
+      ErlangMetric.NUM_OF_FUN_CLAUSES).subscribeTo(ErlangGrammarImpl.functionClause).build());
 
     /* Number of macro definitions */
-    builder.withSquidAstVisitor(ComplexityVisitor.<LexerlessGrammar> builder().setMetricDef(
-        ErlangMetric.NUM_OF_MACROS).subscribeTo(ErlangGrammarImpl.defineAttr).build());
+    builder.withSquidAstVisitor(ComplexityVisitor.<LexerlessGrammar>builder().setMetricDef(
+      ErlangMetric.NUM_OF_MACROS).subscribeTo(ErlangGrammarImpl.defineAttr).build());
 
     /* External visitors (typically Check ones) */
     for (SquidAstVisitor<LexerlessGrammar> visitor : visitors) {

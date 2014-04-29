@@ -37,7 +37,7 @@ public class LCOVParserTest {
   public void setup() throws URISyntaxException, IOException {
 
     cov = new LCOVParser().parseFile(new File("src/test/resources",
-        "org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
+      "org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
   }
 
   @Test

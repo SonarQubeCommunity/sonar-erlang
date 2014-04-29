@@ -31,22 +31,22 @@ public class ErlangParserBinaryExpressionTest {
   @Test
   public void binaryExpressions() {
     assertThat(b.build().rule(ErlangGrammarImpl.binaryLiteral))
-        .matches("<<1,17,42>>")
-        .matches("<<1,17,42:16>>")
-        .matches("<<1024/utf8>>")
-        .matches("<<1024:16/utf8>>")
-        .matches("<<$a,$b,$c>>")
-        .matches("<<\"hello\">>")
-        .matches("<<A,B,C:16>>")
-        .matches("<<G,H/binary>>")
-        .matches("<<G,H:16/bitstring>>")
-        .matches("<< << X:8, 0:8/utf8 >> || << X >> <= << 1, A, 3 >> >>")
-        .matches("<<\n?MAGIC,\nVersion:?BYTE,\nType:?BYTE,\n>>")
-        .matches("<< << (X*2) >> || <<X>> <= << 1,2,3 >> >>")
-        .matches("<< << (X*2) >> || <<X>> <= method1() >>")
-        .matches("<< << (X*2) >> || <<X>> <= method1(), method2() >>")
-        .matches("<<Part1:4/big-unsigned-integer-unit:8," +
-          "Part2:4/big-unsigned-integer-unit:8," +
-          "Body/binary>>");
+      .matches("<<1,17,42>>")
+      .matches("<<1,17,42:16>>")
+      .matches("<<1024/utf8>>")
+      .matches("<<1024:16/utf8>>")
+      .matches("<<$a,$b,$c>>")
+      .matches("<<\"hello\">>")
+      .matches("<<A,B,C:16>>")
+      .matches("<<G,H/binary>>")
+      .matches("<<G,H:16/bitstring>>")
+      .matches("<< << X:8, 0:8/utf8 >> || << X >> <= << 1, A, 3 >> >>")
+      .matches("<<\n?MAGIC,\nVersion:?BYTE,\nType:?BYTE,\n>>")
+      .matches("<< << (X*2) >> || <<X>> <= << 1,2,3 >> >>")
+      .matches("<< << (X*2) >> || <<X>> <= method1() >>")
+      .matches("<< << (X*2) >> || <<X>> <= method1(), method2() >>")
+      .matches("<<Part1:4/big-unsigned-integer-unit:8," +
+        "Part2:4/big-unsigned-integer-unit:8," +
+        "Body/binary>>");
   }
 }

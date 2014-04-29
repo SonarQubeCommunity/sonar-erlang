@@ -62,7 +62,7 @@ public class ErlangRealCodeTest {
   private String readFromFile(String fileName) throws IOException, URISyntaxException {
     StringBuilder text = new StringBuilder();
     File file = new File(ErlangRealCodeTest.class.getClassLoader().getResource(fileName)
-        .toURI());
+      .toURI());
     BufferedReader reader = Files.newReader(file, Charsets.UTF_8);
     String line = null;
     while ((line = reader.readLine()) != null) {

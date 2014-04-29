@@ -85,7 +85,7 @@ public class ErlangConfigurationModel extends AbstractConfigurationModel {
 
   @VisibleForTesting
   static String getPropertyOrDefaultValue(String propertyKey,
-    String defaultValue) {
+                                          String defaultValue) {
     String propertyValue = System.getProperty(propertyKey);
 
     if (propertyValue == null) {

@@ -31,12 +31,12 @@ public class TodoCommentCheckTest {
   public void test() {
     TodoCommentCheck check = new TodoCommentCheck();
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/todo.erl"), check);
+      "src/test/resources/checks/todo.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(4).withMessage("Complete the task associated to this TODO comment.")
-        .next().atLine(6).withMessage("Complete the task associated to this TODO comment.")
-        .next().atLine(8).withMessage("Complete the task associated to this TODO comment.")
-        .noMore();
+      .next().atLine(4).withMessage("Complete the task associated to this TODO comment.")
+      .next().atLine(6).withMessage("Complete the task associated to this TODO comment.")
+      .next().atLine(8).withMessage("Complete the task associated to this TODO comment.")
+      .noMore();
   }
 
 }

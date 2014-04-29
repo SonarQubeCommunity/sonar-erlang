@@ -32,12 +32,12 @@ public class IndentionSizeCheckTest {
     IndentionSizeCheck check = new IndentionSizeCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/spacesastabs.erl"), check);
+      "src/test/resources/checks/spacesastabs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(5).next().atLine(10)
-        .next().atLine(11).next().atLine(12).withMessage(
-            "The line starts with 5 characters which is cannot be divided by 4.")
-        .next().atLine(13).withMessage(
-            "The line starts with 1 characters which is cannot be divided by 4.")
-        .noMore();
+      .next().atLine(11).next().atLine(12).withMessage(
+      "The line starts with 5 characters which is cannot be divided by 4.")
+      .next().atLine(13).withMessage(
+      "The line starts with 1 characters which is cannot be divided by 4.")
+      .noMore();
   }
 }

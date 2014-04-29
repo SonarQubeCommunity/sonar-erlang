@@ -1,5 +1,6 @@
 <html>
-<head><title>.eunit/erlcount_dispatch.COVER.html</title></head><body bgcolor=white text=black>
+<head><title>.eunit/erlcount_dispatch.COVER.html</title></head>
+<body bgcolor=white text=black>
 <pre>
 File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_dispatch.erl by COVER 2013-03-01 at 18:50:04
 
@@ -10,86 +11,86 @@ File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-p
         |  -export([start_link/0, complete/4]).
         |  -export([init/1, dispatching/2, listening/2, handle_event/3,
         |          handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
-        |  
+        |
         |  -define(POOL, erlcount).
         |  -record(data, {regex=[], refs=[]}).
-        |  
+        |
         |  %%% PUBLIC API
         |  start_link() -&gt;
-<font color=red>     0..|      gen_fsm:start_link(?MODULE, [], []).</font>
-        |  
+<font color=red> 0..| gen_fsm:start_link(?MODULE, [], []).</font>
+        |
         |  complete(Pid, Regex, Ref, Count) -&gt;
-<font color=red>     0..|      gen_fsm:send_all_state_event(Pid, {complete, Regex, Ref, Count}).</font>
-        |  
+<font color=red> 0..| gen_fsm:send_all_state_event(Pid, {complete, Regex, Ref, Count}).</font>
+        |
         |  %%% GEN_FSM
         |  %% Two states: dispatching and listening
         |  init([]) -&gt;
         |      %% Move the get_env stuff to the supervisor's init.
-<font color=red>     0..|      {ok, Re} = application:get_env(regex),</font>
-<font color=red>     0..|      {ok, Dir} = application:get_env(directory),</font>
-<font color=red>     0..|      {ok, MaxFiles} = application:get_env(max_files),</font>
-<font color=red>     0..|      ppool:start_pool(?POOL, MaxFiles, {erlcount_counter, start_link, []}),</font>
-<font color=red>     0..|      case lists:all(fun valid_regex/1, Re) of</font>
+<font color=red> 0..| {ok, Re} = application:get_env(regex),</font>
+<font color=red> 0..| {ok, Dir} = application:get_env(directory),</font>
+<font color=red> 0..| {ok, MaxFiles} = application:get_env(max_files),</font>
+<font color=red> 0..| ppool:start_pool(?POOL, MaxFiles, {erlcount_counter, start_link, []}),</font>
+<font color=red> 0..| case lists:all(fun valid_regex/1, Re) of</font>
         |          true -&gt;
         |              %% creates a regex entry of the form [{Re, Count}]
-<font color=red>     0..|              self() ! {start, Dir},</font>
-<font color=red>     0..|              {ok, dispatching, #data{regex=[{R,0} || R &lt;- Re]}};</font>
+<font color=red> 0..| self() ! {start, Dir},</font>
+<font color=red> 0..| {ok, dispatching, #data{regex=[{R,0} || R &lt;- Re]}};</font>
         |          false -&gt;
-<font color=red>     0..|             {stop, invalid_regex}</font>
+<font color=red> 0..| {stop, invalid_regex}</font>
         |      end.
-        |  
+        |
         |  dispatching({continue, File, Continuation}, Data = #data{regex=Re, refs=Refs}) -&gt;
-<font color=red>     0..|      F = fun({Regex,_Count}, NewRefs) -&gt;</font>
-<font color=red>     0..|          Ref = make_ref(),</font>
-<font color=red>     0..|          ppool:async_queue(?POOL, [self(), Ref, File, Regex]),</font>
-<font color=red>     0..|          [Ref|NewRefs]</font>
+<font color=red> 0..| F = fun({Regex,_Count}, NewRefs) -&gt;</font>
+<font color=red> 0..| Ref = make_ref(),</font>
+<font color=red> 0..| ppool:async_queue(?POOL, [self(), Ref, File, Regex]),</font>
+<font color=red> 0..| [Ref|NewRefs]</font>
         |      end,
-<font color=red>     0..|      NewRefs = lists:foldl(F, Refs, Re),</font>
-<font color=red>     0..|      gen_fsm:send_event(self(), Continuation()),</font>
-<font color=red>     0..|      {next_state, dispatching, Data#data{refs = NewRefs}};</font>
+<font color=red> 0..| NewRefs = lists:foldl(F, Refs, Re),</font>
+<font color=red> 0..| gen_fsm:send_event(self(), Continuation()),</font>
+<font color=red> 0..| {next_state, dispatching, Data#data{refs = NewRefs}};</font>
         |  dispatching(done, Data) -&gt;
         |      %% This is a special case. We can not assume that all messages have NOT
         |      %% been received by the time we hit 'done'. As such, we directly move to
         |      %% listening/2 without waiting for an external event.
-<font color=red>     0..|      listening(done, Data).</font>
-        |  
+<font color=red> 0..| listening(done, Data).</font>
+        |
         |  listening(done, #data{regex=Re, refs=[]}) -&gt; % all received!
-<font color=red>     0..|      [io:format("Regex ~s has ~p results~n", [R,C]) || {R, C} &lt;- Re],</font>
-<font color=red>     0..|      {stop, normal, done};</font>
+<font color=red> 0..| [io:format("Regex ~s has ~p results~n", [R,C]) || {R, C} &lt;- Re],</font>
+<font color=red> 0..| {stop, normal, done};</font>
         |  listening(done, Data) -&gt; % entries still missing
-<font color=red>     0..|      {next_state, listening, Data}.</font>
-        |  
+<font color=red> 0..| {next_state, listening, Data}.</font>
+        |
         |  handle_event({complete, Regex, Ref, Count}, State, Data = #data{regex=Re, refs=Refs}) -&gt;
-<font color=red>     0..|      {Regex, OldCount} = lists:keyfind(Regex, 1, Re),</font>
-<font color=red>     0..|      NewRe = lists:keyreplace(Regex, 1, Re, {Regex, OldCount+Count}),</font>
-<font color=red>     0..|      NewData = Data#data{regex=NewRe, refs=Refs--[Ref]},</font>
-<font color=red>     0..|      case State of</font>
+<font color=red> 0..| {Regex, OldCount} = lists:keyfind(Regex, 1, Re),</font>
+<font color=red> 0..| NewRe = lists:keyreplace(Regex, 1, Re, {Regex, OldCount+Count}),</font>
+<font color=red> 0..| NewData = Data#data{regex=NewRe, refs=Refs--[Ref]},</font>
+<font color=red> 0..| case State of</font>
         |          dispatching -&gt;
-<font color=red>     0..|              {next_state, dispatching, NewData};</font>
+<font color=red> 0..| {next_state, dispatching, NewData};</font>
         |          listening -&gt;
-<font color=red>     0..|              listening(done, NewData)</font>
+<font color=red> 0..| listening(done, NewData)</font>
         |      end.
-        |  
+        |
         |  handle_sync_event(Event, _From, State, Data) -&gt;
-<font color=red>     0..|      io:format("Unexpected event: ~p~n", [Event]),</font>
-<font color=red>     0..|      {next_state, State, Data}.</font>
-        |  
+<font color=red> 0..| io:format("Unexpected event: ~p~n", [Event]),</font>
+<font color=red> 0..| {next_state, State, Data}.</font>
+        |
         |  handle_info({start, Dir}, State, Data) -&gt;
-<font color=red>     0..|      gen_fsm:send_event(self(), erlcount_lib:find_erl(Dir)),</font>
-<font color=red>     0..|      {next_state, State, Data}.</font>
-        |  
+<font color=red> 0..| gen_fsm:send_event(self(), erlcount_lib:find_erl(Dir)),</font>
+<font color=red> 0..| {next_state, State, Data}.</font>
+        |
         |  terminate(_Reason, _State, _Data) -&gt;
-<font color=red>     0..|      ok.</font>
-        |  
+<font color=red> 0..| ok.</font>
+        |
         |  code_change(_OldVsn, State, Data, _Extra) -&gt;
-<font color=red>     0..|      {ok, State, Data}.</font>
-        |  
-        |  %%% PRIVATE 
+<font color=red> 0..| {ok, State, Data}.</font>
+        |
+        |  %%% PRIVATE
         |  valid_regex(Re) -&gt;
-<font color=red>     0..|      try re:run("", Re) of</font>
-<font color=red>     0..|          _ -&gt; true</font>
+<font color=red> 0..| try re:run("", Re) of</font>
+<font color=red> 0..| _ -&gt; true</font>
         |      catch
-<font color=red>     0..|          error:badarg -&gt; false</font>
+<font color=red> 0..| error:badarg -&gt; false</font>
         |      end.
 </pre>
 </body>

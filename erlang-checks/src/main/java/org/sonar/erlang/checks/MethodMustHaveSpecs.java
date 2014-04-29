@@ -66,9 +66,9 @@ public class MethodMustHaveSpecs extends SquidCheck<LexerlessGrammar> {
     }
     if (!result) {
       getContext()
-          .createLineViolation(
-              this,
-              "Function has no specs in type: " + specsType + ".", node);
+        .createLineViolation(
+          this,
+          "Function has no specs in type: " + specsType + ".", node);
     }
   }
 

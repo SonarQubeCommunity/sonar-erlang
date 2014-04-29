@@ -56,13 +56,13 @@ public class ProjectUtil {
   public static Configuration mockConfiguration() {
     Configuration configuration = mock(Configuration.class);
     when(
-        configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-            ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+      configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
+        ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
+      ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     when(
-        configuration.getString(ErlangPlugin.DIALYZER_FILENAME_KEY,
-            ErlangPlugin.DIALYZER_DEFAULT_FILENAME)).thenReturn(
-        ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+      configuration.getString(ErlangPlugin.DIALYZER_FILENAME_KEY,
+        ErlangPlugin.DIALYZER_DEFAULT_FILENAME)).thenReturn(
+      ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
     return configuration;
   }
 
@@ -88,10 +88,10 @@ public class ProjectUtil {
 
     ArgumentMatchers m = new ArgumentMatchers();
 
-    when(fileSystem.files(Mockito.argThat(m. new IsFileQuerySource()))).thenReturn(srcFiles);
-    when(fileSystem.files(Mockito.argThat(m. new IsFileQuerySource()))).thenReturn(srcFiles);
-    when(fileSystem.files(Mockito.argThat(m. new IsFileQueryTest()))).thenReturn(testFiles);
-    when(fileSystem.files(Mockito.argThat(m. new IsFileQueryTest()))).thenReturn(testFiles);
+    when(fileSystem.files(Mockito.argThat(m.new IsFileQuerySource()))).thenReturn(srcFiles);
+    when(fileSystem.files(Mockito.argThat(m.new IsFileQuerySource()))).thenReturn(srcFiles);
+    when(fileSystem.files(Mockito.argThat(m.new IsFileQueryTest()))).thenReturn(testFiles);
+    when(fileSystem.files(Mockito.argThat(m.new IsFileQueryTest()))).thenReturn(testFiles);
     return fileSystem;
   }
 

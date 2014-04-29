@@ -1,5 +1,6 @@
 <html>
-<head><title>.eunit/erlcount_eunit.COVER.html</title></head><body bgcolor=white text=black>
+<head><title>.eunit/erlcount_eunit.COVER.html</title></head>
+<body bgcolor=white text=black>
 <pre>
 File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_eunit.erl by COVER 2013-03-01 at 18:50:04
 
@@ -12,12 +13,12 @@ File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-p
         |  %% 'learn-you-some-erlang' directory.
         |  -define(TESTDIR, "..").
         |  -endif.
-        |  
+        |
         |  %% NOTE:
         |  %% Because we do not want the tests to be bound to a specific snapshot in time
         |  %% of our app, we will instead compare it to an oracle built with unix
         |  %% commands. Users running windows sadly won't be able to run these tests.
-        |  
+        |
         |  %% We'll be forcing the design to be continuation-based when it comes to
         |  %% reading files. This will require some explaining to the user, but will
         |  %% allow to show how we can read files and schedule them at the same time,
@@ -26,13 +27,13 @@ File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-p
         |  find_erl_test_() -&gt;
      2..|      ?_assertEqual(lists:sort(string:tokens(os:cmd("find "++?TESTDIR++" -name *.erl"), "\n")),
      1..|          lists:sort(build_list(erlcount_lib:find_erl(?TESTDIR)))).
-        |  
+        |
      1..|  build_list(Term) -&gt; build_list(Term, []).
-        |  
+        |
      1..|  build_list(done, List) -&gt; List;
         |  build_list({continue, Entry, Fun}, List) -&gt;
     27..|      build_list(Fun(), [Entry|List]).
-        |  
+        |
         |  regex_count_test_() -&gt;
      2..|      [?_assertEqual(5, erlcount_lib:regex_count("a", "a a a a a")),
      1..|       ?_assertEqual(0, erlcount_lib:regex_count("o", "a a a a a")),

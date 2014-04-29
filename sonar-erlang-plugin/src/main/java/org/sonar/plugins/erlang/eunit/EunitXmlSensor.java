@@ -19,16 +19,13 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.sonar.api.resources.DuplicatedSourceException;
-
-import org.sonar.api.scan.filesystem.FileQuery;
-
 import org.apache.commons.io.FileUtils;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.resources.DuplicatedSourceException;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Qualifiers;
 import org.sonar.api.resources.Resource;
@@ -59,10 +56,10 @@ public class EunitXmlSensor implements Sensor {
 
   public void analyse(Project project, SensorContext context) {
     String eunitFolder = erlang.getConfiguration().getString(
-        ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+      ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     try {
       collect(project, context,
-          new File(moduleFileSystem.baseDir(), eunitFolder));
+        new File(moduleFileSystem.baseDir(), eunitFolder));
     } catch (Exception e) {
       LOG.error("Error occured during eunit xml file parsing", e.getMessage(), e);
     }
@@ -129,10 +126,10 @@ public class EunitXmlSensor implements Sensor {
   protected File getUnitTestFile(List<File> testFiles, List<File> srcFiles, String name) {
     String fileName = getUnitTestFileName(name);
     File file = findFileByName(testFiles, fileName);
-    if(file==null){
+    if (file == null) {
       file = findFileByName(srcFiles, fileName);
     }
-    if(file==null){
+    if (file == null) {
       file = new File("");
     }
     return file;

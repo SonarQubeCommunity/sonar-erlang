@@ -35,7 +35,7 @@ public class ErlangColorizerFormatTest {
   public void testGetTokenizers() {
     List<Tokenizer> list = (new ErlangColorizerFormat()).getTokenizers();
     assertThat(indexOf(list, JavadocTokenizer.class)).isLessThan(
-        indexOf(list, CppDocTokenizer.class));
+      indexOf(list, CppDocTokenizer.class));
   }
 
   private Integer indexOf(List<Tokenizer> tokenizers, Class tokenizerClass) {

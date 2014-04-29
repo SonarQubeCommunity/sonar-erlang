@@ -32,8 +32,8 @@ public class NumberOfFunctionArgsCheckTest {
     NumberOfFunctionArgsCheck check = new NumberOfFunctionArgsCheck();
     check.setMaximumFunctionComplexityThreshold(6);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/funargs.erl"), check);
+      "src/test/resources/checks/funargs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).withMessage(
-        "Function has 7 arguments which is greater than 6 authorized.").noMore();
+      "Function has 7 arguments which is greater than 6 authorized.").noMore();
   }
 }

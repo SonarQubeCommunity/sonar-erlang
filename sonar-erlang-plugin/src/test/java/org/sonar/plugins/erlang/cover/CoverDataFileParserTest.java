@@ -34,7 +34,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class CoverDataFileParserTest {
 
   @Test
-  public void test() throws IOException, URISyntaxException, OtpErlangDecodeException{
+  public void test() throws IOException, URISyntaxException, OtpErlangDecodeException {
     List<ErlangFileCoverage> coverageResult = CoverDataFileParser.parse(new File(ProjectUtil.class.getResource("/org/sonar/plugins/erlang/erlcount/.eunit/eunit.coverdata").toURI()));
     assertThat(coverageResult.get(0), Matchers.notNullValue());
     ErlangFileCoverage cov = getResultOfModule("erlcount_lib.erl", coverageResult);
@@ -43,9 +43,9 @@ public class CoverDataFileParserTest {
     assertThat(cov.getUncoveredLines(), Matchers.equalTo(2));
   }
 
-  private ErlangFileCoverage getResultOfModule(String module, List<ErlangFileCoverage> cov){
+  private ErlangFileCoverage getResultOfModule(String module, List<ErlangFileCoverage> cov) {
     for (ErlangFileCoverage erlangFileCoverage : cov) {
-      if(module.equals(erlangFileCoverage.getFilePath())){
+      if (module.equals(erlangFileCoverage.getFilePath())) {
         return erlangFileCoverage;
       }
     }

@@ -32,7 +32,7 @@ public class BranchesOfRecursionCheckTest {
     BranchesOfRecursionCheck check = new BranchesOfRecursionCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/branchesofrecursion.erl"), check);
+      "src/test/resources/checks/branchesofrecursion.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 
@@ -41,11 +41,11 @@ public class BranchesOfRecursionCheckTest {
     BranchesOfRecursionCheck check = new BranchesOfRecursionCheck();
     check.setMaximumBORThreshold(1);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/branchesofrecursion.erl"), check);
+      "src/test/resources/checks/branchesofrecursion.erl"), check);
 
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(2).withMessage("Function has 2 branches of recursion which is greater than 1 authorized.")
-        .next().atLine(19).withMessage("Function has 3 branches of recursion which is greater than 1 authorized.")
-        .noMore();
+      .next().atLine(2).withMessage("Function has 2 branches of recursion which is greater than 1 authorized.")
+      .next().atLine(19).withMessage("Function has 3 branches of recursion which is greater than 1 authorized.")
+      .noMore();
   }
 }

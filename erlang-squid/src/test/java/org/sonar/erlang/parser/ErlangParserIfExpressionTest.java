@@ -32,14 +32,14 @@ public class ErlangParserIfExpressionTest {
   public void ifSimple() {
     g.rule(ErlangGrammarImpl.branchExps).mock();
     assertThat(g.rule(ErlangGrammarImpl.memberExpression))
-        .matches("if branchExps end");
+      .matches("if branchExps end");
   }
 
   @Test
   public void ifSimple2() {
     g.rule(ErlangGrammarImpl.branchExp).mock();
     assertThat(g.rule(ErlangGrammarImpl.memberExpression))
-        .matches("if branchExp ; branchExp end");
+      .matches("if branchExp ; branchExp end");
   }
 
   @Test
@@ -47,10 +47,10 @@ public class ErlangParserIfExpressionTest {
     g.rule(ErlangGrammarImpl.guardSequence).mock();
     g.rule(ErlangGrammarImpl.assignmentExpression).mock();
     assertThat(g.rule(ErlangGrammarImpl.memberExpression))
-        .matches(
-            "if guardSequence -> assignmentExpression , assignmentExpression end")
-        .matches(
-            "if guardSequence -> assignmentExpression , assignmentExpression ; guardSequence -> assignmentExpression end");
+      .matches(
+        "if guardSequence -> assignmentExpression , assignmentExpression end")
+      .matches(
+        "if guardSequence -> assignmentExpression , assignmentExpression ; guardSequence -> assignmentExpression end");
   }
 
   @Test
@@ -58,10 +58,10 @@ public class ErlangParserIfExpressionTest {
     g.rule(ErlangGrammarImpl.guard).mock();
     g.rule(ErlangGrammarImpl.assignmentExpression).mock();
     assertThat(g.rule(ErlangGrammarImpl.memberExpression))
-        .matches(
-            "if guard ; guard ; guard -> assignmentExpression , assignmentExpression end")
-        .matches(
-            "if guard ; guard -> assignmentExpression , assignmentExpression ; guard ; guard -> assignmentExpression end");
+      .matches(
+        "if guard ; guard ; guard -> assignmentExpression , assignmentExpression end")
+      .matches(
+        "if guard ; guard -> assignmentExpression , assignmentExpression ; guard ; guard -> assignmentExpression end");
   }
 
   @Test
@@ -69,10 +69,10 @@ public class ErlangParserIfExpressionTest {
     g.rule(ErlangGrammarImpl.guardExpression).mock();
     g.rule(ErlangGrammarImpl.assignmentExpression).mock();
     assertThat(g.rule(ErlangGrammarImpl.memberExpression))
-        .matches(
-            "if guardExpression , guardExpression ; guardExpression ; guardExpression , guardExpression , guardExpression -> assignmentExpression , assignmentExpression end")
-        .matches(
-            "if guardExpression ; guardExpression , guardExpression -> assignmentExpression , assignmentExpression ; guardExpression , guardExpression ; guardExpression -> assignmentExpression end");
+      .matches(
+        "if guardExpression , guardExpression ; guardExpression ; guardExpression , guardExpression , guardExpression -> assignmentExpression , assignmentExpression end")
+      .matches(
+        "if guardExpression ; guardExpression , guardExpression -> assignmentExpression , assignmentExpression ; guardExpression , guardExpression ; guardExpression -> assignmentExpression end");
   }
 
 }

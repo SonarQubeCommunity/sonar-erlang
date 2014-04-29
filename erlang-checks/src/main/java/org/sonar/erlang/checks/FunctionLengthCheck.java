@@ -52,11 +52,11 @@ public class FunctionLengthCheck extends SquidCheck<LexerlessGrammar> {
     int loc = function.getInt(ErlangMetric.LINES_OF_CODE);
     if (loc > maximumFunctionLengthThreshold) {
       getContext()
-          .createLineViolation(
-              this,
-              "Function has {0,number,integer} lines of code which is greater than {1,number,integer} authorized.",
-              node, loc,
-              maximumFunctionLengthThreshold);
+        .createLineViolation(
+          this,
+          "Function has {0,number,integer} lines of code which is greater than {1,number,integer} authorized.",
+          node, loc,
+          maximumFunctionLengthThreshold);
     }
   }
 

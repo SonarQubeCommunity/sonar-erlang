@@ -56,15 +56,15 @@ public class IndentionSizeCheck extends SquidCheck<LexerlessGrammar> implements 
       if (previousToken == null || previousToken.getLine() != token.getLine()) {
         if (token.getColumn() % indentionSize != 0) {
           getContext()
-              .createLineViolation(
-                  this,
-                  "The line starts with {0, number, integer} characters which is cannot be divided by {1, number, integer}.",
-                  token.getLine(), token.getColumn(), indentionSize);
+            .createLineViolation(
+              this,
+              "The line starts with {0, number, integer} characters which is cannot be divided by {1, number, integer}.",
+              token.getLine(), token.getColumn(), indentionSize);
           numOfViolations++;
           if (numOfViolations == 100) {
             getContext().createLineViolation(this,
-                "File has reached 100 indention violation.", token.getLine(),
-                token.getColumn(), indentionSize);
+              "File has reached 100 indention violation.", token.getLine(),
+              token.getColumn(), indentionSize);
           }
         }
         previousToken = token;

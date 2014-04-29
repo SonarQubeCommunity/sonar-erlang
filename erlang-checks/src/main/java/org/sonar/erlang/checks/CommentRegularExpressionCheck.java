@@ -29,7 +29,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @Rule(key = "CommentRegularExpression", priority = Priority.MAJOR,
   cardinality = Cardinality.MULTIPLE)
 public class CommentRegularExpressionCheck extends
-    AbstractCommentRegularExpressionCheck<LexerlessGrammar> {
+  AbstractCommentRegularExpressionCheck<LexerlessGrammar> {
 
   private static final String DEFAULT_REGULAR_EXPRESSION = "";
   private static final String DEFAULT_MESSAGE = "The violation message";

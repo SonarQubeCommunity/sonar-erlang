@@ -44,7 +44,7 @@ public class TestHelper {
     return getSourceFile(scanner);
   }
 
-  public static SourceFile getSourceFile(AstScanner<LexerlessGrammar> scanner){
+  public static SourceFile getSourceFile(AstScanner<LexerlessGrammar> scanner) {
     Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
     return (SourceFile) sources.iterator().next();
   }

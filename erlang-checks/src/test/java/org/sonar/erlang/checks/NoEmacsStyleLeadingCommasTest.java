@@ -32,8 +32,8 @@ public class NoEmacsStyleLeadingCommasTest {
     NoEmacsStyleLeadingCommasCheck check = new NoEmacsStyleLeadingCommasCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/noemacsstyle.erl"), check);
+      "src/test/resources/checks/noemacsstyle.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(8).withMessage(
-        "No Emacs-style leading commas.").next().atLine(9).next().atLine(17).noMore();
+      "No Emacs-style leading commas.").next().atLine(9).next().atLine(17).noMore();
   }
 }

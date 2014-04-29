@@ -55,15 +55,15 @@ public class CoverCoverageSensor implements Sensor {
 
   public void analyse(Project project, SensorContext context) {
     File reportsDir = new File(moduleFileSystem.baseDir(), erlang.getConfiguration()
-        .getString(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+      .getString(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
     String coverDataFilename = erlang.getConfiguration().getString(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
 
     File coverDataFile = new File(reportsDir, coverDataFilename);
 
-    if(coverDataFile.exists()){
+    if (coverDataFile.exists()) {
       parseCoverdataFile(moduleFileSystem, context, coverDataFile, project);
-    } else{
+    } else {
       parseCoverHtmlOutput(moduleFileSystem, context, reportsDir, project);
     }
   }
@@ -73,7 +73,7 @@ public class CoverCoverageSensor implements Sensor {
       List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile);
       analyseCoveredFiles(moduleFileSystem, context, coveredFiles, project);
     } catch (IOException e) {
-      LOG.error("Cannot parse coverdata file: "+coverDataFile.getAbsolutePath());
+      LOG.error("Cannot parse coverdata file: " + coverDataFile.getAbsolutePath());
     }
   }
 
@@ -98,22 +98,22 @@ public class CoverCoverageSensor implements Sensor {
   }
 
   public ErlangFileCoverage analyseHtml(ModuleFileSystem moduleFileSystem, SensorContext sensorContext,
-      String testCoverageFileName) {
+                                        String testCoverageFileName) {
     File coverCoverageReportFile = new File(moduleFileSystem.baseDir(),
-        getTestReportsFolder() + "/" + testCoverageFileName);
+      getTestReportsFolder() + "/" + testCoverageFileName);
     LCOVParser parser = new LCOVParser();
     return parser.parseFile(coverCoverageReportFile);
   }
 
   protected void analyseCoveredFiles(ModuleFileSystem moduleFileSystem, SensorContext sensorContext,
-      List<ErlangFileCoverage> coveredFiles, Project project) {
+                                     List<ErlangFileCoverage> coveredFiles, Project project) {
 
     for (File file : moduleFileSystem.files(Erlang.sourceQuery)) {
       try {
         ErlangFileCoverage fileCoverage = getFileCoverage(file, coveredFiles);
         org.sonar.api.resources.File resource = org.sonar.api.resources.File.fromIOFile(file, project);
         PropertiesBuilder<Integer, Integer> lineHitsData = new PropertiesBuilder<Integer, Integer>(
-            CoreMetrics.COVERAGE_LINE_HITS_DATA);
+          CoreMetrics.COVERAGE_LINE_HITS_DATA);
 
         if (fileCoverage != null) {
           Map<Integer, Integer> hits = fileCoverage.getLineCoverageData();
@@ -123,14 +123,14 @@ public class CoverCoverageSensor implements Sensor {
 
           sensorContext.saveMeasure(resource, lineHitsData.build());
           sensorContext.saveMeasure(resource, CoreMetrics.LINES_TO_COVER,
-              (double) fileCoverage.getLinesToCover());
+            (double) fileCoverage.getLinesToCover());
           sensorContext.saveMeasure(resource, CoreMetrics.UNCOVERED_LINES,
-              (double) fileCoverage.getUncoveredLines());
+            (double) fileCoverage.getUncoveredLines());
         } else {
 
           // colour all lines as not executed
           for (int x = 1; x < sensorContext.getMeasure(resource, CoreMetrics.LINES)
-              .getIntValue(); x++) {
+            .getIntValue(); x++) {
             lineHitsData.add(x, 0);
           }
 
@@ -138,9 +138,9 @@ public class CoverCoverageSensor implements Sensor {
           Measure ncloc = sensorContext.getMeasure(resource, CoreMetrics.NCLOC);
           sensorContext.saveMeasure(resource, lineHitsData.build());
           sensorContext.saveMeasure(resource, CoreMetrics.LINES_TO_COVER, ncloc
-              .getValue());
+            .getValue());
           sensorContext.saveMeasure(resource, CoreMetrics.UNCOVERED_LINES, ncloc
-              .getValue());
+            .getValue());
         }
 
       } catch (Exception e) {
@@ -161,7 +161,7 @@ public class CoverCoverageSensor implements Sensor {
 
   protected String getTestReportsFolder() {
     return erlang.getConfiguration().getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+      ErlangPlugin.EUNIT_DEFAULT_FOLDER);
   }
 
   @Override

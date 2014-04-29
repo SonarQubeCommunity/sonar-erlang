@@ -50,8 +50,8 @@ public class DepthOfCasesCheck extends SquidCheck<LexerlessGrammar> {
       int depth = countChild(astNode);
       if (depth > maximumCaseDepthThreshold) {
         getContext().createLineViolation(this,
-            "Depth of case: {0} reached the threshold: {1}.", astNode.getTokenLine(),
-            depth, maximumCaseDepthThreshold);
+          "Depth of case: {0} reached the threshold: {1}.", astNode.getTokenLine(),
+          depth, maximumCaseDepthThreshold);
       }
     }
 

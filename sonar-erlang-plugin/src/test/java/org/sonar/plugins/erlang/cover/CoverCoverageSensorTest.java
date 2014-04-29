@@ -64,8 +64,8 @@ public class CoverCoverageSensorTest {
       .thenReturn("non_existing.coverdata");
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-        Arrays.asList(
-            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
+      Arrays.asList(
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
 
     new CoverCoverageSensor(erlang, fileSystem).analyse(project, context);
 
@@ -80,8 +80,8 @@ public class CoverCoverageSensorTest {
       .thenReturn(ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-        Arrays.asList(
-            new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
+      Arrays.asList(
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
 
     new CoverCoverageSensor(erlang, fileSystem).analyse(project, context);
 

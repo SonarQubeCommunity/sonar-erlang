@@ -34,7 +34,7 @@ public class ErlangParserCaseStatementTest {
     g.rule(ErlangGrammarImpl.expression).mock();
     g.rule(ErlangGrammarImpl.patternStatements).mock();
     assertThat(g.rule(ErlangGrammarImpl.caseExpression))
-    .matches((code("case expression of patternStatements end")));
+      .matches((code("case expression of patternStatements end")));
   }
 
   @Test
@@ -42,15 +42,15 @@ public class ErlangParserCaseStatementTest {
     g.rule(ErlangGrammarImpl.expression).mock();
     g.rule(ErlangGrammarImpl.patternStatement).mock();
     assertThat(g.rule(ErlangGrammarImpl.caseExpression))
-    .matches("case expression of patternStatement end")
-    .matches("case expression of patternStatement ; patternStatement end");
+      .matches("case expression of patternStatement end")
+      .matches("case expression of patternStatement ; patternStatement end");
   }
 
   @Test
   public void caseReal1() {
     assertThat(g.rule(ErlangGrammarImpl.caseExpression)).matches(
-        (code("case cerl:is_c_var(PosVar) andalso (cerl:var_name(PosVar) =/= '') of",
-            "true -> \"variable \"++String;", "false -> \"pattern \"++String", "end")));
+      (code("case cerl:is_c_var(PosVar) andalso (cerl:var_name(PosVar) =/= '') of",
+        "true -> \"variable \"++String;", "false -> \"pattern \"++String", "end")));
   }
 
   private static String code(String... lines) {

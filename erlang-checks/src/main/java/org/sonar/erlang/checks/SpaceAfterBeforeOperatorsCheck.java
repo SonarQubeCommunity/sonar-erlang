@@ -19,19 +19,17 @@
  */
 package org.sonar.erlang.checks;
 
-import javax.annotation.Nullable;
-
-import org.sonar.check.BelongsToProfile;
-
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
+import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +39,8 @@ import java.util.List;
 public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar> {
 
   List<ErlangGrammarImpl> operators = ImmutableList.of(ErlangGrammarImpl.matchop,
-      ErlangGrammarImpl.star, ErlangGrammarImpl.div, ErlangGrammarImpl.plus,
-      ErlangGrammarImpl.minus);
+    ErlangGrammarImpl.star, ErlangGrammarImpl.div, ErlangGrammarImpl.plus,
+    ErlangGrammarImpl.minus);
   List<Integer> failedLines = new ArrayList<Integer>();
 
   private int numOfViolations = 0;
@@ -81,12 +79,12 @@ public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar>
     int compCheckPoint = (previous) ? compCol + compLength : compCol;
     if (actCheckPoint != compCheckPoint) {
       getContext().createLineViolation(this, "No space after operator in column: {0}.",
-          ast.getToken().getLine(), actCol + 1);
+        ast.getToken().getLine(), actCol + 1);
       numOfViolations++;
       if (numOfViolations == 100) {
         getContext().createLineViolation(this,
-            "File has reached 100 'No space after operator' violation.",
-            ast.getToken().getLine(), actCol + 1);
+          "File has reached 100 'No space after operator' violation.",
+          ast.getToken().getLine(), actCol + 1);
       }
       return ast.getToken().getLine();
     }

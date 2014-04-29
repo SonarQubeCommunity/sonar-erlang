@@ -53,11 +53,11 @@ public class FunExpressionComplexityCheck extends SquidCheck<LexerlessGrammar> {
     int measuredComp = ChecksHelper.getRecursiveMeasureInt(function, ErlangMetric.COMPLEXITY);
     if (measuredComp > maximumFunExpressionComplexityThreshold) {
       getContext()
-          .createLineViolation(
-              this,
-              "Function has a complexity of {0,number,integer} which is greater than {1,number,integer} authorized.",
-              node, measuredComp,
-              maximumFunExpressionComplexityThreshold);
+        .createLineViolation(
+          this,
+          "Function has a complexity of {0,number,integer} which is greater than {1,number,integer} authorized.",
+          node, measuredComp,
+          maximumFunExpressionComplexityThreshold);
     }
   }
 

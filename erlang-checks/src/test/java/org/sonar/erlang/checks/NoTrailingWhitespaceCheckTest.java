@@ -32,10 +32,10 @@ public class NoTrailingWhitespaceCheckTest {
     NoTrailingWhitespaceCheck check = new NoTrailingWhitespaceCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/notrailingwhitespace.erl"), check);
+      "src/test/resources/checks/notrailingwhitespace.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
-        "No trailing white space.").next().atLine(6)
-        .withMessage("No trailing white space.").next().atLine(7).withMessage(
-            "No trailing white space.").noMore();
+      "No trailing white space.").next().atLine(6)
+      .withMessage("No trailing white space.").next().atLine(7).withMessage(
+      "No trailing white space.").noMore();
   }
 }

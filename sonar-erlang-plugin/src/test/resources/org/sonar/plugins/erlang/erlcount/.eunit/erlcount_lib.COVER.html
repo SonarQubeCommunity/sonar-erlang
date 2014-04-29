@@ -1,5 +1,6 @@
 <html>
-<head><title>.eunit/erlcount_lib.COVER.html</title></head><body bgcolor=white text=black>
+<head><title>.eunit/erlcount_lib.COVER.html</title></head>
+<body bgcolor=white text=black>
 <pre>
 File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.erl by COVER 2013-03-01 at 18:50:04
 
@@ -8,17 +9,17 @@ File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-p
         |  -module(erlcount_lib).
         |  -export([find_erl/1, regex_count/2]).
         |  -include_lib("kernel/include/file.hrl").
-        |  
+        |
         |  %% Finds all files ending in .erl
         |  find_erl(Directory) -&gt;
      2..|      find_erl(Directory, queue:new()).
-        |  
+        |
         |  regex_count(Re, Str) -&gt;
     12..|      case re:run(Str, Re, [global]) of
      2..|          nomatch -&gt; 0;
     10..|          {match, List} -&gt; length(List)
         |      end.
-        |  
+        |
         |  %%% Private
         |  %% Dispatches based on file type
         |  find_erl(Name, Queue) -&gt;
@@ -26,9 +27,9 @@ File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-p
    186..|      case F#file_info.type of
     30..|          directory -&gt; handle_directory(Name, Queue);
    156..|          regular -&gt; handle_regular_file(Name, Queue);
-<font color=red>     0..|          _Other -&gt; dequeue_and_run(Queue)</font>
+<font color=red> 0..| _Other -&gt; dequeue_and_run(Queue)</font>
         |      end.
-        |  
+        |
         |  %% Opens directories and enqueues files in there
         |  handle_directory(Dir, Queue) -&gt;
     30..|      case file:list_dir(Dir) of
@@ -37,7 +38,7 @@ File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-p
         |          {ok, Files} -&gt;
     28..|              dequeue_and_run(enqueue_many(Dir, Files, Queue))
         |      end.
-        |  
+        |
         |  %% Checks if the file finishes in .erl
         |  handle_regular_file(Name, Queue) -&gt;
    156..|      case filename:extension(Name) of
@@ -46,22 +47,22 @@ File generated from /home/tkende/dev1/spil-workspace/sonar-erlang/sonar-erlang-p
         |          _NonErl -&gt;
    102..|              dequeue_and_run(Queue)
         |      end.
-        |  
+        |
         |  %% Pops an item from the queue and runs it.
         |  dequeue_and_run(Queue) -&gt;
    186..|      case queue:out(Queue) of
      2..|          {empty, _} -&gt; done;
    184..|          {{value, File}, NewQueue} -&gt; find_erl(File, NewQueue)
         |      end.
-        |  
+        |
         |  %% Adds a bunch of items to the queue.
         |  enqueue_many(Path, Files, Queue) -&gt;
     28..|      F = fun(File, Q) -&gt; queue:in(filename:join(Path,File), Q) end,
     28..|      lists:foldl(F, Queue, Files).
         |  unused_func(A,B) -&gt;
-<font color=red>     0..|      throw({error, not_implemented}).</font>
-        |  
-        |  
+<font color=red> 0..| throw({error, not_implemented}).</font>
+        |
+        |
 </pre>
 </body>
 </html>

@@ -32,8 +32,8 @@ public class FunExpressionComplexityCheckTest {
     FunExpressionComplexityCheck check = new FunExpressionComplexityCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/funcomplexity.erl"), check);
+      "src/test/resources/checks/funcomplexity.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).withMessage(
-        "Function has a complexity of 5 which is greater than 4 authorized.").noMore();
+      "Function has a complexity of 5 which is greater than 4 authorized.").noMore();
   }
 }

@@ -57,7 +57,7 @@ import java.util.List;
     description = "Filename of the dialyzer output located in the eunit folder",
     global = true, project = true),
 
-    @Property(key = ErlangPlugin.COVERDATA_FILENAME_KEY,
+  @Property(key = ErlangPlugin.COVERDATA_FILENAME_KEY,
     defaultValue = ErlangPlugin.COVERDATA_DEFAULT_FILENAME,
     name = "Coverdata Default Filename",
     description = "Filename of the coverdata file located in the eunit folder",
@@ -89,26 +89,26 @@ public class ErlangPlugin extends SonarPlugin {
 
   public List<Class<? extends Extension>> getExtensions() {
     return ImmutableList.of(
-        Erlang.class,
-        ErlangSourceImporter.class,
-        ErlangColorizerFormat.class,
-        ErlangCpdMapping.class,
+      Erlang.class,
+      ErlangSourceImporter.class,
+      ErlangColorizerFormat.class,
+      ErlangCpdMapping.class,
 
-        ErlangSquidSensor.class,
+      ErlangSquidSensor.class,
 
-        ErlangChecksRuleRepository.class,
-        DialyzerRuleRepository.class,
-        ErlangProfile.class,
+      ErlangChecksRuleRepository.class,
+      DialyzerRuleRepository.class,
+      ErlangProfile.class,
 
-        ErlangCommonRulesEngine.class,
+      ErlangCommonRulesEngine.class,
 
-        EunitXmlSensor.class,
+      EunitXmlSensor.class,
 
-        CoverCoverageSensor.class,
+      CoverCoverageSensor.class,
 
-        DialyzerSensor.class,
+      DialyzerSensor.class,
 
-        ErlangLibrarySensor.class);
+      ErlangLibrarySensor.class);
   }
 
 }

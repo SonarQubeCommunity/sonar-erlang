@@ -45,26 +45,26 @@ public class ErlangProfileTest {
 
     RuleFinder ruleFinder = ruleFinder();
     ErlangProfile definition = new ErlangProfile(new AnnotationProfileParser(ruleFinder),
-        new XMLProfileParser(ruleFinder));
+      new XMLProfileParser(ruleFinder));
     RulesProfile profile = definition.createProfile(validation);
 
     assertThat(profile.getLanguage()).isEqualTo(Erlang.KEY);
     assertThat(profile.getName()).isEqualTo(ErlangProfile.PROFILE_NAME);
     assertThat(profile.getActiveRulesByRepository(CheckList.REPOSITORY_KEY)).hasSize(23);
     assertThat(profile.getActiveRulesByRepository(DialyzerRuleRepository.REPOSITORY_KEY))
-        .hasSize(41);
+      .hasSize(41);
     assertThat(validation.hasErrors()).isFalse();
   }
 
   static RuleFinder ruleFinder() {
     return when(mock(RuleFinder.class).findByKey(anyString(), anyString())).thenAnswer(
-        new Answer<Rule>() {
-          public Rule answer(InvocationOnMock invocation) {
-            Object[] arguments = invocation.getArguments();
-            return Rule.create((String) arguments[0], (String) arguments[1],
-                (String) arguments[1]);
-          }
-        }).getMock();
+      new Answer<Rule>() {
+        public Rule answer(InvocationOnMock invocation) {
+          Object[] arguments = invocation.getArguments();
+          return Rule.create((String) arguments[0], (String) arguments[1],
+            (String) arguments[1]);
+        }
+      }).getMock();
   }
 
 }

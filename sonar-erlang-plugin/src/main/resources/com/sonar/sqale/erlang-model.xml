@@ -24,7 +24,7 @@
           <key>remediationFactor</key>
           <val>20.0</val>
           <txt>mn</txt>
-        </prop>      
+        </prop>
       </chc>
       <chc>
         <rule-repo>erlang</rule-repo>
@@ -212,7 +212,7 @@
           <txt>mn</txt>
         </prop>
       </chc>
-    </chc>    
+    </chc>
   </chc>
   <chc>
     <key>SECURITY</key>

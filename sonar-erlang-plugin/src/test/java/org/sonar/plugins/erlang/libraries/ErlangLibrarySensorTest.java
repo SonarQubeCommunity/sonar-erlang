@@ -62,7 +62,7 @@ public class ErlangLibrarySensorTest {
 
   @Parameters
   public static Collection<Object[]> data() {
-    Object[][] data = new Object[][] {
+    Object[][] data = new Object[][]{
       {"rebar_comments.config"},
       {"rebar_depsdir.config"}};
     return Arrays.asList(data);
@@ -82,9 +82,9 @@ public class ErlangLibrarySensorTest {
 
     Configuration configuration = ProjectUtil.mockConfiguration();
     when(
-        configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
-            ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
-        filename);
+      configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
+        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
+      filename);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(null, null);
     new ErlangLibrarySensor(new Erlang(configuration), fileSystem).analyse(project, context);
@@ -96,79 +96,79 @@ public class ErlangLibrarySensorTest {
     verify(context, times(12)).saveDependency(argument.capture());
     List<Dependency> capturedDependencies = argument.getAllValues();
     assertThat(((Library) capturedDependencies.get(0).getTo()).getKey(),
-        Matchers.equalTo("fake:elibs"));
+      Matchers.equalTo("fake:elibs"));
     assertThat(((Library) capturedDependencies.get(1).getTo()).getKey(),
-        Matchers.equalTo("kake:estat"));
+      Matchers.equalTo("kake:estat"));
     assertThat(((Library) capturedDependencies.get(2).getTo()).getKey(),
-        Matchers.equalTo("lake:malle"));
+      Matchers.equalTo("lake:malle"));
     assertThat(((Library) capturedDependencies.get(3).getTo()).getKey(),
-        Matchers.equalTo("hola:moke_ads"));
+      Matchers.equalTo("hola:moke_ads"));
     assertThat(((Library) capturedDependencies.get(4).getTo()).getKey(),
-        Matchers.equalTo("malna:eper"));
+      Matchers.equalTo("malna:eper"));
     assertThat(((Library) capturedDependencies.get(5).getTo()).getKey(),
-        Matchers.equalTo("should:meck"));
+      Matchers.equalTo("should:meck"));
     assertThat(((Library) capturedDependencies.get(6).getTo()).getKey(),
-        Matchers.equalTo("should:meck"));
+      Matchers.equalTo("should:meck"));
     assertThat(((Library) capturedDependencies.get(7).getTo()).getKey(),
-        Matchers.equalTo("andrewtj:dnssd_erlang"));
+      Matchers.equalTo("andrewtj:dnssd_erlang"));
     assertThat(((Library) capturedDependencies.get(8).getTo()).getKey(),
-        Matchers.equalTo("evanmiller:erlydtl"));
+      Matchers.equalTo("evanmiller:erlydtl"));
     assertThat(((Library) capturedDependencies.get(9).getTo()).getKey(),
-        Matchers.equalTo("basho:lager"));
+      Matchers.equalTo("basho:lager"));
     assertThat(((Library) capturedDependencies.get(10).getTo()).getKey(),
-        Matchers.equalTo("log4erl.googlecode.com:log4erl"));
+      Matchers.equalTo("log4erl.googlecode.com:log4erl"));
     assertThat(((Library) capturedDependencies.get(11).getTo()).getKey(),
-        Matchers.equalTo("erlang-mbcs.googlecode.com:mbcs"));
+      Matchers.equalTo("erlang-mbcs.googlecode.com:mbcs"));
 
     assertThat(((Library) capturedDependencies.get(0).getTo()).getName(),
-        Matchers.equalTo("elibs"));
+      Matchers.equalTo("elibs"));
     assertThat(((Library) capturedDependencies.get(1).getTo()).getName(),
-        Matchers.equalTo("estat"));
+      Matchers.equalTo("estat"));
     assertThat(((Library) capturedDependencies.get(2).getTo()).getName(),
-        Matchers.equalTo("malle"));
+      Matchers.equalTo("malle"));
     assertThat(((Library) capturedDependencies.get(3).getTo()).getName(),
-        Matchers.equalTo("moke_ads"));
+      Matchers.equalTo("moke_ads"));
     assertThat(((Library) capturedDependencies.get(4).getTo()).getName(),
-        Matchers.equalTo("eper"));
+      Matchers.equalTo("eper"));
     assertThat(((Library) capturedDependencies.get(5).getTo()).getName(),
-        Matchers.equalTo("meck"));
+      Matchers.equalTo("meck"));
     assertThat(((Library) capturedDependencies.get(6).getTo()).getName(),
-        Matchers.equalTo("meck"));
+      Matchers.equalTo("meck"));
     assertThat(((Library) capturedDependencies.get(7).getTo()).getName(),
-        Matchers.equalTo("dnssd"));
+      Matchers.equalTo("dnssd"));
     assertThat(((Library) capturedDependencies.get(8).getTo()).getName(),
-        Matchers.equalTo("erlydtl"));
+      Matchers.equalTo("erlydtl"));
     assertThat(((Library) capturedDependencies.get(9).getTo()).getName(),
-        Matchers.equalTo("lager"));
+      Matchers.equalTo("lager"));
     assertThat(((Library) capturedDependencies.get(10).getTo()).getName(),
-        Matchers.equalTo("log4erl"));
+      Matchers.equalTo("log4erl"));
     assertThat(((Library) capturedDependencies.get(11).getTo()).getName(),
-        Matchers.equalTo("mbcs"));
+      Matchers.equalTo("mbcs"));
 
     assertThat(((Library) capturedDependencies.get(0).getTo()).getVersion(),
-        Matchers.equalTo("1.1.0"));
+      Matchers.equalTo("1.1.0"));
     assertThat(((Library) capturedDependencies.get(1).getTo()).getVersion(),
-        Matchers.equalTo("0.0.1"));
+      Matchers.equalTo("0.0.1"));
     assertThat(((Library) capturedDependencies.get(2).getTo()).getVersion(),
-        Matchers.equalTo("0.7.2-0"));
+      Matchers.equalTo("0.7.2-0"));
     assertThat(((Library) capturedDependencies.get(3).getTo()).getVersion(),
-        Matchers.equalTo("19840221-3"));
+      Matchers.equalTo("19840221-3"));
     assertThat(((Library) capturedDependencies.get(4).getTo()).getVersion(),
-        Matchers.equalTo("HEAD"));
+      Matchers.equalTo("HEAD"));
     assertThat(((Library) capturedDependencies.get(5).getTo()).getVersion(),
-        Matchers.equalTo("0.7.2-0"));
+      Matchers.equalTo("0.7.2-0"));
     assertThat(((Library) capturedDependencies.get(6).getTo()).getVersion(),
-        Matchers.equalTo("0.7.2-0"));
+      Matchers.equalTo("0.7.2-0"));
     assertThat(((Library) capturedDependencies.get(7).getTo()).getVersion(),
-        Matchers.equalTo("master"));
+      Matchers.equalTo("master"));
     assertThat(((Library) capturedDependencies.get(8).getTo()).getVersion(),
-        Matchers.equalTo("dda4db043a"));
+      Matchers.equalTo("dda4db043a"));
     assertThat(((Library) capturedDependencies.get(9).getTo()).getVersion(),
-        Matchers.equalTo("master"));
+      Matchers.equalTo("master"));
     assertThat(((Library) capturedDependencies.get(10).getTo()).getVersion(),
-        Matchers.equalTo("HEAD"));
+      Matchers.equalTo("HEAD"));
     assertThat(((Library) capturedDependencies.get(11).getTo()).getVersion(),
-        Matchers.equalTo("54"));
+      Matchers.equalTo("54"));
 
   }
 }

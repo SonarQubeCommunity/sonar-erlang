@@ -33,7 +33,7 @@ public class ErlangChecksRuleRepositoryTest {
   @Test
   public void test() {
     ErlangChecksRuleRepository ruleRepository = new ErlangChecksRuleRepository(
-        new AnnotationRuleParser());
+      new AnnotationRuleParser());
     assertThat(ruleRepository.getKey()).isEqualTo("erlang");
     assertThat(ruleRepository.getName()).isEqualTo("Sonar");
     List<Rule> rules = ruleRepository.createRules();

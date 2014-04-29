@@ -32,8 +32,8 @@ public class DepthOfCasesCheckTest {
     DepthOfCasesCheck check = new DepthOfCasesCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/depthofcases.erl"), check);
+      "src/test/resources/checks/depthofcases.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).withMessage(
-        "Depth of case: 5 reached the threshold: 4.").noMore();
+      "Depth of case: 5 reached the threshold: 4.").noMore();
   }
 }

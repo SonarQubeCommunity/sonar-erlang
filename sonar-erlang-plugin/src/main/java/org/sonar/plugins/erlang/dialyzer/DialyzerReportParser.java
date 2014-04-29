@@ -42,7 +42,6 @@ import java.io.InputStreamReader;
  * Read and parse generated dialyzer report
  *
  * @author tkende
- *
  */
 public class DialyzerReportParser {
   private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?)(:[0-9]+:)(.*)";
@@ -59,8 +58,8 @@ public class DialyzerReportParser {
   /**
    * We must pass the dialyzerRuleManager as well to make possible to find the
    * rule based on the message in the dialyzer log file
-   * @param erlang
    *
+   * @param erlang
    * @param project
    * @param context
    * @param dialyzerRuleManager
@@ -73,10 +72,10 @@ public class DialyzerReportParser {
      */
     try {
       File reportsDir = new File(moduleFileSystem.baseDir(), erlang.getConfiguration()
-          .getString(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+        .getString(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
       String dialyzerFileName = erlang.getConfiguration().getString(
-          ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+        ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
       File file = new File(reportsDir, dialyzerFileName);
 
       FileInputStream fstream = new FileInputStream(file);
@@ -94,10 +93,10 @@ public class DialyzerReportParser {
             if (resource != null) {
               Issuable issuable = resourcePerspectives.as(Issuable.class, resource);
               Issue issue = issuable.newIssueBuilder()
-                  .ruleKey(RuleKey.of(REPO_KEY, ruleKey))
-                  .line(Integer.valueOf(res[1]))
-                  .message(res[2].trim())
-                  .build();
+                .ruleKey(RuleKey.of(REPO_KEY, ruleKey))
+                .line(Integer.valueOf(res[1]))
+                .message(res[2].trim())
+                .build();
               issuable.addIssue(issue);
             }
           }

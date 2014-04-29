@@ -43,9 +43,9 @@ public class NoEmacsStyleLeadingCommasCheck extends SquidCheck<LexerlessGrammar>
     AstNode previousNode = ast.getPreviousSibling();
     int astTokenLine = ast.getToken().getLine();
     if ((previousNode.getToken().getLine() != astTokenLine)) {
-      if(previousNode.getLastToken().getLine() != astTokenLine){
+      if (previousNode.getLastToken().getLine() != astTokenLine) {
         getContext().createLineViolation(this, "No Emacs-style leading commas.",
-            astTokenLine);
+          astTokenLine);
       }
     }
 

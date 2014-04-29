@@ -31,12 +31,12 @@ public class FixmeCommentCheckTest {
   public void test() {
     FixmeCommentCheck check = new FixmeCommentCheck();
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/fixme.erl"), check);
+      "src/test/resources/checks/fixme.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(4).withMessage("Take the required action to fix the issue indicated by this comment.")
-        .next().atLine(6).withMessage("Take the required action to fix the issue indicated by this comment.")
-        .next().atLine(9).withMessage("Take the required action to fix the issue indicated by this comment.")
-        .noMore();
+      .next().atLine(4).withMessage("Take the required action to fix the issue indicated by this comment.")
+      .next().atLine(6).withMessage("Take the required action to fix the issue indicated by this comment.")
+      .next().atLine(9).withMessage("Take the required action to fix the issue indicated by this comment.")
+      .noMore();
   }
 
 }

@@ -19,29 +19,26 @@
  */
 package org.sonar.erlang.checks;
 
+import com.sonar.sslr.api.AstAndTokenVisitor;
+import com.sonar.sslr.api.Token;
+import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-
 import org.sonar.sslr.parser.LexerlessGrammar;
-
-import com.sonar.sslr.api.Token;
-
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.squid.checks.SquidCheck;
 
 
 @Rule(key = "TodoCommentCheck", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 public class TodoCommentCheck extends SquidCheck<LexerlessGrammar>
-    implements AstAndTokenVisitor {
+  implements AstAndTokenVisitor {
 
   private static final String PATTERN = "TODO";
   private static final String MESSAGE = "Complete the task associated to this TODO comment.";
 
   private final CommentContainsPatternChecker checker =
-      new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
+    new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
 
   public void visitToken(Token token) {
     checker.visitToken(token);

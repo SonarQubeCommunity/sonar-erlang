@@ -19,10 +19,7 @@
  */
 package org.sonar.erlang.checks;
 
-import javax.annotation.Nullable;
-
 import com.sonar.sslr.api.AstAndTokenVisitor;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
@@ -35,6 +32,7 @@ import org.sonar.check.RuleProperty;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,8 +75,8 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
       int previousLine = (checkedLines.size() == 0) ? 0 : checkedLines.get(checkedLines.size() - 1);
       if (checkBlankLines(token, previousLine)) {
         getContext().createLineViolation(this,
-            "Too many blank lines found, the threshold is {0}.",
-            token.getLine(), getMaxFor(token));
+          "Too many blank lines found, the threshold is {0}.",
+          token.getLine(), getMaxFor(token));
       }
       checkedLines.add(token.getLine());
     }

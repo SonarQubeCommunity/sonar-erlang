@@ -31,48 +31,49 @@ public class ErlangRecordDefinitionTest {
   @Test
   public void recordDefinitions() {
     assertThat(b.rule(ErlangGrammarImpl.recordAttr))
-        .matches("-record(tm, {log, pending, transactions, checkpoints}).")
-        .matches(code(
-            "-record(fallback_args, {opaque,", "scope = global,",
-            "module = mnesia_monitor:get_env(backup_module),",
-            "use_default_dir = true,", "mnesia_dir,", "fallback_bup,",
-            "fallback_tmp,", "skip_tables = [],", "keep_tables = [],",
-            "default_op = keep_tables", "})."))
-        .matches(code(
-            "-record(expand, {module=[],			%Module name",
-            "parameters=undefined,		%Module parameters",
-            "package=\"\",			%Module package", "exports=[],			%Exports",
-            "imports=[],			%Imports", "mod_imports,			%Module Imports",
-            "compile=[],			%Compile flags",
-            "records=dict:new(),		%Record definitions",
-            "attributes=[],			%Attributes", "defined=[],			%Defined functions",
-            "vcount=0,			%Variable counter", "func=[],			%Current function",
-            "arity=[],			%Arity for current function",
-            "fcount=0,			%Local fun count",
-            "fun_index=0,			%Global index for funs", "bitdefault,", "bittypes",
-            "})."))
-        .matches(code(
-            "-record(client, {",
-            "  state = wait :: wait | request | response | response_body,",
-            "  opts = [] :: [any()],",
-            "  socket = undefined :: undefined | inet:socket(),",
-            "  transport = undefined :: module(),",
-            "  timeout = 5000 :: timeout(), %% @todo Configurable.",
-            "  buffer = <<>> :: binary(),",
-            "  connection = keepalive :: keepalive | close,",
-            "  version = 'HTTP/1.1' :: cowboy:http_version(),",
-            "  response_body = undefined :: undefined | non_neg_integer()",
-            " })."
-            ))
-        .matches("-record(state, {last::calendar:datetime(), tref::timer:tref()}).")
-        .matches("-record(auth, {\ntoken :: string() | binary()\n}).")
-        .matches(code("-record(map, {dict = dict:new()   :: dict(),",
-            "subst = dict:new()  :: dict(),",
-            "modified = []       :: [Key :: term()],",
-            "modified_stack = [] :: [{[Key :: term()],reference()}],",
-            "ref = undefined     :: reference() | undefined})."))
-        .matches("-record(fun_var, {'fun' :: fun((_) -> erl_types:erl_type()), deps :: [dep()], origin :: integer()}).")
-        .matches((code("-record(cat, {}).")));;
+      .matches("-record(tm, {log, pending, transactions, checkpoints}).")
+      .matches(code(
+        "-record(fallback_args, {opaque,", "scope = global,",
+        "module = mnesia_monitor:get_env(backup_module),",
+        "use_default_dir = true,", "mnesia_dir,", "fallback_bup,",
+        "fallback_tmp,", "skip_tables = [],", "keep_tables = [],",
+        "default_op = keep_tables", "})."))
+      .matches(code(
+        "-record(expand, {module=[],			%Module name",
+        "parameters=undefined,		%Module parameters",
+        "package=\"\",			%Module package", "exports=[],			%Exports",
+        "imports=[],			%Imports", "mod_imports,			%Module Imports",
+        "compile=[],			%Compile flags",
+        "records=dict:new(),		%Record definitions",
+        "attributes=[],			%Attributes", "defined=[],			%Defined functions",
+        "vcount=0,			%Variable counter", "func=[],			%Current function",
+        "arity=[],			%Arity for current function",
+        "fcount=0,			%Local fun count",
+        "fun_index=0,			%Global index for funs", "bitdefault,", "bittypes",
+        "})."))
+      .matches(code(
+        "-record(client, {",
+        "  state = wait :: wait | request | response | response_body,",
+        "  opts = [] :: [any()],",
+        "  socket = undefined :: undefined | inet:socket(),",
+        "  transport = undefined :: module(),",
+        "  timeout = 5000 :: timeout(), %% @todo Configurable.",
+        "  buffer = <<>> :: binary(),",
+        "  connection = keepalive :: keepalive | close,",
+        "  version = 'HTTP/1.1' :: cowboy:http_version(),",
+        "  response_body = undefined :: undefined | non_neg_integer()",
+        " })."
+      ))
+      .matches("-record(state, {last::calendar:datetime(), tref::timer:tref()}).")
+      .matches("-record(auth, {\ntoken :: string() | binary()\n}).")
+      .matches(code("-record(map, {dict = dict:new()   :: dict(),",
+        "subst = dict:new()  :: dict(),",
+        "modified = []       :: [Key :: term()],",
+        "modified_stack = [] :: [{[Key :: term()],reference()}],",
+        "ref = undefined     :: reference() | undefined})."))
+      .matches("-record(fun_var, {'fun' :: fun((_) -> erl_types:erl_type()), deps :: [dep()], origin :: integer()}).")
+      .matches((code("-record(cat, {}).")));
+    ;
   }
 
   private static String code(String... lines) {

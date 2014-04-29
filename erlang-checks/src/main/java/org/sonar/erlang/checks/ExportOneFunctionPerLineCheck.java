@@ -19,8 +19,6 @@
  */
 package org.sonar.erlang.checks;
 
-import javax.annotation.Nullable;
-
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.squid.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
@@ -30,6 +28,7 @@ import org.sonar.check.Rule;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @Rule(key = "ExportOneFunctionPerLine", priority = Priority.MINOR,
@@ -59,7 +58,7 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> 
      * Get exported func arities in this export
      */
     List<AstNode> funcArities = node.getFirstChild(ErlangGrammarImpl.funcExport)
-        .getChildren(ErlangGrammarImpl.funcArity);
+      .getChildren(ErlangGrammarImpl.funcArity);
     for (AstNode arityNode : funcArities) {
       String funcArity = getArity(arityNode);
       if (previousFuncArity != null) {
@@ -70,10 +69,10 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> 
         if (previousLineNum != arityNode.getTokenLine()
           && getFuncName(previousFuncArity).equals(getFuncName(funcArity))) {
           getContext()
-              .createLineViolation(
-                  this,
-                  "The exported method with arity: {0} is in different line, but it has the same name as the previous arity: {1}.",
-                  arityNode.getTokenLine(), funcArity, previousFuncArity);
+            .createLineViolation(
+              this,
+              "The exported method with arity: {0} is in different line, but it has the same name as the previous arity: {1}.",
+              arityNode.getTokenLine(), funcArity, previousFuncArity);
         }
         /**
          * If exported arity is in the same line but has different name
@@ -81,10 +80,10 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> 
         if (previousLineNum == arityNode.getTokenLine()
           && !getFuncName(previousFuncArity).equals(getFuncName(funcArity))) {
           getContext()
-              .createLineViolation(
-                  this,
-                  "The exported method with arity: {0} is in the same line, but it has different name than the previous arity: {1}.",
-                  arityNode.getTokenLine(), funcArity, previousFuncArity);
+            .createLineViolation(
+              this,
+              "The exported method with arity: {0} is in the same line, but it has different name than the previous arity: {1}.",
+              arityNode.getTokenLine(), funcArity, previousFuncArity);
         }
       }
       previousFuncArity = funcArity;

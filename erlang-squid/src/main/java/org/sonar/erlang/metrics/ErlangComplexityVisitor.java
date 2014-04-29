@@ -32,7 +32,6 @@ import org.sonar.sslr.parser.LexerlessGrammar;
  * statement (case, try) +1 for every catch pattern statement (catch)
  *
  * @author Tamas Kende
- *
  */
 public class ErlangComplexityVisitor extends SquidAstVisitor<LexerlessGrammar> {
 
@@ -40,17 +39,17 @@ public class ErlangComplexityVisitor extends SquidAstVisitor<LexerlessGrammar> {
 
   @Override
   public void init() {
-    complexityAstNodeType = new AstNodeType[] {
+    complexityAstNodeType = new AstNodeType[]{
       // Entry points
       ErlangGrammarImpl.functionClause,
 
       // Branching nodes
       ErlangGrammarImpl.branchExp, ErlangGrammarImpl.patternStatement, ErlangGrammarImpl.catchPatternStatement,
 
-        // TODO: Expressions? when increase? if there are more than one guard
-        // and more than
-        // one guard expression?
-        // grammar.guardSequence
+      // TODO: Expressions? when increase? if there are more than one guard
+      // and more than
+      // one guard expression?
+      // grammar.guardSequence
     };
     subscribeTo(complexityAstNodeType);
   }

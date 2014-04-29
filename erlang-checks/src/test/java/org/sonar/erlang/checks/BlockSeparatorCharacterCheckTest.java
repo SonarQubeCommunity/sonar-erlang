@@ -32,9 +32,9 @@ public class BlockSeparatorCharacterCheckTest {
     BlockSeparatorCharacterCheck check = new BlockSeparatorCharacterCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/commentcheck.erl"), check);
+      "src/test/resources/checks/commentcheck.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(4).withMessage(
-        "only use '=' sign(s) for block separators in comments (case sensitive)").noMore();
+      "only use '=' sign(s) for block separators in comments (case sensitive)").noMore();
   }
 
   @Test
@@ -42,9 +42,9 @@ public class BlockSeparatorCharacterCheckTest {
     BlockSeparatorCharacterCheck check = new BlockSeparatorCharacterCheck();
     check.allowedChars = "-";
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/commentcheck.erl"), check);
+      "src/test/resources/checks/commentcheck.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(7).withMessage(
-        "only use '-' sign(s) for block separators in comments (case sensitive)").noMore();
+      "only use '-' sign(s) for block separators in comments (case sensitive)").noMore();
   }
 
   @Test
@@ -52,7 +52,7 @@ public class BlockSeparatorCharacterCheckTest {
     BlockSeparatorCharacterCheck check = new BlockSeparatorCharacterCheck();
     check.allowedChars = "=-";
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/commentcheck.erl"), check);
+      "src/test/resources/checks/commentcheck.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 

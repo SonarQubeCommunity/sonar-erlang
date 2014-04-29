@@ -67,7 +67,7 @@ public class ErlangSquidSensor implements Sensor {
 
   public ErlangSquidSensor(RulesProfile profile, ModuleFileSystem moduleFileSystem, ResourcePerspectives resourcePerspectives) {
     this.annotationCheckFactory = AnnotationCheckFactory.create(profile,
-        CheckList.REPOSITORY_KEY, CheckList.getChecks());
+      CheckList.REPOSITORY_KEY, CheckList.getChecks());
     this.moduleFileSystem = moduleFileSystem;
     this.resourcePerspectives = resourcePerspectives;
   }
@@ -83,12 +83,12 @@ public class ErlangSquidSensor implements Sensor {
     Collection<SquidAstVisitor<LexerlessGrammar>> squidChecks = annotationCheckFactory.getChecks();
     List<SquidAstVisitor<LexerlessGrammar>> visitors = Lists.newArrayList(squidChecks);
     this.scanner = ErlangAstScanner.create(moduleFileSystem.sourceCharset(), visitors
-        .toArray(new SquidAstVisitor[visitors.size()]));
+      .toArray(new SquidAstVisitor[visitors.size()]));
 
     scanner.scanFiles(moduleFileSystem.files(Erlang.sourceQuery));
 
     Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(
-        new QueryByType(SourceFile.class));
+      new QueryByType(SourceFile.class));
     save(squidSourceFiles);
   }
 
@@ -120,22 +120,22 @@ public class ErlangSquidSensor implements Sensor {
 
   private void saveFunctionsComplexityDistribution(File sonarFile, SourceFile squidFile) {
     Collection<SourceCode> squidFunctionsInFile = scanner.getIndex().search(
-        new QueryByParent(squidFile), new QueryByType(SourceFunction.class));
+      new QueryByParent(squidFile), new QueryByType(SourceFunction.class));
     RangeDistributionBuilder complexityDistribution = new RangeDistributionBuilder(
-        CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION, FUNCTIONS_DISTRIB_BOTTOM_LIMITS);
+      CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION, FUNCTIONS_DISTRIB_BOTTOM_LIMITS);
     for (SourceCode squidFunction : squidFunctionsInFile) {
       complexityDistribution.add(squidFunction.getDouble(ErlangMetric.COMPLEXITY));
     }
     context.saveMeasure(sonarFile, complexityDistribution.build().setPersistenceMode(
-        PersistenceMode.MEMORY));
+      PersistenceMode.MEMORY));
   }
 
   private void saveFilesComplexityDistribution(File sonarFile, SourceFile squidFile) {
     RangeDistributionBuilder complexityDistribution = new RangeDistributionBuilder(
-        CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION, FILES_DISTRIB_BOTTOM_LIMITS);
+      CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION, FILES_DISTRIB_BOTTOM_LIMITS);
     complexityDistribution.add(squidFile.getDouble(ErlangMetric.COMPLEXITY));
     context.saveMeasure(sonarFile, complexityDistribution.build().setPersistenceMode(
-        PersistenceMode.MEMORY));
+      PersistenceMode.MEMORY));
   }
 
   private void saveViolations(File sonarFile, SourceFile squidFile) {
@@ -145,10 +145,10 @@ public class ErlangSquidSensor implements Sensor {
         ActiveRule activeRule = annotationCheckFactory.getActiveRule(message.getCheck());
         Issuable issuable = resourcePerspectives.as(Issuable.class, sonarFile);
         Issue issue = issuable.newIssueBuilder()
-            .ruleKey(RuleKey.of(activeRule.getRepositoryKey(), activeRule.getRuleKey()))
-            .line(message.getLine())
-            .message(message.formatDefaultMessage())
-            .build();
+          .ruleKey(RuleKey.of(activeRule.getRepositoryKey(), activeRule.getRuleKey()))
+          .line(message.getLine())
+          .message(message.formatDefaultMessage())
+          .build();
         issuable.addIssue(issue);
       }
     }

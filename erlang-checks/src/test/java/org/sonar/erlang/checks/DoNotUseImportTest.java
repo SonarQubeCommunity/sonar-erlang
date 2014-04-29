@@ -32,7 +32,7 @@ public class DoNotUseImportTest {
     DoNotUseImportCheck check = new DoNotUseImportCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/funargs.erl"), check);
+      "src/test/resources/checks/funargs.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 
@@ -40,8 +40,8 @@ public class DoNotUseImportTest {
   public void test2() {
     DoNotUseImportCheck check = new DoNotUseImportCheck();
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/donotuseimport.erl"), check);
+      "src/test/resources/checks/donotuseimport.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(2).withMessage(
-        "Do not use import");
+      "Do not use import");
   }
 }

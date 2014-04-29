@@ -31,7 +31,7 @@ import java.util.List;
 public class NumberOfFunctionArgument extends SquidCheck<LexerlessGrammar> {
 
   List<ErlangGrammarImpl> nonArg = ImmutableList.of(ErlangGrammarImpl.lparenthesis,
-      ErlangGrammarImpl.rparenthesis, ErlangGrammarImpl.comma);
+    ErlangGrammarImpl.rparenthesis, ErlangGrammarImpl.comma);
 
   @Override
   public void init() {
@@ -43,7 +43,7 @@ public class NumberOfFunctionArgument extends SquidCheck<LexerlessGrammar> {
   @Override
   public void visitNode(AstNode ast) {
     AstNode args = ast.getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(
-        ErlangGrammarImpl.arguments);
+      ErlangGrammarImpl.arguments);
     int numOfArgs = 0;
     for (AstNode arg : args.getChildren()) {
       if (!nonArg.contains(arg.getType())) {

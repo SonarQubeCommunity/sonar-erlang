@@ -95,7 +95,7 @@ public class ErlangSquidSensorTest {
   @Test
   public void analyse() {
     when(fileSystem.files(Mockito.any(FileQuery.class))).thenReturn(Arrays.asList(
-        new File("src/test/resources/megaco_ber_bin_encoder.erl")));
+      new File("src/test/resources/megaco_ber_bin_encoder.erl")));
 
     Project project = new Project("key");
     ProjectUtil.addProjectFileSystem(project, "src/test/resources/");

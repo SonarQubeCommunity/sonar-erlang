@@ -32,10 +32,10 @@ public class NoMacrosTest {
     NoMacrosCheck check = new NoMacrosCheck();
 
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/nomacros2.erl"), check);
+      "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(9).withMessage("Do not use macros.")
-        .noMore();
+      .next().atLine(9).withMessage("Do not use macros.")
+      .noMore();
   }
 
   @Test
@@ -43,13 +43,13 @@ public class NoMacrosTest {
     NoMacrosCheck check = new NoMacrosCheck();
     check.setSkipDefineInFlowControl(false);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/nomacros2.erl"), check);
+      "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(4).withMessage("Do not use macros.")
-        .next().atLine(6).withMessage("Do not use macros.")
-        .next().atLine(7).withMessage("Do not use macros.")
-        .next().atLine(9).withMessage("Do not use macros.")
-        .noMore();
+      .next().atLine(4).withMessage("Do not use macros.")
+      .next().atLine(6).withMessage("Do not use macros.")
+      .next().atLine(7).withMessage("Do not use macros.")
+      .next().atLine(9).withMessage("Do not use macros.")
+      .noMore();
   }
 
   @Test
@@ -59,14 +59,14 @@ public class NoMacrosTest {
     check.setIgnoredMacroNames("");
     check.setSkipDefineInFlowControl(false);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/nomacros2.erl"), check);
+      "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(2).withMessage("Do not use macros.")
-        .next().atLine(4).withMessage("Do not use macros.")
-        .next().atLine(6).withMessage("Do not use macros.")
-        .next().atLine(7).withMessage("Do not use macros.")
-        .next().atLine(9).withMessage("Do not use macros.")
-        .next().atLine(13).withMessage("Do not use macros.").noMore();
+      .next().atLine(2).withMessage("Do not use macros.")
+      .next().atLine(4).withMessage("Do not use macros.")
+      .next().atLine(6).withMessage("Do not use macros.")
+      .next().atLine(7).withMessage("Do not use macros.")
+      .next().atLine(9).withMessage("Do not use macros.")
+      .next().atLine(13).withMessage("Do not use macros.").noMore();
   }
 
   @Test
@@ -76,11 +76,11 @@ public class NoMacrosTest {
     check.setIgnoredMacroNames("");
     check.setSkipDefineInFlowControl(true);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/nomacros2.erl"), check);
+      "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(2).withMessage("Do not use macros.")
-        .next().atLine(9).withMessage("Do not use macros.")
-        .next().atLine(13).withMessage("Do not use macros.").noMore();
+      .next().atLine(2).withMessage("Do not use macros.")
+      .next().atLine(9).withMessage("Do not use macros.")
+      .next().atLine(13).withMessage("Do not use macros.").noMore();
   }
 
   @Test
@@ -90,13 +90,13 @@ public class NoMacrosTest {
     check.setIgnoredMacroNames("");
     check.setSkipDefineInFlowControl(false);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/nomacros2.erl"), check);
+      "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(4).withMessage("Do not use macros.")
-        .next().atLine(6).withMessage("Do not use macros.")
-        .next().atLine(7).withMessage("Do not use macros.")
-        .next().atLine(9).withMessage("Do not use macros.")
-        .noMore();
+      .next().atLine(4).withMessage("Do not use macros.")
+      .next().atLine(6).withMessage("Do not use macros.")
+      .next().atLine(7).withMessage("Do not use macros.")
+      .next().atLine(9).withMessage("Do not use macros.")
+      .noMore();
   }
 
   @Test
@@ -106,10 +106,10 @@ public class NoMacrosTest {
     check.setIgnoredMacroNames("");
     check.setSkipDefineInFlowControl(true);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/nomacros2.erl"), check);
+      "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(9).withMessage("Do not use macros.")
-        .noMore();
+      .next().atLine(9).withMessage("Do not use macros.")
+      .noMore();
   }
 
   @Test
@@ -119,12 +119,12 @@ public class NoMacrosTest {
     check.setIgnoredMacroNames("IGNOREME,B");
     check.setSkipDefineInFlowControl(false);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/nomacros2.erl"), check);
+      "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(2).withMessage("Do not use macros.")
-        .next().atLine(4).withMessage("Do not use macros.")
-        .next().atLine(6).withMessage("Do not use macros.")
-        .noMore();
+      .next().atLine(2).withMessage("Do not use macros.")
+      .next().atLine(4).withMessage("Do not use macros.")
+      .next().atLine(6).withMessage("Do not use macros.")
+      .noMore();
   }
 
   public void test3_5() {
@@ -133,10 +133,10 @@ public class NoMacrosTest {
     check.setIgnoredMacroNames("IGNOREME,B");
     check.setSkipDefineInFlowControl(false);
     SourceFile file = TestHelper.scanSingleFile(new File(
-        "src/test/resources/checks/nomacros2.erl"), check);
+      "src/test/resources/checks/nomacros2.erl"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
-        .next().atLine(4).withMessage("Do not use macros.")
-        .next().atLine(6).withMessage("Do not use macros.")
-        .noMore();
+      .next().atLine(4).withMessage("Do not use macros.")
+      .next().atLine(6).withMessage("Do not use macros.")
+      .noMore();
   }
 }
