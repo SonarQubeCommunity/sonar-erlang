@@ -30,8 +30,8 @@ import java.util.List;
 
 public class PublicDocumentedApiCounter extends SquidAstVisitor<LexerlessGrammar> {
 
-  private int numOfPublicAPIs;
-  private int numOfPublicDocAPIs;
+  private double numOfPublicAPIs;
+  private double numOfPublicDocAPIs;
   private List<AstNode> functions;
 
   public PublicDocumentedApiCounter() {
@@ -52,13 +52,13 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<LexerlessGrammar
      */
     if (astNode.getFirstAncestor(ErlangGrammarImpl.flowControlAttr) == null) {
       List<AstNode> exports = astNode.getFirstChild(ErlangGrammarImpl.funcExport).getChildren(
-          ErlangGrammarImpl.funcArity);
+        ErlangGrammarImpl.funcArity);
       numOfPublicAPIs += exports.size();
       for (AstNode export : exports) {
         AstNode func = findFunctionByArity(getArity(export));
         if (func != null) {
           List<Trivia> comments = func.getFirstDescendant(ErlangGrammarImpl.atom)
-              .getToken().getTrivia();
+            .getToken().getTrivia();
           if (comments.size() > 0) {
             for (Trivia trivia : comments) {
               /**
@@ -67,7 +67,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<LexerlessGrammar
                */
               if (trivia.isComment()
                 && !trivia.getToken().getOriginalValue().matches(
-                    "^%%+ *(.)\\1+ *$")) {
+                "^%%+ *(.)\\1+ *$")) {
                 numOfPublicDocAPIs++;
                 break;
               }
@@ -120,7 +120,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<LexerlessGrammar
       ret.append(node.getFirstDescendant(ErlangGrammarImpl.funcDecl).getTokenOriginalValue());
       ret.append("/");
       ret.append(node.getFirstDescendant(ErlangGrammarImpl.arguments).getChildren(ErlangGrammarImpl.comma)
-          .size() + 1);
+        .size() + 1);
     }
     return ret.toString();
   }
