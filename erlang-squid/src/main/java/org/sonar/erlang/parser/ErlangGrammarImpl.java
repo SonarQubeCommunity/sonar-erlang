@@ -147,6 +147,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   logicalOrExpression,
   leftHandSideExpression,
   callExpression,
+  callExpressionFirstMember,
+  callExpressionSecondMember,
   qualifier,
   listOperationExpression,
   logicalXorExpression,
@@ -206,10 +208,10 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
   public static final String ESCAPE_SEQUENCE =
     "(\\$\\\\b)|(\\$\\\\d)|(\\$\\\\e)|(\\$\\\\f)|(\\$\\\\n)|(\\$\\\\r)|(\\$\\\\s)|(\\$\\\\t)|(\\$\\\\v)|(\\$\\\\')|(\\$\\\\\")|(\\$\\\\\\\\)"
-    + "|(\\$\\\\\\^[A-Za-z])"
-    + "|(\\$\\\\x\\{[A-F0-9]+\\})"
-    + "|(\\$\\\\x[A-F0-9]{1,2})"
-    + "|(\\$\\\\[0-7]{1,3})";
+      + "|(\\$\\\\\\^[A-Za-z])"
+      + "|(\\$\\\\x\\{[A-F0-9]+\\})"
+      + "|(\\$\\\\x[A-F0-9]{1,2})"
+      + "|(\\$\\\\[0-7]{1,3})";
 
   public static final String NUMERIC_LITERAL = "(?:"
     + "[0-9]++\\.([0-9]++)" + EXP + "?"
@@ -336,14 +338,14 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       "export_type",
       "deprecated",
       "asn1_info"
-    ));
+      ));
 
     b.rule(letterOrDigit).is(b.regexp("\\p{javaJavaIdentifierPart}"));
 
     b.rule(spacing).is(
       b.skippedTrivia(b.regexp(WHITESPACE + "*")),
       b.zeroOrMore(b.commentTrivia(b.regexp(COMMENT)), b.skippedTrivia(b.regexp(WHITESPACE + "*")))
-    ).skip();
+      ).skip();
   }
 
   private static void punctuators(LexerlessGrammarBuilder b) {
@@ -421,7 +423,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(module).is(spacing, b.optional(moduleElements), eof);
     b.rule(moduleElements).is(b.oneOrMore(
       moduleElement
-    ));
+      ));
 
     b.rule(moduleElement).is(b.firstOf(moduleHeadAttr, b.sequence(macroLiteral, dot), functionDeclaration)).skipIfOneChild();
 
@@ -456,8 +458,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
 
     b.rule(defineAttr).is(minus, semiKeyword("define", b),
       lparenthesis, b.firstOf(
-      b.sequence(primaryExpression, comma, statement),
-      b.sequence(funcDecl, comma, guardSequence)), rparenthesis, dot);
+        b.sequence(primaryExpression, comma, statement),
+        b.sequence(funcDecl, comma, guardSequence)), rparenthesis, dot);
 
     b.rule(importAttr).is(minus, semiKeyword("import", b), lparenthesis, b.firstOf(macroLiteral, atom), comma,
       lbracket, funcArity, b.zeroOrMore(comma, funcArity), rbracket, rparenthesis, dot);
@@ -495,9 +497,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(typeSpec).is(minus, b.firstOf(semiKeyword("type", b), semiKeyword("opaque", b)),
       b.zeroOrMore(b.firstOf(b.regexp("\\.(\\.+|.)"), b.regexp("[^\\.]")), spacing), dot);
 
-    b.rule(functionDeclaration).is(functionClause, b.zeroOrMore(semi, functionClause),
-
-      dot);
+    b.rule(functionDeclaration).is(functionClause, b.zeroOrMore(semi, functionClause), dot);
     b.rule(functionClause).is(clauseHead, arrow, clauseBody);
     b.rule(clauseHead).is(funcDecl, b.optional(guardSequenceStart));
     b.rule(clauseBody).is(statements);
@@ -525,13 +525,13 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         macroLiteralSimple,
         macroLiteralVarName,
         stringLiteral
-      )).skip();
+        )).skip();
 
     b.rule(stringConcatenation).is(
       b.firstOf(
         b.sequence(stringLiterals, b.oneOrMore(stringLiterals)),
         primaryExpression)
-    ).skipIfOneChild();
+      ).skipIfOneChild();
 
     b.rule(recordAccess).is(
       stringConcatenation,
@@ -539,8 +539,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         b.firstOf(
           b.sequence(numbersign, primaryExpression),
           b.sequence(macroLiteral, b.optional(".", primaryExpression)))
-      )
-    ).skipIfOneChild();
+        )
+      ).skipIfOneChild();
 
     b.rule(recordCreate).is(
       b.firstOf(
@@ -551,8 +551,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         b.optional(assignmentExpression,
           b.zeroOrMore(comma, assignmentExpression)),
         rcurlybrace
-      )
-    ).skipIfOneChild();
+        )
+      ).skipIfOneChild();
 
     b.rule(guardedPattern).is(recordCreate, b.optional(guardSequenceStart)).skipIfOneChild();
 
@@ -570,7 +570,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         macroLiteralVarName,
         macroLiteralFunction,
         macroLiteralSimple
-      ));
+        ));
 
     b.rule(macroLiteralSimple).is(questionmark, atomOrIdentifier);
     b.rule(macroLiteralFunction).is(questionmark, atomOrIdentifier, arguments);
@@ -582,8 +582,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       comma, binaryElement))), binend);
     b.rule(binaryQualifier).is(b.firstOf(
       b.sequence(binaryLiteral, doublearrowback, expression), b.sequence(
-      primaryExpression, arrowback, expression, b.zeroOrMore(comma, expression)
-    )));
+        primaryExpression, arrowback, expression, b.zeroOrMore(comma, expression)
+        )));
 
     b.rule(binaryElement).is(
       b.sequence(expression,
@@ -592,20 +592,20 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
           b.firstOf(numericLiteral, atom, identifier, macroLiteral)),
         b.optional(
           div,
-                /*
-                 * Hack for things like: 1024:32/little-float-dafaq
-                 */
+          /*
+           * Hack for things like: 1024:32/little-float-dafaq
+           */
           b.firstOf(
             numericLiteral,
             b.sequence(
               atom,
               b.oneOrMore(minus, atom)),
             atom)
-        ),
+          ),
         // and for things like: Part1:4/big-unsigned-integer-unit:8
         b.optional(colon, numericLiteral)
-      )
-    );
+        )
+      );
     b.rule(memberExpression).is(
       b.firstOf(ifExpression, funExpression, caseExpression, tryExpression, receiveExpression, blockExpression, guardedPattern))
       .skipIfOneChild();
@@ -615,8 +615,11 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
      */
     b.rule(callExpression).is(
       b.firstOf(
-        b.sequence(b.optional(memberExpression, colon), memberExpression, arguments),
+        b.sequence(b.optional(callExpressionFirstMember, colon), callExpressionSecondMember, arguments),
         memberExpression)).skipIfOneChild();
+    // TODO Added by Dinesh to get rid of the AstNode.getChild(int) calls in IsTailRecursiveCheck.getArityFromCall(), but should be improved
+    b.rule(callExpressionFirstMember).is(memberExpression);
+    b.rule(callExpressionSecondMember).is(memberExpression);
 
     b.rule(arguments).is(lparenthesis, b.optional(expression, b.zeroOrMore(comma, expression)),
       rparenthesis);

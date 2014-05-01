@@ -20,10 +20,9 @@
 package org.sonar.erlang.metrics;
 
 import com.sonar.sslr.api.AstNode;
-
-import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 public class BranchesOfRecursion extends SquidCheck<LexerlessGrammar> {
@@ -61,17 +60,23 @@ public class BranchesOfRecursion extends SquidCheck<LexerlessGrammar> {
   private String getArityFromCall(AstNode ast) {
     // It has a colon, so it is a module:function call
     if (ast.hasDirectChildren(ErlangGrammarImpl.colon)) {
-      if (actualModule.equals(ast.getChild(0).getTokenOriginalValue())) {
-        return ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+      AstNode firstCallMemberAstNode = ast.getFirstChild(ErlangGrammarImpl.callExpressionFirstMember);
+      AstNode secondCallMemberAstNode = ast.getLastChild(ErlangGrammarImpl.callExpressionSecondMember);
+
+      if (actualModule.equals(firstCallMemberAstNode.getTokenOriginalValue())) {
+        return secondCallMemberAstNode.getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       }
-      return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+      // FIXME This seems to use AstNode.toString(), which is likely not intended
+      return firstCallMemberAstNode.getFirstChild() + ":" + secondCallMemberAstNode.getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
     } else {
       try {
-        return ast.getFirstChild(ErlangGrammarImpl.primaryExpression).getFirstChild(ErlangGrammarImpl.literal).getTokenOriginalValue() + "/"
+        AstNode secondCallMemberAstNode = ast.getLastChild(ErlangGrammarImpl.callExpressionSecondMember);
+
+        return secondCallMemberAstNode.getFirstChild(ErlangGrammarImpl.primaryExpression).getFirstChild(ErlangGrammarImpl.literal).getTokenOriginalValue() + "/"
           + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       } catch (Exception e) {
-        //If we reach this part it means we are in call where the function is a return value of another function:
-        //like: (Fun2())(1)
+        // If we reach this part it means we are in call where the function is a return value of another function:
+        // like: (Fun2())(1)
         return "*" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       }
     }

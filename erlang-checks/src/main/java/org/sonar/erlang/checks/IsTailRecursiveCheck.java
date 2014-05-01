@@ -20,13 +20,12 @@
 package org.sonar.erlang.checks;
 
 import com.sonar.sslr.api.AstNode;
-
-import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "IsTailRecursive", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
@@ -62,17 +61,17 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
       /**
        * Recursive call
        */
-      && (getArityFromCall(node).equals(actualArity)
+      && getArityFromCall(node).equals(actualArity)
       /**
        * where we have not record a non tail recursive call so far
        */
-      && node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine() != lastClauseLine)) {
+      && node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine() != lastClauseLine) {
 
       /**
        * Not a standalone statement
        */
       if (!node.getParent().getType().equals(ErlangGrammarImpl.expression)
-        || (node.getParent().getType().equals(ErlangGrammarImpl.expression) && !node.getParent().getParent().getType().equals(ErlangGrammarImpl.expressionStatement))) {
+        || node.getParent().getType().equals(ErlangGrammarImpl.expression) && !node.getParent().getParent().getType().equals(ErlangGrammarImpl.expressionStatement)) {
         getContext().createLineViolation(this, "Function is not tail recursive.", node);
         lastClauseLine = node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine();
         return;
@@ -107,13 +106,19 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
      */
     // It has a colon, so it is a module:function call
     if (ast.hasDirectChildren(ErlangGrammarImpl.colon)) {
-      if (actualModule.equals(ast.getChild(0).getTokenOriginalValue())) {
-        return ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+      AstNode firstCallMemberAstNode = ast.getFirstChild(ErlangGrammarImpl.callExpressionFirstMember);
+      AstNode secondCallMemberAstNode = ast.getLastChild(ErlangGrammarImpl.callExpressionSecondMember);
+
+      if (actualModule.equals(firstCallMemberAstNode.getTokenOriginalValue())) {
+        return secondCallMemberAstNode.getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       }
-      return ast.getChild(0) + ":" + ast.getChild(2).getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
+      // FIXME This seems to use AstNode.toString(), which is likely not intended
+      return firstCallMemberAstNode.getFirstChild() + ":" + secondCallMemberAstNode.getTokenOriginalValue() + "/" + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
     } else {
       try {
-        return ast.getFirstChild(ErlangGrammarImpl.primaryExpression).getFirstChild(ErlangGrammarImpl.literal).getTokenOriginalValue() + "/"
+        AstNode secondCallMemberAstNode = ast.getLastChild(ErlangGrammarImpl.callExpressionSecondMember);
+
+        return secondCallMemberAstNode.getFirstChild(ErlangGrammarImpl.primaryExpression).getFirstChild(ErlangGrammarImpl.literal).getTokenOriginalValue() + "/"
           + getNumOfArgs(ast.getFirstChild(ErlangGrammarImpl.arguments));
       } catch (Exception e) {
         // If we reach this part it means we are in call where the function is a return value of another function:
