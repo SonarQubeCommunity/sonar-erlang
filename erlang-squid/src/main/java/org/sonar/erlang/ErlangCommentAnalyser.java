@@ -19,7 +19,7 @@
  */
 package org.sonar.erlang;
 
-import com.sonar.sslr.api.CommentAnalyser;
+import org.sonar.squidbridge.CommentAnalyser;
 
 public class ErlangCommentAnalyser extends CommentAnalyser {
 

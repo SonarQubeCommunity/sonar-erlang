@@ -21,7 +21,8 @@ package org.sonar.erlang.metrics;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.AstNodeType;
-import com.sonar.sslr.squid.SquidAstVisitor;
+
+import org.sonar.squidbridge.SquidAstVisitor;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.sslr.parser.LexerlessGrammar;

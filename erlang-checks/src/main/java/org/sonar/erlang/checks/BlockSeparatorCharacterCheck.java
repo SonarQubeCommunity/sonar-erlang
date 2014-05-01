@@ -19,7 +19,8 @@
  */
 package org.sonar.erlang.checks;
 
-import com.sonar.sslr.squid.checks.AbstractCommentRegularExpressionCheck;
+
+import org.sonar.squidbridge.checks.AbstractCommentRegularExpressionCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;

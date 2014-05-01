@@ -21,7 +21,8 @@ package org.sonar.erlang.checks;
 
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
-import com.sonar.sslr.squid.checks.SquidCheck;
+
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;

@@ -21,16 +21,26 @@ package org.sonar.erlang;
 
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.impl.Parser;
-import com.sonar.sslr.squid.AstScanner;
-import com.sonar.sslr.squid.SourceCodeBuilderCallback;
-import com.sonar.sslr.squid.SourceCodeBuilderVisitor;
-import com.sonar.sslr.squid.SquidAstVisitor;
-import com.sonar.sslr.squid.SquidAstVisitorContextImpl;
-import com.sonar.sslr.squid.metrics.CommentsVisitor;
-import com.sonar.sslr.squid.metrics.ComplexityVisitor;
-import com.sonar.sslr.squid.metrics.CounterVisitor;
-import com.sonar.sslr.squid.metrics.LinesOfCodeVisitor;
-import com.sonar.sslr.squid.metrics.LinesVisitor;
+
+import org.sonar.squidbridge.AstScanner;
+
+import org.sonar.squidbridge.SourceCodeBuilderCallback;
+
+import org.sonar.squidbridge.SourceCodeBuilderVisitor;
+
+import org.sonar.squidbridge.SquidAstVisitor;
+
+import org.sonar.squidbridge.SquidAstVisitorContextImpl;
+
+import org.sonar.squidbridge.metrics.CommentsVisitor;
+
+import org.sonar.squidbridge.metrics.ComplexityVisitor;
+
+import org.sonar.squidbridge.metrics.CounterVisitor;
+
+import org.sonar.squidbridge.metrics.LinesOfCodeVisitor;
+
+import org.sonar.squidbridge.metrics.LinesVisitor;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.metrics.BranchesOfRecursion;
 import org.sonar.erlang.metrics.ErlangComplexityVisitor;
@@ -38,10 +48,14 @@ import org.sonar.erlang.metrics.ErlangStatementVisitor;
 import org.sonar.erlang.metrics.NumberOfFunctionArgument;
 import org.sonar.erlang.metrics.PublicDocumentedApiCounter;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
-import org.sonar.squid.api.SourceClass;
-import org.sonar.squid.api.SourceCode;
-import org.sonar.squid.api.SourceFunction;
-import org.sonar.squid.api.SourceProject;
+
+import org.sonar.squidbridge.api.SourceClass;
+
+import org.sonar.squidbridge.api.SourceCode;
+
+import org.sonar.squidbridge.api.SourceFunction;
+
+import org.sonar.squidbridge.api.SourceProject;
 import org.sonar.sslr.parser.LexerlessGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
 

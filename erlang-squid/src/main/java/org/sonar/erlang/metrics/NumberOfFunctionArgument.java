@@ -21,7 +21,8 @@ package org.sonar.erlang.metrics;
 
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.squid.checks.SquidCheck;
+
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.sslr.parser.LexerlessGrammar;

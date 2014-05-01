@@ -20,8 +20,10 @@
 package org.sonar.erlang.checks;
 
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.squid.checks.ChecksHelper;
-import com.sonar.sslr.squid.checks.SquidCheck;
+
+import org.sonar.squidbridge.checks.ChecksHelper;
+
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
@@ -29,7 +31,8 @@ import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
-import org.sonar.squid.api.SourceFunction;
+
+import org.sonar.squidbridge.api.SourceFunction;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "BranchesOfRecursion", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)

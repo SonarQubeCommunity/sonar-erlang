@@ -23,7 +23,8 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.squid.checks.SquidCheck;
+
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;

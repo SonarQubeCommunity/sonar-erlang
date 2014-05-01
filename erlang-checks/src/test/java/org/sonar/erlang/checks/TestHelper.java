@@ -20,12 +20,17 @@
 package org.sonar.erlang.checks;
 
 import com.google.common.collect.ImmutableList;
-import com.sonar.sslr.squid.AstScanner;
-import com.sonar.sslr.squid.checks.SquidCheck;
+
+import org.sonar.squidbridge.AstScanner;
+
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.erlang.ErlangAstScanner;
-import org.sonar.squid.api.SourceCode;
-import org.sonar.squid.api.SourceFile;
-import org.sonar.squid.indexer.QueryByType;
+
+import org.sonar.squidbridge.api.SourceCode;
+
+import org.sonar.squidbridge.api.SourceFile;
+
+import org.sonar.squidbridge.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.io.File;
