@@ -589,7 +589,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       b.sequence(expression,
         b.optional(
           colon,
-          b.firstOf(numericLiteral, atom, identifier, macroLiteral)),
+          b.firstOf(numericLiteral, atom, identifier, macroLiteral,
+            b.sequence(lparenthesis, expression, rparenthesis))),
         b.optional(
           div,
           /*
