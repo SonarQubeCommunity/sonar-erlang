@@ -47,6 +47,7 @@ public class ErlangParserBinaryExpressionTest {
       .matches("<< << (X*2) >> || <<X>> <= method1(), method2() >>")
       .matches("<<Part1:4/big-unsigned-integer-unit:8," +
         "Part2:4/big-unsigned-integer-unit:8," +
-        "Body/binary>>");
+        "Body/binary>>")
+      .matches("<<A:(12 + 4)>>");
   }
 }
