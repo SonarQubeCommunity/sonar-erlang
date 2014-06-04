@@ -537,7 +537,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       stringConcatenation,
       b.zeroOrMore(
         b.firstOf(
-          b.sequence(numbersign, primaryExpression),
+          // in defines a record might have an identifier to access a field
+          b.sequence(numbersign, primaryExpression, b.optional(".", identifier)),
           b.sequence(macroLiteral, b.optional(".", primaryExpression)))
         )
       ).skipIfOneChild();

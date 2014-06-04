@@ -61,7 +61,8 @@ public class ModuleAttributesTest {
       .matches("-define(PARAM_TOKEN_TIMEOUT,                    60*15).")
       .matches("-define (is_uint16 (V), V >= 0, V =< 65535).")
       .matches("-define(TEST(B), ?LOG(??B ++ \" ~p~n\", [B])).")
-      .matches("-define(IN_QUEUE(CState), CState =:= waiting; CState =:= originating; CState =:= ringing).");
+      .matches("-define(IN_QUEUE(CState), CState =:= waiting; CState =:= originating; CState =:= ringing).")
+      .matches("-define(SOME(A), B#c.A).");
   }
 
   @Test
