@@ -55,8 +55,7 @@ public class EunitXmlSensor implements Sensor {
   }
 
   public void analyse(Project project, SensorContext context) {
-    String eunitFolder = erlang.getConfiguration().getString(
-      ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    String eunitFolder = erlang.getPropertyValueFromSettings(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     try {
       collect(project, context,
         new File(moduleFileSystem.baseDir(), eunitFolder));

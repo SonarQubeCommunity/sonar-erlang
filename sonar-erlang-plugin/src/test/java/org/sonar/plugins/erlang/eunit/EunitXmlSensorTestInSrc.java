@@ -19,11 +19,11 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.apache.commons.configuration.Configuration;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
@@ -39,9 +39,7 @@ import java.util.Arrays;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.doubleThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class EunitXmlSensorTestInSrc {
 
@@ -50,22 +48,20 @@ public class EunitXmlSensorTestInSrc {
   @Before
   public void setup() throws URISyntaxException {
     context = ProjectUtil.mockContext();
-    Configuration configuration = ProjectUtil.mockConfiguration();
-    when(
-      configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-      "eunit");
+    Settings settings = ProjectUtil.createSettings();
+    settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, "eunit");
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
       Arrays.asList(
         new File("src/test/resources/eunit/lager_crash_log.erl")),
       Arrays.asList(
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl")));
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"))
+    );
     when(fileSystem.baseDir()).thenReturn(new File("src/test/resources/"));
     when(fileSystem.sourceDirs()).thenReturn(Arrays.asList(new File("src/test/resources")));
     when(fileSystem.testDirs()).thenReturn(Arrays.asList(new File("src/test/resources")));
 
-    new EunitXmlSensor(new Erlang(configuration), fileSystem).analyse(new Project("dummy"), context);
+    new EunitXmlSensor(new Erlang(settings), fileSystem).analyse(new Project("dummy"), context);
 
   }
 

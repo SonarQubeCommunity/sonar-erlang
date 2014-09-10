@@ -19,11 +19,11 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.apache.commons.configuration.Configuration;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
@@ -36,12 +36,9 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.doubleThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class EunitXmlSensorTest {
 
@@ -53,18 +50,16 @@ public class EunitXmlSensorTest {
     ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/test/");
 
     context = ProjectUtil.mockContext();
-    Configuration configuration = ProjectUtil.mockConfiguration();
-    when(
-      configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
-        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
-      ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
+    Settings settings = ProjectUtil.createSettings();
+    settings.setProperty(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY, ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(null,
       Arrays.asList(
         new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"),
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl")));
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl"))
+    );
 
-    new EunitXmlSensor(new Erlang(configuration), fileSystem).analyse(new Project("dummy"), context);
+    new EunitXmlSensor(new Erlang(settings), fileSystem).analyse(new Project("dummy"), context);
 
   }
 

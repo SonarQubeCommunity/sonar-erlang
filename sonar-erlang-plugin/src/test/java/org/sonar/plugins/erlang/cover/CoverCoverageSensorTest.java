@@ -19,10 +19,10 @@
  */
 package org.sonar.plugins.erlang.cover;
 
-import org.apache.commons.configuration.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Properties;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
@@ -44,15 +45,15 @@ import static org.mockito.Mockito.when;
 
 public class CoverCoverageSensorTest {
 
-  private Configuration configuration;
+  private Settings settings;
   private Erlang erlang;
   private Project project;
   private SensorContext context;
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    configuration = ProjectUtil.mockConfiguration();
-    erlang = new Erlang(configuration);
+    settings = new Settings();
+    erlang = new Erlang(settings);
     context = ProjectUtil.mockContext();
     project = new Project("dummy");
     ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
@@ -60,8 +61,7 @@ public class CoverCoverageSensorTest {
 
   @Test
   public void checkCoverSensor() throws URISyntaxException {
-    when(configuration.getString(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME))
-      .thenReturn("non_existing.coverdata");
+    settings.setProperty(ErlangPlugin.COVERDATA_FILENAME_KEY, "non_existing.coverdata");
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
       Arrays.asList(
@@ -76,8 +76,7 @@ public class CoverCoverageSensorTest {
 
   @Test
   public void checkCoverSensorWithDataFile() throws URISyntaxException {
-    when(configuration.getString(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME))
-      .thenReturn(ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
+    settings.setProperty(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
       Arrays.asList(

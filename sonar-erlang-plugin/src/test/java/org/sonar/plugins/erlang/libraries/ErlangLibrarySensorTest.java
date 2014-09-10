@@ -30,6 +30,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.design.Dependency;
 import org.sonar.api.resources.Library;
 import org.sonar.api.resources.Project;
@@ -80,14 +81,11 @@ public class ErlangLibrarySensorTest {
       }
     });
 
-    Configuration configuration = ProjectUtil.mockConfiguration();
-    when(
-      configuration.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY,
-        ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME)).thenReturn(
-      filename);
+    Settings settings = ProjectUtil.createSettings();
+    settings.setProperty(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY, filename);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(null, null);
-    new ErlangLibrarySensor(new Erlang(configuration), fileSystem).analyse(project, context);
+    new ErlangLibrarySensor(new Erlang(settings), fileSystem).analyse(project, context);
   }
 
   @Test

@@ -54,10 +54,10 @@ public class CoverCoverageSensor implements Sensor {
   }
 
   public void analyse(Project project, SensorContext context) {
-    File reportsDir = new File(moduleFileSystem.baseDir(), erlang.getConfiguration()
-      .getString(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+    File reportsDir = new File(moduleFileSystem.baseDir(),
+      erlang.getPropertyValueFromSettings(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
-    String coverDataFilename = erlang.getConfiguration().getString(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
+    String coverDataFilename = erlang.getPropertyValueFromSettings(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
 
     File coverDataFile = new File(reportsDir, coverDataFilename);
 
@@ -160,13 +160,13 @@ public class CoverCoverageSensor implements Sensor {
   }
 
   protected String getTestReportsFolder() {
-    return erlang.getConfiguration().getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-      ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    return erlang.getPropertyValueFromSettings(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
   }
 
   @Override
   public String toString() {
     return getClass().getSimpleName();
   }
+
 
 }

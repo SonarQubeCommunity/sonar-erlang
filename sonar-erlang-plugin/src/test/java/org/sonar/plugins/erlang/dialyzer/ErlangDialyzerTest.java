@@ -19,13 +19,13 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.apache.commons.configuration.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.config.Settings;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.profiles.RulesProfile;
@@ -41,10 +41,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ErlangDialyzerTest {
 
@@ -55,8 +52,8 @@ public class ErlangDialyzerTest {
     Project project = new Project("dummy");
     ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
 
-    Configuration configuration = ProjectUtil.mockConfiguration();
-    Erlang erlang = new Erlang(configuration);
+    Settings settings = ProjectUtil.createSettings();
+    Erlang erlang = new Erlang(settings);
     SensorContext context = ProjectUtil.mockContext();
 
     RulesProfile rp = mock(RulesProfile.class);
@@ -69,7 +66,8 @@ public class ErlangDialyzerTest {
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
       Arrays.asList(
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null
+    );
 
     issuable = ProjectUtil.mockIssueable();
     ResourcePerspectives resourcePerspectives = mock(ResourcePerspectives.class);

@@ -19,8 +19,8 @@
  */
 package org.sonar.plugins.erlang.core;
 
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
+import org.sonar.api.config.Settings;
 import org.sonar.api.resources.AbstractLanguage;
 import org.sonar.api.scan.filesystem.FileQuery;
 import org.sonar.plugins.erlang.ErlangPlugin;
@@ -32,23 +32,34 @@ public class Erlang extends AbstractLanguage {
   public static final FileQuery SOURCE_QUERY = FileQuery.onSource().onLanguage(KEY);
   public static final FileQuery TEST_QUERY = FileQuery.onTest().onLanguage(KEY);
 
-  private Configuration configuration;
+  private Settings settings;
 
-  public Erlang(Configuration configuration) {
+  public Erlang(Settings settings) {
     super(KEY, "Erlang");
-    this.configuration = configuration;
+    this.settings = settings;
   }
 
-  public Configuration getConfiguration() {
-    return this.configuration;
+  public Settings getSettings() {
+    return this.settings;
   }
 
   public String[] getFileSuffixes() {
-    String[] suffixes = configuration.getStringArray(ErlangPlugin.FILE_SUFFIXES_KEY);
+    String[] suffixes = settings.getStringArray(ErlangPlugin.FILE_SUFFIXES_KEY);
     if (suffixes == null || suffixes.length == 0) {
       suffixes = StringUtils.split(ErlangPlugin.FILE_SUFFIXES_DEFVALUE, ",");
     }
     return suffixes;
   }
 
+  /**
+   * Return the string value for the given property key or the given default value
+   * if the property is null or empty.
+   */
+  public String getPropertyValueFromSettings(String key, String defaultValue) {
+    String value = settings.getString(key);
+    if (StringUtils.isEmpty(value)) {
+      value = defaultValue;
+    }
+    return value;
+  }
 }

@@ -19,13 +19,13 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.apache.commons.configuration.Configuration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.config.Settings;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.profiles.RulesProfile;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 
 public class DialyzerSensorTest {
 
-  private Configuration configuration;
+  private Settings settings;
   private Erlang erlang;
   private Project project;
   private SensorContext context;
@@ -57,8 +57,8 @@ public class DialyzerSensorTest {
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    configuration = ProjectUtil.mockConfiguration();
-    erlang = new Erlang(configuration);
+    settings = ProjectUtil.createSettings();
+    erlang = new Erlang(settings);
     context = mock(SensorContext.class);
 
     issuable = ProjectUtil.mockIssueable();

@@ -22,6 +22,7 @@ package org.sonar.plugins.erlang;
 import org.apache.commons.configuration.Configuration;
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issuable.IssueBuilder;
 import org.sonar.api.issue.Issue;
@@ -53,17 +54,12 @@ public class ProjectUtil {
     return context;
   }
 
-  public static Configuration mockConfiguration() {
-    Configuration configuration = mock(Configuration.class);
-    when(
-      configuration.getString(ErlangPlugin.EUNIT_FOLDER_KEY,
-        ErlangPlugin.EUNIT_DEFAULT_FOLDER)).thenReturn(
-      ErlangPlugin.EUNIT_DEFAULT_FOLDER);
-    when(
-      configuration.getString(ErlangPlugin.DIALYZER_FILENAME_KEY,
-        ErlangPlugin.DIALYZER_DEFAULT_FILENAME)).thenReturn(
-      ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
-    return configuration;
+  public static Settings createSettings() {
+    Settings settings = new Settings();
+    settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+
+    return settings;
   }
 
   public static Issuable mockIssueable() {

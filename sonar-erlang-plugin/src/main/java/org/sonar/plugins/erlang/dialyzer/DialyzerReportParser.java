@@ -32,13 +32,7 @@ import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Read and parse generated dialyzer report
@@ -76,11 +70,10 @@ public class DialyzerReportParser {
     String dialyzerFileName = null;
 
     try {
-      File reportsDir = new File(moduleFileSystem.baseDir(), erlang.getConfiguration()
-        .getString(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+      File reportsDir = new File(moduleFileSystem.baseDir(),
+        erlang.getPropertyValueFromSettings(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
-      dialyzerFileName = erlang.getConfiguration().getString(
-        ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+      dialyzerFileName = erlang.getPropertyValueFromSettings(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
       File file = new File(reportsDir, dialyzerFileName);
 
       FileInputStream fstream = new FileInputStream(file);
@@ -111,7 +104,7 @@ public class DialyzerReportParser {
     } catch (FileNotFoundException e) {
       LOG.error("Dialyser file not found: " + dialyzerFileName, e);
     } catch (IOException e) {
-      LOG.error("Error while trying to read the file: "  + dialyzerFileName, e);
+      LOG.error("Error while trying to read the file: " + dialyzerFileName, e);
     }
   }
 
