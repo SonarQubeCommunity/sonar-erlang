@@ -39,10 +39,6 @@ public class Erlang extends AbstractLanguage {
     this.settings = settings;
   }
 
-  public Settings getSettings() {
-    return this.settings;
-  }
-
   public String[] getFileSuffixes() {
     String[] suffixes = settings.getStringArray(ErlangPlugin.FILE_SUFFIXES_KEY);
     if (suffixes == null || suffixes.length == 0) {
@@ -51,15 +47,4 @@ public class Erlang extends AbstractLanguage {
     return suffixes;
   }
 
-  /**
-   * Return the string value for the given property key or the given default value
-   * if the property is null or empty.
-   */
-  public String getPropertyValueFromSettings(String key, String defaultValue) {
-    String value = settings.getString(key);
-    if (StringUtils.isEmpty(value)) {
-      value = defaultValue;
-    }
-    return value;
-  }
 }

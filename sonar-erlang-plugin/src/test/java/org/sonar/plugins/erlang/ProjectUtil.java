@@ -54,14 +54,6 @@ public class ProjectUtil {
     return context;
   }
 
-  public static Settings createSettings() {
-    Settings settings = new Settings();
-    settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
-    settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
-
-    return settings;
-  }
-
   public static Issuable mockIssueable() {
     Issuable issuable = mock(Issuable.class);
     final IssueBuilder issueBuilder = mock(Issuable.IssueBuilder.class);

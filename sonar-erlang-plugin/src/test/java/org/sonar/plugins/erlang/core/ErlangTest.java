@@ -25,7 +25,6 @@ import org.sonar.api.config.Settings;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertSame;
 
 public class ErlangTest {
 
@@ -41,7 +40,6 @@ public class ErlangTest {
   @Test
   public void defaultSuffixes() {
     assertArrayEquals(erlang.getFileSuffixes(), new String[]{"erl"});
-    assertSame(settings, erlang.getSettings());
   }
 
   @Test
