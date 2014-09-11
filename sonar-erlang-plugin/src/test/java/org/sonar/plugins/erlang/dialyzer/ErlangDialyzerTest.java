@@ -25,6 +25,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
@@ -33,8 +34,8 @@ import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.ActiveRule;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
+import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
-import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,8 +53,7 @@ public class ErlangDialyzerTest {
     Project project = new Project("dummy");
     ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
 
-    Settings settings = ProjectUtil.createSettings();
-    Erlang erlang = new Erlang(settings);
+    Settings settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
     SensorContext context = ProjectUtil.mockContext();
 
     RulesProfile rp = mock(RulesProfile.class);
@@ -73,7 +73,7 @@ public class ErlangDialyzerTest {
     ResourcePerspectives resourcePerspectives = mock(ResourcePerspectives.class);
     when(resourcePerspectives.as(Mockito.eq(Issuable.class), Mockito.any(Resource.class))).thenReturn(issuable);
 
-    new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(erlang, context, new ErlangRuleManager(
+    new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(settings, context, new ErlangRuleManager(
       DialyzerRuleRepository.DIALYZER_PATH), rp, project);
   }
 

@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.PropertiesBuilder;
@@ -39,11 +40,11 @@ import java.util.Map;
 
 public class CoverCoverageSensor implements Sensor {
 
-  protected Erlang erlang;
+  protected Settings settings;
   private ModuleFileSystem moduleFileSystem;
 
-  public CoverCoverageSensor(Erlang erlang, ModuleFileSystem moduleFileSystem) {
-    this.erlang = erlang;
+  public CoverCoverageSensor(ModuleFileSystem moduleFileSystem, Settings settings) {
+    this.settings = settings;
     this.moduleFileSystem = moduleFileSystem;
   }
 
@@ -55,9 +56,9 @@ public class CoverCoverageSensor implements Sensor {
 
   public void analyse(Project project, SensorContext context) {
     File reportsDir = new File(moduleFileSystem.baseDir(),
-      erlang.getPropertyValueFromSettings(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+      settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
 
-    String coverDataFilename = erlang.getPropertyValueFromSettings(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
+    String coverDataFilename = settings.getString(ErlangPlugin.COVERDATA_FILENAME_KEY);
 
     File coverDataFile = new File(reportsDir, coverDataFilename);
 
@@ -160,7 +161,7 @@ public class CoverCoverageSensor implements Sensor {
   }
 
   protected String getTestReportsFolder() {
-    return erlang.getPropertyValueFromSettings(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    return settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY);
   }
 
   @Override

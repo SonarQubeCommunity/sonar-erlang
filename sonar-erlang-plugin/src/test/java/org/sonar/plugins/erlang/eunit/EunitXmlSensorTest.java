@@ -23,6 +23,7 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.resources.Project;
@@ -50,7 +51,7 @@ public class EunitXmlSensorTest {
     ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/test/");
 
     context = ProjectUtil.mockContext();
-    Settings settings = ProjectUtil.createSettings();
+    Settings settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
     settings.setProperty(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY, ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(null,
@@ -59,7 +60,7 @@ public class EunitXmlSensorTest {
         new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl"))
     );
 
-    new EunitXmlSensor(new Erlang(settings), fileSystem).analyse(new Project("dummy"), context);
+    new EunitXmlSensor(new Erlang(settings), fileSystem, settings).analyse(new Project("dummy"), context);
 
   }
 

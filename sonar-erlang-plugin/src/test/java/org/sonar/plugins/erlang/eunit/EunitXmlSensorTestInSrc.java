@@ -23,6 +23,7 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.resources.Project;
@@ -48,7 +49,7 @@ public class EunitXmlSensorTestInSrc {
   @Before
   public void setup() throws URISyntaxException {
     context = ProjectUtil.mockContext();
-    Settings settings = ProjectUtil.createSettings();
+    Settings settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
     settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, "eunit");
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
@@ -61,7 +62,7 @@ public class EunitXmlSensorTestInSrc {
     when(fileSystem.sourceDirs()).thenReturn(Arrays.asList(new File("src/test/resources")));
     when(fileSystem.testDirs()).thenReturn(Arrays.asList(new File("src/test/resources")));
 
-    new EunitXmlSensor(new Erlang(settings), fileSystem).analyse(new Project("dummy"), context);
+    new EunitXmlSensor(new Erlang(settings), fileSystem, settings).analyse(new Project("dummy"), context);
 
   }
 

@@ -20,6 +20,7 @@
 package org.sonar.plugins.erlang.dialyzer;
 
 import org.sonar.api.batch.Sensor;
+import org.sonar.api.config.Settings;
 import org.sonar.api.resources.Project;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.core.Erlang;
@@ -32,11 +33,11 @@ import org.sonar.plugins.erlang.core.Erlang;
  */
 public abstract class AbstractErlangSensor implements Sensor {
 
-  private final Erlang erlang;
+  private final Settings settings;
   protected ModuleFileSystem moduleFileSystem;
 
-  protected AbstractErlangSensor(Erlang erlang, ModuleFileSystem fileSystem) {
-    this.erlang = erlang;
+  protected AbstractErlangSensor(ModuleFileSystem fileSystem, Settings settings) {
+    this.settings = settings;
     this.moduleFileSystem = fileSystem;
   }
 
@@ -44,7 +45,7 @@ public abstract class AbstractErlangSensor implements Sensor {
     return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
-  public final Erlang getErlang() {
-    return erlang;
+  public final Settings getSettings() {
+    return settings;
   }
 }

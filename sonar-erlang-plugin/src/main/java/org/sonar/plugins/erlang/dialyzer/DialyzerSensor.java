@@ -21,10 +21,10 @@ package org.sonar.plugins.erlang.dialyzer;
 
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.config.Settings;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
-import org.sonar.plugins.erlang.core.Erlang;
 
 /**
  * Calls the dialyzer report parser saves violations to sonar
@@ -39,13 +39,13 @@ public class DialyzerSensor extends AbstractErlangSensor {
   private ResourcePerspectives resourcePerspectives;
 
 
-  public DialyzerSensor(Erlang erlang, RulesProfile rulesProfile, ModuleFileSystem moduleFileSystem, ResourcePerspectives resourcePerspectives) {
-    super(erlang, moduleFileSystem);
+  public DialyzerSensor(RulesProfile rulesProfile, ModuleFileSystem moduleFileSystem, ResourcePerspectives resourcePerspectives, Settings settings) {
+    super(moduleFileSystem, settings);
     this.rulesProfile = rulesProfile;
     this.resourcePerspectives = resourcePerspectives;
   }
 
   public void analyse(Project project, SensorContext context) {
-    new DialyzerReportParser(moduleFileSystem, resourcePerspectives).dialyzer(getErlang(), context, dialyzerRuleManager, rulesProfile, project);
+    new DialyzerReportParser(moduleFileSystem, resourcePerspectives).dialyzer(getSettings(), context, dialyzerRuleManager, rulesProfile, project);
   }
 }

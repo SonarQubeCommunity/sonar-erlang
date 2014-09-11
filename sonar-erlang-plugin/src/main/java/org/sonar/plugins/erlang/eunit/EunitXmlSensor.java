@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.resources.DuplicatedSourceException;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Qualifiers;
@@ -41,10 +42,12 @@ import java.util.List;
 public class EunitXmlSensor implements Sensor {
 
   protected Erlang erlang;
+  protected final Settings settings;
   private ModuleFileSystem moduleFileSystem;
 
-  public EunitXmlSensor(Erlang erlang, ModuleFileSystem moduleFileSystem) {
+  public EunitXmlSensor(Erlang erlang, ModuleFileSystem moduleFileSystem, Settings settings) {
     this.erlang = erlang;
+    this.settings = settings;
     this.moduleFileSystem = moduleFileSystem;
   }
 
@@ -55,7 +58,7 @@ public class EunitXmlSensor implements Sensor {
   }
 
   public void analyse(Project project, SensorContext context) {
-    String eunitFolder = erlang.getPropertyValueFromSettings(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    String eunitFolder = settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY);
     try {
       collect(project, context,
         new File(moduleFileSystem.baseDir(), eunitFolder));

@@ -22,6 +22,7 @@ package org.sonar.plugins.erlang.cover;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.Metric;
@@ -30,30 +31,25 @@ import org.sonar.api.resources.Resource;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
-import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Properties;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class CoverCoverageSensorTest {
 
   private Settings settings;
-  private Erlang erlang;
   private Project project;
   private SensorContext context;
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    settings = new Settings();
-    erlang = new Erlang(settings);
+    settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
     context = ProjectUtil.mockContext();
     project = new Project("dummy");
     ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
@@ -65,9 +61,10 @@ public class CoverCoverageSensorTest {
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
       Arrays.asList(
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null
+    );
 
-    new CoverCoverageSensor(erlang, fileSystem).analyse(project, context);
+    new CoverCoverageSensor(fileSystem, settings).analyse(project, context);
 
     verify(context).saveMeasure((Resource) anyObject(), (Measure) anyObject());
     verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(21.0));
@@ -80,9 +77,10 @@ public class CoverCoverageSensorTest {
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
       Arrays.asList(
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null);
+        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null
+    );
 
-    new CoverCoverageSensor(erlang, fileSystem).analyse(project, context);
+    new CoverCoverageSensor(fileSystem, settings).analyse(project, context);
 
     verify(context).saveMeasure((Resource) anyObject(), (Measure) anyObject());
     verify(context).saveMeasure((Resource) anyObject(), (Metric) anyObject(), eq(21.0));

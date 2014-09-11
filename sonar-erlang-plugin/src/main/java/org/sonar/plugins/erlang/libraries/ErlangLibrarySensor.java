@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.Settings;
 import org.sonar.api.design.Dependency;
 import org.sonar.api.resources.Library;
 import org.sonar.api.resources.Project;
@@ -39,11 +40,11 @@ import java.util.List;
 public class ErlangLibrarySensor implements Sensor {
 
   private static final Logger LOG = LoggerFactory.getLogger(ErlangLibrarySensor.class);
-  private Erlang erlang;
+  private final Settings settings;
   private ModuleFileSystem moduleFileSystem;
 
-  public ErlangLibrarySensor(Erlang erlang, ModuleFileSystem moduleFileSystem) {
-    this.erlang = erlang;
+  public ErlangLibrarySensor(ModuleFileSystem moduleFileSystem, Settings settings) {
+    this.settings = settings;
     this.moduleFileSystem = moduleFileSystem;
   }
 
@@ -52,7 +53,7 @@ public class ErlangLibrarySensor implements Sensor {
   }
 
   private void analyzeRebarConfigFile(Resource projectResource, SensorContext context, File baseDir) {
-    String rebarConfigUrl = erlang.getPropertyValueFromSettings(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY, ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
+    String rebarConfigUrl = settings.getString(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY);
     File rebarConfigFile = new File(baseDir, rebarConfigUrl);
     LOG.warn("Try get libraries from: " + rebarConfigFile.getAbsolutePath());
 

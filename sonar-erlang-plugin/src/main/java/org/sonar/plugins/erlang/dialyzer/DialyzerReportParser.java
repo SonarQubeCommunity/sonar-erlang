@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.config.Settings;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.profiles.RulesProfile;
@@ -30,7 +31,6 @@ import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.*;
 
@@ -56,24 +56,23 @@ public class DialyzerReportParser {
    * We must pass the dialyzerRuleManager as well to make possible to find the
    * rule based on the message in the dialyzer log file
    *
-   * @param erlang
+   * @param settings
    * @param project
    * @param context
    * @param dialyzerRuleManager
    * @param rulesProfile
    * @return
    */
-  public void dialyzer(Erlang erlang, SensorContext context, ErlangRuleManager dialyzerRuleManager, RulesProfile rulesProfile, Project project) {
+  public void dialyzer(Settings settings, SensorContext context, ErlangRuleManager dialyzerRuleManager, RulesProfile rulesProfile, Project project) {
     /**
      * Read dialyzer results
      */
     String dialyzerFileName = null;
 
     try {
-      File reportsDir = new File(moduleFileSystem.baseDir(),
-        erlang.getPropertyValueFromSettings(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+      File reportsDir = new File(moduleFileSystem.baseDir(), settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
 
-      dialyzerFileName = erlang.getPropertyValueFromSettings(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+      dialyzerFileName = settings.getString(ErlangPlugin.DIALYZER_FILENAME_KEY);
       File file = new File(reportsDir, dialyzerFileName);
 
       FileInputStream fstream = new FileInputStream(file);

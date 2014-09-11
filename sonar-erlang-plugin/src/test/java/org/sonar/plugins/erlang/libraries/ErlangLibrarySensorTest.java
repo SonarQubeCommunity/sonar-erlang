@@ -19,7 +19,6 @@
  */
 package org.sonar.plugins.erlang.libraries;
 
-import org.apache.commons.configuration.Configuration;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +29,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.design.Dependency;
 import org.sonar.api.resources.Library;
@@ -37,7 +37,6 @@ import org.sonar.api.resources.Project;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
-import org.sonar.plugins.erlang.core.Erlang;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -46,9 +45,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(value = Parameterized.class)
 public class ErlangLibrarySensorTest {
@@ -81,11 +78,11 @@ public class ErlangLibrarySensorTest {
       }
     });
 
-    Settings settings = ProjectUtil.createSettings();
+    Settings settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
     settings.setProperty(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY, filename);
 
     ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(null, null);
-    new ErlangLibrarySensor(new Erlang(settings), fileSystem).analyse(project, context);
+    new ErlangLibrarySensor(fileSystem, settings).analyse(project, context);
   }
 
   @Test
