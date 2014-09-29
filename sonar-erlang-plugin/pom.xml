@@ -44,14 +44,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.sonar.plugins</groupId>
-      <artifactId>sonar-surefire-plugin</artifactId>
-      <type>sonar-plugin</type>
-      <version>3.3.2</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.codehaus.sonar.common-rules</groupId>
       <artifactId>sonar-common-rules</artifactId>
       <version>1.2</version>
@@ -94,7 +86,7 @@
             <configuration>
               <rules>
                 <requireFilesSize>
-                  <maxsize>760000</maxsize>
+                  <maxsize>770000</maxsize>
                   <minsize>550000</minsize>
                   <files>
                     <file>${project.build.directory}/${project.build.finalName}.jar</file>

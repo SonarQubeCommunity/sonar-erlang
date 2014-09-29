@@ -33,7 +33,6 @@ import org.sonar.api.resources.Resource;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
-import org.sonar.plugins.surefire.api.AbstractSurefireParser;
 
 import java.io.File;
 import java.io.IOException;
