@@ -19,7 +19,6 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.apache.commons.lang.StringUtils;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Measure;
@@ -74,7 +73,6 @@ public abstract class AbstractSurefireParser {
   private void parseFiles(SensorContext context, File[] reports) {
     UnitTestIndex index = new UnitTestIndex();
     parseFiles(reports, index);
-    sanitize(index);
     save(index, context);
   }
 
@@ -86,16 +84,6 @@ public abstract class AbstractSurefireParser {
         parser.parse(report);
       } catch (XMLStreamException e) {
         throw new SonarException("Fail to parse the Surefire report: " + report, e);
-      }
-    }
-  }
-
-  private void sanitize(UnitTestIndex index) {
-    for (String classname : index.getClassnames()) {
-      if (StringUtils.contains(classname, "$")) {
-        // Surefire reports classes whereas sonar supports files
-        String parentClassName = StringUtils.substringBefore(classname, "$");
-        index.merge(classname, parentClassName);
       }
     }
   }

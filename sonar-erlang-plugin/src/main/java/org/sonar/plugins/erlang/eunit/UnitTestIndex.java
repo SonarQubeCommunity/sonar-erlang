@@ -20,10 +20,8 @@
 package org.sonar.plugins.erlang.eunit;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import java.util.Map;
-import java.util.Set;
 
 public class UnitTestIndex {
 
@@ -41,15 +39,6 @@ public class UnitTestIndex {
     }
     return classReport;
   }
-
-  public UnitTestClassReport get(String classname) {
-    return indexByClassname.get(classname);
-  }
-
-  public Set<String> getClassnames() {
-    return Sets.newHashSet(indexByClassname.keySet());
-  }
-
   public Map<String, UnitTestClassReport> getIndexByClassname() {
     return indexByClassname;
   }
@@ -57,21 +46,5 @@ public class UnitTestIndex {
   public int size() {
     return indexByClassname.size();
   }
-
-  public UnitTestClassReport merge(String classname, String intoClassname) {
-    UnitTestClassReport from = indexByClassname.get(classname);
-    if (from!=null) {
-      UnitTestClassReport to = index(intoClassname);
-      to.add(from);
-      indexByClassname.remove(classname);
-      return to;
-    }
-    return null;
-  }
-
-  public void remove(String classname) {
-    indexByClassname.remove(classname);
-  }
-
 
 }

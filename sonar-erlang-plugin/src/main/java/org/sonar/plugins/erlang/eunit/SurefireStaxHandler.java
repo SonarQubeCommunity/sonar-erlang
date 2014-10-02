@@ -19,7 +19,6 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.staxmate.in.ElementFilter;
 import org.codehaus.staxmate.in.SMEvent;
 import org.codehaus.staxmate.in.SMHierarchicCursor;
@@ -45,26 +44,16 @@ public class SurefireStaxHandler implements StaxParser.XmlStreamHandler {
     while ((testSuiteEvent = testSuite.getNext()) != null) {
       if (testSuiteEvent.compareTo(SMEvent.START_ELEMENT) == 0) {
         String testSuiteClassName = testSuite.getAttrValue("name");
-        if (StringUtils.contains(testSuiteClassName, "$")) {
-          // test suites for inner classes are ignored
-          return;
-        }
         SMInputCursor testCase = testSuite.childCursor(new ElementFilter("testcase"));
         SMEvent event;
         while ((event = testCase.getNext()) != null) {
           if (event.compareTo(SMEvent.START_ELEMENT) == 0) {
-            String testClassName = getClassname(testCase, testSuiteClassName);
-            UnitTestClassReport classReport = index.index(testClassName);
+            UnitTestClassReport classReport = index.index(testSuiteClassName);
             parseTestCase(testCase, classReport);
           }
         }
       }
     }
-  }
-
-  private String getClassname(SMInputCursor testCaseCursor, String defaultClassname) throws XMLStreamException {
-    String testClassName = testCaseCursor.getAttrValue("classname");
-    return StringUtils.defaultIfBlank(testClassName, defaultClassname);
   }
 
   private void parseTestCase(SMInputCursor testCaseCursor, UnitTestClassReport report) throws XMLStreamException {
@@ -79,8 +68,7 @@ public class SurefireStaxHandler implements StaxParser.XmlStreamHandler {
 
   private UnitTestResult parseTestResult(SMInputCursor testCaseCursor) throws XMLStreamException {
     UnitTestResult detail = new UnitTestResult();
-    String name = getTestCaseName(testCaseCursor);
-    detail.setName(name);
+    detail.setName(testCaseCursor.getAttrValue("name"));
 
     String status = UnitTestResult.STATUS_OK;
     long duration = getTimeAttributeInMS(testCaseCursor);
@@ -118,15 +106,6 @@ public class SurefireStaxHandler implements StaxParser.XmlStreamHandler {
     } catch (ParseException e) {
       throw new XMLStreamException(e);
     }
-  }
-
-  private String getTestCaseName(SMInputCursor testCaseCursor) throws XMLStreamException {
-    String classname = testCaseCursor.getAttrValue("classname");
-    String name = testCaseCursor.getAttrValue("name");
-    if (StringUtils.contains(classname, "$")) {
-      return StringUtils.substringAfter(classname, "$") + "/" + name;
-    }
-    return name;
   }
 
 }

@@ -21,19 +21,11 @@ package org.sonar.plugins.erlang.eunit;
 
 import com.google.common.collect.Lists;
 
-import java.util.Collections;
 import java.util.List;
 
 public final class UnitTestClassReport {
   private long errors = 0L, failures = 0L, skipped = 0L, tests = 0L, durationMilliseconds = 0L;
   private List<UnitTestResult> results = null;
-
-  public UnitTestClassReport add(UnitTestClassReport other) {
-    for (UnitTestResult otherResult : other.getResults()) {
-      add(otherResult);
-    }
-    return this;
-  }
 
   public UnitTestClassReport add(UnitTestResult result) {
     initResults();
@@ -77,14 +69,6 @@ public final class UnitTestClassReport {
   public long getDurationMilliseconds() {
     return durationMilliseconds;
   }
-
-  public List<UnitTestResult> getResults() {
-    if (results == null) {
-      return Collections.emptyList();
-    }
-    return results;
-  }
-
 
   public String toXml() {
     StringBuilder sb = new StringBuilder(256);
