@@ -45,6 +45,7 @@ public class DialyzerSensor extends AbstractErlangSensor {
     this.resourcePerspectives = resourcePerspectives;
   }
 
+  @Override
   public void analyse(Project project, SensorContext context) {
     new DialyzerReportParser(moduleFileSystem, resourcePerspectives).dialyzer(getSettings(), context, dialyzerRuleManager, rulesProfile, project);
   }

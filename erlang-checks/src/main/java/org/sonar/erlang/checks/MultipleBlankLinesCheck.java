@@ -71,6 +71,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
     isInsideFunction = false;
   }
 
+  @Override
   public void visitToken(Token token) {
     if (!token.isGeneratedCode() && !checkedLines.contains(token.getLine())) {
       int previousLine = checkedLines.isEmpty() ? 0 : checkedLines.get(checkedLines.size() - 1);

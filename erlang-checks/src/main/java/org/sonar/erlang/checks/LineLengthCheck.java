@@ -58,6 +58,7 @@ public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements Ast
     lastIncorrectLine = -1;
   }
 
+  @Override
   public void visitToken(Token token) {
     if (!token.isGeneratedCode() && lastIncorrectLine != token.getLine()) {
       int incorrectLine = checkLine(token);

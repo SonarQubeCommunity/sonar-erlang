@@ -52,10 +52,12 @@ public class EunitXmlSensor implements Sensor {
 
   private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
 
+  @Override
   public boolean shouldExecuteOnProject(Project project) {
     return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
+  @Override
   public void analyse(Project project, SensorContext context) {
     String eunitFolder = settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY);
     try {

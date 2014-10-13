@@ -37,10 +37,12 @@ public class ErlangCpdMapping extends AbstractCpdMapping {
     this.charset = fs.sourceCharset();
   }
 
+  @Override
   public Tokenizer getTokenizer() {
     return new ErlangTokenizer(charset);
   }
 
+  @Override
   public Language getLanguage() {
     return language;
   }

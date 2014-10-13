@@ -74,6 +74,7 @@ public class ErlangConfigurationModel extends AbstractConfigurationModel {
       new KeywordsTokenizer("<span class=\"k\">", END_TAG, ErlangKeyword.keywordValues()));
   }
 
+  @Override
   public List<ConfigurationProperty> getProperties() {
     return ImmutableList.of(charsetProperty);
   }

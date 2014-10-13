@@ -39,6 +39,7 @@ public class Erlang extends AbstractLanguage {
     this.settings = settings;
   }
 
+  @Override
   public String[] getFileSuffixes() {
     String[] suffixes = settings.getStringArray(ErlangPlugin.FILE_SUFFIXES_KEY);
     if (suffixes == null || suffixes.length == 0) {

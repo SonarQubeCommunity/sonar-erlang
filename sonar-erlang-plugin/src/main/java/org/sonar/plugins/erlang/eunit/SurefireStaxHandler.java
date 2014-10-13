@@ -38,6 +38,7 @@ public class SurefireStaxHandler implements StaxParser.XmlStreamHandler {
     this.index = index;
   }
 
+  @Override
   public void stream(SMHierarchicCursor rootCursor) throws XMLStreamException {
     SMInputCursor testSuite = rootCursor.constructDescendantCursor(new ElementFilter("testsuite"));
     SMEvent testSuiteEvent;

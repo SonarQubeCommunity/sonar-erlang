@@ -52,6 +52,7 @@ public class IndentionSizeCheck extends SquidCheck<LexerlessGrammar> implements 
     previousToken = null;
   }
 
+  @Override
   public void visitToken(Token token) {
     if (numOfViolations < 100 && !token.isGeneratedCode() && (previousToken == null || previousToken.getLine() != token.getLine())){
       if (token.getColumn() % indentionSize != 0) {

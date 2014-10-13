@@ -48,6 +48,7 @@ public class ErlangLibrarySensor implements Sensor {
     this.moduleFileSystem = moduleFileSystem;
   }
 
+  @Override
   public void analyse(Project project, SensorContext context) {
     analyzeRebarConfigFile(project, context, moduleFileSystem.baseDir());
   }
@@ -109,6 +110,7 @@ public class ErlangLibrarySensor implements Sensor {
     return ret.replaceAll("[\\'\\\"]", "");
   }
 
+  @Override
   public final boolean shouldExecuteOnProject(Project project) {
     return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }

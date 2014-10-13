@@ -41,6 +41,7 @@ public class TodoCommentCheck extends SquidCheck<LexerlessGrammar>
   private final CommentContainsPatternChecker checker =
     new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
 
+  @Override
   public void visitToken(Token token) {
     checker.visitToken(token);
   }

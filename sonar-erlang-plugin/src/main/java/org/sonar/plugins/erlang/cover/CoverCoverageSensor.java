@@ -50,10 +50,12 @@ public class CoverCoverageSensor implements Sensor {
 
   private static final Logger LOG = LoggerFactory.getLogger(CoverCoverageSensor.class);
 
+  @Override
   public boolean shouldExecuteOnProject(Project project) {
     return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
+  @Override
   public void analyse(Project project, SensorContext context) {
     File reportsDir = new File(moduleFileSystem.baseDir(),
       settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));

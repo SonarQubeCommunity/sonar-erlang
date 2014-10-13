@@ -80,10 +80,12 @@ public class ErlangSquidSensor implements Sensor {
     this.resourcePerspectives = resourcePerspectives;
   }
 
+  @Override
   public boolean shouldExecuteOnProject(Project project) {
     return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
   }
 
+  @Override
   public void analyse(Project project, SensorContext context) {
     this.project = project;
     this.context = context;
