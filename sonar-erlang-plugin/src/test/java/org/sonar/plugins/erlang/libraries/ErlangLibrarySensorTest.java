@@ -72,6 +72,7 @@ public class ErlangLibrarySensorTest {
     Project project = new Project("dummy");
 
     when(context.getResource(any(Library.class))).thenAnswer(new Answer<Library>() {
+      @Override
       public Library answer(InvocationOnMock invocation) {
         Object[] args = invocation.getArguments();
         return (Library) args[0];

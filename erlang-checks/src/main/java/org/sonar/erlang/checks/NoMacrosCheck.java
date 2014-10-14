@@ -55,6 +55,7 @@ public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
   private List<String> ignoreList = new ArrayList<String>();
 
   Function<String, String> trimItems = new Function<String, String>() {
+    @Override
     public String apply(String arg0) {
       return arg0.trim();
     }

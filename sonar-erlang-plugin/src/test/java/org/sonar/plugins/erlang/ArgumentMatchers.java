@@ -26,6 +26,7 @@ import org.sonar.api.scan.filesystem.FileType;
 public class ArgumentMatchers {
 
   public class IsFileQuerySource extends ArgumentMatcher<FileQuery> {
+    @Override
     public boolean matches(Object argument) {
       if (argument != null) {
         return ((FileQuery) argument).types().contains(FileType.SOURCE);

@@ -30,22 +30,27 @@ public enum ErlangMetric implements MetricDef {
   // Erlang specific metrics
   NUM_OF_FUN_EXRP, NUM_OF_FUN_CLAUSES, NUM_OF_MACROS, NUM_OF_RECORDS, INCLUDED_FILES, IMPORTED_MODULES, NUM_OF_FUNC_ARGS, DEPTH_OF_CASES, BRANCHES_OF_RECURSION;
 
+  @Override
   public boolean aggregateIfThereIsAlreadyAValue() {
     return true;
   }
 
+  @Override
   public CalculatedMetricFormula getCalculatedMetricFormula() {
     return null;
   }
 
+  @Override
   public String getName() {
     return name();
   }
 
+  @Override
   public boolean isCalculatedMetric() {
     return false;
   }
 
+  @Override
   public boolean isThereAggregationFormula() {
     return true;
   }

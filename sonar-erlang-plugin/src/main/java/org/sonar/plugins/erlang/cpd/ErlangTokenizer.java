@@ -42,6 +42,7 @@ public class ErlangTokenizer implements Tokenizer {
     this.charset = charset;
   }
 
+  @Override
   public final void tokenize(SourceCode source, Tokens cpdTokens) {
     String fileName = source.getFileName();
     Parser<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(charset, ErlangGrammarImpl.createGrammar());

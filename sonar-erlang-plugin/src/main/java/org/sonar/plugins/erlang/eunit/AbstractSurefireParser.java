@@ -64,6 +64,7 @@ public abstract class AbstractSurefireParser {
 
   private File[] findXMLFilesStartingWith(File dir, final String fileNameStart) {
     return dir.listFiles(new FilenameFilter() {
+      @Override
       public boolean accept(File dir, String name) {
         return name.startsWith(fileNameStart) && name.endsWith(".xml");
       }
