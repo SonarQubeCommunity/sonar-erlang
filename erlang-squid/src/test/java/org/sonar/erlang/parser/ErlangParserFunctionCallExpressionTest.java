@@ -1,5 +1,5 @@
 /*
- * Sonar Erlang Plugin
+ * SonarQube Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
  *
@@ -39,7 +39,8 @@ public class ErlangParserFunctionCallExpressionTest {
       .matches(
         "string:strip(erlang:system_info(system_architecture),right,$\n)")
       .matches("lists:reverse ([$\\] | L])")
-      .matches("?assertMatch([{ok, 1, Pid}| _] when is_pid(Pid), Result)");
+      .matches("?assertMatch([{ok, 1, Pid}| _] when is_pid(Pid), Result)")
+      .matches("format_querystring([{outputtype, json}\u00A0|\u2003Params])");
   }
 
 }

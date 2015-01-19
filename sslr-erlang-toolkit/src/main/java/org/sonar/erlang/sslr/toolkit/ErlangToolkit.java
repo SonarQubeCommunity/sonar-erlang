@@ -1,5 +1,5 @@
 /*
- * Sonar Erlang Plugin
+ * SonarQube Erlang Plugin
  * Copyright (C) 2012 Tamas Kende
  * kende.tamas@gmail.com
  *

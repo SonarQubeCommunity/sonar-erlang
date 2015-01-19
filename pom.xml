@@ -14,7 +14,7 @@
   <packaging>pom</packaging>
 
   <name>Erlang</name>
-  <description>Parent pom of Sonar erlang plugin</description>
+  <description>Parent pom of SonarQube erlang plugin</description>
   <url />
   <inceptionYear>2012</inceptionYear>
   <organization>
@@ -59,7 +59,7 @@
   </ciManagement>
 
   <properties>
-    <license.title>Sonar Erlang Plugin</license.title>
+    <license.title>SonarQube Erlang Plugin</license.title>
     <license.mailto>kende.tamas@gmail.com</license.mailto>
 
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
