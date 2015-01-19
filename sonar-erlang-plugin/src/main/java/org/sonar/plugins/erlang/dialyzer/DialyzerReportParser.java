@@ -101,9 +101,9 @@ public class DialyzerReportParser {
       }
       breader.close();
     } catch (FileNotFoundException e) {
-      LOG.error("Dialyser file not found: " + dialyzerFileName, e);
+      LOG.warn("Dialyser file not found at: " + dialyzerFileName + ", have you ran dialyzer before analysis?", e);
     } catch (IOException e) {
-      LOG.error("Error while trying to read the file: " + dialyzerFileName, e);
+      LOG.error("Error while trying to parse dialyzer report at: " + dialyzerFileName, e);
     }
   }
 
