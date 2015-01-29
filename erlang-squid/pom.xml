@@ -4,10 +4,11 @@
   <parent>
     <groupId>org.codehaus.sonar-plugins.erlang</groupId>
     <artifactId>erlang</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>erlang-squid</artifactId>
+  <version>1.1</version>
 
   <name>Erlang :: Squid</name>
 
