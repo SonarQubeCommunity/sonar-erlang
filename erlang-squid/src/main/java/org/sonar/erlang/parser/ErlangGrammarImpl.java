@@ -467,7 +467,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(fileAttr).is(minus, semiKeyword("file", b), lparenthesis, primaryExpression, comma, primaryExpression,
       rparenthesis, dot);
 
-    b.rule(behaviourAttr).is(minus, semiKeyword("behaviour", b), lparenthesis, atom, rparenthesis, dot);
+    b.rule(behaviourAttr).is(minus, semiKeyword("behaviour", b), lparenthesis, b.firstOf(macroLiteral, atom), rparenthesis, dot);
 
     b.rule(genericAttr).is(
       minus,
@@ -481,7 +481,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         semiKeyword("author", b),
         semiKeyword("export_type", b),
         semiKeyword("deprecated", b),
-        semiKeyword("asn1_info", b)),
+        semiKeyword("asn1_info", b),
+        semiKeyword("export_types", b)),
       lparenthesis, b.firstOf(funcArity, primaryExpression), rparenthesis, dot);
 
     b.rule(anyAttr).is(minus, b.sequence(b.nextNot(moduleAttrTags), atom), lparenthesis, primaryExpression, rparenthesis, dot);

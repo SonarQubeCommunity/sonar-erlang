@@ -190,6 +190,13 @@ public class ModuleAttributesTest {
       .matches("-awesome_module(true).");
   }
 
+  @Test
+  public void bugs(){
+    assertThat(b.rule(ErlangGrammarImpl.module))
+      .matches(code(" -define(GEN_FSM, p1_fsm).", "-behaviour(?GEN_FSM)."))
+      .matches("-export_types([index_info/0]).");
+  }
+
   private static String code(String... lines) {
     return Joiner.on("\n").join(lines);
   }
