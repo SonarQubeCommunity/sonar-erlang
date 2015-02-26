@@ -458,7 +458,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
 
     b.rule(defineAttr).is(minus, semiKeyword("define", b),
       lparenthesis, b.firstOf(
-        b.sequence(primaryExpression, comma, statement),
+        b.sequence(primaryExpression, comma, statements),
         b.sequence(funcDecl, comma, guardSequence)), rparenthesis, dot);
 
     b.rule(importAttr).is(minus, semiKeyword("import", b), lparenthesis, b.firstOf(macroLiteral, atom), comma,

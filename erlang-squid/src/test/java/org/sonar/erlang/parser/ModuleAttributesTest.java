@@ -188,13 +188,26 @@ public class ModuleAttributesTest {
       .matches("-company({name, \"Dynamic Programmer\"}).")
       .matches("-author(\"Hernan Garcia\").")
       .matches("-awesome_module(true).");
+
   }
 
   @Test
   public void bugs(){
     assertThat(b.rule(ErlangGrammarImpl.module))
       .matches(code(" -define(GEN_FSM, p1_fsm).", "-behaviour(?GEN_FSM)."))
-      .matches("-export_types([index_info/0]).");
+      .matches("-export_types([index_info/0]).")
+      .matches(" -ifdef(NO_TRANSIENT_SUPERVISORS).\n" +
+        " -define(SUPERVISOR_START, \n" +
+        " gen_fsm:start(?MODULE, [Host, ServerHost, Access, Room, HistorySize,\n" +
+        "    RoomShaper, Creator, Nick, DefRoomOpts],\n" +
+        "        ?FSMOPTS)).\n" +
+        "-else.\n" +
+        "-define(SUPERVISOR_START, \n" +
+        " Supervisor = gen_mod:get_module_proc(ServerHost, ejabberd_mod_muc_sup),\n" +
+        " supervisor:start_child(\n" +
+        "   Supervisor, [Host, ServerHost, Access, Room, HistorySize, RoomShaper,\n" +
+        "         Creator, Nick, DefRoomOpts])).\n" +
+        "-endif.");
   }
 
   private static String code(String... lines) {
