@@ -59,6 +59,10 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
       actualArity = getArity(node.getFirstChild(ErlangGrammarImpl.functionClause));
     } else if (node.getType().equals(ErlangGrammarImpl.callExpression)
       /**
+      * Not in a module attribute
+      */
+      && node.getFirstAncestor(ErlangGrammarImpl.defineAttr) == null
+      /**
        * Recursive call
        */
       && getArityFromCall(node).equals(actualArity)

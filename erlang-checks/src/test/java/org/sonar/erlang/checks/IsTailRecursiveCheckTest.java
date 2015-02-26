@@ -49,4 +49,13 @@ public class IsTailRecursiveCheckTest {
       .next().atLine(12)
       .noMore();
   }
+
+  @Test
+  public void test_bug() {
+    IsTailRecursiveCheck check = new IsTailRecursiveCheck();
+    SourceFile file = TestHelper.scanSingleFile(new File(
+      "src/test/resources/checks/mod_configure.erl"), check);
+
+
+  }
 }
