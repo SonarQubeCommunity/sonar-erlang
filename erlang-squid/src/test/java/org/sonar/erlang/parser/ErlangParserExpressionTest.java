@@ -19,6 +19,7 @@
  */
 package org.sonar.erlang.parser;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
@@ -195,6 +196,56 @@ public class ErlangParserExpressionTest {
       .matches("\"asdasd\" \"asdasd\"")
       .matches("\"asdasd\" \"asdasd\"\n \"effef\"")
       .matches("\"asdasd\" ?MARCI\n \"effef\"");
+  }
+
+  @Test
+  public void mapCreate() {
+    assertThat(g.rule(ErlangGrammarImpl.mapCreateUpdate))
+      .matches("a => 1")
+      .matches("a => <<\"afsfas\">>");
+    assertThat(g.rule(ErlangGrammarImpl.mapCreateUpdate))
+      .matches("a := 1")
+      .matches("a := <<\"afsfas\">>");
+    assertThat(g.rule(ErlangGrammarImpl.map))
+      .matches("#{}")
+      .matches("#{a => <<\"hello\">>}")
+      .matches("#{1 => 2, b => b}")
+      .matches("#{k => {A,B}}")
+      .matches("#{k => {A,B}}")
+      .matches("#{{\"w\", 1} => f()}")
+      .matches("#{1 => a, 1 => b}")
+      .matches("#{1.0 => a, 1 => b}");
+    assertThat(g.rule(ErlangGrammarImpl.assignmentExpression))
+      .matches("M0 = #{1 => 2}")
+      .matches("M0 = #{}");
+    assertThat(g.rule(ErlangGrammarImpl.statements))
+      .matches("M0 = #{}")
+      .matches("M0 = #{},                 % empty map\n" +
+        "M1 = #{a => <<\"hello\">>}, % single association with literals\n" +
+        "M2 = #{1 => 2, b => b},   % multiple associations with literals\n" +
+        "M3 = #{k => {A,B}},       % single association with variables\n" +
+        "M4 = #{{\"w\", 1} => f()}  % compound key associated with an evaluated expression");
+  }
+
+  @Test
+  public void mapUpdate() {
+    assertThat(g.rule(ErlangGrammarImpl.statements))
+      .matches("M0#{a => 0}")
+      .matches("M1#{a => 1, b => 2}")
+      .matches("M2#{\"function\" => fun() -> f() end}")
+      .matches("M3#{a := 2, b := 3}")
+      .matches("M0 = #{},\n" +
+              "M1 = M0#{a => 0},\n" +
+              "M2 = M1#{a => 1, b => 2},\n" +
+              "M3 = M2#{\"function\" => fun() -> f() end},\n" +
+              "M4 = M3#{a := 2, b := 3}  % 'a' and 'b' was added in `M1` and `M2`.");
+  }
+
+  @Test
+  public void mapInPattern() {
+    assertThat(g.rule(ErlangGrammarImpl.expression))
+            .matches("#{\"tuple\" := {1,B}} = M");
+
   }
 
 }

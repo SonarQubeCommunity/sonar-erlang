@@ -106,6 +106,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   numbersign,
   exclamation,
   questionmark,
+  mapA,
+  mapU,
 
   module,
   functionDeclaration,
@@ -203,7 +205,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   macroLiteralVarName,
   stringLiterals,
   stringConcatenation,
-  guardedPattern, atomOrIdentifier, moduleAttrTags;
+  guardedPattern, atomOrIdentifier, moduleAttrTags, mapCreate, mapUpdate, mapCreateUpdate, map;
 
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
   public static final String ESCAPE_SEQUENCE =
@@ -386,6 +388,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(numbersign).is(punctuator("#", b));
     b.rule(exclamation).is(punctuator("!", b));
     b.rule(questionmark).is(punctuator("?", b));
+    b.rule(mapA).is(punctuator("=>", b));
+    b.rule(mapU).is(punctuator(":=", b));
   }
 
   private static void keywords(LexerlessGrammarBuilder b) {
@@ -526,7 +530,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         macroLiteralSimple,
         macroLiteralVarName,
         stringLiteral
-        )).skip();
+      )).skip();
 
     b.rule(stringConcatenation).is(
       b.firstOf(
@@ -541,22 +545,55 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
           // in defines a record might have an identifier to access a field
           b.sequence(numbersign, primaryExpression, b.optional(".", identifier)),
           b.sequence(macroLiteral, b.optional(".", primaryExpression)))
-        )
+      )
       ).skipIfOneChild();
 
     b.rule(recordCreate).is(
       b.firstOf(
         recordAccess,
-        b.oneOrMore(numbersign, primaryExpression)),
+        b.oneOrMore(numbersign, b.nextNot(lcurlybrace), primaryExpression)),
       b.optional(
         lcurlybrace,
         b.optional(assignmentExpression,
           b.zeroOrMore(comma, assignmentExpression)),
         rcurlybrace
-        )
+      )
       ).skipIfOneChild();
 
-    b.rule(guardedPattern).is(recordCreate, b.optional(guardSequenceStart)).skipIfOneChild();
+    b.rule(mapCreate).is(
+      numbersign,
+      lcurlybrace,
+      b.optional(
+        mapCreateUpdate,
+        b.zeroOrMore(comma, mapCreateUpdate)
+      ),
+      rcurlybrace
+    );
+
+    b.rule(mapCreateUpdate).is(
+      expression,
+      b.firstOf(mapU, mapA),
+      expression
+    );
+
+    b.rule(mapUpdate).is(
+      stringConcatenation,
+      numbersign,
+      lcurlybrace,
+      mapCreateUpdate,
+      b.zeroOrMore(comma, mapCreateUpdate),
+      rcurlybrace
+    );
+
+    b.rule(map).is(
+      b.firstOf(
+        mapUpdate,
+        mapCreate,
+        recordCreate
+      )
+    ).skipIfOneChild();
+
+    b.rule(guardedPattern).is(map, b.optional(guardSequenceStart)).skipIfOneChild();
 
     // should be refactored
     b.rule(listLiteral).is(lbracket, b.optional(
