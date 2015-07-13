@@ -1,0 +1,11 @@
+<profile>
+  <name>issue-profile</name>
+  <language>erlang</language>
+  <rules>
+    <rule>
+      <repositoryKey>erlang</repositoryKey>
+      <key>ExportOneFunctionPerLine</key>
+      <priority>MAJOR</priority>
+    </rule>
+  </rules>
+</profile>

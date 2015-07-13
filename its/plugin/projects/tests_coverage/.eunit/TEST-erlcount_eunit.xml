@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite tests="7" failures="1" errors="0" skipped="0" time="0.136" name="module 'erlcount_eunit'">
+  <testcase time="0.114" name="erlcount_eunit:find_erl_test_/0_20">
+    <failure type="assertEqual_failed">
+::{assertEqual_failed,[{module,erlcount_eunit},
+                     {line,21},
+                     {expression,"lists : sort ( build_list ( erlcount_lib : find_erl ( ? TESTDIR ) ) )"},
+                     {expected,["Használat: find [-H] [-L] [-P][-Oszint] [-D help|tree|search|stat|rates|opt|exec] [útvonal...] [kifejezés]",
+                                [102,105,110,100,58,32,97,122,32,195,186,116,
+                                 118,111,110,97,108,97,107,110,97,107,32,109,
+                                 101,103,32,107,101,108,108,32,101,108,197,
+                                 145,122,110,105,195,188,107,32,97,32,107,105,
+                                 102,101,106,101,122,195,169,115,116,58,32,
+                                 101,114,108,99,111,117,110,116,95,99,111,117,
+                                 110,116,101,114,46,101,114,108]]},
+                     {value,["../.eunit/erlcount.erl",
+                             "../.eunit/erlcount_counter.erl",
+                             "../.eunit/erlcount_counter2.erl",
+                             "../.eunit/erlcount_dispatch.erl",
+                             "../.eunit/erlcount_eunit.erl",
+                             "../.eunit/erlcount_lib.erl",
+                             "../.eunit/erlcount_sup.erl",
+                             "../.eunit/erlcount_tests.erl",
+                             "../.eunit/refactorerl_issues.erl",
+                             "../src/erlcount.erl",
+                             "../src/erlcount_counter.erl",
+                             "../src/erlcount_counter2.erl",
+                             "../src/erlcount_dispatch.erl",
+                             "../src/erlcount_lib.erl",
+                             "../src/erlcount_sup.erl",
+                             "../src/refactorerl_issues.erl",
+                             "../target/classes/erlcount.erl",
+                             "../target/classes/erlcount_counter.erl",
+                             "../target/classes/erlcount_counter2.erl",
+                             "../target/classes/erlcount_dispatch.erl",
+                             "../target/classes/erlcount_lib.erl",
+                             "../target/classes/erlcount_sup.erl",
+                             "../target/classes/refactorerl_issues.erl",
+                             "../target/test-classes/erlcount_eunit.erl",
+                             "../target/test-classes/erlcount_tests.erl",
+                             "../test/erlcount_eunit.erl",
+                             "../test/erlcount_tests.erl"]}]}
+    </failure>
+    <system-out>
+    </system-out>
+  </testcase>
+  <testcase time="0.000" name="erlcount_eunit:regex_count_test_/0_30"/>
+  <testcase time="0.000" name="erlcount_eunit:regex_count_test_/0_31"/>
+  <testcase time="0.000" name="erlcount_eunit:regex_count_test_/0_32"/>
+  <testcase time="0.000" name="erlcount_eunit:regex_count_test_/0_33"/>
+  <testcase time="0.000" name="erlcount_eunit:regex_count_test_/0_34"/>
+  <testcase time="0.000" name="erlcount_eunit:regex_count_test_/0_35"/>
+</testsuite>

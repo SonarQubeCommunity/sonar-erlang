@@ -1,0 +1,7 @@
+
+erlcount_lib.erl:54: Function unused_func/2 will never be called
+refactorerl_issues.erl:2: Undefined callback function init/1 (behaviour 'supervisor')
+refactorerl_issues.erl:4: Function mcCabeIssue/0 will never be called
+Unknown functions:
+  ppool:async_queue/2
+  ppool:start_pool/3
