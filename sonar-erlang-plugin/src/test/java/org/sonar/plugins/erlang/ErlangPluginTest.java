@@ -35,7 +35,7 @@ public class ErlangPluginTest {
 
   @Test
   public void testGetExtensions() throws Exception {
-    assertThat(plugin.getExtensions().size()).isEqualTo(13);
+    assertThat(plugin.getExtensions().size()).isEqualTo(12);
   }
 
 }
