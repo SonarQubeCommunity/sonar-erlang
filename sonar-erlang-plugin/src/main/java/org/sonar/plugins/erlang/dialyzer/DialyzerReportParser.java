@@ -22,6 +22,9 @@ package org.sonar.plugins.erlang.dialyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FilePredicate;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.config.Settings;
 import org.sonar.api.issue.Issuable;
@@ -29,8 +32,8 @@ import org.sonar.api.issue.Issue;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.*;
 
@@ -40,15 +43,16 @@ import java.io.*;
  * @author tkende
  */
 public class DialyzerReportParser {
+
   private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?)(:[0-9]+:)(.*)";
   private static final String REPO_KEY = DialyzerRuleRepository.REPOSITORY_KEY;
   private static final Logger LOG = LoggerFactory.getLogger(DialyzerReportParser.class);
 
-  private ModuleFileSystem moduleFileSystem;
+  private FileSystem fileSystem;
   private ResourcePerspectives resourcePerspectives;
 
-  public DialyzerReportParser(ModuleFileSystem moduleFileSystem, ResourcePerspectives resourcePerspectives) {
-    this.moduleFileSystem = moduleFileSystem;
+  public DialyzerReportParser(FileSystem fileSystem, ResourcePerspectives resourcePerspectives) {
+    this.fileSystem = fileSystem;
     this.resourcePerspectives = resourcePerspectives;
   }
 
@@ -70,7 +74,7 @@ public class DialyzerReportParser {
     String dialyzerFileName = null;
 
     try {
-      File reportsDir = new File(moduleFileSystem.baseDir(), settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
+      File reportsDir = new File(fileSystem.baseDir(), settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
 
       dialyzerFileName = settings.getString(ErlangPlugin.DIALYZER_FILENAME_KEY);
       File file = new File(reportsDir, dialyzerFileName);
@@ -90,10 +94,10 @@ public class DialyzerReportParser {
             if (resource != null) {
               Issuable issuable = resourcePerspectives.as(Issuable.class, resource);
               Issue issue = issuable.newIssueBuilder()
-                .ruleKey(RuleKey.of(REPO_KEY, ruleKey))
-                .line(Integer.valueOf(res[1]))
-                .message(res[2].trim())
-                .build();
+                      .ruleKey(RuleKey.of(REPO_KEY, ruleKey))
+                      .line(Integer.valueOf(res[1]))
+                      .message(res[2].trim())
+                      .build();
               issuable.addIssue(issue);
             }
           }
@@ -108,12 +112,16 @@ public class DialyzerReportParser {
   }
 
   protected org.sonar.api.resources.File getResourceByFileName(String fileName, Project project) {
-    for (File sourceDir : moduleFileSystem.sourceDirs()) {
-      File file = new File(sourceDir, fileName);
-      if (file.exists()) {
-        return org.sonar.api.resources.File.fromIOFile(file, project);
+    FilePredicate predicate = fileSystem.predicates().and(
+            fileSystem.predicates().hasType(InputFile.Type.MAIN),
+            fileSystem.predicates().hasLanguage(Erlang.KEY));
+
+    for (File file : fileSystem.files(predicate)) {
+      if (file.getAbsolutePath().endsWith(fileName) && file.exists()) {
+        return org.sonar.api.resources.File.create(file.getPath());
       }
     }
+
     return null;
   }
 

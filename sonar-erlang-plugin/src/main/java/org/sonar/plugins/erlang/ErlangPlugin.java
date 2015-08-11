@@ -26,7 +26,6 @@ import org.sonar.api.SonarPlugin;
 import org.sonar.plugins.erlang.checks.ErlangChecksRuleRepository;
 import org.sonar.plugins.erlang.colorizer.ErlangColorizerFormat;
 import org.sonar.plugins.erlang.core.Erlang;
-import org.sonar.plugins.erlang.core.ErlangSourceImporter;
 import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
 import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleRepository;
@@ -89,7 +88,6 @@ public class ErlangPlugin extends SonarPlugin {
   public List getExtensions() {
     return ImmutableList.of(
       Erlang.class,
-      ErlangSourceImporter.class,
       ErlangColorizerFormat.class,
       ErlangCpdMapping.class,
 

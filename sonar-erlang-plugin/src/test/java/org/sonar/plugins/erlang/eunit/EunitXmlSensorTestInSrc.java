@@ -23,12 +23,12 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
 import org.sonar.plugins.erlang.core.Erlang;
@@ -37,10 +37,9 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.doubleThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class EunitXmlSensorTestInSrc {
 
@@ -52,23 +51,17 @@ public class EunitXmlSensorTestInSrc {
     Settings settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
     settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, "eunit");
 
-    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-      Arrays.asList(
-        new File("src/test/resources/eunit/lager_crash_log.erl")),
-      Arrays.asList(
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"))
+    FileSystem fileSystem = ProjectUtil.createFileSystem(
+            "/",
+            Arrays.asList(new File("eunit/lager_crash_log.erl")),
+            Arrays.asList(new File("org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"))
     );
-    when(fileSystem.baseDir()).thenReturn(new File("src/test/resources/"));
-    when(fileSystem.sourceDirs()).thenReturn(Arrays.asList(new File("src/test/resources")));
-    when(fileSystem.testDirs()).thenReturn(Arrays.asList(new File("src/test/resources")));
 
     new EunitXmlSensor(new Erlang(settings), fileSystem, settings).analyse(new Project("dummy"), context);
-
   }
 
   @Test
   public void shouldSaveErrorsAndFailuresInXML() throws URISyntaxException {
-
     verify(context, times(1)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TESTS), eq(5.0));
     verify(context, times(1)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.SKIPPED_TESTS), eq(0.0));
     verify(context, times(1)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_ERRORS), eq(0.0));

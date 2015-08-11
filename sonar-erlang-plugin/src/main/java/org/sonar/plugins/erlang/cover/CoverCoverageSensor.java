@@ -23,12 +23,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FilePredicate;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.PropertiesBuilder;
 import org.sonar.api.resources.Project;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
@@ -40,47 +42,51 @@ import java.util.Map;
 
 public class CoverCoverageSensor implements Sensor {
 
-  protected Settings settings;
-  private ModuleFileSystem moduleFileSystem;
-
-  public CoverCoverageSensor(ModuleFileSystem moduleFileSystem, Settings settings) {
-    this.settings = settings;
-    this.moduleFileSystem = moduleFileSystem;
-  }
-
   private static final Logger LOG = LoggerFactory.getLogger(CoverCoverageSensor.class);
+
+  protected Settings settings;
+  private FileSystem fileSystem;
+  private final FilePredicate mainFilePredicate;
+
+  public CoverCoverageSensor(FileSystem fileSystem, Settings settings) {
+    this.settings = settings;
+    this.fileSystem = fileSystem;
+    this.mainFilePredicate = fileSystem.predicates().and(
+            fileSystem.predicates().hasType(InputFile.Type.MAIN),
+            fileSystem.predicates().hasLanguage(Erlang.KEY));
+  }
 
   @Override
   public boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
+    return fileSystem.hasFiles(mainFilePredicate);
   }
 
   @Override
   public void analyse(Project project, SensorContext context) {
-    File reportsDir = new File(moduleFileSystem.baseDir(),
-      settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
+    File reportsDir = new File(fileSystem.baseDir(),
+            settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
 
     String coverDataFilename = settings.getString(ErlangPlugin.COVERDATA_FILENAME_KEY);
 
     File coverDataFile = new File(reportsDir, coverDataFilename);
 
     if (coverDataFile.exists()) {
-      parseCoverdataFile(moduleFileSystem, context, coverDataFile, project);
+      parseCoverdataFile(fileSystem, context, coverDataFile, project);
     } else {
-      parseCoverHtmlOutput(moduleFileSystem, context, reportsDir, project);
+      parseCoverHtmlOutput(fileSystem, context, reportsDir, project);
     }
   }
 
-  private void parseCoverdataFile(ModuleFileSystem moduleFileSystem, SensorContext context, File coverDataFile, Project project) {
+  private void parseCoverdataFile(FileSystem fileSystem, SensorContext context, File coverDataFile, Project project) {
     try {
       List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile);
-      analyseCoveredFiles(moduleFileSystem, context, coveredFiles, project);
+      analyseCoveredFiles(fileSystem, context, coveredFiles, project);
     } catch (IOException e) {
       LOG.error("Cannot parse coverdata file: " + coverDataFile.getAbsolutePath(), e);
     }
   }
 
-  private void parseCoverHtmlOutput(ModuleFileSystem moduleFileSystem, SensorContext context, File reportsDir, Project project) {
+  private void parseCoverHtmlOutput(FileSystem fileSystem, SensorContext context, File reportsDir, Project project) {
     LOG.debug("Parsing coverage results in html format from folder {}", reportsDir);
 
     GenericExtFilter filter = new GenericExtFilter(".html");
@@ -95,28 +101,31 @@ public class CoverCoverageSensor implements Sensor {
       if (!file.matches(".*\\.COVER.html")) {
         continue;
       }
-      coveredFiles.add(analyseHtml(moduleFileSystem, context, file));
+      coveredFiles.add(analyseHtml(fileSystem, context, file));
     }
-    analyseCoveredFiles(moduleFileSystem, context, coveredFiles, project);
+    analyseCoveredFiles(fileSystem, context, coveredFiles, project);
   }
 
-  public ErlangFileCoverage analyseHtml(ModuleFileSystem moduleFileSystem, SensorContext sensorContext,
+  public ErlangFileCoverage analyseHtml(FileSystem fileSystem, SensorContext sensorContext,
                                         String testCoverageFileName) {
-    File coverCoverageReportFile = new File(moduleFileSystem.baseDir(),
-      getTestReportsFolder() + "/" + testCoverageFileName);
+    File coverCoverageReportFile = new File(fileSystem.baseDir(),
+            getTestReportsFolder() + "/" + testCoverageFileName);
     LCOVParser parser = new LCOVParser();
     return parser.parseFile(coverCoverageReportFile);
   }
 
-  protected void analyseCoveredFiles(ModuleFileSystem moduleFileSystem, SensorContext sensorContext,
+  protected void analyseCoveredFiles(FileSystem fileSystem, SensorContext sensorContext,
                                      List<ErlangFileCoverage> coveredFiles, Project project) {
 
-    for (File file : moduleFileSystem.files(Erlang.SOURCE_QUERY)) {
+    for (File file : fileSystem.files(mainFilePredicate)) {
       try {
         ErlangFileCoverage fileCoverage = getFileCoverage(file, coveredFiles);
-        org.sonar.api.resources.File resource = org.sonar.api.resources.File.fromIOFile(file, project);
+
+        InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(file));
+        org.sonar.api.resources.File sonarFile = org.sonar.api.resources.File.create(inputFile.relativePath());
+
         PropertiesBuilder<Integer, Integer> lineHitsData = new PropertiesBuilder<Integer, Integer>(
-          CoreMetrics.COVERAGE_LINE_HITS_DATA);
+                CoreMetrics.COVERAGE_LINE_HITS_DATA);
 
         if (fileCoverage != null) {
           Map<Integer, Integer> hits = fileCoverage.getLineCoverageData();
@@ -124,26 +133,25 @@ public class CoverCoverageSensor implements Sensor {
             lineHitsData.add(entry.getKey(), entry.getValue());
           }
 
-          sensorContext.saveMeasure(resource, lineHitsData.build());
-          sensorContext.saveMeasure(resource, CoreMetrics.LINES_TO_COVER,
-            (double) fileCoverage.getLinesToCover());
-          sensorContext.saveMeasure(resource, CoreMetrics.UNCOVERED_LINES,
-            (double) fileCoverage.getUncoveredLines());
+          sensorContext.saveMeasure(sonarFile, lineHitsData.build());
+          sensorContext.saveMeasure(sonarFile, CoreMetrics.LINES_TO_COVER,
+                  (double) fileCoverage.getLinesToCover());
+          sensorContext.saveMeasure(sonarFile, CoreMetrics.UNCOVERED_LINES,
+                  (double) fileCoverage.getUncoveredLines());
         } else {
-
           // colour all lines as not executed
-          for (int x = 1; x < sensorContext.getMeasure(resource, CoreMetrics.LINES)
-            .getIntValue(); x++) {
+          for (int x = 1; x < sensorContext.getMeasure(sonarFile, CoreMetrics.LINES)
+                  .getIntValue(); x++) {
             lineHitsData.add(x, 0);
           }
 
           // use non comment lines of code for coverage calculation
-          Measure ncloc = sensorContext.getMeasure(resource, CoreMetrics.NCLOC);
-          sensorContext.saveMeasure(resource, lineHitsData.build());
-          sensorContext.saveMeasure(resource, CoreMetrics.LINES_TO_COVER, ncloc
-            .getValue());
-          sensorContext.saveMeasure(resource, CoreMetrics.UNCOVERED_LINES, ncloc
-            .getValue());
+          Measure ncloc = sensorContext.getMeasure(sonarFile, CoreMetrics.NCLOC);
+          sensorContext.saveMeasure(sonarFile, lineHitsData.build());
+          sensorContext.saveMeasure(sonarFile, CoreMetrics.LINES_TO_COVER, ncloc
+                  .getValue());
+          sensorContext.saveMeasure(sonarFile, CoreMetrics.UNCOVERED_LINES, ncloc
+                  .getValue());
         }
 
       } catch (Exception e) {
@@ -155,7 +163,7 @@ public class CoverCoverageSensor implements Sensor {
   protected ErlangFileCoverage getFileCoverage(File input, List<ErlangFileCoverage> coverages) {
     for (ErlangFileCoverage file : coverages) {
       if (file.getFilePath().equals(input.getAbsolutePath())
-        || input.getAbsolutePath().endsWith(file.getFilePath())) {
+              || input.getAbsolutePath().endsWith(file.getFilePath())) {
         return file;
       }
     }
@@ -170,6 +178,5 @@ public class CoverCoverageSensor implements Sensor {
   public String toString() {
     return getClass().getSimpleName();
   }
-
 
 }

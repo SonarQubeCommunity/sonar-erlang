@@ -24,8 +24,8 @@ import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokens;
 import org.junit.Test;
 import org.sonar.plugins.erlang.cpd.ErlangTokenizer;
+import org.sonar.test.TestUtils;
 
-import java.io.File;
 import java.nio.charset.Charset;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -38,8 +38,7 @@ public class ErlangTokenizerTest {
   public void test() {
     ErlangTokenizer tokenizer = new ErlangTokenizer(Charset.forName("UTF-8"));
     SourceCode source = mock(SourceCode.class);
-    when(source.getFileName()).thenReturn(
-      new File("src/test/resources/cpd/person.erl").getAbsolutePath());
+    when(source.getFileName()).thenReturn(TestUtils.getResource("cpd/person.erl").getAbsolutePath());
     Tokens tokens = new Tokens();
     tokenizer.tokenize(source, tokens);
     assertThat(tokens.getTokens().size()).isGreaterThan(1);

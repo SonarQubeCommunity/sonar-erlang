@@ -22,13 +22,13 @@ package org.sonar.plugins.erlang.cover;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
 
@@ -52,16 +52,16 @@ public class CoverCoverageSensorTest {
     settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
     context = ProjectUtil.mockContext();
     project = new Project("dummy");
-    ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
   }
 
   @Test
   public void checkCoverSensor() throws URISyntaxException {
     settings.setProperty(ErlangPlugin.COVERDATA_FILENAME_KEY, "non_existing.coverdata");
 
-    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-      Arrays.asList(
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null
+    FileSystem fileSystem = ProjectUtil.createFileSystem(
+            "org/sonar/plugins/erlang/erlcount/",
+            Arrays.asList(new File("org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")),
+            null
     );
 
     new CoverCoverageSensor(fileSystem, settings).analyse(project, context);
@@ -75,9 +75,10 @@ public class CoverCoverageSensorTest {
   public void checkCoverSensorWithDataFile() throws URISyntaxException {
     settings.setProperty(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
 
-    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-      Arrays.asList(
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null
+    FileSystem fileSystem = ProjectUtil.createFileSystem(
+            "org/sonar/plugins/erlang/erlcount/",
+            Arrays.asList(new File("org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")),
+            null
     );
 
     new CoverCoverageSensor(fileSystem, settings).analyse(project, context);

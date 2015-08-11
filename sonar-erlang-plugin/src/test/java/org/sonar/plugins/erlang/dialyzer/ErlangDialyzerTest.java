@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
@@ -33,7 +34,6 @@ import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.rules.ActiveRule;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.ProjectUtil;
 
@@ -51,7 +51,6 @@ public class ErlangDialyzerTest {
   @Before
   public void setup() throws URISyntaxException, IOException {
     Project project = new Project("dummy");
-    ProjectUtil.addProjectFileSystem(project, "src/test/resources/org/sonar/plugins/erlang/erlcount/src/");
 
     Settings settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
     SensorContext context = ProjectUtil.mockContext();
@@ -59,14 +58,17 @@ public class ErlangDialyzerTest {
     RulesProfile rp = mock(RulesProfile.class);
     ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019");
     when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D019"))
-      .thenReturn(activeRule);
+            .thenReturn(activeRule);
     activeRule = RuleUtil.generateActiveRule("callback_missing", "D041");
     when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D041"))
-      .thenReturn(activeRule);
+            .thenReturn(activeRule);
 
-    ModuleFileSystem fileSystem = ProjectUtil.mockModuleFileSystem(
-      Arrays.asList(
-        new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")), null
+    FileSystem fileSystem = ProjectUtil.createFileSystem(
+            "org/sonar/plugins/erlang/erlcount/",
+            Arrays.asList(
+                    new File("org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl"),
+                    new File("org/sonar/plugins/erlang/erlcount/src/refactorerl_issues.erl")),
+            null
     );
 
     issuable = ProjectUtil.mockIssueable();
@@ -74,7 +76,7 @@ public class ErlangDialyzerTest {
     when(resourcePerspectives.as(Mockito.eq(Issuable.class), Mockito.any(Resource.class))).thenReturn(issuable);
 
     new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(settings, context, new ErlangRuleManager(
-      DialyzerRuleRepository.DIALYZER_PATH), rp, project);
+            DialyzerRuleRepository.DIALYZER_PATH), rp, project);
   }
 
   @Test
@@ -82,4 +84,5 @@ public class ErlangDialyzerTest {
     ArgumentCaptor<Issue> argument = ArgumentCaptor.forClass(Issue.class);
     verify(issuable, times(3)).addIssue(argument.capture());
   }
+
 }

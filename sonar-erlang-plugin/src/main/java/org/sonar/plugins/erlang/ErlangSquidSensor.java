@@ -20,25 +20,27 @@
 package org.sonar.plugins.erlang;
 
 import com.google.common.collect.Lists;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sonar.api.batch.fs.FilePredicate;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.rule.CheckFactory;
+import org.sonar.api.batch.rule.Checks;
 import org.sonar.squidbridge.AstScanner;
 
 import org.sonar.squidbridge.SquidAstVisitor;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
-import org.sonar.api.checks.AnnotationCheckFactory;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.PersistenceMode;
 import org.sonar.api.measures.RangeDistributionBuilder;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.File;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.rules.ActiveRule;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.checks.CheckList;
@@ -57,61 +59,69 @@ import org.sonar.squidbridge.indexer.QueryByParent;
 import org.sonar.squidbridge.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class ErlangSquidSensor implements Sensor {
 
+  private static final Logger LOG = LoggerFactory.getLogger(ErlangSquidSensor.class);
+
   private static final Number[] FUNCTIONS_DISTRIB_BOTTOM_LIMITS = {1, 2, 4, 6, 8, 10, 12, 20, 30};
   private static final Number[] FILES_DISTRIB_BOTTOM_LIMITS = {0, 5, 10, 20, 30, 60, 90};
 
-  private final AnnotationCheckFactory annotationCheckFactory;
+  private final Checks<Object> checks;
 
-  private Project project;
   private SensorContext context;
   private AstScanner<LexerlessGrammar> scanner;
-  private ModuleFileSystem moduleFileSystem;
+  private FileSystem fileSystem;
+  private final FilePredicate mainFilePredicate;
   private ResourcePerspectives resourcePerspectives;
 
-  public ErlangSquidSensor(RulesProfile profile, ModuleFileSystem moduleFileSystem, ResourcePerspectives resourcePerspectives) {
-    this.annotationCheckFactory = AnnotationCheckFactory.create(profile,
-      CheckList.REPOSITORY_KEY, CheckList.getChecks());
-    this.moduleFileSystem = moduleFileSystem;
+  public ErlangSquidSensor(CheckFactory checkFactory, FileSystem fileSystem, ResourcePerspectives resourcePerspectives) {
+    this.checks = checkFactory
+            .create(CheckList.REPOSITORY_KEY)
+            .addAnnotatedChecks(CheckList.getChecks());
+    this.fileSystem = fileSystem;
+    this.mainFilePredicate = fileSystem.predicates().and(
+            fileSystem.predicates().hasType(InputFile.Type.MAIN),
+            fileSystem.predicates().hasLanguage(Erlang.KEY));
     this.resourcePerspectives = resourcePerspectives;
   }
 
   @Override
   public boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
+    return fileSystem.hasFiles(mainFilePredicate);
   }
 
   @Override
   public void analyse(Project project, SensorContext context) {
-    this.project = project;
     this.context = context;
 
-    Collection<SquidAstVisitor<LexerlessGrammar>> squidChecks = annotationCheckFactory.getChecks();
-    List<SquidAstVisitor<LexerlessGrammar>> visitors = Lists.newArrayList(squidChecks);
-    this.scanner = ErlangAstScanner.create(moduleFileSystem.sourceCharset(), visitors
-      .toArray(new SquidAstVisitor[visitors.size()]));
+    List<SquidAstVisitor<LexerlessGrammar>> visitors = new ArrayList<SquidAstVisitor<LexerlessGrammar>>((Collection) checks.all());
+    this.scanner = ErlangAstScanner.create(fileSystem.encoding(), visitors.toArray(new SquidAstVisitor[visitors.size()]));
 
-    scanner.scanFiles(moduleFileSystem.files(Erlang.SOURCE_QUERY));
+    scanner.scanFiles(Lists.newArrayList(fileSystem.files(mainFilePredicate)));
 
-    Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(
-      new QueryByType(SourceFile.class));
-    save(squidSourceFiles);
+    save(scanner.getIndex().search(new QueryByType(SourceFile.class)));
   }
 
   private void save(Collection<SourceCode> squidSourceFiles) {
     for (SourceCode squidSourceFile : squidSourceFiles) {
       SourceFile squidFile = (SourceFile) squidSourceFile;
 
-      File sonarFile = File.fromIOFile(new java.io.File(squidFile.getKey()), project);
+      InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().hasAbsolutePath(squidFile.getKey()));
 
-      saveFilesComplexityDistribution(sonarFile, squidFile);
-      saveFunctionsComplexityDistribution(sonarFile, squidFile);
-      saveMeasures(sonarFile, squidFile);
-      saveViolations(sonarFile, squidFile);
+      if (inputFile != null) {
+        File sonarFile = File.create(inputFile.relativePath());
+
+        saveFilesComplexityDistribution(sonarFile, squidFile);
+        saveFunctionsComplexityDistribution(sonarFile, squidFile);
+        saveMeasures(sonarFile, squidFile);
+        saveViolations(sonarFile, squidFile);
+      } else {
+        LOG.warn("Cannot save analysis information for file {}. Unable to retrieve the associated sonar resource.", squidFile.getKey());
+      }
     }
   }
 
@@ -152,10 +162,10 @@ public class ErlangSquidSensor implements Sensor {
     Collection<CheckMessage> messages = squidFile.getCheckMessages();
     if (messages != null) {
       for (CheckMessage message : messages) {
-        ActiveRule activeRule = annotationCheckFactory.getActiveRule(message.getCheck());
+        RuleKey ruleKey = checks.ruleKey(message.getCheck());
         Issuable issuable = resourcePerspectives.as(Issuable.class, sonarFile);
         Issue issue = issuable.newIssueBuilder()
-          .ruleKey(RuleKey.of(activeRule.getRepositoryKey(), activeRule.getRuleKey()))
+          .ruleKey(ruleKey)
           .line(message.getLine())
           .message(message.formatDefaultMessage())
           .build();
