@@ -20,6 +20,8 @@
 package org.sonar.plugins.erlang.libraries;
 
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.TokenType;
+
 import org.sonar.api.resources.Library;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 
@@ -68,6 +70,11 @@ public class ErlangDependency {
   }
 
   public void parseVersionInfo(AstNode astNode) {
+	if (astNode.getFirstDescendant(ErlangGrammarImpl.tupleLiteral) == null) {
+	  setVersion(removeQuotes(astNode.getFirstChild().getTokenValue()));
+	  setKey("hex:"+getName());
+	  return;
+	}
     List<AstNode> vcsElements = astNode.getFirstDescendant(ErlangGrammarImpl.tupleLiteral).getChildren(ErlangGrammarImpl.expression);
     String urlStr = removeQuotes(vcsElements.get(1).getTokenValue());
     try {
