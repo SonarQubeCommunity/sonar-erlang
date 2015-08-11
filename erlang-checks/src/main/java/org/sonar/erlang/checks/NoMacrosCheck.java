@@ -22,22 +22,22 @@ package org.sonar.erlang.checks;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
-
-import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.check.BelongsToProfile;
-import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.squidbridge.annotations.NoSqale;
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Rule(key = "NoMacros", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
+@Rule(key = "NoMacros", priority = Priority.MAJOR)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
+@NoSqale
 public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
 
   @RuleProperty(key = "skipDefineInFlowControl", defaultValue = "true",

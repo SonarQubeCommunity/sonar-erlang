@@ -19,9 +19,9 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.sonar.commonrules.api.CommonRulesEngine;
-import org.sonar.commonrules.api.CommonRulesRepository;
 import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.squidbridge.commonrules.api.CommonRulesEngine;
+import org.sonar.squidbridge.commonrules.api.CommonRulesRepository;
 
 public class ErlangCommonRulesEngine extends CommonRulesEngine {
 
@@ -32,11 +32,11 @@ public class ErlangCommonRulesEngine extends CommonRulesEngine {
   @Override
   protected void doEnableRules(CommonRulesRepository repository) {
     repository
-      .enableDuplicatedBlocksRule()
-      .enableInsufficientCommentDensityRule(null)
-      .enableInsufficientLineCoverageRule(null)
-      .enableFailedUnitTestsRule()
-      .enableSkippedUnitTestsRule();
-
+            .enableDuplicatedBlocksRule()
+            .enableInsufficientCommentDensityRule(null)
+            .enableInsufficientLineCoverageRule(null)
+            .enableFailedUnitTestsRule()
+            .enableSkippedUnitTestsRule();
   }
+
 }

@@ -20,14 +20,15 @@
 package org.sonar.erlang.checks;
 
 import com.sonar.sslr.api.AstNode;
-
-import org.sonar.squidbridge.checks.SquidCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
-import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.io.File;
@@ -35,8 +36,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-@Rule(key = "NoTabsForIndention", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
+@Rule(key = "NoTabsForIndention", priority = Priority.MAJOR)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("1min")
 public class NoTabsForIndentionCheck extends SquidCheck<LexerlessGrammar> {
 
   private static final Logger LOG = LoggerFactory.getLogger(NoTabsForIndentionCheck.class);

@@ -20,16 +20,20 @@
 package org.sonar.erlang.checks;
 
 
-import org.sonar.squidbridge.checks.AbstractCommentRegularExpressionCheck;
+import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
-import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.AbstractCommentRegularExpressionCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-@Rule(key = "BlockSeparatorCharacter", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
+@Rule(key = "BlockSeparatorCharacter", priority = Priority.MAJOR)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("1min")
 public class BlockSeparatorCharacterCheck extends
   AbstractCommentRegularExpressionCheck<LexerlessGrammar> {
 

@@ -20,21 +20,28 @@
 package org.sonar.plugins.erlang.dialyzer;
 
 import org.junit.Test;
-import org.sonar.api.rules.Rule;
-import org.sonar.api.rules.XMLRuleParser;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
 
 import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.sonar.api.server.rule.RulesDefinition.Repository;
 
-public class DialyzerRepositoryTest {
+public class DialyzerRuleDefinitionTest {
 
   @Test
   public void test() {
-    DialyzerRuleRepository ruleRepository = new DialyzerRuleRepository(new XMLRuleParser());
-    assertThat(ruleRepository.getKey()).isEqualTo("dialyzer");
-    assertThat(ruleRepository.getName()).isEqualTo("Dialyzer");
-    List<Rule> rules = ruleRepository.createRules();
+    RulesDefinition.Context context = new RulesDefinition.Context();
+    DialyzerRuleDefinition ruleDefinition = new DialyzerRuleDefinition(new RulesDefinitionXmlLoader());
+    ruleDefinition.define(context);
+
+    Repository repository = context.repository(DialyzerRuleDefinition.REPOSITORY_KEY);
+
+    assertThat(repository.name()).isEqualTo(DialyzerRuleDefinition.REPOSITORY_NAME);
+
+    List<RulesDefinition.Rule> rules = repository.rules();
+
     assertThat(rules.size()).isEqualTo(41);
   }
 

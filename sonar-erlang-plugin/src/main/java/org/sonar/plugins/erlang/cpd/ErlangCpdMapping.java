@@ -21,8 +21,8 @@ package org.sonar.plugins.erlang.cpd;
 
 import net.sourceforge.pmd.cpd.Tokenizer;
 import org.sonar.api.batch.AbstractCpdMapping;
+import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.resources.Language;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.nio.charset.Charset;
@@ -32,9 +32,9 @@ public class ErlangCpdMapping extends AbstractCpdMapping {
   private final Erlang language;
   private final Charset charset;
 
-  public ErlangCpdMapping(Erlang language, ModuleFileSystem fs) {
+  public ErlangCpdMapping(Erlang language, FileSystem fileSystem) {
     this.language = language;
-    this.charset = fs.sourceCharset();
+    this.charset = fileSystem.encoding();
   }
 
   @Override

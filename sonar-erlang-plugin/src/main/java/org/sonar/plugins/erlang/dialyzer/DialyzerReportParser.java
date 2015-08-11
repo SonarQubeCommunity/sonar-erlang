@@ -45,7 +45,7 @@ import java.io.*;
 public class DialyzerReportParser {
 
   private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?)(:[0-9]+:)(.*)";
-  private static final String REPO_KEY = DialyzerRuleRepository.REPOSITORY_KEY;
+  private static final String REPO_KEY = DialyzerRuleDefinition.REPOSITORY_KEY;
   private static final Logger LOG = LoggerFactory.getLogger(DialyzerReportParser.class);
 
   private FileSystem fileSystem;

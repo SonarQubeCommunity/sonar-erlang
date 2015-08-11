@@ -19,15 +19,14 @@
  */
 package org.sonar.erlang.checks;
 
-
-import org.sonar.squidbridge.checks.AbstractParseErrorCheck;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.squidbridge.annotations.NoSqale;
+import org.sonar.squidbridge.checks.AbstractParseErrorCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-@Rule(
-  key = "ParsingError",
-  priority = Priority.MAJOR)
+@Rule(key = "ParsingError", priority = Priority.MAJOR)
+@NoSqale
 public class ParsingErrorCheck extends AbstractParseErrorCheck<LexerlessGrammar> {
 
 }

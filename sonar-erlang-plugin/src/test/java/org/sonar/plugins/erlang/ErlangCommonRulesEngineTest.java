@@ -20,23 +20,31 @@
 package org.sonar.plugins.erlang;
 
 import org.junit.Test;
-import org.sonar.commonrules.api.CommonRulesRepository;
+import org.sonar.squidbridge.commonrules.api.CommonRulesRepository;
+import org.sonar.squidbridge.commonrules.internal.CommonRulesConstants;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class ErlangCommonRulesEngineTest {
 
   @Test
-  public void shouldProvideExpectedExtensions() {
-    ErlangCommonRulesEngine provider = new ErlangCommonRulesEngine();
-    assertThat(provider.provide()).isNotEmpty();
+  public void should_provide_extensions() {
+    ErlangCommonRulesEngine engine = new ErlangCommonRulesEngine();
+
+    assertThat(engine.provide()).isNotEmpty();
   }
 
   @Test
-  public void enable_common_rules() {
+  public void should_define_rules() {
     ErlangCommonRulesEngine engine = new ErlangCommonRulesEngine();
     CommonRulesRepository repo = engine.newRepository();
-    assertThat(repo.rules()).hasSize(5);
-    assertThat(repo.rule(CommonRulesRepository.RULE_INSUFFICIENT_COMMENT_DENSITY)).isNotNull();
+
+    assertThat(repo.enabledRuleKeys()).containsOnly(
+            CommonRulesConstants.RULE_DUPLICATED_BLOCKS,
+            CommonRulesConstants.RULE_INSUFFICIENT_COMMENT_DENSITY,
+            CommonRulesConstants.RULE_INSUFFICIENT_LINE_COVERAGE,
+            CommonRulesConstants.RULE_FAILED_UNIT_TESTS,
+            CommonRulesConstants.RULE_SKIPPED_UNIT_TESTS);
   }
+
 }

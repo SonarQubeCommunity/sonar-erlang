@@ -20,10 +20,12 @@
 package org.sonar.plugins.erlang.core.cpd;
 
 import org.junit.Test;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
+import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
 import org.sonar.plugins.erlang.cpd.ErlangTokenizer;
+
+import java.nio.charset.Charset;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -33,8 +35,12 @@ public class ErlangCpdMappingTest {
   @Test
   public void test() {
     Erlang language = mock(Erlang.class);
-    ModuleFileSystem fs = mock(ModuleFileSystem.class);
-    ErlangCpdMapping mapping = new ErlangCpdMapping(language, fs);
+    DefaultFileSystem fileSystem = new DefaultFileSystem();
+
+    fileSystem.setEncoding(Charset.forName("UTF-8"));
+
+    ErlangCpdMapping mapping = new ErlangCpdMapping(language, fileSystem);
+
     assertThat(mapping.getLanguage()).isSameAs(language);
     assertThat(mapping.getTokenizer()).isInstanceOf(ErlangTokenizer.class);
   }

@@ -30,7 +30,7 @@ import org.sonar.api.rules.RuleFinder;
 import org.sonar.api.utils.ValidationMessages;
 import org.sonar.erlang.checks.CheckList;
 import org.sonar.plugins.erlang.core.Erlang;
-import org.sonar.plugins.erlang.dialyzer.DialyzerRuleRepository;
+import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
@@ -51,7 +51,7 @@ public class ErlangProfileTest {
     assertThat(profile.getLanguage()).isEqualTo(Erlang.KEY);
     assertThat(profile.getName()).isEqualTo(ErlangProfile.PROFILE_NAME);
     assertThat(profile.getActiveRulesByRepository(CheckList.REPOSITORY_KEY)).hasSize(23);
-    assertThat(profile.getActiveRulesByRepository(DialyzerRuleRepository.REPOSITORY_KEY))
+    assertThat(profile.getActiveRulesByRepository(DialyzerRuleDefinition.REPOSITORY_KEY))
       .hasSize(41);
     assertThat(validation.hasErrors()).isFalse();
   }

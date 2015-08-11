@@ -23,18 +23,21 @@ import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
-
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.api.utils.SonarException;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.api.utils.MessageException;
 import org.sonar.check.BelongsToProfile;
-import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-@Rule(key = "LineLength", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
+@Rule(key = "LineLength", priority = Priority.MAJOR)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("1min")
 public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
   private static final int DEFAULT_MAXIMUM_LINE_LENHGTH = 100;
@@ -47,9 +50,9 @@ public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements Ast
   @Override
   public void init() {
     if (maximumLineLength <= 0) {
-      throw new SonarException(
-        "[AbstractLineLengthCheck] The maximal line length must be set to a value greater than 0 ("
-          + maximumLineLength + " given).");
+      throw MessageException.of(
+              "[AbstractLineLengthCheck] The maximal line length must be set to a value greater than 0 ("
+                      + maximumLineLength + " given).");
     }
   }
 
@@ -66,8 +69,8 @@ public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements Ast
       if (incorrectLine > -1) {
         lastIncorrectLine = token.getLine();
         getContext().createLineViolation(this,
-          "The line length is greater than {0,number,integer} authorized.",
-          incorrectLine, maximumLineLength);
+                "The line length is greater than {0,number,integer} authorized.",
+                incorrectLine, maximumLineLength);
       }
     }
   }
@@ -79,7 +82,7 @@ public class LineLengthCheck extends SquidCheck<LexerlessGrammar> implements Ast
     } else if (!token.getTrivia().isEmpty()) {
       for (Trivia trivia : token.getTrivia()) {
         if (trivia.isComment()
-          && trivia.getToken().getColumn() + trivia.getToken().getValue().length() > maximumLineLength) {
+                && trivia.getToken().getColumn() + trivia.getToken().getValue().length() > maximumLineLength) {
           return trivia.getToken().getLine();
         }
       }

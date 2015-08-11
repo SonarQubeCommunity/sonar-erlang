@@ -22,23 +22,25 @@ package org.sonar.erlang.checks;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.api.AstNode;
 import com.sonar.sslr.api.Token;
-
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.check.Cardinality;
+import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Rule(key = "NoSpaceAfterBeforeBrackets", priority = Priority.MAJOR,
-  cardinality = Cardinality.SINGLE)
+@Rule(key = "NoSpaceAfterBeforeBrackets", priority = Priority.MAJOR)
 /**
  * The rule generates a lot of false positives (record calls, etc). It is deactivated by default.
  */
 //@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
+@SqaleConstantRemediation("1min")
 public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar> {
 
   List<ErlangGrammarImpl> noSpaceBefore = ImmutableList.of(ErlangGrammarImpl.rbracket,
