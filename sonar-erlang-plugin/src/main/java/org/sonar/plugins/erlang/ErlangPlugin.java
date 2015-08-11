@@ -106,9 +106,10 @@ public class ErlangPlugin extends SonarPlugin {
 
       CoverCoverageSensor.class,
 
-      DialyzerSensor.class,
+      DialyzerSensor.class
 
-      ErlangLibrarySensor.class);
+      //ErlangLibrarySensor.class
+      );
   }
 
 }
