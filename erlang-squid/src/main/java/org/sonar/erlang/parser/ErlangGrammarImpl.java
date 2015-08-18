@@ -461,9 +461,17 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(compileAttr).is(minus, semiKeyword("compile", b), lparenthesis, primaryExpression, rparenthesis, dot);
 
     b.rule(defineAttr).is(minus, semiKeyword("define", b),
-      lparenthesis, b.firstOf(
-        b.sequence(primaryExpression, comma, statements),
-        b.sequence(funcDecl, comma, guardSequence)), rparenthesis, dot);
+      lparenthesis,
+      b.sequence(
+        b.firstOf(
+          funcDecl,
+          primaryExpression
+        ),
+        comma,
+        b.zeroOrMore(
+          b.nextNot(b.sequence(rparenthesis, spacing, dot)),
+          b.regexp("."), spacing)),
+      rparenthesis, dot);
 
     b.rule(importAttr).is(minus, semiKeyword("import", b), lparenthesis, b.firstOf(macroLiteral, atom), comma,
       lbracket, funcArity, b.zeroOrMore(comma, funcArity), rbracket, rparenthesis, dot);
@@ -536,7 +544,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       b.firstOf(
         b.sequence(stringLiterals, b.oneOrMore(stringLiterals)),
         primaryExpression)
-      ).skipIfOneChild();
+    ).skipIfOneChild();
 
     b.rule(recordAccess).is(
       stringConcatenation,

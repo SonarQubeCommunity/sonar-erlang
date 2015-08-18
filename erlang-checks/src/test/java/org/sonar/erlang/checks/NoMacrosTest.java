@@ -129,6 +129,7 @@ public class NoMacrosTest {
       .noMore();
   }
 
+  @Test
   public void test3_5() {
     NoMacrosCheck check = new NoMacrosCheck();
     check.setAllowLiteralMacros(true);
