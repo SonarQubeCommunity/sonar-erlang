@@ -32,7 +32,6 @@ import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleRepository;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
 import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
-import org.sonar.plugins.erlang.libraries.ErlangLibrarySensor;
 
 import java.util.List;
 
@@ -106,9 +105,7 @@ public class ErlangPlugin extends SonarPlugin {
 
       CoverCoverageSensor.class,
 
-      DialyzerSensor.class,
-
-      ErlangLibrarySensor.class);
+      DialyzerSensor.class);
   }
 
 }
