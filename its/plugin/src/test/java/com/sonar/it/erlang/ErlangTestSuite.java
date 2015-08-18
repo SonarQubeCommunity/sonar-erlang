@@ -43,8 +43,7 @@ public class ErlangTestSuite {
   private static Orchestrator initOrchestrator() {
     OrchestratorBuilder builder = Orchestrator.builderEnv();
     builder
-      .addPlugin(PLUGIN_KEY)
-      .setMainPluginKey(PLUGIN_KEY)
+      .addPlugin(FileLocation.of("../../sonar-erlang-plugin/target/sonar-erlang-plugin.jar"))
       .restoreProfileAtStartup(FileLocation.ofClasspath("/com/sonar/it/erlang/issue-profile.xml"))
       .restoreProfileAtStartup(FileLocation.ofClasspath("/com/sonar/it/erlang/empty-profile.xml"));
 
