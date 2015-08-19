@@ -22,8 +22,8 @@ package org.sonar.plugins.erlang.cover;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.sonar.test.TestUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -35,9 +35,7 @@ public class LCOVParserTest {
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-
-    cov = new LCOVParser().parseFile(new File("src/test/resources",
-      "org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
+    cov = new LCOVParser().parseFile(TestUtils.getResource("org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
   }
 
   @Test
@@ -46,4 +44,5 @@ public class LCOVParserTest {
     assertThat(cov.getLinesToCover(), Matchers.equalTo(21));
     assertThat(cov.getUncoveredLines(), Matchers.equalTo(2));
   }
+
 }

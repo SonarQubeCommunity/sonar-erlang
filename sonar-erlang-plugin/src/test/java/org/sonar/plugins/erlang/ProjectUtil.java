@@ -19,39 +19,30 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.apache.commons.configuration.Configuration;
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
-import org.sonar.api.config.Settings;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.DefaultFileSystem;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issuable.IssueBuilder;
 import org.sonar.api.issue.Issue;
-import org.sonar.api.resources.InputFile;
-import org.sonar.api.resources.InputFileUtils;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.ProjectFileSystem;
-import org.sonar.api.resources.Resource;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
+import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.test.TestUtils;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ProjectUtil {
 
   public static SensorContext mockContext() {
-    SensorContext context = mock(SensorContext.class);
-    when(context.isIndexed(any(Resource.class), eq(false))).thenReturn(true);
-    return context;
+    return mock(SensorContext.class);
   }
 
   public static Issuable mockIssueable() {
@@ -67,44 +58,32 @@ public class ProjectUtil {
     return issuable;
   }
 
-  public static ModuleFileSystem mockModuleFileSystem(List<File> srcFiles, List<File> testFiles) {
-    ModuleFileSystem fileSystem = mock(ModuleFileSystem.class);
-    when(fileSystem.sourceCharset()).thenReturn(Charset.forName("UTF-8"));
-    when(fileSystem.baseDir()).thenReturn(new File("src/test/resources/org/sonar/plugins/erlang/erlcount/"));
-    when(fileSystem.sourceDirs()).thenReturn(Arrays.asList(new File("src/test/resources/org/sonar/plugins/erlang/erlcount/src")));
-    when(fileSystem.testDirs()).thenReturn(Arrays.asList(new File("src/test/resources/org/sonar/plugins/erlang/erlcount/test")));
+  public static FileSystem createFileSystem(String baseDir, List<File> srcFiles, List<File> testFiles) {
+    DefaultFileSystem fileSystem = new DefaultFileSystem();
 
-    ArgumentMatchers m = new ArgumentMatchers();
+    fileSystem.setEncoding(Charset.forName("UTF-8"));
+    fileSystem.setBaseDir(TestUtils.getResource(baseDir));
 
-    when(fileSystem.files(Mockito.argThat(m.new IsFileQuerySource()))).thenReturn(srcFiles);
-    when(fileSystem.files(Mockito.argThat(m.new IsFileQuerySource()))).thenReturn(srcFiles);
-    when(fileSystem.files(Mockito.argThat(m.new IsFileQueryTest()))).thenReturn(testFiles);
-    when(fileSystem.files(Mockito.argThat(m.new IsFileQueryTest()))).thenReturn(testFiles);
+    if (srcFiles != null) {
+      for (File srcFile : srcFiles) {
+        addFile(fileSystem, srcFile, InputFile.Type.MAIN);
+      }
+    }
+
+    if (testFiles != null) {
+      for (File testFile : testFiles) {
+        addFile(fileSystem, testFile, InputFile.Type.TEST);
+      }
+    }
+
     return fileSystem;
   }
 
-  public static InputFile getInputFileByPath(String path) throws URISyntaxException {
-    File fileToAnalyse = new File(ProjectUtil.class.getResource(path).toURI());
-    InputFile inputFile = InputFileUtils.create(fileToAnalyse.getParentFile(), fileToAnalyse);
-    return inputFile;
-  }
-
-  public static List<InputFile> getInputFiles(List<File> files) throws URISyntaxException {
-    ArrayList<InputFile> ret = new ArrayList<InputFile>();
-    for (File file : files) {
-      ret.add(getInputFileByPath(file.getAbsolutePath()));
-    }
-    return ret;
-  }
-
-  /**
-   * This is unavoidable in order to be compatible with sonarqube 4.2
-   */
-  public static void addProjectFileSystem(Project project, String srcDir) {
-    ProjectFileSystem fs = mock(ProjectFileSystem.class);
-    when(fs.getSourceDirs()).thenReturn(Arrays.asList(new File(srcDir)));
-
-    project.setFileSystem(fs);
+  private static void addFile(DefaultFileSystem fileSystem, File file, InputFile.Type type) {
+    fileSystem.add(new DefaultInputFile(file.getName())
+            .setAbsolutePath(TestUtils.getResource(file.getPath()).getAbsolutePath())
+            .setType(type)
+            .setLanguage(Erlang.KEY));
   }
 
 }

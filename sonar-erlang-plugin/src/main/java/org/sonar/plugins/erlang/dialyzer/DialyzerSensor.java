@@ -20,11 +20,11 @@
 package org.sonar.plugins.erlang.dialyzer;
 
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.config.Settings;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 
 /**
  * Calls the dialyzer report parser saves violations to sonar
@@ -33,20 +33,19 @@ import org.sonar.api.scan.filesystem.ModuleFileSystem;
  */
 public class DialyzerSensor extends AbstractErlangSensor {
 
-  private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(
-    DialyzerRuleRepository.DIALYZER_PATH);
+  private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleRepository.DIALYZER_PATH);
   private RulesProfile rulesProfile;
   private ResourcePerspectives resourcePerspectives;
 
-
-  public DialyzerSensor(RulesProfile rulesProfile, ModuleFileSystem moduleFileSystem, ResourcePerspectives resourcePerspectives, Settings settings) {
-    super(moduleFileSystem, settings);
+  public DialyzerSensor(RulesProfile rulesProfile, FileSystem fileSystem, ResourcePerspectives resourcePerspectives, Settings settings) {
+    super(fileSystem, settings);
     this.rulesProfile = rulesProfile;
     this.resourcePerspectives = resourcePerspectives;
   }
 
   @Override
   public void analyse(Project project, SensorContext context) {
-    new DialyzerReportParser(moduleFileSystem, resourcePerspectives).dialyzer(getSettings(), context, dialyzerRuleManager, rulesProfile, project);
+    new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(getSettings(), context, dialyzerRuleManager, rulesProfile, project);
   }
+
 }

@@ -20,41 +20,49 @@
 package org.sonar.plugins.erlang.eunit;
 
 import org.apache.commons.io.FileUtils;
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FilePredicate;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.config.Settings;
 import org.sonar.api.resources.DuplicatedSourceException;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Qualifiers;
 import org.sonar.api.resources.Resource;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class EunitXmlSensor implements Sensor {
 
+  private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
+
   protected Erlang erlang;
   protected final Settings settings;
-  private ModuleFileSystem moduleFileSystem;
+  private FileSystem fileSystem;
+  private final FilePredicate mainFilePredicate;
+  private final FilePredicate testFilePredicate;
 
-  public EunitXmlSensor(Erlang erlang, ModuleFileSystem moduleFileSystem, Settings settings) {
+  public EunitXmlSensor(Erlang erlang, FileSystem fileSystem, Settings settings) {
     this.erlang = erlang;
     this.settings = settings;
-    this.moduleFileSystem = moduleFileSystem;
+    this.fileSystem = fileSystem;
+    this.mainFilePredicate = fileSystem.predicates().and(
+            fileSystem.predicates().hasType(InputFile.Type.MAIN),
+            fileSystem.predicates().hasLanguage(Erlang.KEY));
+    this.testFilePredicate = fileSystem.predicates().and(
+            fileSystem.predicates().hasType(InputFile.Type.TEST),
+            fileSystem.predicates().hasLanguage(Erlang.KEY));
   }
-
-  private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
 
   @Override
   public boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
+    return fileSystem.hasFiles(mainFilePredicate);
   }
 
   @Override
@@ -62,7 +70,7 @@ public class EunitXmlSensor implements Sensor {
     String eunitFolder = settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY);
     try {
       collect(project, context,
-        new File(moduleFileSystem.baseDir(), eunitFolder));
+              new File(fileSystem.baseDir(), eunitFolder));
     } catch (Exception e) {
       LOG.error("Error occured during eunit xml file parsing", e.getMessage(), e);
     }
@@ -70,33 +78,33 @@ public class EunitXmlSensor implements Sensor {
 
   protected void collect(final Project project, final SensorContext context, File reportsDir) {
     LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
-    if (reportsDir.exists() && !moduleFileSystem.testDirs().isEmpty()) {
+    if (reportsDir.exists() && fileSystem.hasFiles(testFilePredicate)) {
       new AbstractSurefireParser() {
 
         @Override
         protected Resource getUnitTestResource(String classKey) {
-          File unitTestFile = getUnitTestFile(moduleFileSystem.files(Erlang.TEST_QUERY), moduleFileSystem.files(Erlang.SOURCE_QUERY), classKey);
+          File unitTestFile = getUnitTestFile(fileSystem.files(testFilePredicate), fileSystem.files(mainFilePredicate), classKey);
 
-          org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile.getName());
+          org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile);
           unitTestFileResource.setLanguage(erlang);
           unitTestFileResource.setQualifier(Qualifiers.UNIT_TEST_FILE);
 
           LOG.debug("Adding unittest resource: {}", unitTestFileResource.toString());
 
-          String source = "";
+          String source;
 
           try {
-            source = FileUtils.readFileToString(unitTestFile, moduleFileSystem.sourceCharset().name());
+            source = FileUtils.readFileToString(unitTestFile, fileSystem.encoding());
           } catch (IOException e) {
             source = "Could not find source for unit test: " + classKey
-              + " in any of test directories";
-            Log.debug(source, e);
+                    + " in any of test directories";
+            LOG.debug(source, e);
           }
 
           try {
             context.saveSource(unitTestFileResource, source);
           } catch (DuplicatedSourceException e) {
-            unitTestFileResource = org.sonar.api.resources.File.fromIOFile(unitTestFile, project);
+            unitTestFileResource = org.sonar.api.resources.File.create(unitTestFile.getPath());
           }
 
           return unitTestFileResource;
@@ -112,8 +120,9 @@ public class EunitXmlSensor implements Sensor {
     return name.replaceFirst("(.*?')(.*?)('.*)", "$2");
   }
 
-  protected org.sonar.api.resources.File getUnitTestFileResource(String classKey) {
-    return new org.sonar.api.resources.File(classKey);
+  protected org.sonar.api.resources.File getUnitTestFileResource(File unitTestFile) {
+    InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(unitTestFile));
+    return org.sonar.api.resources.File.create(inputFile.relativePath());
   }
 
   protected String getUnitTestFileName(String className) {
@@ -126,7 +135,7 @@ public class EunitXmlSensor implements Sensor {
     }
   }
 
-  protected File getUnitTestFile(List<File> testFiles, List<File> srcFiles, String name) {
+  protected File getUnitTestFile(Iterable<File> testFiles, Iterable<File> srcFiles, String name) {
     String fileName = getUnitTestFileName(name);
     File file = findFileByName(testFiles, fileName);
     if (file == null) {
@@ -138,7 +147,7 @@ public class EunitXmlSensor implements Sensor {
     return file;
   }
 
-  private File findFileByName(List<File> testFiles, String fileName) {
+  private File findFileByName(Iterable<File> testFiles, String fileName) {
     for (File testFile : testFiles) {
       if (testFile.getAbsolutePath().endsWith(fileName) || testFile.getAbsolutePath().endsWith(fileName.replaceAll("_(eunit|tests)", ""))) {
         return testFile;
@@ -151,4 +160,5 @@ public class EunitXmlSensor implements Sensor {
   public String toString() {
     return getClass().getSimpleName();
   }
+
 }

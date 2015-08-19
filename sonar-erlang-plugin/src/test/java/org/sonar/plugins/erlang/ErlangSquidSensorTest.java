@@ -19,25 +19,23 @@
  */
 package org.sonar.plugins.erlang;
 
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.collections.ListUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.DefaultFileSystem;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.rule.ActiveRules;
+import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
-import org.sonar.api.scan.filesystem.FileQuery;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
-
-import java.io.File;
-import java.nio.charset.Charset;
-import java.util.Arrays;
+import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.test.TestUtils;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -47,39 +45,39 @@ import static org.mockito.Mockito.when;
 public class ErlangSquidSensorTest {
 
   private ErlangSquidSensor sensor;
-  private ModuleFileSystem fileSystem;
+  private final DefaultFileSystem fileSystem = new DefaultFileSystem();
 
   @Before
   public void setUp() {
     FileLinesContextFactory fileLinesContextFactory = mock(FileLinesContextFactory.class);
     FileLinesContext fileLinesContext = mock(FileLinesContext.class);
+
     when(fileLinesContextFactory.createFor(Mockito.any(Resource.class))).thenReturn(fileLinesContext);
-    fileSystem = mock(ModuleFileSystem.class);
-    when(fileSystem.sourceCharset()).thenReturn(Charset.forName("UTF-8"));
-    sensor = new ErlangSquidSensor(mock(RulesProfile.class), fileSystem, null);
+
+    sensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), fileSystem, null);
   }
 
   @Test
   public void should_execute_on_erlang_project() {
-    Project project = new Project("key");
-    ModuleFileSystem fs = mock(ModuleFileSystem.class);
-    ErlangSquidSensor erlangSensor = new ErlangSquidSensor(mock(RulesProfile.class), fs, null);
+    DefaultFileSystem localFS = new DefaultFileSystem();
+    ErlangSquidSensor localSensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), localFS, null);
 
-    when(fs.files(Mockito.any(FileQuery.class))).thenReturn(ListUtils.EMPTY_LIST);
-    assertThat(erlangSensor.shouldExecuteOnProject(project)).isFalse();
+    // empty file system
+    assertThat(localSensor.shouldExecuteOnProject(null)).isFalse();
 
-    when(fs.files(Mockito.any(FileQuery.class))).thenReturn(ImmutableList.of(new File("/tmp")));
-    assertThat(erlangSensor.shouldExecuteOnProject(project)).isTrue();
+    localFS.add(new DefaultInputFile("file.erl").setType(InputFile.Type.MAIN).setLanguage(Erlang.KEY));
+    assertThat(localSensor.shouldExecuteOnProject(null)).isTrue();
   }
 
   @Test
   public void should_analyse() {
-    when(fileSystem.files(Mockito.any(FileQuery.class))).thenReturn(Arrays.asList(
-      new File("src/test/resources/cpd/person.erl")));
-
     Project project = new Project("key");
-    ProjectUtil.addProjectFileSystem(project, "src/test/resources/cpd/");
     SensorContext context = mock(SensorContext.class);
+
+    fileSystem.add(new DefaultInputFile("person.erl")
+            .setAbsolutePath(TestUtils.getResource("cpd/person.erl").getAbsolutePath())
+            .setType(InputFile.Type.MAIN)
+            .setLanguage(Erlang.KEY));
 
     sensor.analyse(project, context);
 
@@ -94,12 +92,13 @@ public class ErlangSquidSensorTest {
 
   @Test
   public void analyse() {
-    when(fileSystem.files(Mockito.any(FileQuery.class))).thenReturn(Arrays.asList(
-      new File("src/test/resources/megaco_ber_bin_encoder.erl")));
-
     Project project = new Project("key");
-    ProjectUtil.addProjectFileSystem(project, "src/test/resources/");
     SensorContext context = mock(SensorContext.class);
+
+    fileSystem.add(new DefaultInputFile("megaco_ber_bin_encoder.erl")
+            .setAbsolutePath(TestUtils.getResource("megaco_ber_bin_encoder.erl").getAbsolutePath())
+            .setType(InputFile.Type.MAIN)
+            .setLanguage(Erlang.KEY));
 
     sensor.analyse(project, context);
 

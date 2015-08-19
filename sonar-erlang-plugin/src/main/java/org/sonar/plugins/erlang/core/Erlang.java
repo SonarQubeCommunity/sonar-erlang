@@ -22,15 +22,11 @@ package org.sonar.plugins.erlang.core;
 import org.apache.commons.lang.StringUtils;
 import org.sonar.api.config.Settings;
 import org.sonar.api.resources.AbstractLanguage;
-import org.sonar.api.scan.filesystem.FileQuery;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
 public class Erlang extends AbstractLanguage {
 
   public static final String KEY = "erlang";
-
-  public static final FileQuery SOURCE_QUERY = FileQuery.onSource().onLanguage(KEY);
-  public static final FileQuery TEST_QUERY = FileQuery.onTest().onLanguage(KEY);
 
   private Settings settings;
 

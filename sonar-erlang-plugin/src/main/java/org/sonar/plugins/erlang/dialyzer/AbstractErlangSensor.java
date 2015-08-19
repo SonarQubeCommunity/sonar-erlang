@@ -20,9 +20,11 @@
 package org.sonar.plugins.erlang.dialyzer;
 
 import org.sonar.api.batch.Sensor;
+import org.sonar.api.batch.fs.FilePredicate;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.config.Settings;
 import org.sonar.api.resources.Project;
-import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.plugins.erlang.core.Erlang;
 
 /**
@@ -34,19 +36,24 @@ import org.sonar.plugins.erlang.core.Erlang;
 public abstract class AbstractErlangSensor implements Sensor {
 
   private final Settings settings;
-  protected ModuleFileSystem moduleFileSystem;
+  protected FileSystem fileSystem;
+  private final FilePredicate mainFilePredicate;
 
-  protected AbstractErlangSensor(ModuleFileSystem fileSystem, Settings settings) {
+  protected AbstractErlangSensor(FileSystem fileSystem, Settings settings) {
     this.settings = settings;
-    this.moduleFileSystem = fileSystem;
+    this.fileSystem = fileSystem;
+    this.mainFilePredicate = fileSystem.predicates().and(
+            fileSystem.predicates().hasType(InputFile.Type.MAIN),
+            fileSystem.predicates().hasLanguage(Erlang.KEY));
   }
 
   @Override
   public final boolean shouldExecuteOnProject(Project project) {
-    return !moduleFileSystem.files(Erlang.SOURCE_QUERY).isEmpty();
+    return fileSystem.hasFiles(mainFilePredicate);
   }
 
   public final Settings getSettings() {
     return settings;
   }
+
 }
