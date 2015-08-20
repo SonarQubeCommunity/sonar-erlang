@@ -68,9 +68,9 @@ public class DialyzerSensorTest {
 
     RulesProfile rp = mock(RulesProfile.class);
     ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019");
-    when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D019")).thenReturn(activeRule);
+    when(rp.getActiveRule(DialyzerRuleDefinition.REPOSITORY_KEY, "D019")).thenReturn(activeRule);
     activeRule = RuleUtil.generateActiveRule("callback_missing", "D041");
-    when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D041")).thenReturn(activeRule);
+    when(rp.getActiveRule(DialyzerRuleDefinition.REPOSITORY_KEY, "D041")).thenReturn(activeRule);
 
     FileSystem fileSystem = ProjectUtil.createFileSystem(
             "org/sonar/plugins/erlang/erlcount/",

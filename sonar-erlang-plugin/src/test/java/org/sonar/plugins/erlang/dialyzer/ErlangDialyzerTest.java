@@ -57,10 +57,10 @@ public class ErlangDialyzerTest {
 
     RulesProfile rp = mock(RulesProfile.class);
     ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019");
-    when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D019"))
+    when(rp.getActiveRule(DialyzerRuleDefinition.REPOSITORY_KEY, "D019"))
             .thenReturn(activeRule);
     activeRule = RuleUtil.generateActiveRule("callback_missing", "D041");
-    when(rp.getActiveRule(DialyzerRuleRepository.REPOSITORY_KEY, "D041"))
+    when(rp.getActiveRule(DialyzerRuleDefinition.REPOSITORY_KEY, "D041"))
             .thenReturn(activeRule);
 
     FileSystem fileSystem = ProjectUtil.createFileSystem(
@@ -76,7 +76,7 @@ public class ErlangDialyzerTest {
     when(resourcePerspectives.as(Mockito.eq(Issuable.class), Mockito.any(Resource.class))).thenReturn(issuable);
 
     new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(settings, context, new ErlangRuleManager(
-            DialyzerRuleRepository.DIALYZER_PATH), rp, project);
+            DialyzerRuleDefinition.DIALYZER_PATH), rp, project);
   }
 
   @Test

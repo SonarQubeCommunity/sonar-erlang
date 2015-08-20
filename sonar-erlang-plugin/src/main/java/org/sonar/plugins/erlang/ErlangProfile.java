@@ -32,7 +32,8 @@ import java.util.List;
 
 public class ErlangProfile extends ProfileDefinition {
 
-  public static final String PROFILE_NAME = RulesProfile.SONAR_WAY_NAME;
+  public static final String PROFILE_NAME = "Sonar way";
+
   private final AnnotationProfileParser annotationProfileParser;
   private final XMLProfileParser xmlProfileParser;
 

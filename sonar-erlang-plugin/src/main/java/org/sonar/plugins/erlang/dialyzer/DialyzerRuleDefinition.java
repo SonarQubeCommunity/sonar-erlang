@@ -19,39 +19,28 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.sonar.api.rules.Rule;
-import org.sonar.api.rules.RuleRepository;
-import org.sonar.api.rules.XMLRuleParser;
+import com.google.common.base.Charsets;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
 import org.sonar.plugins.erlang.core.Erlang;
 
-import java.util.ArrayList;
-import java.util.List;
+public class DialyzerRuleDefinition implements RulesDefinition {
 
-public class DialyzerRuleRepository extends RuleRepository {
-  private XMLRuleParser parser;
   public static final String REPOSITORY_NAME = "Dialyzer";
   public static final String REPOSITORY_KEY = "dialyzer";
   public static final String DIALYZER_PATH = "/org/sonar/plugins/erlang/dialyzer/rules.xml";
 
-  public DialyzerRuleRepository() {
-    super(REPOSITORY_KEY, Erlang.KEY);
-    setName(REPOSITORY_NAME);
-    this.parser = new XMLRuleParser();
-  }
+  private final RulesDefinitionXmlLoader xmlLoader;
 
-  public DialyzerRuleRepository(XMLRuleParser parser) {
-    super(REPOSITORY_KEY, Erlang.KEY);
-    setName(REPOSITORY_NAME);
-    this.parser = parser;
+  public DialyzerRuleDefinition(RulesDefinitionXmlLoader xmlLoader) {
+    this.xmlLoader = xmlLoader;
   }
 
   @Override
-  public List<Rule> createRules() {
-    List<Rule> rules = new ArrayList<Rule>();
-    rules.addAll(parser.parse(getClass().getResourceAsStream(DIALYZER_PATH)));
-    for (Rule rule : rules) {
-      rule.setRepositoryKey(REPOSITORY_KEY);
-    }
-    return rules;
+  public void define(Context context) {
+    NewRepository repository = context.createRepository(REPOSITORY_KEY, Erlang.KEY).setName(REPOSITORY_NAME);
+    xmlLoader.load(repository, getClass().getResourceAsStream(DIALYZER_PATH), Charsets.UTF_8.name());
+    repository.done();
   }
+
 }

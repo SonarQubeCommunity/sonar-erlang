@@ -17,36 +17,32 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.erlang.core;
+package org.sonar.plugins.erlang.checks;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.config.Settings;
-import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.erlang.checks.CheckList;
 
-import static org.junit.Assert.assertArrayEquals;
+import java.util.List;
 
-public class ErlangTest {
+import static org.fest.assertions.Assertions.assertThat;
 
-  private Settings settings;
-  private Erlang erlang;
-
-  @Before
-  public void setUp() {
-    settings = new Settings();
-    erlang = new Erlang(settings);
-  }
+public class ErlangChecksRuleDefinitionTest {
 
   @Test
-  public void defaultSuffixes() {
-    assertArrayEquals(erlang.getFileSuffixes(), new String[]{"erl"});
-  }
+  public void test() {
+    RulesDefinition.Context context = new RulesDefinition.Context();
+    ErlangChecksRuleDefinition ruleDefinition = new ErlangChecksRuleDefinition();
 
-  @Test
-  public void customSuffixes() {
-    settings.setProperty(ErlangPlugin.FILE_SUFFIXES_KEY, "erlang");
+    ruleDefinition.define(context);
 
-    assertArrayEquals(erlang.getFileSuffixes(), new String[]{"erlang"});
+    RulesDefinition.Repository repository = context.repository(CheckList.REPOSITORY_KEY);
+
+    assertThat(repository.name()).isEqualTo(CheckList.REPOSITORY_NAME);
+
+    List<RulesDefinition.Rule> rules = repository.rules();
+
+    assertThat(rules.size()).isEqualTo(CheckList.getChecks().size());
   }
 
 }

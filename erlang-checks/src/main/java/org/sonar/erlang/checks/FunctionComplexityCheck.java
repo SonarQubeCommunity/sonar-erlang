@@ -20,21 +20,23 @@
 package org.sonar.erlang.checks;
 
 import com.sonar.sslr.api.AstNode;
-
-import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
-import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
-
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.sonar.squidbridge.api.SourceFunction;
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-@Rule(key = "FunctionComplexity", priority = Priority.MAJOR, cardinality = Cardinality.SINGLE)
+@Rule(key = "FunctionComplexity", priority = Priority.MAJOR)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNIT_TESTABILITY)
+@SqaleConstantRemediation("3h")
 public class FunctionComplexityCheck extends SquidCheck<LexerlessGrammar> {
 
   private static final int DEFAULT_MAXIMUM_FUNCTION_COMPLEXITY_THRESHOLD = 10;

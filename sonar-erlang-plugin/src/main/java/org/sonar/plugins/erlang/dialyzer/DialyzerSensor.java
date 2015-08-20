@@ -33,7 +33,7 @@ import org.sonar.api.resources.Project;
  */
 public class DialyzerSensor extends AbstractErlangSensor {
 
-  private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleRepository.DIALYZER_PATH);
+  private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
   private RulesProfile rulesProfile;
   private ResourcePerspectives resourcePerspectives;
 

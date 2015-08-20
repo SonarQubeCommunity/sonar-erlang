@@ -19,15 +19,17 @@
  */
 package org.sonar.erlang.checks;
 
-
-import org.sonar.squidbridge.checks.AbstractXPathCheck;
-import org.sonar.check.Cardinality;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.squidbridge.annotations.NoSqale;
+import org.sonar.squidbridge.annotations.RuleTemplate;
+import org.sonar.squidbridge.checks.AbstractXPathCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-@Rule(key = "XPath", priority = Priority.MAJOR, cardinality = Cardinality.MULTIPLE)
+@Rule(key = "XPath", priority = Priority.MAJOR)
+@NoSqale
+@RuleTemplate
 public class XPathCheck extends AbstractXPathCheck<LexerlessGrammar> {
 
   private static final String DEFAULT_XPATH_QUERY = "";

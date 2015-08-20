@@ -23,12 +23,12 @@ import com.google.common.collect.ImmutableList;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.api.SonarPlugin;
-import org.sonar.plugins.erlang.checks.ErlangChecksRuleRepository;
+import org.sonar.plugins.erlang.checks.ErlangChecksRuleDefinition;
 import org.sonar.plugins.erlang.colorizer.ErlangColorizerFormat;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
 import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
-import org.sonar.plugins.erlang.dialyzer.DialyzerRuleRepository;
+import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
 import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
 
@@ -93,8 +93,8 @@ public class ErlangPlugin extends SonarPlugin {
 
       ErlangSquidSensor.class,
 
-      ErlangChecksRuleRepository.class,
-      DialyzerRuleRepository.class,
+      ErlangChecksRuleDefinition.class,
+      DialyzerRuleDefinition.class,
       ErlangProfile.class,
 
       ErlangCommonRulesEngine.class,
