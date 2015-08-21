@@ -19,33 +19,54 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
+import org.sonar.api.batch.Sensor;
 import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.config.Settings;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
+import org.sonar.plugins.erlang.core.Erlang;
 
 /**
  * Calls the dialyzer report parser saves violations to sonar
  *
  * @author tkende
  */
-public class DialyzerSensor extends AbstractErlangSensor {
+public class DialyzerSensor implements Sensor {
 
+  private final Settings settings;
+  private FileSystem fileSystem;
+  private final FilePredicate mainFilePredicate;
   private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
   private RulesProfile rulesProfile;
   private ResourcePerspectives resourcePerspectives;
 
   public DialyzerSensor(RulesProfile rulesProfile, FileSystem fileSystem, ResourcePerspectives resourcePerspectives, Settings settings) {
-    super(fileSystem, settings);
+    this.settings = settings;
+    this.fileSystem = fileSystem;
+    this.mainFilePredicate = fileSystem.predicates().and(
+            fileSystem.predicates().hasType(InputFile.Type.MAIN),
+            fileSystem.predicates().hasLanguage(Erlang.KEY));
     this.rulesProfile = rulesProfile;
     this.resourcePerspectives = resourcePerspectives;
   }
 
   @Override
+  public final boolean shouldExecuteOnProject(Project project) {
+    return fileSystem.hasFiles(mainFilePredicate);
+  }
+
+  @Override
   public void analyse(Project project, SensorContext context) {
-    new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(getSettings(), context, dialyzerRuleManager, rulesProfile, project);
+    new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(settings, context, dialyzerRuleManager, rulesProfile, project);
+  }
+
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
   }
 
 }
