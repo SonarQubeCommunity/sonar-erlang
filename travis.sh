@@ -4,34 +4,32 @@ set -euo pipefail
 
 function installTravisTools {
   mkdir ~/.local
-  curl -sSL https://github.com/SonarSource/travis-utils/tarball/v16 | tar zx --strip-components 1 -C ~/.local
+  curl -sSL https://github.com/SonarSource/travis-utils/tarball/v21 | tar zx --strip-components 1 -C ~/.local
   source ~/.local/bin/install
 }
 
-case "$TESTS" in
+case "$TARGET" in
 
 CI)
   mvn verify -B -e -V
   ;;
 
-IT-DEV)
+IT)
   installTravisTools
 
   mvn package -Dsource.skip=true -Denforcer.skip=true -Danimal.sniffer.skip=true -Dmaven.test.skip=true
 
-  build_snapshot "SonarSource/sonarqube"
+  if [ "$SQ_VERSION" == "DEV" ]; then
+    build_snapshot "SonarSource/sonarqube"
+  fi
 
   cd its/plugin
-  mvn -Dsonar.runtimeVersion="DEV" -Dmaven.test.redirectTestOutputToFile=false install
+  mvn -Dsonar.runtimeVersion="$SQ_VERSION" -Dmaven.test.redirectTestOutputToFile=false install
   ;;
 
-IT-LTS)
-  installTravisTools
-
-  mvn package -Dsource.skip=true -Denforcer.skip=true -Danimal.sniffer.skip=true -Dmaven.test.skip=true
-
-  cd its/plugin
-  mvn -Dsonar.runtimeVersion="LTS" -Dmaven.test.redirectTestOutputToFile=false install
+*)
+  echo "Unexpected TARGET value: $TARGET"
+  exit 1
   ;;
 
 esac
