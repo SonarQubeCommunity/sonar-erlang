@@ -14,4 +14,4 @@ Maven and Ant can also be used to launch analysis on Erlang projects.
 
 ### Build status
 
-[![Build Status](https://api.travis-ci.org/SonarCommunity/sonar-erlang.svg)](https://travis-ci.org/SonarCommunity/sonar-erlang)
+[![Build Status](https://api.travis-ci.org/SonarQubeCommunity/sonar-erlang.svg)](https://travis-ci.org/SonarQubeCommunity/sonar-erlang)
