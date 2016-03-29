@@ -1,4 +1,5 @@
 # Erlang Plugin
+[![Nemo Quality Gate status](https://nemo.sonarqube.org/api/badges/gate?key=org.codehaus.sonar-plugins.erlang%3Aerlang)](https://nemo.sonarqube.org/overview?id=org.codehaus.sonar-plugins.erlang%3Aerlang)
 
 Download and Versions information: http://update.sonarsource.org/plugins/erlang-confluence.html
 
