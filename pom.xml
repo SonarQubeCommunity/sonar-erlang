@@ -44,19 +44,15 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</connection>
-    <developerConnection>scm:git:git@github.com:SonarCommunity/sonar-erlang.git</developerConnection>
-    <url>https://github.com/SonarCommunity/sonar-erlang</url>
+    <connection>scm:git:git@github.com:SonarQubeCommunity/sonar-erlang.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarQubeCommunity/sonar-erlang.git</developerConnection>
+    <url>https://github.com/SonarQubeCommunity/sonar-erlang</url>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
-    <system>JIRA</system>
-    <url>http://jira.codehaus.org/browse/SONARPLUGINS/component/15774</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/SonarQubeCommunity/sonar-erlang/issues</url>
   </issueManagement>
-  <ciManagement>
-    <system>Cloudbees</system>
-    <url>http://sonarplugins.ci.cloudbees.com/job/erlang</url>
-  </ciManagement>
 
   <properties>
     <license.title>SonarQube Erlang Plugin</license.title>
