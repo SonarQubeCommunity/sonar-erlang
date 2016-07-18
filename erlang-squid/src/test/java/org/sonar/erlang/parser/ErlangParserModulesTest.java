@@ -364,6 +364,32 @@ public class ErlangParserModulesTest {
       ));
   }
 
+  @Test
+  public void bugWithMap() {
+    assertThat(b.getRootRule())
+      .matches(code(
+        "get_apis( Services ) when is_list( Services ) ->",
+        "  F = fun( Service, Acc ) when is_map( Service ) -> ",
+        "    #{ \"vendorservice\" := VendorService, \"apis\" := Apis } = Service,",
+        "    BinApis = [ bin( Api ) || Api <- Apis ], ",
+        "    [{VendorService, BinApis} | Acc]",
+        "  end,",
+        "  maps:from_list( foldl( F, [], Services ) )."))
+      .matches(code(
+        "mapify_services( Hostname, Services ) ->",
+        "[ ",
+        "  #{",
+        "      id  => ServiceId,",
+        "        name => bin( Name ),",
+        "        address => bin( Hostname ),",
+        "        port => Port,",
+        "        type => bin( Type )",
+        "    } ",
+        "  || { ServiceId, Name, Port, Type } <- Services",
+        "]."
+      ));
+  }
+
   private static String code(String... lines) {
     return Joiner.on("\n").join(lines);
   }

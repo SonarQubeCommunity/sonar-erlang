@@ -224,7 +224,8 @@ public class ErlangParserExpressionTest {
         "M1 = #{a => <<\"hello\">>}, % single association with literals\n" +
         "M2 = #{1 => 2, b => b},   % multiple associations with literals\n" +
         "M3 = #{k => {A,B}},       % single association with variables\n" +
-        "M4 = #{{\"w\", 1} => f()}  % compound key associated with an evaluated expression");
+        "M4 = #{{\"w\", 1} => f()}  % compound key associated with an evaluated expression")
+      .matches(" #{ \"vendorservice\" := VendorService, \"apis\" := Apis } = Service");
   }
 
   @Test
