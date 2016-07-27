@@ -390,6 +390,25 @@ public class ErlangParserModulesTest {
       ));
   }
 
+  @Test
+  public void bugWithFunctionDeclaration() {
+    assertThat(b.getRootRule())
+      .matches(code(
+        "handle_cast(add_mysql_connection,State) ->",
+        "    Ref = create_mysql_connection(State#state.reg_name),",
+        "    {noreply,State#state{db_conn_pid = Ref}};",
+        "",
+        "handle_cast({query,Query},State) ->",
+        "    Ref = State#state.db_conn_pid,",
+        "    if",
+        "        Ref == none ->",
+        "            NewState = State,",
+        "            {error, error};",
+        "        true ->",
+        "        {NewState, _Reply} = sql_query(Ref, Query, State)",
+        "     end,",
+        "     {noreply,NewState}."));
+  }
   private static String code(String... lines) {
     return Joiner.on("\n").join(lines);
   }

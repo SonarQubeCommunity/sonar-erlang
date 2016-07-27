@@ -147,4 +147,12 @@ public class ErlangParserLowLevelTest {
       .matches("andalso");
   }
 
+  @Test
+  public void arguments() {
+    assertThat(b.rule(ErlangGrammarImpl.arguments))
+      .matches("(add_mysql_connection,State)")
+      .matches("(State#state.reg_name)")
+      .matches("({query,Query},State)");
+  }
+
 }

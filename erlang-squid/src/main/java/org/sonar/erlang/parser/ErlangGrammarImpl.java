@@ -312,7 +312,6 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       "of",
       "orelse",
       "or",
-      "query",
       "receive",
       "rem",
       "try",

@@ -87,7 +87,8 @@ public class ErlangParserExpressionTest {
     assertThat(g.rule(ErlangGrammarImpl.expression))
       .matches("{asd,ore,{ow,[2,23,as],3},[hello,{23,as}]}")
       .matches("{float(), float()}")
-      .matches("{Rest2, catch list_to_integer(Digits)}");
+      .matches("{Rest2, catch list_to_integer(Digits)}")
+      .matches("{ query, Query}");
 
   }
 
@@ -225,7 +226,7 @@ public class ErlangParserExpressionTest {
         "M2 = #{1 => 2, b => b},   % multiple associations with literals\n" +
         "M3 = #{k => {A,B}},       % single association with variables\n" +
         "M4 = #{{\"w\", 1} => f()}  % compound key associated with an evaluated expression")
-      .matches(" #{ \"vendorservice\" := VendorService, \"apis\" := Apis } = Service");
+      .matches("#{ \"vendorservice\" := VendorService, \"apis\" := Apis } = Service");
   }
 
   @Test
