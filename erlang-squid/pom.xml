@@ -13,11 +13,11 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.codehaus.sonar.sslr</groupId>
-      <artifactId>sslr-core</artifactId>
+      <groupId>org.sonarsource.sslr</groupId>
+      <artifactId>sslr-toolkit</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.sonar.sslr-squid-bridge</groupId>
+      <groupId>org.sonarsource.sslr-squid-bridge</groupId>
       <artifactId>sslr-squid-bridge</artifactId>
     </dependency>
     <dependency>
@@ -45,7 +45,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.sonar.sslr</groupId>
+      <groupId>org.sonarsource.sslr</groupId>
       <artifactId>sslr-testing-harness</artifactId>
       <scope>test</scope>
     </dependency>

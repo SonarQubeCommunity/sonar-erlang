@@ -39,7 +39,7 @@
       <artifactId>erlang-checks</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.sonar</groupId>
+      <groupId>org.sonarsource.sonarqube</groupId>
       <artifactId>sonar-plugin-api</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -57,11 +57,10 @@
           <artifactId>commons-io</artifactId>
       </dependency>
     <dependency>
-      <groupId>org.codehaus.sonar</groupId>
+      <groupId>org.sonarsource.sonarqube</groupId>
       <artifactId>sonar-testing-harness</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
