@@ -15,12 +15,6 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>erlang-squid</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.collections</groupId>
-          <artifactId>google-collections</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.sonarsource.sslr</groupId>
