@@ -22,7 +22,7 @@ package org.sonar.plugins.erlang;
 import com.google.common.collect.ImmutableList;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
-import org.sonar.api.SonarPlugin;
+import org.sonar.api.Plugin;
 import org.sonar.plugins.erlang.checks.ErlangChecksRuleDefinition;
 import org.sonar.plugins.erlang.colorizer.ErlangColorizerFormat;
 import org.sonar.plugins.erlang.core.Erlang;
@@ -66,7 +66,7 @@ import java.util.List;
     description = "Filename of the rebar config file",
     global = true, project = true)
 })
-public class ErlangPlugin extends SonarPlugin {
+public class ErlangPlugin extends Plugin {
 
   public static final String EUNIT_FOLDER_KEY = "sonar.erlang.eunit.reportsfolder";
   public static final String EUNIT_DEFAULT_FOLDER = ".eunit/";

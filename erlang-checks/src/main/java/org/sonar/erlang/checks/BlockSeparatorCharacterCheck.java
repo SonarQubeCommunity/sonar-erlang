@@ -20,7 +20,6 @@
 package org.sonar.erlang.checks;
 
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;

@@ -16,7 +16,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>erlang-squid</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
@@ -32,6 +31,10 @@
       <artifactId>fest-assert</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
@@ -41,6 +44,7 @@
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
 </project>
