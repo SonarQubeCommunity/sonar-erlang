@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,13 +13,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.ServerComponent;
@@ -42,7 +41,6 @@ public final class ErlangXmlRuleParser implements ServerComponent {
    * @throws IOException
    * @throws SAXException
    * @throws ParserConfigurationException
-   * @throws DocumentException
    */
   public List<ErlangRule> parse(InputStream input) {
     SAXParserFactory factory = SAXParserFactory.newInstance();

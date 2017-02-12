@@ -17,6 +17,14 @@
       <artifactId>erlang-squid</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.sonarsource.sslr</groupId>
+      <artifactId>sslr-xpath</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-all</artifactId>
       <scope>test</scope>

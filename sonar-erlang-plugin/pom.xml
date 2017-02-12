@@ -57,7 +57,7 @@
           <artifactId>commons-io</artifactId>
       </dependency>
     <dependency>
-      <groupId>org.codehaus.sonar</groupId>
+      <groupId>org.sonarsource.sonarqube</groupId>
       <artifactId>sonar-testing-harness</artifactId>
       <scope>test</scope>
     </dependency>
@@ -101,7 +101,7 @@
             <configuration>
               <rules>
                 <requireFilesSize>
-                  <maxsize>770000</maxsize>
+                  <maxsize>3770000</maxsize>
                   <minsize>550000</minsize>
                   <files>
                     <file>${project.build.directory}/${project.build.finalName}.jar</file>

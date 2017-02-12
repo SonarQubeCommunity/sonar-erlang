@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.eunit;
 
@@ -54,11 +54,11 @@ public class EunitXmlSensorTest {
     settings.setProperty(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY, ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
 
     FileSystem fileSystem = ProjectUtil.createFileSystem(
-            "org/sonar/plugins/erlang/erlcount/",
+            "src/test/resources/org/sonar/plugins/erlang/erlcount/",
             null,
             Arrays.asList(
-                    new File("org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"),
-                    new File("org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl"))
+                    "test/erlcount_eunit.erl",
+                    "test/erlcount_tests.erl")
     );
 
     new EunitXmlSensor(new Erlang(settings), fileSystem, settings).analyse(project, context);

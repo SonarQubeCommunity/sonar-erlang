@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,14 +13,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.sonar.api.Plugin;
+import org.sonar.api.utils.Version;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -28,14 +30,11 @@ public class ErlangPluginTest {
 
   private ErlangPlugin plugin;
 
-  @Before
-  public void setUp() throws Exception {
-    plugin = new ErlangPlugin();
-  }
-
   @Test
   public void testGetExtensions() throws Exception {
-    assertThat(plugin.getExtensions().size()).isEqualTo(11);
+    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
+    new ErlangPlugin().define(context);
+    assertThat(context.getExtensions()).isNotEmpty();
   }
 
 }

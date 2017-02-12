@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang;
 
@@ -37,15 +37,18 @@ import org.sonar.api.resources.Resource;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.test.TestUtils;
 
+import java.io.File;
+
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ErlangSquidSensorTest {
+  private static final File TEST_DIR = new File("src/test/resources/");
 
   private ErlangSquidSensor sensor;
-  private final DefaultFileSystem fileSystem = new DefaultFileSystem();
+  private final DefaultFileSystem fileSystem = new DefaultFileSystem(TEST_DIR);
 
   @Before
   public void setUp() {
@@ -59,13 +62,13 @@ public class ErlangSquidSensorTest {
 
   @Test
   public void should_execute_on_erlang_project() {
-    DefaultFileSystem localFS = new DefaultFileSystem();
+    DefaultFileSystem localFS = new DefaultFileSystem(TEST_DIR);
     ErlangSquidSensor localSensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), localFS, null);
 
     // empty file system
     assertThat(localSensor.shouldExecuteOnProject(null)).isFalse();
 
-    localFS.add(new DefaultInputFile("file.erl").setType(InputFile.Type.MAIN).setLanguage(Erlang.KEY));
+    localFS.add(new DefaultInputFile("key", "file.erl").setType(InputFile.Type.MAIN).setLanguage(Erlang.KEY));
     assertThat(localSensor.shouldExecuteOnProject(null)).isTrue();
   }
 
@@ -74,8 +77,7 @@ public class ErlangSquidSensorTest {
     Project project = new Project("key");
     SensorContext context = mock(SensorContext.class);
 
-    fileSystem.add(new DefaultInputFile("person.erl")
-            .setAbsolutePath(TestUtils.getResource("cpd/person.erl").getAbsolutePath())
+    fileSystem.add(new DefaultInputFile("key", "cpd/person.erl")
             .setType(InputFile.Type.MAIN)
             .setLanguage(Erlang.KEY));
 
@@ -95,8 +97,7 @@ public class ErlangSquidSensorTest {
     Project project = new Project("key");
     SensorContext context = mock(SensorContext.class);
 
-    fileSystem.add(new DefaultInputFile("megaco_ber_bin_encoder.erl")
-            .setAbsolutePath(TestUtils.getResource("megaco_ber_bin_encoder.erl").getAbsolutePath())
+    fileSystem.add(new DefaultInputFile("key", "megaco_ber_bin_encoder.erl")
             .setType(InputFile.Type.MAIN)
             .setLanguage(Erlang.KEY));
 

@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang;
 
@@ -23,6 +23,8 @@ import com.google.common.collect.ImmutableList;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.api.Plugin;
+import org.sonar.api.config.PropertyDefinition;
+import org.sonar.api.resources.Qualifiers;
 import org.sonar.plugins.erlang.checks.ErlangChecksRuleDefinition;
 import org.sonar.plugins.erlang.colorizer.ErlangColorizerFormat;
 import org.sonar.plugins.erlang.core.Erlang;
@@ -66,7 +68,7 @@ import java.util.List;
     description = "Filename of the rebar config file",
     global = true, project = true)
 })
-public class ErlangPlugin extends Plugin {
+public class ErlangPlugin implements Plugin {
 
   public static final String EUNIT_FOLDER_KEY = "sonar.erlang.eunit.reportsfolder";
   public static final String EUNIT_DEFAULT_FOLDER = ".eunit/";
@@ -85,25 +87,32 @@ public class ErlangPlugin extends Plugin {
   public static final String REBAR_DEFAULT_CONFIG_FILENAME = "rebar.config";
 
   @Override
-  public List getExtensions() {
-    return ImmutableList.of(
-      Erlang.class,
-      ErlangColorizerFormat.class,
-      ErlangCpdMapping.class,
+  public void define(Context context) {
+    context.addExtensions(
+            Erlang.class,
+            ErlangColorizerFormat.class,
+            ErlangCpdMapping.class,
 
-      ErlangSquidSensor.class,
+            ErlangSquidSensor.class,
 
-      ErlangChecksRuleDefinition.class,
-      DialyzerRuleDefinition.class,
-      ErlangProfile.class,
+            ErlangChecksRuleDefinition.class,
+            DialyzerRuleDefinition.class,
+            ErlangProfile.class,
 
-      ErlangCommonRulesEngine.class,
+            ErlangCommonRulesEngine.class,
 
-      EunitXmlSensor.class,
+            EunitXmlSensor.class,
 
-      CoverCoverageSensor.class,
+            CoverCoverageSensor.class,
 
-      DialyzerSensor.class);
+            DialyzerSensor.class,
+
+            PropertyDefinition.builder(FILE_SUFFIXES_KEY)
+                    .defaultValue(EXTENSION)
+                    .name("File suffixes")
+                    .description("Comma-separated list of suffixes for files to analyze. To not filter, leave the list empty.")
+                    .onQualifiers(Qualifiers.MODULE, Qualifiers.PROJECT)
+                    .build()
+    );
   }
-
 }

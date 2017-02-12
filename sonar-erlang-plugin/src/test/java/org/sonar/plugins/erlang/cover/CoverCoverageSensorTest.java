@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.cover;
 
@@ -59,8 +59,8 @@ public class CoverCoverageSensorTest {
     settings.setProperty(ErlangPlugin.COVERDATA_FILENAME_KEY, "non_existing.coverdata");
 
     FileSystem fileSystem = ProjectUtil.createFileSystem(
-            "org/sonar/plugins/erlang/erlcount/",
-            Arrays.asList(new File("org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")),
+            "src/test/resources/org/sonar/plugins/erlang/erlcount/",
+            Arrays.asList("src/erlcount_lib.erl"),
             null
     );
 
@@ -76,8 +76,8 @@ public class CoverCoverageSensorTest {
     settings.setProperty(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
 
     FileSystem fileSystem = ProjectUtil.createFileSystem(
-            "org/sonar/plugins/erlang/erlcount/",
-            Arrays.asList(new File("org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl")),
+            "src/test/resources/org/sonar/plugins/erlang/erlcount/",
+            Arrays.asList("erlcount_lib.erl"),
             null
     );
 
