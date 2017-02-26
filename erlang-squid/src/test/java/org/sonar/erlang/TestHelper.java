@@ -37,7 +37,7 @@ import java.util.List;
 
 public class TestHelper {
 
-  public static AstScanner<LexerlessGrammar> scanFiles(List<File> files) {
+  static AstScanner<LexerlessGrammar> scanFiles(List<File> files) {
     AstScanner<LexerlessGrammar> scanner = ErlangAstScanner.create(Charset.forName("UTF-8"));
     scanner.scanFiles(files);
     return scanner;
@@ -48,7 +48,7 @@ public class TestHelper {
     return getSourceFile(scanner);
   }
 
-  public static SourceFile getSourceFile(AstScanner<LexerlessGrammar> scanner) {
+  static SourceFile getSourceFile(AstScanner<LexerlessGrammar> scanner) {
     Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
     return (SourceFile) sources.iterator().next();
   }

@@ -19,34 +19,41 @@
  */
 package org.sonar.erlang.parser;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 //TODO: why do I have to add a whitespace before+after: ,; when I mock?
 public class ErlangParserIfExpressionTest {
-  private LexerlessGrammar g = ErlangGrammarImpl.createGrammar();
+  private LexerlessGrammarBuilder g;
+
+  @Before
+  public void setUp() {
+    g = ErlangGrammarImpl.createGrammarBuilder();
+  }
 
   @Test
   public void ifSimple() {
-    g.rule(ErlangGrammarImpl.branchExps).mock();
-    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
+    g.rule(ErlangGrammarImpl.branchExps).override("branchExps ");
+    assertThat(g.build().rule(ErlangGrammarImpl.memberExpression))
       .matches("if branchExps end");
   }
 
   @Test
   public void ifSimple2() {
-    g.rule(ErlangGrammarImpl.branchExp).mock();
-    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
+    g.rule(ErlangGrammarImpl.branchExp).override("branchExp ");
+    assertThat(g.build().rule(ErlangGrammarImpl.memberExpression))
       .matches("if branchExp ; branchExp end");
   }
 
   @Test
   public void ifSimple3() {
-    g.rule(ErlangGrammarImpl.guardSequence).mock();
-    g.rule(ErlangGrammarImpl.assignmentExpression).mock();
-    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
+    g.rule(ErlangGrammarImpl.guardSequence).override("guardSequence ");
+    g.rule(ErlangGrammarImpl.assignmentExpression).override("assignmentExpression ");
+    assertThat(g.build().rule(ErlangGrammarImpl.memberExpression))
       .matches(
         "if guardSequence -> assignmentExpression , assignmentExpression end")
       .matches(
@@ -55,9 +62,9 @@ public class ErlangParserIfExpressionTest {
 
   @Test
   public void ifSimple4() {
-    g.rule(ErlangGrammarImpl.guard).mock();
-    g.rule(ErlangGrammarImpl.assignmentExpression).mock();
-    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
+    g.rule(ErlangGrammarImpl.guard).override("guard ");
+    g.rule(ErlangGrammarImpl.assignmentExpression).override("assignmentExpression ");
+    assertThat(g.build().rule(ErlangGrammarImpl.memberExpression))
       .matches(
         "if guard ; guard ; guard -> assignmentExpression , assignmentExpression end")
       .matches(
@@ -66,9 +73,9 @@ public class ErlangParserIfExpressionTest {
 
   @Test
   public void ifSimple5() {
-    g.rule(ErlangGrammarImpl.guardExpression).mock();
-    g.rule(ErlangGrammarImpl.assignmentExpression).mock();
-    assertThat(g.rule(ErlangGrammarImpl.memberExpression))
+    g.rule(ErlangGrammarImpl.guardExpression).override("guardExpression ");
+    g.rule(ErlangGrammarImpl.assignmentExpression).override("assignmentExpression ");
+    assertThat(g.build().rule(ErlangGrammarImpl.memberExpression))
       .matches(
         "if guardExpression , guardExpression ; guardExpression ; guardExpression , guardExpression , guardExpression -> assignmentExpression , assignmentExpression end")
       .matches(

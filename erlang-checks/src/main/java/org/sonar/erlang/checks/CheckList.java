@@ -33,7 +33,7 @@ public final class CheckList {
   }
 
   public static List<Class> getChecks() {
-    return ImmutableList.<Class>of(BlockSeparatorCharacterCheck.class,
+    return ImmutableList.of(BlockSeparatorCharacterCheck.class,
       BranchesOfRecursionCheck.class, CommentRegularExpressionCheck.class,
       DepthOfCasesCheck.class, DoNotUseEmptyFlowControlCheck.class, DoNotUseImportCheck.class, DoNotUseExportAllCheck.class,
       ExportOneFunctionPerLineCheck.class, FunctionComplexityCheck.class, FunExpressionComplexityCheck.class,

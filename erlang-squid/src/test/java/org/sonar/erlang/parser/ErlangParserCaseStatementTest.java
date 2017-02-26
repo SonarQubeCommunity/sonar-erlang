@@ -20,6 +20,7 @@
 package org.sonar.erlang.parser;
 
 import com.google.common.base.Joiner;
+import org.junit.Before;
 import org.junit.Test;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
 
@@ -27,7 +28,12 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserCaseStatementTest {
 
-  private LexerlessGrammarBuilder grammar = ErlangGrammarImpl.createGrammarBuilder();
+  private LexerlessGrammarBuilder grammar;
+
+  @Before
+  public void setUp() {
+    grammar = ErlangGrammarImpl.createGrammarBuilder();
+  }
 
   @Test
   public void caseSimple1() {

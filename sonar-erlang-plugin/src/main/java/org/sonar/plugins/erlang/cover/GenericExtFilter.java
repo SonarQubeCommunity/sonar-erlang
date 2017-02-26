@@ -26,7 +26,7 @@ public class GenericExtFilter implements FilenameFilter {
 
   private String ext;
 
-  public GenericExtFilter(String ext) {
+  GenericExtFilter(String ext) {
     this.ext = ext;
   }
 

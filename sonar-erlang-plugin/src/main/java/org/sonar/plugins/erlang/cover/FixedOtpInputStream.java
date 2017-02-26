@@ -36,7 +36,7 @@ import java.util.zip.Inflater;
 public class FixedOtpInputStream extends OtpInputStream {
   private final int flags;
 
-  public FixedOtpInputStream(byte[] buf) {
+  FixedOtpInputStream(byte[] buf) {
     super(buf);
     flags = 0;
   }

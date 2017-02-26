@@ -66,13 +66,14 @@ public final class ErlangAstScanner {
   private ErlangAstScanner() {
   }
 
+  @SafeVarargs
   public static AstScanner<LexerlessGrammar> create(Charset charset,
                                                     SquidAstVisitor<LexerlessGrammar>... visitors) {
-    final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<LexerlessGrammar>(
+    final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<>(
       new SourceProject("Erlang Project"));
-    final Parser<LexerlessGrammar> parser = new ParserAdapter<LexerlessGrammar>(charset, ErlangGrammarImpl.createGrammar());
+    final Parser<LexerlessGrammar> parser = new ParserAdapter<>(charset, ErlangGrammarImpl.createGrammar());
 
-    AstScanner.Builder<LexerlessGrammar> builder = AstScanner.<LexerlessGrammar>builder(context)
+    AstScanner.Builder<LexerlessGrammar> builder = AstScanner.builder(context)
       .setBaseParser(parser);
 
     /* Metrics */
@@ -85,23 +86,20 @@ public final class ErlangAstScanner {
     builder.setFilesMetric(ErlangMetric.FILES);
 
     /* Classes = modules */
-    builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<LexerlessGrammar>(
-      new SourceCodeBuilderCallback() {
-        @Override
-        public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
-          String className = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr).getFirstChild(ErlangGrammarImpl.atom).getTokenValue();
-          SourceClass cls = new SourceClass(className + ":"
-            + astNode.getToken().getLine());
-          cls.setStartAtLine(astNode.getTokenLine());
-          return cls;
-        }
-      }, ErlangGrammarImpl.module));
+    builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<>(
+            (parentSourceCode, astNode) -> {
+              String className = astNode.getFirstDescendant(ErlangGrammarImpl.moduleAttr).getFirstChild(ErlangGrammarImpl.atom).getTokenValue();
+              SourceClass cls = new SourceClass(className + ":"
+                + astNode.getToken().getLine());
+              cls.setStartAtLine(astNode.getTokenLine());
+              return cls;
+            }, ErlangGrammarImpl.module));
 
     builder.withSquidAstVisitor(CounterVisitor.<LexerlessGrammar>builder().setMetricDef(
       ErlangMetric.MODULES).subscribeTo(ErlangGrammarImpl.module).build());
 
     /* Functions */
-    builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<LexerlessGrammar>(
+    builder.withSquidAstVisitor(new SourceCodeBuilderVisitor<>(
       new SourceCodeBuilderCallback() {
         @Override
         public SourceCode createSourceCode(SourceCode parentSourceCode, AstNode astNode) {
@@ -123,7 +121,7 @@ public final class ErlangAstScanner {
                 + funcArity.getChildren(ErlangGrammarImpl.literal).get(1).getTokenOriginalValue();
             }
           } else {
-            AstNode clause = null;
+            AstNode clause;
             boolean isDec = false;
             if (ast.getType().equals(ErlangGrammarImpl.functionDeclaration)) {
               clause = ast.getFirstDescendant(ErlangGrammarImpl.functionClause);
@@ -158,8 +156,8 @@ public final class ErlangAstScanner {
 
     /* Metrics */
 
-    builder.withSquidAstVisitor(new LinesVisitor<LexerlessGrammar>(ErlangMetric.LINES));
-    builder.withSquidAstVisitor(new LinesOfCodeVisitor<LexerlessGrammar>(
+    builder.withSquidAstVisitor(new LinesVisitor<>(ErlangMetric.LINES));
+    builder.withSquidAstVisitor(new LinesOfCodeVisitor<>(
       ErlangMetric.LINES_OF_CODE));
 
     builder.withSquidAstVisitor(CommentsVisitor.<LexerlessGrammar>builder().withCommentMetric(

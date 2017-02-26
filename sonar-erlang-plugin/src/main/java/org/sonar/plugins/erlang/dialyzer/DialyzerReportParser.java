@@ -21,11 +21,9 @@ package org.sonar.plugins.erlang.dialyzer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.batch.SensorContext;
 import org.sonar.api.batch.fs.FilePredicate;
-import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
-import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.config.Settings;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
@@ -47,13 +45,11 @@ public class DialyzerReportParser {
   private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?)(:[0-9]+:)(.*)";
   private static final String REPO_KEY = DialyzerRuleDefinition.REPOSITORY_KEY;
   private static final Logger LOG = LoggerFactory.getLogger(DialyzerReportParser.class);
+  private final SensorContext context;
 
-  private FileSystem fileSystem;
-  private ResourcePerspectives resourcePerspectives;
 
-  public DialyzerReportParser(FileSystem fileSystem, ResourcePerspectives resourcePerspectives) {
-    this.fileSystem = fileSystem;
-    this.resourcePerspectives = resourcePerspectives;
+  public DialyzerReportParser(SensorContext context) {
+    this.context = context;
   }
 
   /**

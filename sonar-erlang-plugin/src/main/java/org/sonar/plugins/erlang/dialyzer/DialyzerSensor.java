@@ -19,15 +19,12 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.sonar.api.batch.Sensor;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.batch.fs.FilePredicate;
-import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.component.ResourcePerspectives;
-import org.sonar.api.config.Settings;
 import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Project;
 import org.sonar.plugins.erlang.core.Erlang;
 
 /**
@@ -37,31 +34,11 @@ import org.sonar.plugins.erlang.core.Erlang;
  */
 public class DialyzerSensor implements Sensor {
 
-  private final Settings settings;
-  private FileSystem fileSystem;
-  private final FilePredicate mainFilePredicate;
+  private final SensorContext context;
   private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
-  private RulesProfile rulesProfile;
-  private ResourcePerspectives resourcePerspectives;
 
-  public DialyzerSensor(RulesProfile rulesProfile, FileSystem fileSystem, ResourcePerspectives resourcePerspectives, Settings settings) {
-    this.settings = settings;
-    this.fileSystem = fileSystem;
-    this.mainFilePredicate = fileSystem.predicates().and(
-            fileSystem.predicates().hasType(InputFile.Type.MAIN),
-            fileSystem.predicates().hasLanguage(Erlang.KEY));
-    this.rulesProfile = rulesProfile;
-    this.resourcePerspectives = resourcePerspectives;
-  }
-
-  @Override
-  public final boolean shouldExecuteOnProject(Project project) {
-    return fileSystem.hasFiles(mainFilePredicate);
-  }
-
-  @Override
-  public void analyse(Project project, SensorContext context) {
-    new DialyzerReportParser(fileSystem, resourcePerspectives).dialyzer(settings, context, dialyzerRuleManager, rulesProfile, project);
+  public DialyzerSensor(SensorContext context) {
+    this.context = context;
   }
 
   @Override
@@ -69,4 +46,16 @@ public class DialyzerSensor implements Sensor {
     return getClass().getSimpleName();
   }
 
+  @Override
+  public void describe(SensorDescriptor descriptor) {
+    descriptor
+            .onlyOnLanguage(Erlang.KEY)
+            .name("Erlang Dialyzer Sensor")
+            .onlyOnFileType(InputFile.Type.MAIN);
+  }
+
+  @Override
+  public void execute(org.sonar.api.batch.sensor.SensorContext context) {
+    new DialyzerReportParser(context).dialyzer();
+  }
 }

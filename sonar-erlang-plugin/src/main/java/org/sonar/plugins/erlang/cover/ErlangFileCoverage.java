@@ -22,34 +22,30 @@ package org.sonar.plugins.erlang.cover;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ErlangFileCoverage {
+final class ErlangFileCoverage {
 
-  private Map<Integer, Integer> lineCoverageData = new HashMap<Integer, Integer>();
+  private Map<Integer, Integer> lineCoverageData = new HashMap<>();
   private String filePath;
 
-  public Map<Integer, Integer> getLineCoverageData() {
+  Map<Integer, Integer> getLineCoverageData() {
     return lineCoverageData;
   }
 
-  public void setLineCoverage(Map<Integer, Integer> lineCoverage) {
-    this.lineCoverageData = lineCoverage;
-  }
-
-  public String getFilePath() {
+  String getFilePath() {
     return filePath;
   }
 
-  public void setFilePath(String filePath) {
+  void setFilePath(String filePath) {
     this.filePath = filePath;
   }
 
   // Executable Line Count
-  public int getLinesToCover() {
+  int getLinesToCover() {
     return lineCoverageData.size();
   }
 
   // Covered Executable Line Count
-  public int getCoveredLines() {
+  int getCoveredLines() {
     int lines = 0;
     for (Map.Entry<Integer, Integer> entry : lineCoverageData.entrySet()) {
       if (entry.getValue() > 0) {
@@ -59,11 +55,11 @@ public final class ErlangFileCoverage {
     return lines;
   }
 
-  public void addLine(int lineNumber, int executionCount) {
+  void addLine(int lineNumber, int executionCount) {
     lineCoverageData.put(lineNumber, executionCount);
   }
 
-  public int getUncoveredLines() {
+  int getUncoveredLines() {
     return getLinesToCover() - getCoveredLines();
   }
 
