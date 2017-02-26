@@ -25,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ErlangRule {
-  private List<String> messages = new ArrayList<String>();
+  private List<String> messages = new ArrayList<>();
   private Rule sonarRule = Rule.create();
 
-  public ErlangRule() {
+  ErlangRule() {
     super();
   }
 
-  public boolean hasMessage(String message) {
+  boolean hasMessage(String message) {
     boolean ret = false;
     for (String ruleMessage : messages) {
       if (message.matches(ruleMessage)) {
@@ -43,7 +43,7 @@ public class ErlangRule {
     return ret;
   }
 
-  public void addMessage(String message) {
+  void addMessage(String message) {
     messages.add(message);
   }
 

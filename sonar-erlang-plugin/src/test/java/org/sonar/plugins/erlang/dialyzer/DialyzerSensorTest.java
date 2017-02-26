@@ -19,74 +19,68 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
+import com.google.common.base.Charsets;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.batch.fs.FileSystem;
-import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.FileMetadata;
+import org.sonar.api.batch.rule.ActiveRules;
+import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
+import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
-import org.sonar.api.issue.Issuable;
-import org.sonar.api.issue.Issue;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.Resource;
-import org.sonar.api.rules.ActiveRule;
+import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.ProjectUtil;
-import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class DialyzerSensorTest {
 
+  private File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
   private Settings settings;
-  private Erlang erlang;
-  private Project project;
-  private SensorContext context;
-  private Issuable issuable;
-  private ResourcePerspectives resourcePerspectives;
+  private SensorContextTester context;
 
   @Before
   public void setup() throws URISyntaxException, IOException {
     settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
-    erlang = new Erlang(settings);
-    context = mock(SensorContext.class);
+    context = SensorContextTester.create(testModuleBasedir);
+    ActiveRules rules = (new ActiveRulesBuilder())
+            .create(RuleKey.of(DialyzerRuleDefinition.REPOSITORY_KEY, "D019"))
+            .setName("unused_fun")
+            .activate()
+            .create(RuleKey.of(DialyzerRuleDefinition.REPOSITORY_KEY, "D041"))
+            .setName("callback_missing")
+            .activate()
+            .build();
+    context.setActiveRules(rules);
+  }
 
-    issuable = ProjectUtil.mockIssueable();
-    resourcePerspectives = mock(ResourcePerspectives.class);
-    when(resourcePerspectives.as(Mockito.eq(Issuable.class), Mockito.any(Resource.class))).thenReturn(issuable);
-
-    project = new Project("dummy");
-
-    RulesProfile rp = mock(RulesProfile.class);
-    ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019");
-    when(rp.getActiveRule(DialyzerRuleDefinition.REPOSITORY_KEY, "D019")).thenReturn(activeRule);
-    activeRule = RuleUtil.generateActiveRule("callback_missing", "D041");
-    when(rp.getActiveRule(DialyzerRuleDefinition.REPOSITORY_KEY, "D041")).thenReturn(activeRule);
-
-    FileSystem fileSystem = ProjectUtil.createFileSystem(
-            "src/test/resources/org/sonar/plugins/erlang/erlcount/",
-            Arrays.asList(
-                    "src/erlcount_lib.erl",
-                    "src/refactorerl_issues.erl"),
-            null
-    );
-
-    new DialyzerSensor(rp, fileSystem, resourcePerspectives, settings).analyse(project, context);
+  private void addFile(SensorContextTester context, String path) {
+    DefaultInputFile file = new DefaultInputFile("test", path)
+            .setLanguage("erlang")
+            .setType(InputFile.Type.MAIN)
+            .setModuleBaseDir(testModuleBasedir.toPath());
+    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));
+    context.fileSystem().add(file);
   }
 
   @Test
-  public void checkCoverSensor() throws URISyntaxException {
-    ArgumentCaptor<Issue> argument = ArgumentCaptor.forClass(Issue.class);
-    verify(issuable, times(3)).addIssue(argument.capture());
+  public void checkDialyzerSensor() throws URISyntaxException {
+    settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+    context.setSettings(settings);
+
+    addFile(context, "src/erlcount_lib.erl");
+    addFile(context, "src/refactorerl_issues.erl");
+
+    new DialyzerSensor().execute(context);
+
+    assertThat(context.allIssues().size()).isEqualTo(3);
   }
 
 }

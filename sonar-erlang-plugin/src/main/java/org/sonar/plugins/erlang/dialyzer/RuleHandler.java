@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RuleHandler extends DefaultHandler {
-  private List<ErlangRule> rules = new ArrayList<ErlangRule>();
+  private List<ErlangRule> rules = new ArrayList<>();
   private String tmpValue = "";
   private Object tmpRule;
   private RuleParam param;

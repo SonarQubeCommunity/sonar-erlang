@@ -99,6 +99,7 @@ public class ErlangSquidSensor implements Sensor {
     this.context = context;
 
     List<SquidAstVisitor<LexerlessGrammar>> visitors = new ArrayList<SquidAstVisitor<LexerlessGrammar>>((Collection) checks.all());
+    visitors.add(new ErlangHighlighter(context));
     this.scanner = ErlangAstScanner.create(fileSystem.encoding(), visitors.toArray(new SquidAstVisitor[visitors.size()]));
 
     scanner.scanFiles(Lists.newArrayList(fileSystem.files(mainFilePredicate)));

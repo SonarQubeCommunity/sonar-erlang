@@ -4,7 +4,7 @@
   <rule>
     <key>D001</key>
     <name><![CDATA[Function that will never return a value]]></name>
-    <configKey>apply</configKey>
+    <internalKey>apply</internalKey>
     <description>
       <![CDATA[Functions that will never return a value.]]>
     </description>
@@ -15,7 +15,7 @@
   <rule>
     <key>D002</key>
     <name><![CDATA[app_call]]></name>
-    <configKey>app_call</configKey>
+    <internalKey>app_call</internalKey>
     <description>
       <![CDATA[app_call]]>
     </description>
@@ -26,7 +26,7 @@
   <rule>
     <key>D003</key>
     <name><![CDATA[bin_construction]]></name>
-    <configKey>bin_construction</configKey>
+    <internalKey>bin_construction</internalKey>
     <description>
       <![CDATA[bin_construction]]>
     </description>
@@ -39,7 +39,7 @@
   <rule>
     <key>D004</key>
     <name><![CDATA[call]]></name>
-    <configKey>call</configKey>
+    <internalKey>call</internalKey>
     <description>
       <![CDATA[call]]>
     </description>
@@ -50,7 +50,7 @@
   <rule>
     <key>D005</key>
     <name><![CDATA[call_to_missing]]></name>
-    <configKey>call_to_missing</configKey>
+    <internalKey>call_to_missing</internalKey>
     <description>
       <![CDATA[call_to_missing]]>
     </description>
@@ -61,7 +61,7 @@
   <rule>
     <key>D006</key>
     <name><![CDATA[exact_eq]]></name>
-    <configKey>exact_eq</configKey>
+    <internalKey>exact_eq</internalKey>
     <description>
       <![CDATA[exact_eq]]>
     </description>
@@ -72,7 +72,7 @@
   <rule>
     <key>D007</key>
     <name><![CDATA[fun_app_args]]></name>
-    <configKey>fun_app_args</configKey>
+    <internalKey>fun_app_args</internalKey>
     <description>
       <![CDATA[fun_app_args]]>
     </description>
@@ -85,7 +85,7 @@
   <rule>
     <key>D008</key>
     <name><![CDATA[fun_app_no_fun]]></name>
-    <configKey>fun_app_no_fun</configKey>
+    <internalKey>fun_app_no_fun</internalKey>
     <description>
       <![CDATA[fun_app_no_fun]]>
     </description>
@@ -99,7 +99,7 @@
     <key>D009</key>
     <name><![CDATA[guard_fail]]>
     </name>
-    <configKey>guard_fail</configKey>
+    <internalKey>guard_fail</internalKey>
     <description>
       <![CDATA[Clause guard cannot succeed.]]>
     </description>
@@ -112,7 +112,7 @@
   <rule>
     <key>D010</key>
     <name><![CDATA[neg_guard_fail]]></name>
-    <configKey>neg_guard_fail</configKey>
+    <internalKey>neg_guard_fail</internalKey>
     <description>
       <![CDATA[neg_guard_fail]]>
     </description>
@@ -124,7 +124,7 @@
   <rule>
     <key>D011</key>
     <name><![CDATA[guard_fail_pat]]></name>
-    <configKey>guard_fail_pat</configKey>
+    <internalKey>guard_fail_pat</internalKey>
     <description>
       <![CDATA[guard_fail_pat]]>
     </description>
@@ -137,7 +137,7 @@
   <rule>
     <key>D012</key>
     <name><![CDATA[improper_list_constr]]></name>
-    <configKey>improper_list_constr</configKey>
+    <internalKey>improper_list_constr</internalKey>
     <description>
       <![CDATA[improper_list_constr]]>
     </description>
@@ -150,7 +150,7 @@
   <rule>
     <key>D013</key>
     <name><![CDATA[no_return]]></name>
-    <configKey>no_return</configKey>
+    <internalKey>no_return</internalKey>
     <description>
       <![CDATA[no_return]]>
     </description>
@@ -168,7 +168,7 @@
   <rule>
     <key>D014</key>
     <name><![CDATA[record_constr]]></name>
-    <configKey>record_constr</configKey>
+    <internalKey>record_constr</internalKey>
     <description>
       <![CDATA[record_constr]]>
     </description>
@@ -184,7 +184,7 @@
   <rule>
     <key>D015</key>
     <name><![CDATA[record_matching]]></name>
-    <configKey>record_matching</configKey>
+    <internalKey>record_matching</internalKey>
     <description>
       <![CDATA[record_matching]]>
     </description>
@@ -195,7 +195,7 @@
   <rule>
     <key>D016</key>
     <name><![CDATA[record_match]]></name>
-    <configKey>record_match</configKey>
+    <internalKey>record_match</internalKey>
     <description>
       <![CDATA[record_match]]>
     </description>
@@ -208,7 +208,7 @@
   <rule>
     <key>D017</key>
     <name><![CDATA[pattern_match]]></name>
-    <configKey>pattern_match</configKey>
+    <internalKey>pattern_match</internalKey>
     <description>
       <![CDATA[pattern_match]]>
     </description>
@@ -222,7 +222,7 @@
   <rule>
     <key>D018</key>
     <name><![CDATA[unmatched_return]]></name>
-    <configKey>unmatched_return</configKey>
+    <internalKey>unmatched_return</internalKey>
     <description>
       <![CDATA[unmatched_return]]>
     </description>
@@ -235,7 +235,7 @@
   <rule>
     <key>D019</key>
     <name><![CDATA[unused_fun]]></name>
-    <configKey>unused_fun</configKey>
+    <internalKey>unused_fun</internalKey>
     <description>
       <![CDATA[unused_fun]]>
     </description>
@@ -247,7 +247,7 @@
   <rule>
     <key>D021</key>
     <name><![CDATA[contract_diff]]></name>
-    <configKey>contract_diff</configKey>
+    <internalKey>contract_diff</internalKey>
     <description>
       <![CDATA[contract_diff]]>
     </description>
@@ -260,7 +260,7 @@
   <rule>
     <key>D022</key>
     <name><![CDATA[contract_subtype]]></name>
-    <configKey>contract_subtype</configKey>
+    <internalKey>contract_subtype</internalKey>
     <description>
       <![CDATA[contract_subtype]]>
     </description>
@@ -273,7 +273,7 @@
   <rule>
     <key>D023</key>
     <name><![CDATA[contract_supertype]]></name>
-    <configKey>contract_supertype</configKey>
+    <internalKey>contract_supertype</internalKey>
     <description>
       <![CDATA[contract_supertype]]>
     </description>
@@ -286,7 +286,7 @@
   <rule>
     <key>D024</key>
     <name><![CDATA[contract_range]]></name>
-    <configKey>contract_range</configKey>
+    <internalKey>contract_range</internalKey>
     <description>
       <![CDATA[contract_range]]>
     </description>
@@ -299,7 +299,7 @@
   <rule>
     <key>D025</key>
     <name><![CDATA[invalid_contract]]></name>
-    <configKey>invalid_contract</configKey>
+    <internalKey>invalid_contract</internalKey>
     <description>
       <![CDATA[invalid_contract]]>
     </description>
@@ -312,7 +312,7 @@
   <rule>
     <key>D026</key>
     <name><![CDATA[extra_range]]></name>
-    <configKey>extra_range</configKey>
+    <internalKey>extra_range</internalKey>
     <description>
       <![CDATA[extra_range]]>
     </description>
@@ -326,7 +326,7 @@
   <rule>
     <key>D027</key>
     <name><![CDATA[overlapping_contract]]></name>
-    <configKey>overlapping_contract</configKey>
+    <internalKey>overlapping_contract</internalKey>
     <description>
       <![CDATA[overlapping_contract]]>
     </description>
@@ -340,7 +340,7 @@
   <rule>
     <key>D028</key>
     <name><![CDATA[spec_missing_fun]]></name>
-    <configKey>spec_missing_fun</configKey>
+    <internalKey>spec_missing_fun</internalKey>
     <description>
       <![CDATA[spec_missing_fun]]>
     </description>
@@ -351,7 +351,7 @@
   <rule>
     <key>D029</key>
     <name><![CDATA[call_with_opaque]]></name>
-    <configKey>call_with_opaque</configKey>
+    <internalKey>call_with_opaque</internalKey>
     <description>
       <![CDATA[call_with_opaque]]>
     </description>
@@ -362,7 +362,7 @@
   <rule>
     <key>D030</key>
     <name><![CDATA[call_without_opaque]]></name>
-    <configKey>call_without_opaque</configKey>
+    <internalKey>call_without_opaque</internalKey>
     <description>
       <![CDATA[call_without_opaque]]>
     </description>
@@ -373,7 +373,7 @@
   <rule>
     <key>D031</key>
     <name><![CDATA[opaque_eq]]></name>
-    <configKey>opaque_eq</configKey>
+    <internalKey>opaque_eq</internalKey>
     <description>
       <![CDATA[opaque_eq]]>
     </description>
@@ -386,7 +386,7 @@
   <rule>
     <key>D032</key>
     <name><![CDATA[opaque_guard]]></name>
-    <configKey>opaque_guard</configKey>
+    <internalKey>opaque_guard</internalKey>
     <description>
       <![CDATA[opaque_guard]]>
     </description>
@@ -397,7 +397,7 @@
   <rule>
     <key>D033</key>
     <name><![CDATA[opaque_match]]></name>
-    <configKey>opaque_match</configKey>
+    <internalKey>opaque_match</internalKey>
     <description>
       <![CDATA[opaque_match]]>
     </description>
@@ -410,7 +410,7 @@
   <rule>
     <key>D034</key>
     <name><![CDATA[opaque_neq]]></name>
-    <configKey>opaque_neq</configKey>
+    <internalKey>opaque_neq</internalKey>
     <description>
       <![CDATA[opaque_neq]]>
     </description>
@@ -423,7 +423,7 @@
   <rule>
     <key>D035</key>
     <name><![CDATA[opaque_type_test]]></name>
-    <configKey>opaque_type_test</configKey>
+    <internalKey>opaque_type_test</internalKey>
     <description>
       <![CDATA[opaque_type_test]]>
     </description>
@@ -434,7 +434,7 @@
   <rule>
     <key>D036</key>
     <name><![CDATA[race_condition]]></name>
-    <configKey>race_condition</configKey>
+    <internalKey>race_condition</internalKey>
     <description>
       <![CDATA[race_condition]]>
     </description>
@@ -445,7 +445,7 @@
   <rule>
     <key>D037</key>
     <name><![CDATA[callback_type_mismatch]]></name>
-    <configKey>callback_type_mismatch</configKey>
+    <internalKey>callback_type_mismatch</internalKey>
     <description>
       <![CDATA[callback_type_mismatch]]>
     </description>
@@ -459,7 +459,7 @@
   <rule>
     <key>D038</key>
     <name><![CDATA[callback_arg_type_mismatch]]></name>
-    <configKey>callback_arg_type_mismatch</configKey>
+    <internalKey>callback_arg_type_mismatch</internalKey>
     <description>
       <![CDATA[callback_arg_type_mismatch]]>
     </description>
@@ -473,7 +473,7 @@
   <rule>
     <key>D039</key>
     <name><![CDATA[callback_spec_type_mismatch]]></name>
-    <configKey>callback_spec_type_mismatch</configKey>
+    <internalKey>callback_spec_type_mismatch</internalKey>
     <description>
       <![CDATA[callback_spec_type_mismatch]]>
     </description>
@@ -487,7 +487,7 @@
   <rule>
     <key>D040</key>
     <name><![CDATA[callback_spec_arg_type_mismatch]]></name>
-    <configKey>callback_spec_arg_type_mismatch</configKey>
+    <internalKey>callback_spec_arg_type_mismatch</internalKey>
     <description>
       <![CDATA[callback_spec_arg_type_mismatch]]>
     </description>
@@ -501,7 +501,7 @@
   <rule>
     <key>D041</key>
     <name><![CDATA[callback_missing]]></name>
-    <configKey>callback_missing</configKey>
+    <internalKey>callback_missing</internalKey>
     <description>
       <![CDATA[callback_missing]]>
     </description>
@@ -512,7 +512,7 @@
   <rule>
     <key>D042</key>
     <name><![CDATA[callback_info_missing]]></name>
-    <configKey>callback_info_missing</configKey>
+    <internalKey>callback_info_missing</internalKey>
     <description>
       <![CDATA[callback_info_missing]]>
     </description>

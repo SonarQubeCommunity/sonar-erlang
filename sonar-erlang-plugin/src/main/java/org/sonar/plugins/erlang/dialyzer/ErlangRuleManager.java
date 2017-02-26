@@ -19,25 +19,22 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.sonar.api.BatchExtension;
-import org.sonar.api.ServerExtension;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class ErlangRuleManager implements ServerExtension, BatchExtension {
+public class ErlangRuleManager  {
 
   private List<ErlangRule> rules = new ArrayList<ErlangRule>();
 
-  public static final String OTHER_RULES_KEY = "OTHER_RULES";
+  private static final String OTHER_RULES_KEY = "OTHER_RULES";
   public static final String UNUSED_NAMES_KEY = "UNUSED_NAMES";
 
-  public ErlangRuleManager(String rulesPath) {
+  ErlangRuleManager(String rulesPath) {
     rules = new ErlangXmlRuleParser().parse(ErlangRuleManager.class
       .getResourceAsStream(rulesPath));
   }
 
-  public String getRuleKeyByMessage(String message) {
+  String getRuleKeyByMessage(String message) {
     for (ErlangRule rule : rules) {
       if (rule.hasMessage(message)) {
         return rule.getRule().getKey();

@@ -90,7 +90,6 @@ public class ErlangPlugin implements Plugin {
   public void define(Context context) {
     context.addExtensions(
             Erlang.class,
-            ErlangColorizerFormat.class,
             ErlangCpdMapping.class,
 
             ErlangSquidSensor.class,

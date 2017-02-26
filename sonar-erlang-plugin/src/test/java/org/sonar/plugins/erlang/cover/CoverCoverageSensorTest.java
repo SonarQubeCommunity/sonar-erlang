@@ -47,10 +47,10 @@ public class CoverCoverageSensorTest {
   @Before
   public void setup() throws URISyntaxException, IOException {
     settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
-    context = context.create(testModuleBasedir);
+    context = SensorContextTester.create(testModuleBasedir);
   }
 
-  void addFile(SensorContextTester context, String path) {
+  private void addFile(SensorContextTester context, String path) {
     DefaultInputFile file = new DefaultInputFile("test", path)
             .setLanguage("erlang")
             .setType(InputFile.Type.MAIN)

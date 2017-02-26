@@ -21,7 +21,6 @@ package org.sonar.plugins.erlang.dialyzer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.ServerComponent;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,18 +30,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-public final class ErlangXmlRuleParser implements ServerComponent {
+final class ErlangXmlRuleParser {
 
   private static final Logger LOG = LoggerFactory.getLogger("ErlangXmlRuleParser");
 
-  /**
-   * Warning : the input stream is closed in this method
-   *
-   * @throws IOException
-   * @throws SAXException
-   * @throws ParserConfigurationException
-   */
-  public List<ErlangRule> parse(InputStream input) {
+  List<ErlangRule> parse(InputStream input) {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     SAXParser saxParser;
     RuleHandler a = new RuleHandler();

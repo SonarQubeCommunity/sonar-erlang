@@ -23,8 +23,6 @@ import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.component.ResourcePerspectives;
-import org.sonar.api.profiles.RulesProfile;
 import org.sonar.plugins.erlang.core.Erlang;
 
 /**
@@ -34,11 +32,10 @@ import org.sonar.plugins.erlang.core.Erlang;
  */
 public class DialyzerSensor implements Sensor {
 
-  private final SensorContext context;
-  private ErlangRuleManager dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
+  private ErlangRuleManager dialyzerRuleManager;
 
-  public DialyzerSensor(SensorContext context) {
-    this.context = context;
+  DialyzerSensor() {
+    dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
   }
 
   @Override
@@ -55,7 +52,7 @@ public class DialyzerSensor implements Sensor {
   }
 
   @Override
-  public void execute(org.sonar.api.batch.sensor.SensorContext context) {
-    new DialyzerReportParser(context).dialyzer();
+  public void execute(SensorContext context) {
+    new DialyzerReportParser(context).dialyzer(dialyzerRuleManager);
   }
 }

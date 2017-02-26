@@ -21,17 +21,15 @@ package org.sonar.plugins.erlang.dialyzer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.TextRange;
+import org.sonar.api.batch.rule.ActiveRule;
 import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.issue.NewIssue;
+import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.config.Settings;
-import org.sonar.api.issue.Issuable;
-import org.sonar.api.issue.Issue;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.*;
 
@@ -48,29 +46,20 @@ public class DialyzerReportParser {
   private final SensorContext context;
 
 
-  public DialyzerReportParser(SensorContext context) {
+  DialyzerReportParser(SensorContext context) {
     this.context = context;
   }
 
-  /**
-   * We must pass the dialyzerRuleManager as well to make possible to find the
-   * rule based on the message in the dialyzer log file
-   *
-   * @param settings
-   * @param project
-   * @param context
-   * @param dialyzerRuleManager
-   * @param rulesProfile
-   * @return
-   */
-  public void dialyzer(Settings settings, SensorContext context, ErlangRuleManager dialyzerRuleManager, RulesProfile rulesProfile, Project project) {
-    /**
-     * Read dialyzer results
+  public void dialyzer(ErlangRuleManager dialyzerRuleManager) {
+    /*
+      Read dialyzer results
      */
+    Settings settings = context.settings();
     String dialyzerFileName = null;
 
     try {
-      File reportsDir = new File(fileSystem.baseDir(), settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
+      File reportsDir = new File(context.fileSystem().baseDir().getPath(),
+              settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
 
       dialyzerFileName = settings.getString(ErlangPlugin.DIALYZER_FILENAME_KEY);
       File file = new File(reportsDir, dialyzerFileName);
@@ -84,17 +73,20 @@ public class DialyzerReportParser {
       while ((strLine = breader.readLine()) != null) {
         if (strLine.matches(DIALYZER_VIOLATION_ROW_REGEX)) {
           String[] res = strLine.split(":");
-          String ruleKey = dialyzerRuleManager.getRuleKeyByMessage(res[2].trim());
-          if (rulesProfile.getActiveRule(REPO_KEY, ruleKey) != null) {
-            org.sonar.api.resources.File resource = getResourceByFileName(res[0], project);
-            if (resource != null) {
-              Issuable issuable = resourcePerspectives.as(Issuable.class, resource);
-              Issue issue = issuable.newIssueBuilder()
-                      .ruleKey(RuleKey.of(REPO_KEY, ruleKey))
-                      .line(Integer.valueOf(res[1]))
-                      .message(res[2].trim())
-                      .build();
-              issuable.addIssue(issue);
+          String fileName = res[0];
+          String line = res[1];
+          String message = res[2].trim();
+
+          String key = dialyzerRuleManager.getRuleKeyByMessage(message);
+          RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
+          ActiveRule rule = context.activeRules().find(ruleKey);
+          if (rule != null) {
+            String filePattern = "**/"+fileName;
+            InputFile inputFile = context.fileSystem().inputFile(
+                    context.fileSystem().predicates().matchesPathPattern(filePattern));
+            if (inputFile != null) {
+              NewIssue issue = getNewIssue(line, message, ruleKey, inputFile);
+              issue.save();
             }
           }
         }
@@ -107,18 +99,19 @@ public class DialyzerReportParser {
     }
   }
 
-  protected org.sonar.api.resources.File getResourceByFileName(String fileName, Project project) {
-    FilePredicate predicate = fileSystem.predicates().and(
-            fileSystem.predicates().hasType(InputFile.Type.MAIN),
-            fileSystem.predicates().hasLanguage(Erlang.KEY));
+  private NewIssue getNewIssue(String line, String message, RuleKey ruleKey, InputFile inputFile) {
+    TextRange range = inputFile.selectLine(Integer.valueOf(line));
 
-    for (File file : fileSystem.files(predicate)) {
-      if (file.getAbsolutePath().endsWith(fileName) && file.exists()) {
-        return org.sonar.api.resources.File.create(file.getPath());
-      }
-    }
+    NewIssue issue = context
+            .newIssue()
+            .forRule(ruleKey);
 
-    return null;
+    NewIssueLocation location = issue.newLocation()
+            .on(inputFile)
+            .at(range)
+            .message(message);
+
+    issue.at(location);
+    return issue;
   }
-
 }
