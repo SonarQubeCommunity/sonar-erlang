@@ -19,20 +19,18 @@
  */
 package org.sonar.plugins.erlang;
 
-import com.google.common.collect.ImmutableList;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.api.Plugin;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonar.api.resources.Qualifiers;
 import org.sonar.plugins.erlang.checks.ErlangChecksRuleDefinition;
-import org.sonar.plugins.erlang.colorizer.ErlangColorizerFormat;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
 import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
-import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
+//import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
 
 import java.util.List;
 
@@ -100,7 +98,7 @@ public class ErlangPlugin implements Plugin {
 
             ErlangCommonRulesEngine.class,
 
-            EunitXmlSensor.class,
+            //EunitXmlSensor.class,
 
             CoverCoverageSensor.class,
 

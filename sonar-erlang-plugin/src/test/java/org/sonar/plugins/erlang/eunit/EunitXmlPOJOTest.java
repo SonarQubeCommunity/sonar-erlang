@@ -17,35 +17,27 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.erlang.colorizer;
+package org.sonar.plugins.erlang.eunit;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.junit.Test;
-import org.sonar.colorizer.CppDocTokenizer;
-import org.sonar.colorizer.JavadocTokenizer;
-import org.sonar.colorizer.Tokenizer;
 
-import java.util.List;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 
-import static junit.framework.Assert.fail;
-import static org.fest.assertions.Assertions.assertThat;
+public class EunitXmlPOJOTest {
 
-public class ErlangColorizerFormatTest {
 
   @Test
-  public void testGetTokenizers() {
-    List<Tokenizer> list = (new ErlangColorizerFormat()).getTokenizers();
-    assertThat(indexOf(list, JavadocTokenizer.class)).isLessThan(
-      indexOf(list, CppDocTokenizer.class));
+  public void shouldSaveErrorsAndFailuresInXML() throws URISyntaxException, IOException {
+    XmlMapper mapper = new XmlMapper();
+    File xml = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/TEST-erlcount_tests.xml");
+    EunitTestsuite testsuite = mapper.readValue(xml, EunitTestsuite.class);
+    System.out.println(testsuite);
   }
 
-  private Integer indexOf(List<Tokenizer> tokenizers, Class tokenizerClass) {
-    for (int i = 0; i < tokenizers.size(); i++) {
-      if (tokenizers.get(i).getClass().equals(tokenizerClass)) {
-        return i;
-      }
-    }
-
-    fail("Tokenizer not found: " + tokenizerClass);
-    return null;
-  }
 }

@@ -12,6 +12,7 @@ import org.sonar.api.batch.sensor.highlighting.TypeOfText;
 import org.sonar.erlang.api.ErlangKeyword;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.squidbridge.SquidAstVisitor;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -20,7 +21,7 @@ import java.util.Set;
 /**
  * Created by tkende on 2017. 02. 26..
  */
-public class ErlangHighlighter extends SquidAstVisitor<Grammar> implements AstAndTokenVisitor {
+public class ErlangHighlighter extends SquidAstVisitor<LexerlessGrammar> implements AstAndTokenVisitor {
 
     private final SensorContext context;
     private Set<Token> docStringTokens;

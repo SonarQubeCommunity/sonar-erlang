@@ -19,32 +19,30 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import com.google.common.collect.Maps;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+import com.google.common.collect.Lists;
 
-import java.util.Map;
+import java.util.List;
 
-public class UnitTestIndex {
+public final class EunitTestCase {
+  @JacksonXmlProperty(isAttribute = true)
+  private float time;
 
-  private Map<String, UnitTestClassReport> indexByClassname;
+  @JacksonXmlProperty(isAttribute = true)
+  private String name;
 
-  public UnitTestIndex() {
-    this.indexByClassname = Maps.newHashMap();
-  }
+  @JacksonXmlProperty
+  private String failure;
 
-  public UnitTestClassReport index(String classname) {
-    UnitTestClassReport classReport = indexByClassname.get(classname);
-    if (classReport == null) {
-      classReport = new UnitTestClassReport();
-      indexByClassname.put(classname, classReport);
-    }
-    return classReport;
-  }
-  public Map<String, UnitTestClassReport> getIndexByClassname() {
-    return indexByClassname;
-  }
+  @JacksonXmlProperty(localName = "system-out")
+  private String systemOut;
 
-  public int size() {
-    return indexByClassname.size();
+  class Failure {
+    @JacksonXmlProperty(isAttribute = true)
+    private String type;
+    @JacksonXmlText(value = true)
+    private String error;
   }
 
 }
