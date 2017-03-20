@@ -19,13 +19,13 @@
  */
 package org.sonar.plugins.erlang.cover;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.test.TestUtils;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 

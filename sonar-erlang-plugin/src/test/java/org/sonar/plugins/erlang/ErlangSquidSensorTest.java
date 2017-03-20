@@ -19,97 +19,99 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.batch.fs.InputFile;
-import org.sonar.api.batch.fs.internal.DefaultFileSystem;
-import org.sonar.api.batch.fs.internal.DefaultInputFile;
-import org.sonar.api.batch.rule.ActiveRules;
-import org.sonar.api.batch.rule.CheckFactory;
-import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.measures.FileLinesContext;
-import org.sonar.api.measures.FileLinesContextFactory;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.Resource;
-import org.sonar.plugins.erlang.core.Erlang;
-import org.sonar.test.TestUtils;
+import com.google.common.base.Charsets;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.FileMetadata;
+import org.sonar.api.batch.measure.MetricFinder;
+import org.sonar.api.batch.rule.ActiveRules;
+import org.sonar.api.batch.rule.CheckFactory;
+import org.sonar.api.batch.sensor.internal.SensorContextTester;
+import org.sonar.api.measures.CoreMetrics;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ErlangSquidSensorTest {
-  private static final File TEST_DIR = new File("src/test/resources/");
 
+  private SensorContextTester context;
+  private File testModuleBasedir = new File("src/test/resources/");
+  private MetricFinder metricFinder;
   private ErlangSquidSensor sensor;
-  private final DefaultFileSystem fileSystem = new DefaultFileSystem(TEST_DIR);
 
   @Before
-  public void setUp() {
-    FileLinesContextFactory fileLinesContextFactory = mock(FileLinesContextFactory.class);
-    FileLinesContext fileLinesContext = mock(FileLinesContext.class);
+  public void setup() throws URISyntaxException, IOException {
+    context = SensorContextTester.create(testModuleBasedir);
+    metricFinder = mock(MetricFinder.class);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.FILES_KEY)).thenReturn(CoreMetrics.FILES);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.LINES_KEY)).thenReturn(CoreMetrics.LINES);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.NCLOC_KEY)).thenReturn(CoreMetrics.NCLOC);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.FUNCTIONS_KEY)).thenReturn(CoreMetrics.FUNCTIONS);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.STATEMENTS_KEY)).thenReturn(CoreMetrics.STATEMENTS);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.COMPLEXITY_KEY)).thenReturn(CoreMetrics.COMPLEXITY);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.COMMENT_LINES_KEY)).thenReturn(CoreMetrics.COMMENT_LINES);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.PUBLIC_API_KEY)).thenReturn(CoreMetrics.PUBLIC_API);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.PUBLIC_UNDOCUMENTED_API_KEY))
+            .thenReturn(CoreMetrics.PUBLIC_UNDOCUMENTED_API);
+    when(metricFinder.<String>findByKey(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION_KEY))
+            .thenReturn(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION);
+    when(metricFinder.<String>findByKey(CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION_KEY))
+            .thenReturn(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION);
 
-    when(fileLinesContextFactory.createFor(Mockito.any(Resource.class))).thenReturn(fileLinesContext);
-
-    sensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), fileSystem, null);
+    sensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), metricFinder);
   }
 
-  @Test
-  public void should_execute_on_erlang_project() {
-    DefaultFileSystem localFS = new DefaultFileSystem(TEST_DIR);
-    ErlangSquidSensor localSensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), localFS, null);
-
-    // empty file system
-    assertThat(localSensor.shouldExecuteOnProject(null)).isFalse();
-
-    localFS.add(new DefaultInputFile("key", "file.erl").setType(InputFile.Type.MAIN).setLanguage(Erlang.KEY));
-    assertThat(localSensor.shouldExecuteOnProject(null)).isTrue();
-  }
-
-  @Test
-  public void should_analyse() {
-    Project project = new Project("key");
-    SensorContext context = mock(SensorContext.class);
-
-    fileSystem.add(new DefaultInputFile("key", "cpd/person.erl")
+  private void addFile(SensorContextTester context, String path) {
+    DefaultInputFile file = new DefaultInputFile("test", path)
+            .setLanguage("erlang")
             .setType(InputFile.Type.MAIN)
-            .setLanguage(Erlang.KEY));
+            .setModuleBaseDir(testModuleBasedir.toPath());
+    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));
+    context.fileSystem().add(file);
 
-    sensor.analyse(project, context);
-
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FILES), Matchers.eq(1.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.LINES), Matchers.eq(19.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.NCLOC), Matchers.eq(14.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FUNCTIONS), Matchers.eq(2.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.STATEMENTS), Matchers.eq(8.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.COMPLEXITY), Matchers.eq(6.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.COMMENT_LINES), Matchers.eq(1.0));
   }
 
   @Test
-  public void analyse() {
-    Project project = new Project("key");
-    SensorContext context = mock(SensorContext.class);
+  public void analyze_person_erl() {
+    addFile(context, "cpd/person.erl");
+    sensor.execute(context);
 
-    fileSystem.add(new DefaultInputFile("key", "megaco_ber_bin_encoder.erl")
-            .setType(InputFile.Type.MAIN)
-            .setLanguage(Erlang.KEY));
+    assertThat(context.measure("test:cpd/person.erl", CoreMetrics.FILES_KEY).value()).isEqualTo(1);
+    assertThat(context.measure("test:cpd/person.erl", CoreMetrics.LINES_KEY).value()).isEqualTo(19);
+    assertThat(context.measure("test:cpd/person.erl", CoreMetrics.NCLOC_KEY).value()).isEqualTo(14);
+    assertThat(context.measure("test:cpd/person.erl", CoreMetrics.FUNCTIONS_KEY).value()).isEqualTo(2);
+    assertThat(context.measure("test:cpd/person.erl", CoreMetrics.STATEMENTS_KEY).value()).isEqualTo(8);
+    assertThat(context.measure("test:cpd/person.erl", CoreMetrics.COMPLEXITY_KEY).value()).isEqualTo(6);
+    assertThat(context.measure("test:cpd/person.erl", CoreMetrics.COMMENT_LINES_KEY).value()).isEqualTo(1);
+  }
 
-    sensor.analyse(project, context);
+  @Test
+  public void analyse_megaco_erl() {
+    addFile(context, "megaco_ber_bin_encoder.erl");
+    sensor.execute(context);
 
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FILES), Matchers.eq(1.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.LINES), Matchers.eq(717.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.NCLOC), Matchers.eq(371.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.FUNCTIONS), Matchers.eq(10.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.STATEMENTS), Matchers.eq(210.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.COMPLEXITY), Matchers.eq(90.0));
-    verify(context).saveMeasure(Matchers.any(Resource.class), Matchers.eq(CoreMetrics.COMMENT_LINES), Matchers.eq(261.0));
+    assertThat(context.measure("test:megaco_ber_bin_encoder.erl", CoreMetrics.FILES_KEY).value())
+            .isEqualTo(1);
+    assertThat(context.measure("test:megaco_ber_bin_encoder.erl", CoreMetrics.LINES_KEY).value())
+            .isEqualTo(717);
+    assertThat(context.measure("test:megaco_ber_bin_encoder.erl", CoreMetrics.NCLOC_KEY).value())
+            .isEqualTo(371);
+    assertThat(context.measure("test:megaco_ber_bin_encoder.erl", CoreMetrics.FUNCTIONS_KEY).value())
+            .isEqualTo(10);
+    assertThat(context.measure("test:megaco_ber_bin_encoder.erl", CoreMetrics.STATEMENTS_KEY).value())
+            .isEqualTo(210);
+    assertThat(context.measure("test:megaco_ber_bin_encoder.erl", CoreMetrics.COMPLEXITY_KEY).value())
+            .isEqualTo(90);
+    assertThat(context.measure("test:megaco_ber_bin_encoder.erl", CoreMetrics.COMMENT_LINES_KEY).value())
+            .isEqualTo(261);
   }
 
 }

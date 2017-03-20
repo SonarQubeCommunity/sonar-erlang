@@ -19,11 +19,11 @@
  */
 package org.sonar.plugins.erlang.checks;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.erlang.checks.CheckList;
-
-import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 

@@ -20,14 +20,15 @@
 package org.sonar.plugins.erlang.cover;
 
 import com.ericsson.otp.erlang.OtpErlangDecodeException;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.sonar.plugins.erlang.ProjectUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.sonar.plugins.erlang.ProjectUtil;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 

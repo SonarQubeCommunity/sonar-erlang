@@ -19,14 +19,14 @@
  */
 package org.sonar.plugins.erlang.core.cpd;
 
+import java.io.File;
+import java.nio.charset.Charset;
+
 import org.junit.Test;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
 import org.sonar.plugins.erlang.cpd.ErlangTokenizer;
-
-import java.io.File;
-import java.nio.charset.Charset;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

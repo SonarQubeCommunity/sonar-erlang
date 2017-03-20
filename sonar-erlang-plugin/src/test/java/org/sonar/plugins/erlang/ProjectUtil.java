@@ -19,6 +19,10 @@
  */
 package org.sonar.plugins.erlang;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.List;
+
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.batch.fs.FileSystem;
@@ -30,11 +34,6 @@ import org.sonar.api.issue.Issuable.IssueBuilder;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.core.Erlang;
-import org.sonar.test.TestUtils;
-
-import java.io.File;
-import java.nio.charset.Charset;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

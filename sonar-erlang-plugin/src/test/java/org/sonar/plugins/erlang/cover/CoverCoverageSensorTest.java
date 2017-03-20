@@ -20,6 +20,11 @@
 package org.sonar.plugins.erlang.cover;
 
 import com.google.common.base.Charsets;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
@@ -30,10 +35,6 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.plugins.erlang.ErlangPlugin;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

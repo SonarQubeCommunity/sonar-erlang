@@ -19,15 +19,13 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.junit.Test;
-
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
 
 public class EunitXmlPOJOTest {
 

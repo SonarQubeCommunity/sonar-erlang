@@ -53,7 +53,7 @@ public class EunitXmlSensor implements Sensor {
     descriptor
             .onlyOnLanguage(Erlang.KEY)
             .name("Erlang EUnit report Sensor")
-            .onlyOnFileType(InputFile.Type.MAIN);
+            .onlyOnFileType(InputFile.Type.TEST);
   }
 
   private List<EunitTestsuite> parseEunitXmls(SensorContext context) {

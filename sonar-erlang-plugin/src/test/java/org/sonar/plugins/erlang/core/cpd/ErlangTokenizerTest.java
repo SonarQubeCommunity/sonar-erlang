@@ -19,14 +19,14 @@
  */
 package org.sonar.plugins.erlang.core.cpd;
 
+import java.nio.charset.Charset;
+
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokens;
 import org.junit.Test;
 import org.sonar.plugins.erlang.cpd.ErlangTokenizer;
 import org.sonar.test.TestUtils;
-
-import java.nio.charset.Charset;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

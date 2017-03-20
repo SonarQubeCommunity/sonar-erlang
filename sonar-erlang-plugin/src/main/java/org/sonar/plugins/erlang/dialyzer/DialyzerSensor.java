@@ -47,8 +47,7 @@ public class DialyzerSensor implements Sensor {
   public void describe(SensorDescriptor descriptor) {
     descriptor
             .onlyOnLanguage(Erlang.KEY)
-            .name("Erlang Dialyzer Sensor")
-            .onlyOnFileType(InputFile.Type.MAIN);
+            .name("Erlang Dialyzer Sensor");
   }
 
   @Override

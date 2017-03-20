@@ -30,7 +30,7 @@ import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
 import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
-//import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
+import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
 
 import java.util.List;
 
@@ -96,9 +96,8 @@ public class ErlangPlugin implements Plugin {
             DialyzerRuleDefinition.class,
             ErlangProfile.class,
 
-            ErlangCommonRulesEngine.class,
 
-            //EunitXmlSensor.class,
+            EunitXmlSensor.class,
 
             CoverCoverageSensor.class,
 

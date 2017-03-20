@@ -20,11 +20,12 @@
 package org.sonar.plugins.erlang.eunit;
 
 import com.google.common.base.Charsets;
-import org.hamcrest.Matchers;
+
+import java.io.File;
+import java.net.URISyntaxException;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.FileMetadata;
@@ -33,22 +34,10 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.Resource;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.ProjectUtil;
-import org.sonar.plugins.erlang.core.Erlang;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class EunitXmlSensorTest {

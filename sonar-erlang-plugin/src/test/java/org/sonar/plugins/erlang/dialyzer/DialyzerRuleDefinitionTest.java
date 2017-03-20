@@ -19,11 +19,11 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
-
-import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.sonar.api.server.rule.RulesDefinition.Repository;

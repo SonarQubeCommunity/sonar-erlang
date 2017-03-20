@@ -19,7 +19,6 @@
  */
 package org.sonar.plugins.erlang;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.Plugin;
 import org.sonar.api.utils.Version;
