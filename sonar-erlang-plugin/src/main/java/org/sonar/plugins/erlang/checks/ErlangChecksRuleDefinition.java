@@ -29,7 +29,7 @@ public class ErlangChecksRuleDefinition implements RulesDefinition {
   @Override
   public void define(Context context) {
     NewRepository repository = context.createRepository(CheckList.REPOSITORY_KEY, Erlang.KEY).setName(CheckList.REPOSITORY_NAME);
-    AnnotationBasedRulesDefinition.load(repository, Erlang.KEY, CheckList.getChecks());
+    new AnnotationBasedRulesDefinition(repository, Erlang.KEY).addRuleClasses(false, CheckList.getChecks());
     repository.done();
   }
 
