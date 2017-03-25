@@ -95,6 +95,7 @@ public class ErlangSquidSensor implements Sensor {
     FileSystem fileSystem = context.fileSystem();
     List<SquidAstVisitor<LexerlessGrammar>> visitors = new ArrayList<SquidAstVisitor<LexerlessGrammar>>((Collection) checks.all());
     visitors.add(new ErlangHighlighter(context));
+    visitors.add(new ErlangCpdVisitor(context));
     this.scanner = ErlangAstScanner.create(fileSystem.encoding(), visitors.toArray(new SquidAstVisitor[visitors.size()]));
 
     FilePredicates p = fileSystem.predicates();

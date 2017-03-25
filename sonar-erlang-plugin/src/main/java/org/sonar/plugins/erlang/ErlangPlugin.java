@@ -27,12 +27,9 @@ import org.sonar.api.resources.Qualifiers;
 import org.sonar.plugins.erlang.checks.ErlangChecksRuleDefinition;
 import org.sonar.plugins.erlang.core.Erlang;
 import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
-import org.sonar.plugins.erlang.cpd.ErlangCpdMapping;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
 import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
-
-import java.util.List;
 
 @Properties({
   @Property(
@@ -88,14 +85,14 @@ public class ErlangPlugin implements Plugin {
   public void define(Context context) {
     context.addExtensions(
             Erlang.class,
-            ErlangCpdMapping.class,
+            ErlangHighlighter.class,
+            ErlangCpdVisitor.class,
 
             ErlangSquidSensor.class,
 
             ErlangChecksRuleDefinition.class,
             DialyzerRuleDefinition.class,
             ErlangProfile.class,
-
 
             EunitXmlSensor.class,
 
