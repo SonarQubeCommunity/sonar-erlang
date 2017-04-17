@@ -59,6 +59,16 @@ public class ErlangRealCodeTest {
     assertThat(b.getRootRule()).matches((readFromFile("megaco.erl")));
   }
 
+  @Test
+  public void realLife7() throws IOException, URISyntaxException {
+    assertThat(b.getRootRule()).matches((readFromFile("bin_to_hex.erl")));
+  }
+
+  @Test
+  public void realLife8() throws IOException, URISyntaxException {
+    assertThat(b.getRootRule()).matches((readFromFile("macro_with_record_field.erl")));
+  }
+
   private String readFromFile(String fileName) throws IOException, URISyntaxException {
     StringBuilder text = new StringBuilder();
     File file = new File(ErlangRealCodeTest.class.getClassLoader().getResource(fileName)
