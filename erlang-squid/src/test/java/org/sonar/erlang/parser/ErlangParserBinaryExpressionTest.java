@@ -43,8 +43,10 @@ public class ErlangParserBinaryExpressionTest {
       .matches("<< << X:8, 0:8/utf8 >> || << X >> <= << 1, A, 3 >> >>")
       .matches("<<\n?MAGIC,\nVersion:?BYTE,\nType:?BYTE,\n>>")
       .matches("<< << (X*2) >> || <<X>> <= << 1,2,3 >> >>")
+      .matches("[ << (X*2) >> || <<X>> <= << 1,2,3 >> ]")
       .matches("<< << (X*2) >> || <<X>> <= method1() >>")
       .matches("<< << (X*2) >> || <<X>> <= method1(), method2() >>")
+      .matches("[ << (X*2) >> || <<X>> <= method1(), method2() ]")
       .matches("<<Part1:4/big-unsigned-integer-unit:8," +
         "Part2:4/big-unsigned-integer-unit:8," +
         "Body/binary>>")
