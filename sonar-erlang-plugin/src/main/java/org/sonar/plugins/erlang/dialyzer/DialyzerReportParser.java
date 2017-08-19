@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.SensorContext;
 import org.sonar.api.batch.fs.FilePredicate;
+import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.component.ResourcePerspectives;
@@ -36,6 +37,8 @@ import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Read and parse generated dialyzer report
@@ -44,7 +47,7 @@ import java.io.*;
  */
 public class DialyzerReportParser {
 
-  private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?)(:[0-9]+:)(.*)";
+  private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?):([0-9]+):(.*)";
   private static final String REPO_KEY = DialyzerRuleDefinition.REPOSITORY_KEY;
   private static final Logger LOG = LoggerFactory.getLogger(DialyzerReportParser.class);
 
@@ -85,23 +88,28 @@ public class DialyzerReportParser {
       BufferedReader breader = new BufferedReader(dialyzerOutput);
 
       String strLine;
+      Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
       while ((strLine = breader.readLine()) != null) {
-        if (strLine.matches(DIALYZER_VIOLATION_ROW_REGEX)) {
-          String[] res = strLine.split(":");
-          String ruleKey = dialyzerRuleManager.getRuleKeyByMessage(res[2].trim());
-          if (rulesProfile.getActiveRule(REPO_KEY, ruleKey) != null) {
-            org.sonar.api.resources.File resource = getResourceByFileName(res[0], project);
-            if (resource != null) {
-              Issuable issuable = resourcePerspectives.as(Issuable.class, resource);
-              Issue issue = issuable.newIssueBuilder()
-                      .ruleKey(RuleKey.of(REPO_KEY, ruleKey))
-                      .line(Integer.valueOf(res[1]))
-                      .message(res[2].trim())
-                      .build();
-              issuable.addIssue(issue);
-            }
-          }
-        }
+        Matcher matcher = pattern.matcher(strLine);
+        if (!matcher.matches()) continue;
+        String filename = matcher.group(1);
+        String lineNumber = matcher.group(2);
+        String comment = matcher.group(3).trim();
+        String ruleKey = dialyzerRuleManager.getRuleKeyByMessage(comment);
+        if (rulesProfile.getActiveRule(REPO_KEY, ruleKey) == null) continue;
+        LOG.debug("Getting resource from path: " + filename);
+        Issuable issuable = getResourceByFileName(filename);
+        LOG.debug("Issuable is: " + issuable);
+        if (issuable == null) continue;
+        Issuable.IssueBuilder builder = issuable.newIssueBuilder();
+        LOG.debug("Issuable builder is: " + builder);
+        if (builder == null) continue;
+        Issue issue = builder
+                .ruleKey(RuleKey.of(REPO_KEY, ruleKey))
+                .line(Integer.valueOf(lineNumber))
+                .message(comment)
+                .build();
+        issuable.addIssue(issue);
       }
       breader.close();
     } catch (FileNotFoundException e) {
@@ -111,14 +119,17 @@ public class DialyzerReportParser {
     }
   }
 
-  protected org.sonar.api.resources.File getResourceByFileName(String fileName, Project project) {
-    FilePredicate predicate = fileSystem.predicates().and(
-            fileSystem.predicates().hasType(InputFile.Type.MAIN),
-            fileSystem.predicates().hasLanguage(Erlang.KEY));
-
+  protected Issuable getResourceByFileName(String fileName) {
+    FilePredicates p = fileSystem.predicates();
+    FilePredicate predicate = p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Erlang.KEY));
     for (File file : fileSystem.files(predicate)) {
-      if (file.getAbsolutePath().endsWith(fileName) && file.exists()) {
-        return org.sonar.api.resources.File.create(file.getPath());
+      InputFile erlFile = fileSystem.inputFile(fileSystem.predicates().is(file));
+      if (!file.getAbsolutePath().endsWith(fileName)) {
+        continue;
+      }
+      Issuable issuable = resourcePerspectives.as(Issuable.class, erlFile);
+      if(issuable != null) {
+        return issuable;
       }
     }
 
