@@ -623,9 +623,9 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(macroLiteralVarName).is(questionmark, questionmark, identifier);
 
     b.rule(tupleLiteral).is(lcurlybrace, b.zeroOrMore(b.firstOf(comma, expression)), rcurlybrace);
-    b.rule(binaryLiteral).is(binstart, b.firstOf(b.sequence(b.sequence(assignmentExpression, listcomp,
+    b.rule(binaryLiteral).is(b.firstOf(lbracket, binstart), b.firstOf(b.sequence(b.sequence(assignmentExpression, listcomp,
       b.oneOrMore(binaryQualifier)), b.zeroOrMore(b.firstOf(comma, assignmentExpression))), b.zeroOrMore(b.firstOf(
-      comma, binaryElement))), binend);
+      comma, binaryElement))), b.firstOf(binend, rbracket));
     b.rule(binaryQualifier).is(b.firstOf(
       b.sequence(binaryLiteral, doublearrowback, expression), b.sequence(
         primaryExpression, arrowback, expression, b.zeroOrMore(comma, expression)
