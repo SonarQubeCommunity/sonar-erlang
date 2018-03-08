@@ -19,34 +19,25 @@
  */
 package org.sonar.plugins.erlang.cover;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Test;
-import org.sonar.test.TestUtils;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class LCOVParserTest {
 
-  private ErlangFileCoverage cov;
-  
-  @Before
-  public void setup() throws URISyntaxException, IOException {
-    File testResourcesBasDir = new File("src/test/resources/");
-    String coverageFile = "org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html";
-
-    cov = new LCOVParser().parseFile(new File(testResourcesBasDir.toPath().resolve(coverageFile).toString()));
-  }
-
   @Test
   public void checkCoverage() {
-    assertThat(cov.getCoveredLines(), Matchers.equalTo(19));
-    assertThat(cov.getLinesToCover(), Matchers.equalTo(21));
-    assertThat(cov.getUncoveredLines(), Matchers.equalTo(2));
+    Path coverageFile = Paths.get("src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html");
+
+    ErlangFileCoverage coverage = new LCOVParser().parseFile(coverageFile.toFile());
+
+    assertThat(coverage.getCoveredLines(), Matchers.equalTo(19));
+    assertThat(coverage.getLinesToCover(), Matchers.equalTo(21));
+    assertThat(coverage.getUncoveredLines(), Matchers.equalTo(2));
   }
 
 }

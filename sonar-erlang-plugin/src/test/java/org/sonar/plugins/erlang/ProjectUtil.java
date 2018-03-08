@@ -88,9 +88,7 @@ public class ProjectUtil {
             .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(file))))
             .build();
 
-    //fileSystem.add(dif)
-    //        .setType(type)
-    //        .setLanguage(Erlang.KEY));
+    fileSystem.add(dif);
   }
 
 }

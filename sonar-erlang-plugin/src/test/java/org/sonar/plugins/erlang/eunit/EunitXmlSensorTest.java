@@ -19,17 +19,13 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
-import com.google.common.base.Charsets;
-
 import java.io.File;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
-import org.sonar.api.batch.fs.internal.FileMetadata;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.measure.MetricFinder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
@@ -69,15 +65,10 @@ public class EunitXmlSensorTest {
     new EunitXmlSensor(metricFinder).execute(context);
   }
 
-  private void addFile(SensorContextTester context, String path) throws Exception{
-    /*DefaultInputFile file = new DefaultInputFile("test", path)
+  private void addFile(SensorContextTester context, String path) throws Exception {
+    DefaultInputFile dif = new TestInputFileBuilder("test", path)
             .setLanguage("erlang")
             .setType(InputFile.Type.TEST)
-            .setModuleBaseDir(testModuleBasedir.toPath());
-    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));*/
-
-    DefaultInputFile dif = new TestInputFileBuilder("test", path)
-            .setLanguage("erlang").setType(InputFile.Type.TEST)
             .setModuleBaseDir(testModuleBasedir.toPath())
             .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
             .build();
@@ -86,7 +77,7 @@ public class EunitXmlSensorTest {
   }
 
   @Test
-  public void shouldSaveErrorsAndFailuresInXML() throws URISyntaxException {
+  public void shouldSaveErrorsAndFailuresInXML() {
     assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TESTS_KEY).value()).isEqualTo(7);
     assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.SKIPPED_TESTS_KEY).value()).isEqualTo(0);
     assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_ERRORS_KEY).value()).isEqualTo(0);

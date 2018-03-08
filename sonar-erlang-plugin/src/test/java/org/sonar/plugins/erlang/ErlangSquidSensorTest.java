@@ -21,7 +21,6 @@ package org.sonar.plugins.erlang;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 
 import org.junit.Before;
@@ -49,7 +48,7 @@ public class ErlangSquidSensorTest {
   private ErlangSquidSensor sensor;
 
   @Before
-  public void setup() throws URISyntaxException, IOException {
+  public void setup() {
     context = SensorContextTester.create(testModuleBasedir.getAbsoluteFile());
     metricFinder = mock(MetricFinder.class);
     when(metricFinder.<Integer>findByKey(CoreMetrics.FILES_KEY)).thenReturn(CoreMetrics.FILES);
@@ -72,20 +71,14 @@ public class ErlangSquidSensorTest {
 
   private void addFile(SensorContextTester context, String path) throws IOException {
     DefaultInputFile file = new TestInputFileBuilder("test", path)
-                                .setLanguage(Erlang.KEY).setType(InputFile.Type.MAIN)
-                                .setModuleBaseDir(context.fileSystem().baseDirPath())
-                                .setCharset(UTF_8)
-                                .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path)), UTF_8))
-                                .build();
-
-    /*DefaultInputFile file = new DefaultInputFile("test", path)
-            .setLanguage("erlang")
+            .setLanguage(Erlang.KEY)
             .setType(InputFile.Type.MAIN)
-            .setModuleBaseDir(testModuleBasedir.toPath());
+            .setModuleBaseDir(context.fileSystem().baseDirPath())
+            .setCharset(UTF_8)
+            .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path)), UTF_8))
+            .build();
 
-    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));*/
     context.fileSystem().add(file);
-
   }
 
   @Test

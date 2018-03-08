@@ -29,11 +29,8 @@ import static org.fest.assertions.Assertions.assertThat;
 
 public class ErlangPluginTest {
 
-  private ErlangPlugin plugin;
-
   @Test
-  public void testGetExtensions() throws Exception {
-    //Plugin.Context context = new Plugin.Context(Version.create(6, 7));
+  public void testGetExtensions() {
     Plugin.Context context = new Plugin.Context(SonarRuntimeImpl.forSonarQube(Version.create(6, 7), SonarQubeSide.SCANNER));
     new ErlangPlugin().define(context);
     assertThat(context.getExtensions()).isNotEmpty();

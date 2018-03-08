@@ -19,20 +19,14 @@
  */
 package org.sonar.plugins.erlang.cover;
 
-import com.google.common.base.Charsets;
-
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
-import org.sonar.api.batch.fs.internal.FileMetadata;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
-import org.sonar.api.batch.sensor.coverage.CoverageType;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
@@ -41,7 +35,6 @@ import org.sonar.plugins.erlang.ErlangPlugin;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-
 public class CoverCoverageSensorTest {
 
   private Settings settings;
@@ -49,20 +42,15 @@ public class CoverCoverageSensorTest {
   private File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
 
   @Before
-  public void setup() throws URISyntaxException, IOException {
+  public void setup() {
     settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
     context = SensorContextTester.create(testModuleBasedir);
   }
 
   private void addFile(SensorContextTester context, String path) throws Exception {
-    /*DefaultInputFile file = new DefaultInputFile("test", path)
+    DefaultInputFile dif = new TestInputFileBuilder("test", path)
             .setLanguage("erlang")
             .setType(InputFile.Type.MAIN)
-            .setModuleBaseDir(testModuleBasedir.toPath());
-    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));*/
-
-    DefaultInputFile dif = new TestInputFileBuilder("test", path)
-            .setLanguage("erlang").setType(InputFile.Type.MAIN)
             .setModuleBaseDir(testModuleBasedir.toPath())
             .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
             .build();
