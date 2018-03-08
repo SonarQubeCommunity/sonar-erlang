@@ -37,7 +37,9 @@ import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.measures.CoreMetrics;
+import org.sonar.plugins.erlang.core.Erlang;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -51,7 +53,7 @@ public class ErlangSquidSensorTest {
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    context = SensorContextTester.create(testModuleBasedir);
+    context = SensorContextTester.create(testModuleBasedir.getAbsoluteFile());
     metricFinder = mock(MetricFinder.class);
     when(metricFinder.<Integer>findByKey(CoreMetrics.FILES_KEY)).thenReturn(CoreMetrics.FILES);
     when(metricFinder.<Integer>findByKey(CoreMetrics.LINES_KEY)).thenReturn(CoreMetrics.LINES);
@@ -73,9 +75,10 @@ public class ErlangSquidSensorTest {
 
   private void addFile(SensorContextTester context, String path) throws IOException {
     DefaultInputFile file = new TestInputFileBuilder("test", path)
-                                .setLanguage("erlang").setType(InputFile.Type.MAIN)
-                                .setModuleBaseDir(testModuleBasedir.toPath())
-                                .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
+                                .setLanguage(Erlang.KEY).setType(InputFile.Type.MAIN)
+                                .setModuleBaseDir(context.fileSystem().baseDirPath())
+                                .setCharset(UTF_8)
+                                .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path)), UTF_8))
                                 .build();
 
     /*DefaultInputFile file = new DefaultInputFile("test", path)
