@@ -21,6 +21,7 @@ package org.sonar.plugins.erlang;
 
 import org.junit.Test;
 import org.sonar.api.Plugin;
+import org.sonar.api.SonarQubeSide;
 import org.sonar.api.internal.SonarRuntimeImpl;
 import org.sonar.api.utils.Version;
 
@@ -32,10 +33,10 @@ public class ErlangPluginTest {
 
   @Test
   public void testGetExtensions() throws Exception {
-    //Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    //Plugin.Context context = new Plugin.Context(SonarRuntimeImpl.forSonarQube(Version.create(5, 6)));
-    //new ErlangPlugin().define(context);
-    //assertThat(context.getExtensions()).isNotEmpty();
+    //Plugin.Context context = new Plugin.Context(Version.create(6, 7));
+    Plugin.Context context = new Plugin.Context(SonarRuntimeImpl.forSonarQube(Version.create(6, 7), SonarQubeSide.SCANNER));
+    new ErlangPlugin().define(context);
+    assertThat(context.getExtensions()).isNotEmpty();
   }
 
 }

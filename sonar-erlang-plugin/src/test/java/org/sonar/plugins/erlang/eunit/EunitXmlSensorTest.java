@@ -77,7 +77,7 @@ public class EunitXmlSensorTest {
     file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));*/
 
     DefaultInputFile dif = new TestInputFileBuilder("test", path)
-            .setLanguage("erlang").setType(InputFile.Type.MAIN)
+            .setLanguage("erlang").setType(InputFile.Type.TEST)
             .setModuleBaseDir(testModuleBasedir.toPath())
             .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
             .build();
