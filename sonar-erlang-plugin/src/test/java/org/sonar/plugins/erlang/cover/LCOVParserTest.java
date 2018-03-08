@@ -33,13 +33,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class LCOVParserTest {
 
   private ErlangFileCoverage cov;
-
+  
   @Before
   public void setup() throws URISyntaxException, IOException {
-    cov = new LCOVParser().parseFile(new File("org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
+    File testResourcesBasDir = new File("src/test/resources/");
+    String coverageFile = "org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html";
+
+    cov = new LCOVParser().parseFile(new File(testResourcesBasDir.toPath().resolve(coverageFile).toString()));
   }
 
-  //@Test
+  @Test
   public void checkCoverage() {
     assertThat(cov.getCoveredLines(), Matchers.equalTo(19));
     assertThat(cov.getLinesToCover(), Matchers.equalTo(21));
