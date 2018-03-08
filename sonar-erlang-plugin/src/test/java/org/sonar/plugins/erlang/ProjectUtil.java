@@ -21,6 +21,7 @@ package org.sonar.plugins.erlang;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
 
 import org.mockito.Mockito;
@@ -29,6 +30,7 @@ import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issuable.IssueBuilder;
 import org.sonar.api.issue.Issue;
@@ -57,7 +59,7 @@ public class ProjectUtil {
     return issuable;
   }
 
-  public static FileSystem createFileSystem(String baseDir, List<String> srcFiles, List<String> testFiles) {
+  public static FileSystem createFileSystem(String baseDir, List<String> srcFiles, List<String> testFiles) throws Exception{
     DefaultFileSystem fileSystem = new DefaultFileSystem(new File(baseDir));
 
     fileSystem.setEncoding(Charset.forName("UTF-8"));
@@ -77,11 +79,18 @@ public class ProjectUtil {
     return fileSystem;
   }
 
-  private static void addFile(DefaultFileSystem fileSystem, String file, InputFile.Type type) {
+  private static void addFile(DefaultFileSystem fileSystem, String file, InputFile.Type type) throws Exception{
 
-    fileSystem.add(new DefaultInputFile("key", file)
-            .setType(type)
-            .setLanguage(Erlang.KEY));
+    File testModuleBasedir = new File("src/test/resources/");
+    DefaultInputFile dif = new TestInputFileBuilder("key", file)
+            .setLanguage(Erlang.KEY).setType(type)
+            .setModuleBaseDir(testModuleBasedir.toPath())
+            .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(file))))
+            .build();
+
+    //fileSystem.add(dif)
+    //        .setType(type)
+    //        .setLanguage(Erlang.KEY));
   }
 
 }

@@ -19,6 +19,7 @@
  */
 package org.sonar.plugins.erlang.cover;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -35,7 +36,7 @@ public class LCOVParserTest {
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    cov = new LCOVParser().parseFile(TestUtils.getResource("org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
+    cov = new LCOVParser().parseFile(new File("org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
   }
 
   @Test

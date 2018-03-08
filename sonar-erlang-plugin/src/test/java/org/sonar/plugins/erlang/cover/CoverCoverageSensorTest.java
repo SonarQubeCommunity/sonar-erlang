@@ -24,16 +24,19 @@ import com.google.common.base.Charsets;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.FileMetadata;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.coverage.CoverageType;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
+import org.sonar.api.config.internal.MapSettings;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -47,41 +50,48 @@ public class CoverCoverageSensorTest {
 
   @Before
   public void setup() throws URISyntaxException, IOException {
-    settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
+    settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
     context = SensorContextTester.create(testModuleBasedir);
   }
 
-  private void addFile(SensorContextTester context, String path) {
-    DefaultInputFile file = new DefaultInputFile("test", path)
+  private void addFile(SensorContextTester context, String path) throws Exception {
+    /*DefaultInputFile file = new DefaultInputFile("test", path)
             .setLanguage("erlang")
             .setType(InputFile.Type.MAIN)
             .setModuleBaseDir(testModuleBasedir.toPath());
-    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));
-    context.fileSystem().add(file);
+    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));*/
+
+    DefaultInputFile dif = new TestInputFileBuilder("test", path)
+            .setLanguage("erlang").setType(InputFile.Type.MAIN)
+            .setModuleBaseDir(testModuleBasedir.toPath())
+            .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
+            .build();
+
+    context.fileSystem().add(dif);
   }
 
   @Test
-  public void checkCoverSensorWithHtml() throws URISyntaxException {
+  public void checkCoverSensorWithHtml() throws Exception {
     settings.setProperty(ErlangPlugin.COVERDATA_FILENAME_KEY, "non_existing.coverdata");
     addFile(context, "src/erlcount_lib.erl");
     context.setSettings(settings);
 
     new CoverCoverageSensor().execute(context);
 
-    assertThat(context.lineHits("test:src/erlcount_lib.erl", CoverageType.UNIT, 7)).isEqualTo(2);
-    assertThat(context.lineHits("test:src/erlcount_lib.erl", CoverageType.UNIT, 10)).isEqualTo(12);
+    assertThat(context.lineHits("test:src/erlcount_lib.erl", 7)).isEqualTo(2);
+    assertThat(context.lineHits("test:src/erlcount_lib.erl", 10)).isEqualTo(12);
   }
 
   @Test
-  public void checkCoverSensorWithDataFile() throws URISyntaxException {
+  public void checkCoverSensorWithDataFile() throws Exception {
     settings.setProperty(ErlangPlugin.COVERDATA_FILENAME_KEY, ErlangPlugin.COVERDATA_DEFAULT_FILENAME);
     addFile(context, "src/erlcount_lib.erl");
     context.setSettings(settings);
 
     new CoverCoverageSensor().execute(context);
-    context.lineHits("test:src/erlcount_lib.erl", CoverageType.UNIT, 1);
-    assertThat(context.lineHits("test:src/erlcount_lib.erl", CoverageType.UNIT, 7)).isEqualTo(2);
-    assertThat(context.lineHits("test:src/erlcount_lib.erl", CoverageType.UNIT, 10)).isEqualTo(12);
+    context.lineHits("test:src/erlcount_lib.erl", 1);
+    assertThat(context.lineHits("test:src/erlcount_lib.erl",  7)).isEqualTo(2);
+    assertThat(context.lineHits("test:src/erlcount_lib.erl", 10)).isEqualTo(12);
   }
 
 }

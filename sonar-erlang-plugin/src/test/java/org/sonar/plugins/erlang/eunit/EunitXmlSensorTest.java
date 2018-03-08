@@ -23,16 +23,19 @@ import com.google.common.base.Charsets;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.FileMetadata;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.measure.MetricFinder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
+import org.sonar.api.config.internal.MapSettings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
@@ -47,8 +50,8 @@ public class EunitXmlSensorTest {
   private SensorContextTester context;
 
   @Before
-  public void setup() throws URISyntaxException {
-    settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
+  public void setup() throws Exception {
+    settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
     context = SensorContextTester.create(testModuleBasedir);
     settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
@@ -66,13 +69,20 @@ public class EunitXmlSensorTest {
     new EunitXmlSensor(metricFinder).execute(context);
   }
 
-  private void addFile(SensorContextTester context, String path) {
-    DefaultInputFile file = new DefaultInputFile("test", path)
+  private void addFile(SensorContextTester context, String path) throws Exception{
+    /*DefaultInputFile file = new DefaultInputFile("test", path)
             .setLanguage("erlang")
             .setType(InputFile.Type.TEST)
             .setModuleBaseDir(testModuleBasedir.toPath());
-    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));
-    context.fileSystem().add(file);
+    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));*/
+
+    DefaultInputFile dif = new TestInputFileBuilder("test", path)
+            .setLanguage("erlang").setType(InputFile.Type.MAIN)
+            .setModuleBaseDir(testModuleBasedir.toPath())
+            .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
+            .build();
+
+    context.fileSystem().add(dif);
   }
 
   @Test

@@ -24,12 +24,14 @@ import com.google.common.base.Charsets;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.FileMetadata;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.measure.MetricFinder;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.CheckFactory;
@@ -69,18 +71,25 @@ public class ErlangSquidSensorTest {
     sensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), metricFinder);
   }
 
-  private void addFile(SensorContextTester context, String path) {
-    DefaultInputFile file = new DefaultInputFile("test", path)
+  private void addFile(SensorContextTester context, String path) throws IOException {
+    DefaultInputFile file = new TestInputFileBuilder("test", path)
+                                .setLanguage("erlang").setType(InputFile.Type.MAIN)
+                                .setModuleBaseDir(testModuleBasedir.toPath())
+                                .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
+                                .build();
+
+    /*DefaultInputFile file = new DefaultInputFile("test", path)
             .setLanguage("erlang")
             .setType(InputFile.Type.MAIN)
             .setModuleBaseDir(testModuleBasedir.toPath());
-    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));
+
+    file.initMetadata(new FileMetadata().readMetadata(file.file(), Charsets.UTF_8));*/
     context.fileSystem().add(file);
 
   }
 
   @Test
-  public void analyze_person_erl() {
+  public void analyze_person_erl() throws Exception {
     addFile(context, "cpd/person.erl");
     sensor.execute(context);
 
@@ -94,7 +103,7 @@ public class ErlangSquidSensorTest {
   }
 
   @Test
-  public void analyse_megaco_erl() {
+  public void analyse_megaco_erl() throws Exception {
     addFile(context, "megaco_ber_bin_encoder.erl");
     sensor.execute(context);
 
