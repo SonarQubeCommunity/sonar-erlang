@@ -21,6 +21,7 @@ package org.sonar.plugins.erlang;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
+import com.sonar.sslr.api.GenericTokenType;
 import com.sonar.sslr.api.Token;
 
 import javax.annotation.Nullable;
@@ -45,6 +46,9 @@ public class ErlangCpdVisitor extends SquidAstVisitor<LexerlessGrammar> implemen
 
     @Override
     public void visitToken(Token token) {
+        if (token.getType() == GenericTokenType.EOF) {
+            return;
+        }
         ErlangHighlighter.TokenLocation tokenLocation = new ErlangHighlighter.TokenLocation(token);
         newCpdTokens.addToken(
                 tokenLocation.startLine(),

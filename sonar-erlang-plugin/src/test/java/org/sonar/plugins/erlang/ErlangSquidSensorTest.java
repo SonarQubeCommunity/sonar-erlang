@@ -19,8 +19,6 @@
  */
 package org.sonar.plugins.erlang;
 
-import com.google.common.base.Charsets;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
-import org.sonar.api.batch.fs.internal.FileMetadata;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.measure.MetricFinder;
 import org.sonar.api.batch.rule.ActiveRules;
@@ -68,7 +65,7 @@ public class ErlangSquidSensorTest {
     when(metricFinder.<String>findByKey(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION_KEY))
             .thenReturn(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION);
     when(metricFinder.<String>findByKey(CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION_KEY))
-            .thenReturn(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION);
+            .thenReturn(CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION);
 
     sensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), metricFinder);
   }
@@ -91,7 +88,7 @@ public class ErlangSquidSensorTest {
 
   }
 
-  //@Test
+  @Test
   public void analyze_person_erl() throws Exception {
     addFile(context, "cpd/person.erl");
     sensor.execute(context);
@@ -105,7 +102,7 @@ public class ErlangSquidSensorTest {
     assertThat(context.measure("test:cpd/person.erl", CoreMetrics.COMMENT_LINES_KEY).value()).isEqualTo(1);
   }
 
-  //@Test
+  @Test
   public void analyse_megaco_erl() throws Exception {
     addFile(context, "megaco_ber_bin_encoder.erl");
     sensor.execute(context);
