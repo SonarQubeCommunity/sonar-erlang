@@ -76,7 +76,7 @@ public class ErlangSquidSensor implements Sensor {
 
   private AstScanner scanner;
 
-  ErlangSquidSensor(CheckFactory checkFactory, MetricFinder metricFinder) {
+  public ErlangSquidSensor(CheckFactory checkFactory, MetricFinder metricFinder) {
     this.checks = checkFactory
             .create(CheckList.REPOSITORY_KEY)
             .addAnnotatedChecks(CheckList.getChecks().iterator());

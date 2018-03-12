@@ -34,7 +34,7 @@ public class DialyzerSensor implements Sensor {
 
   private ErlangRuleManager dialyzerRuleManager;
 
-  DialyzerSensor() {
+  public DialyzerSensor() {
     dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
   }
 
