@@ -79,7 +79,7 @@ public class ErlangSquidSensor implements Sensor {
   public ErlangSquidSensor(CheckFactory checkFactory, MetricFinder metricFinder) {
     this.checks = checkFactory
             .create(CheckList.REPOSITORY_KEY)
-            .addAnnotatedChecks(CheckList.getChecks().iterator());
+            .addAnnotatedChecks((Iterable<?>) CheckList.getChecks());
     this.metricFinder = metricFinder;
   }
 
