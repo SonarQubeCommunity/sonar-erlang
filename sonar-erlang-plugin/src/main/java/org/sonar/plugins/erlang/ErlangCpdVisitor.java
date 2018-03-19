@@ -40,7 +40,7 @@ public class ErlangCpdVisitor extends SquidAstVisitor<LexerlessGrammar> implemen
     private final SensorContext context;
     private NewCpdTokens newCpdTokens;
 
-    public ErlangCpdVisitor(SensorContext context) {
+    ErlangCpdVisitor(SensorContext context) {
         this.context = context;
     }
 
@@ -55,7 +55,7 @@ public class ErlangCpdVisitor extends SquidAstVisitor<LexerlessGrammar> implemen
                 tokenLocation.startLineOffset(),
                 tokenLocation.endLine(),
                 tokenLocation.endLineOffset(),
-                ""
+                token.getValue()
         );
     }
 
