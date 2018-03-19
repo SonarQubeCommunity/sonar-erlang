@@ -21,21 +21,17 @@ package org.sonar.plugins.erlang;
 
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Grammar;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.highlighting.NewHighlighting;
 import org.sonar.api.batch.sensor.highlighting.TypeOfText;
-import org.sonar.erlang.api.ErlangKeyword;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
 import org.sonar.squidbridge.SquidAstVisitor;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by tkende on 2017. 02. 26..
@@ -43,25 +39,29 @@ import java.util.Set;
 public class ErlangHighlighter extends SquidAstVisitor<LexerlessGrammar> implements AstAndTokenVisitor {
 
     private final SensorContext context;
-    private Set<Token> docStringTokens;
     private NewHighlighting newHighlighting;
 
-    public ErlangHighlighter(SensorContext context) {
+    ErlangHighlighter(SensorContext context) {
         this.context = context;
     }
 
     @Override
-    public void visitToken(Token token) {
-        if (token.getType().equals(ErlangGrammarImpl.numericLiteral)) {
-            highlight(token, TypeOfText.CONSTANT);
+    public void init() {
+        subscribeTo(ErlangGrammarImpl.numericLiteral);
+        subscribeTo(ErlangGrammarImpl.stringLiteral);
+    }
 
-        } else if (token.getType() instanceof ErlangKeyword) {
-            highlight(token, TypeOfText.KEYWORD);
-
-        } else if (token.getType().equals(ErlangGrammarImpl.stringLiteral) && !docStringTokens.contains(token)) {
-            highlight(token, TypeOfText.STRING);
+    @Override
+    public void visitNode(AstNode astNode) {
+        if (astNode.getType().equals(ErlangGrammarImpl.numericLiteral)) {
+            highlight(astNode, TypeOfText.CONSTANT);
+        } else if (astNode.getType().equals(ErlangGrammarImpl.stringLiteral)) {
+            highlight(astNode, TypeOfText.STRING);
         }
+    }
 
+    @Override
+    public void visitToken(Token token) {
         for (Trivia trivia : token.getTrivia()) {
             highlight(trivia.getToken(), TypeOfText.COMMENT);
         }
@@ -69,7 +69,6 @@ public class ErlangHighlighter extends SquidAstVisitor<LexerlessGrammar> impleme
 
     @Override
     public void visitFile(@Nullable AstNode astNode) {
-        docStringTokens = new HashSet<>();
         newHighlighting = context.newHighlighting();
         InputFile inputFile = context.fileSystem().inputFile(context.fileSystem().predicates().is(getContext().getFile().getAbsoluteFile()));
         newHighlighting.onFile(inputFile);
@@ -80,19 +79,25 @@ public class ErlangHighlighter extends SquidAstVisitor<LexerlessGrammar> impleme
         newHighlighting.save();
     }
 
+    private void highlight(AstNode astNode, TypeOfText typeOfText) {
+        TokenLocation firstLocation = new TokenLocation(astNode.getToken());
+        TokenLocation lastLocation = new TokenLocation(astNode.getLastToken());
+        newHighlighting.highlight(firstLocation.startLine(), firstLocation.startLineOffset(), lastLocation.endLine(), lastLocation.endLineOffset(), typeOfText);
+    }
+
     private void highlight(Token token, TypeOfText typeOfText) {
         TokenLocation tokenLocation = new TokenLocation(token);
         newHighlighting.highlight(tokenLocation.startLine(), tokenLocation.startLineOffset(), tokenLocation.endLine(), tokenLocation.endLineOffset(), typeOfText);
     }
 
-    public static class TokenLocation {
+    static class TokenLocation {
 
         private final int startLine;
         private final int startLineOffset;
         private final int endLine;
         private final int endLineOffset;
 
-        public TokenLocation(Token token) {
+        TokenLocation(Token token) {
             this.startLine = token.getLine();
             this.startLineOffset = token.getColumn();
 
