@@ -32,6 +32,8 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
 import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Read and parse generated dialyzer report
@@ -40,7 +42,7 @@ import java.io.*;
  */
 public class DialyzerReportParser {
 
-  private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?)(:[0-9]+:)(.*)";
+  private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?):([0-9]+):(.*)";
   private static final String REPO_KEY = DialyzerRuleDefinition.REPOSITORY_KEY;
   private static final Logger LOG = LoggerFactory.getLogger(DialyzerReportParser.class);
   private final SensorContext context;
@@ -70,25 +72,28 @@ public class DialyzerReportParser {
       BufferedReader breader = new BufferedReader(dialyzerOutput);
 
       String strLine;
+      Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
       while ((strLine = breader.readLine()) != null) {
-        if (strLine.matches(DIALYZER_VIOLATION_ROW_REGEX)) {
-          String[] res = strLine.split(":");
-          String fileName = res[0];
-          String line = res[1];
-          String message = res[2].trim();
+        Matcher matcher = pattern.matcher(strLine);
+        if (!matcher.matches()){
+            continue;
+        }
 
-          String key = dialyzerRuleManager.getRuleKeyByMessage(message);
-          RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
-          ActiveRule rule = context.activeRules().find(ruleKey);
-          if (rule != null) {
+        String fileName = matcher.group(1);
+        String lineNumber = matcher.group(2);
+        String comment = matcher.group(3).trim();
+
+        String key = dialyzerRuleManager.getRuleKeyByMessage(comment);
+        RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
+        ActiveRule rule = context.activeRules().find(ruleKey);
+        if (rule != null) {
             String filePattern = "**/"+fileName;
             InputFile inputFile = context.fileSystem().inputFile(
                     context.fileSystem().predicates().matchesPathPattern(filePattern));
             if (inputFile != null) {
-              NewIssue issue = getNewIssue(line, message, ruleKey, inputFile);
-              issue.save();
+                NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
+                issue.save();
             }
-          }
         }
       }
       breader.close();
@@ -101,11 +106,7 @@ public class DialyzerReportParser {
 
   private NewIssue getNewIssue(String line, String message, RuleKey ruleKey, InputFile inputFile) {
     TextRange range = inputFile.selectLine(Integer.valueOf(line));
-
-    NewIssue issue = context
-            .newIssue()
-            .forRule(ruleKey);
-
+    NewIssue issue = context.newIssue().forRule(ruleKey);
     NewIssueLocation location = issue.newLocation()
             .on(inputFile)
             .at(range)
