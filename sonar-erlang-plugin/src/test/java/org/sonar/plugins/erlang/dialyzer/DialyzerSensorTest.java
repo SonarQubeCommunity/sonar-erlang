@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,81 +13,75 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.dialyzer;
 
+import java.io.File;
+import java.nio.file.Files;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
-import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
+import org.sonar.api.batch.rule.ActiveRules;
+import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
+import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
-import org.sonar.api.issue.Issuable;
-import org.sonar.api.issue.Issue;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.Resource;
-import org.sonar.api.rules.ActiveRule;
+import org.sonar.api.config.internal.MapSettings;
+import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.ProjectUtil;
-import org.sonar.plugins.erlang.core.Erlang;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class DialyzerSensorTest {
 
+  private File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
   private Settings settings;
-  private Erlang erlang;
-  private Project project;
-  private SensorContext context;
-  private Issuable issuable;
-  private ResourcePerspectives resourcePerspectives;
+  private SensorContextTester context;
 
   @Before
-  public void setup() throws URISyntaxException, IOException {
-    settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
-    erlang = new Erlang(settings);
-    context = mock(SensorContext.class);
+  public void setup() {
+    settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
+    context = SensorContextTester.create(testModuleBasedir);
+    ActiveRules rules = (new ActiveRulesBuilder())
+            .create(RuleKey.of(DialyzerRuleDefinition.REPOSITORY_KEY, "D019"))
+            .setName("unused_fun")
+            .activate()
+            .create(RuleKey.of(DialyzerRuleDefinition.REPOSITORY_KEY, "D041"))
+            .setName("callback_missing")
+            .activate()
+            .build();
+    context.setActiveRules(rules);
+  }
 
-    issuable = ProjectUtil.mockIssueable();
-    resourcePerspectives = mock(ResourcePerspectives.class);
-    when(resourcePerspectives.as(Mockito.eq(Issuable.class), Mockito.any(InputFile.class))).thenReturn(issuable);
+  private void addFile(SensorContextTester context, String path) throws Exception{
+    DefaultInputFile dif = new TestInputFileBuilder("test", path)
+            .setLanguage("erlang")
+            .setType(InputFile.Type.MAIN)
+            .setModuleBaseDir(testModuleBasedir.toPath())
+            .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
+            .build();
 
-    project = new Project("dummy");
-
-    RulesProfile rp = mock(RulesProfile.class);
-    ActiveRule activeRule = RuleUtil.generateActiveRule("unused_fun", "D019");
-    when(rp.getActiveRule(DialyzerRuleDefinition.REPOSITORY_KEY, "D019")).thenReturn(activeRule);
-    activeRule = RuleUtil.generateActiveRule("callback_missing", "D041");
-    when(rp.getActiveRule(DialyzerRuleDefinition.REPOSITORY_KEY, "D041")).thenReturn(activeRule);
-
-    FileSystem fileSystem = ProjectUtil.createFileSystem(
-            "org/sonar/plugins/erlang/erlcount/",
-            Arrays.asList(
-                    new File("org/sonar/plugins/erlang/erlcount/src/erlcount_lib.erl"),
-                    new File("org/sonar/plugins/erlang/erlcount/src/refactorerl_issues.erl")),
-            null
-    );
-
-    new DialyzerSensor(rp, fileSystem, resourcePerspectives, settings).analyse(project, context);
+    context.fileSystem().add(dif);
   }
 
   @Test
-  public void checkCoverSensor() throws URISyntaxException {
-    ArgumentCaptor<Issue> argument = ArgumentCaptor.forClass(Issue.class);
-    verify(issuable, times(3)).addIssue(argument.capture());
+  public void checkDialyzerSensor() throws Exception {
+    settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+    context.setSettings(settings);
+
+    addFile(context, "src/erlcount_lib.erl");
+    addFile(context, "src/refactorerl_issues.erl");
+
+    new DialyzerSensor().execute(context);
+
+    assertThat(context.allIssues().size()).isEqualTo(3);
   }
 
 }

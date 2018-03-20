@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="7" failures="1" errors="0" skipped="0" time="0.133" name="module 'erlcount'">
+<testsuite tests="7" failures="1" errors="0" skipped="0" time="0.133" name="module 'erlcount_tests'">
   <testcase time="0.112" name="erlcount_tests:find_erl_test_/0_20">
     <failure type="assertEqual_failed">
       ::{assertEqual_failed,[{module,erlcount_tests},

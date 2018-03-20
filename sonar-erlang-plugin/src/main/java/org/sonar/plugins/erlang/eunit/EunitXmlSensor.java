@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,148 +13,110 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.apache.commons.io.FileUtils;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.batch.Sensor;
-import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.measure.MetricFinder;
+import org.sonar.api.batch.sensor.Sensor;
+import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.config.Settings;
-import org.sonar.api.resources.DuplicatedSourceException;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.Qualifiers;
-import org.sonar.api.resources.Resource;
+import org.sonar.api.measures.CoreMetrics;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.core.Erlang;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EunitXmlSensor implements Sensor {
 
   private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
+  private final MetricFinder metricFinder;
 
-  protected Erlang erlang;
-  protected final Settings settings;
-  private FileSystem fileSystem;
-  private final FilePredicate mainFilePredicate;
-  private final FilePredicate testFilePredicate;
-
-  public EunitXmlSensor(Erlang erlang, FileSystem fileSystem, Settings settings) {
-    this.erlang = erlang;
-    this.settings = settings;
-    this.fileSystem = fileSystem;
-    this.mainFilePredicate = fileSystem.predicates().and(
-            fileSystem.predicates().hasType(InputFile.Type.MAIN),
-            fileSystem.predicates().hasLanguage(Erlang.KEY));
-    this.testFilePredicate = fileSystem.predicates().and(
-            fileSystem.predicates().hasType(InputFile.Type.TEST),
-            fileSystem.predicates().hasLanguage(Erlang.KEY));
+  public EunitXmlSensor(MetricFinder metricFinder) {
+    this.metricFinder = metricFinder;
   }
 
   @Override
-  public boolean shouldExecuteOnProject(Project project) {
-    return fileSystem.hasFiles(mainFilePredicate);
+  public void describe(SensorDescriptor descriptor) {
+    descriptor
+            .onlyOnLanguage(Erlang.KEY)
+            .name("Erlang EUnit report Sensor")
+            .onlyOnFileType(InputFile.Type.TEST);
   }
 
-  @Override
-  public void analyse(Project project, SensorContext context) {
-    String eunitFolder = settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY);
-    try {
-      collect(project, context,
-              new File(fileSystem.baseDir(), eunitFolder));
-    } catch (Exception e) {
-      LOG.error("Error occured during eunit xml file parsing", e.getMessage(), e);
-    }
-  }
+  private List<EunitTestsuite> parseEunitXmls(SensorContext context) {
+    List<EunitTestsuite> ret = new ArrayList<>();
+    FileSystem fileSystem = context.fileSystem();
 
-  protected void collect(final Project project, final SensorContext context, File reportsDir) {
-    LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
-    if (reportsDir.exists() && fileSystem.hasFiles(testFilePredicate)) {
-      new AbstractSurefireParser() {
-
-        @Override
-        protected Resource getUnitTestResource(String classKey) {
-          File unitTestFile = getUnitTestFile(fileSystem.files(testFilePredicate), fileSystem.files(mainFilePredicate), classKey);
-
-          org.sonar.api.resources.File unitTestFileResource = getUnitTestFileResource(unitTestFile);
-          unitTestFileResource.setLanguage(erlang);
-          unitTestFileResource.setQualifier(Qualifiers.UNIT_TEST_FILE);
-
-          LOG.debug("Adding unittest resource: {}", unitTestFileResource.toString());
-
-          String source;
-
-          try {
-            source = FileUtils.readFileToString(unitTestFile, fileSystem.encoding());
-          } catch (IOException e) {
-            source = "Could not find source for unit test: " + classKey
-                    + " in any of test directories";
-            LOG.debug(source, e);
-          }
-
-          try {
-            context.saveSource(unitTestFileResource, source);
-          } catch (DuplicatedSourceException e) {
-            unitTestFileResource = org.sonar.api.resources.File.create(unitTestFile.getPath());
-          }
-
-          return unitTestFileResource;
-        }
-
-      }.collect(project, context, reportsDir);
-    } else {
-      LOG.debug("Eunit folder {} or test folder does not exists. Skip.", reportsDir);
-    }
-  }
-
-  protected String cleanName(String name) {
-    return name.replaceFirst("(.*?')(.*?)('.*)", "$2");
-  }
-
-  protected org.sonar.api.resources.File getUnitTestFileResource(File unitTestFile) {
-    InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().is(unitTestFile));
-    return org.sonar.api.resources.File.create(inputFile.relativePath());
-  }
-
-  protected String getUnitTestFileName(String className) {
-    String fileName = cleanName(className);
-    fileName = fileName.replace('.', '/');
-    if (fileName.endsWith("eunit") || fileName.endsWith("tests")) {
-      return fileName + ".erl";
-    } else {
-      return fileName + "_tests.erl";
-    }
-  }
-
-  protected File getUnitTestFile(Iterable<File> testFiles, Iterable<File> srcFiles, String name) {
-    String fileName = getUnitTestFileName(name);
-    File file = findFileByName(testFiles, fileName);
-    if (file == null) {
-      file = findFileByName(srcFiles, fileName);
-    }
-    if (file == null) {
-      file = new File("");
-    }
-    return file;
-  }
-
-  private File findFileByName(Iterable<File> testFiles, String fileName) {
-    for (File testFile : testFiles) {
-      if (testFile.getAbsolutePath().endsWith(fileName) || testFile.getAbsolutePath().endsWith(fileName.replaceAll("_(eunit|tests)", ""))) {
-        return testFile;
+    FilePredicate eunitXmlPredicate = fileSystem.predicates().matchesPathPattern("**/TEST-*.xml");
+    Iterable<File> xmlFiles = fileSystem.files(eunitXmlPredicate);
+    for (File file : xmlFiles) {
+      XmlMapper mapper = new XmlMapper();
+      try {
+        ret.add(mapper.readValue(file, EunitTestsuite.class));
+      } catch (IOException e) {
+        LOG.error("Something went wrong during parsing xml report", e);
       }
     }
-    return null;
+    return ret;
   }
+
+  @Override
+  public void execute(SensorContext context) {
+    Settings settings = context.settings();
+    FileSystem fileSystem = context.fileSystem();
+    File reportsDir = new File(context.fileSystem().baseDir().getPath(),
+            settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
+    FilePredicate testFilePredicate = fileSystem.predicates().and(
+            fileSystem.predicates().hasType(InputFile.Type.TEST),
+            fileSystem.predicates().hasLanguage(Erlang.KEY));
+
+    LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
+
+    List<EunitTestsuite> testReports = parseEunitXmls(context);
+
+    Iterable<InputFile> inputFiles = fileSystem.inputFiles(testFilePredicate);
+    for (InputFile file : inputFiles) {
+      EunitTestsuite testReport = EunitTestsuite.find(file, testReports);
+      if (testReport != null) {
+        saveIntegerMeasure(context, metricFinder, file, CoreMetrics.SKIPPED_TESTS_KEY, testReport.getSkipped());
+        saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TESTS_KEY, testReport.getTests());
+        saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_FAILURES_KEY, testReport.getFailures());
+        saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_ERRORS_KEY, testReport.getErrors());
+        saveLongMeasure(context, metricFinder, file, CoreMetrics.TEST_EXECUTION_TIME_KEY, testReport.getTimeInMs());
+        double successDensity = ((double) testReport.getErrors() + testReport.getFailures()) / testReport.getTests();
+        saveDoubleMeasure(context, metricFinder, file, CoreMetrics.TEST_SUCCESS_DENSITY_KEY, successDensity);
+      }
+    }
+  }
+
+  private void saveIntegerMeasure(SensorContext context, MetricFinder metricFinder, InputFile file,
+                           String metric, Integer value) {
+    context.newMeasure().forMetric(metricFinder.findByKey(metric)).on(file).withValue(value).save();
+  }
+
+  private void saveLongMeasure(SensorContext context, MetricFinder metricFinder, InputFile file,
+                                  String metric, Long value) {
+    context.newMeasure().forMetric(metricFinder.findByKey(metric)).on(file).withValue(value).save();
+  }
+
+  private void saveDoubleMeasure(SensorContext context, MetricFinder metricFinder, InputFile file,
+                               String metric, Double value) {
+    context.newMeasure().forMetric(metricFinder.findByKey(metric)).on(file).withValue(value).save();
+  }
+
 
   @Override
   public String toString() {

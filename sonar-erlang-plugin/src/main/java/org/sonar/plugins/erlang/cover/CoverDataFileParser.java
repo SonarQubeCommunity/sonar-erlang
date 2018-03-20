@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.cover;
 
@@ -59,7 +59,7 @@ import java.util.List;
  * @author idubrov
  * @author Tamas Kende
  */
-public class CoverDataFileParser {
+class CoverDataFileParser {
 
   private static OtpErlangAtom SIZE_ATOM = new OtpErlangAtom("$size");
   private static OtpErlangAtom BUMP_ATOM = new OtpErlangAtom("bump");
@@ -71,7 +71,7 @@ public class CoverDataFileParser {
   private CoverDataFileParser() {
   }
 
-  public static List<ErlangFileCoverage> parse(File inFile) throws IOException {
+  static List<ErlangFileCoverage> parse(File inFile) throws IOException {
     InputStream fin = new FileInputStream(inFile);
     try {
       InputStream in = new BufferedInputStream(fin);
@@ -85,9 +85,9 @@ public class CoverDataFileParser {
     }
   }
 
-  public static List<ErlangFileCoverage> parse(InputStream in) throws IOException {
+  private static List<ErlangFileCoverage> parse(InputStream in) throws IOException {
     Preconditions.checkNotNull(in);
-    List<ErlangFileCoverage> ret = new ArrayList<ErlangFileCoverage>();
+    List<ErlangFileCoverage> ret = new ArrayList<>();
 
     try {
 
@@ -98,7 +98,7 @@ public class CoverDataFileParser {
           OtpErlangTuple tuple = (OtpErlangTuple) term;
           if (tuple.arity() == 3 && FILE_ATOM.equals(tuple.elementAt(0))) {
             // {file,sip_ua_client,"/Users/idubrov/Projects/siperl/apps/sip/ebin/sip_ua_client.beam"}
-            String module = eatom(tuple, 1);
+            String module = eatom(tuple);
 
             moduleResult = new ErlangFileCoverage();
             moduleResult.setFilePath(module + ".erl");
@@ -113,6 +113,7 @@ public class CoverDataFileParser {
 
               // Ignore generated functions
               if (line != 0) {
+                assert moduleResult != null;
                 moduleResult.addLine(line, hits);
               }
             }
@@ -128,8 +129,8 @@ public class CoverDataFileParser {
     return ret;
   }
 
-  private static String eatom(OtpErlangTuple tuple, int pos) {
-    return ((OtpErlangAtom) tuple.elementAt(pos)).atomValue();
+  private static String eatom(OtpErlangTuple tuple) {
+    return ((OtpErlangAtom) tuple.elementAt(1)).atomValue();
   }
 
   private static int eint(OtpErlangTuple tuple, int pos) throws OtpErlangRangeException {

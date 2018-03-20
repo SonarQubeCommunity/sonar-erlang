@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,36 +13,31 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.cover;
 
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.sonar.test.TestUtils;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
+import org.hamcrest.Matchers;
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class LCOVParserTest {
 
-  private ErlangFileCoverage cov;
-
-  @Before
-  public void setup() throws URISyntaxException, IOException {
-    cov = new LCOVParser().parseFile(TestUtils.getResource("org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html"));
-  }
-
   @Test
   public void checkCoverage() {
-    assertThat(cov.getCoveredLines(), Matchers.equalTo(19));
-    assertThat(cov.getLinesToCover(), Matchers.equalTo(21));
-    assertThat(cov.getUncoveredLines(), Matchers.equalTo(2));
+    Path coverageFile = Paths.get("src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/erlcount_lib.COVER.html");
+
+    ErlangFileCoverage coverage = new LCOVParser().parseFile(coverageFile.toFile());
+
+    assertThat(coverage.getCoveredLines(), Matchers.equalTo(19));
+    assertThat(coverage.getLinesToCover(), Matchers.equalTo(21));
+    assertThat(coverage.getUncoveredLines(), Matchers.equalTo(2));
   }
 
 }

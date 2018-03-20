@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.dialyzer;
 
@@ -25,14 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ErlangRule {
-  private List<String> messages = new ArrayList<String>();
+  private List<String> messages = new ArrayList<>();
   private Rule sonarRule = Rule.create();
 
-  public ErlangRule() {
+  ErlangRule() {
     super();
   }
 
-  public boolean hasMessage(String message) {
+  boolean hasMessage(String message) {
     boolean ret = false;
     for (String ruleMessage : messages) {
       if (message.matches(ruleMessage)) {
@@ -43,7 +43,7 @@ public class ErlangRule {
     return ret;
   }
 
-  public void addMessage(String message) {
+  void addMessage(String message) {
     messages.add(message);
   }
 

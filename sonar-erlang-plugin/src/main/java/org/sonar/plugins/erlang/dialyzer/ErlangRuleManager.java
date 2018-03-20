@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,32 +13,28 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
 package org.sonar.plugins.erlang.dialyzer;
-
-import org.sonar.api.BatchExtension;
-import org.sonar.api.ServerExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ErlangRuleManager implements ServerExtension, BatchExtension {
+public class ErlangRuleManager  {
 
   private List<ErlangRule> rules = new ArrayList<ErlangRule>();
 
-  public static final String OTHER_RULES_KEY = "OTHER_RULES";
+  private static final String OTHER_RULES_KEY = "OTHER_RULES";
   public static final String UNUSED_NAMES_KEY = "UNUSED_NAMES";
 
-  public ErlangRuleManager(String rulesPath) {
+  ErlangRuleManager(String rulesPath) {
     rules = new ErlangXmlRuleParser().parse(ErlangRuleManager.class
       .getResourceAsStream(rulesPath));
   }
 
-  public String getRuleKeyByMessage(String message) {
+  String getRuleKeyByMessage(String message) {
     for (ErlangRule rule : rules) {
       if (rule.hasMessage(message)) {
         return rule.getRule().getKey();

@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.erlang;
 
@@ -37,7 +37,7 @@ import java.util.List;
 
 public class TestHelper {
 
-  public static AstScanner<LexerlessGrammar> scanFiles(List<File> files) {
+  static AstScanner<LexerlessGrammar> scanFiles(List<File> files) {
     AstScanner<LexerlessGrammar> scanner = ErlangAstScanner.create(Charset.forName("UTF-8"));
     scanner.scanFiles(files);
     return scanner;
@@ -48,7 +48,7 @@ public class TestHelper {
     return getSourceFile(scanner);
   }
 
-  public static SourceFile getSourceFile(AstScanner<LexerlessGrammar> scanner) {
+  static SourceFile getSourceFile(AstScanner<LexerlessGrammar> scanner) {
     Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
     return (SourceFile) sources.iterator().next();
   }

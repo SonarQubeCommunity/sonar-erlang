@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,11 +13,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang;
+
+import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.List;
 
 import org.mockito.Mockito;
 import org.sonar.api.batch.SensorContext;
@@ -25,16 +30,12 @@ import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issuable.IssueBuilder;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.core.Erlang;
-import org.sonar.test.TestUtils;
-
-import java.io.File;
-import java.nio.charset.Charset;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -58,20 +59,19 @@ public class ProjectUtil {
     return issuable;
   }
 
-  public static FileSystem createFileSystem(String baseDir, List<File> srcFiles, List<File> testFiles) {
-    DefaultFileSystem fileSystem = new DefaultFileSystem();
+  public static FileSystem createFileSystem(String baseDir, List<String> srcFiles, List<String> testFiles) throws Exception{
+    DefaultFileSystem fileSystem = new DefaultFileSystem(new File(baseDir));
 
     fileSystem.setEncoding(Charset.forName("UTF-8"));
-    fileSystem.setBaseDir(TestUtils.getResource(baseDir));
 
     if (srcFiles != null) {
-      for (File srcFile : srcFiles) {
+      for (String srcFile : srcFiles) {
         addFile(fileSystem, srcFile, InputFile.Type.MAIN);
       }
     }
 
     if (testFiles != null) {
-      for (File testFile : testFiles) {
+      for (String testFile : testFiles) {
         addFile(fileSystem, testFile, InputFile.Type.TEST);
       }
     }
@@ -79,11 +79,16 @@ public class ProjectUtil {
     return fileSystem;
   }
 
-  private static void addFile(DefaultFileSystem fileSystem, File file, InputFile.Type type) {
-    fileSystem.add(new DefaultInputFile(file.getName())
-            .setAbsolutePath(TestUtils.getResource(file.getPath()).getAbsolutePath())
-            .setType(type)
-            .setLanguage(Erlang.KEY));
+  private static void addFile(DefaultFileSystem fileSystem, String file, InputFile.Type type) throws Exception{
+
+    File testModuleBasedir = new File("src/test/resources/");
+    DefaultInputFile dif = new TestInputFileBuilder("key", file)
+            .setLanguage(Erlang.KEY).setType(type)
+            .setModuleBaseDir(testModuleBasedir.toPath())
+            .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(file))))
+            .build();
+
+    fileSystem.add(dif);
   }
 
 }

@@ -17,28 +17,32 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.erlang.checks;
+package org.sonar.plugins.erlang.eunit;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+import com.google.common.collect.Lists;
 
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
-import org.junit.Test;
+import java.util.List;
 
-import org.sonar.squidbridge.api.SourceFile;
+public final class EunitTestCase {
+  @JacksonXmlProperty(isAttribute = true)
+  private float time;
 
-import java.io.File;
+  @JacksonXmlProperty(isAttribute = true)
+  private String name;
 
-public class FixmeCommentCheckTest {
+  @JacksonXmlProperty
+  private String failure;
 
-  @Test
-  public void test() {
-    FixmeCommentCheck check = new FixmeCommentCheck();
-    SourceFile file = TestHelper.scanSingleFile(new File(
-      "src/test/resources/checks/fixme.erl"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(4).withMessage("Take the required action to fix the issue indicated by this comment.")
-      .next().atLine(6).withMessage("Take the required action to fix the issue indicated by this comment.")
-      .next().atLine(9).withMessage("Take the required action to fix the issue indicated by this comment.")
-      .noMore();
+  @JacksonXmlProperty(localName = "system-out")
+  private String systemOut;
+
+  class Failure {
+    @JacksonXmlProperty(isAttribute = true)
+    private String type;
+    @JacksonXmlText(value = true)
+    private String error;
   }
 
 }

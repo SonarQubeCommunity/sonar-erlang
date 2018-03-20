@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.cover;
 
@@ -29,13 +29,13 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class LCOVParser {
+final class LCOVParser {
 
   private static final String COVERAGE_DATA_REGEX = "(.*?)([0-9]+)(\\.*|.*?)";
   private static final Logger LOG = LoggerFactory.getLogger(LCOVParser.class);
 
-  public ErlangFileCoverage parseFile(File file) {
-    List<String> lines = new LinkedList<String>();
+  ErlangFileCoverage parseFile(File file) {
+    List<String> lines = new LinkedList<>();
     try {
       lines = FileUtils.readLines(file);
     } catch (IOException e) {
@@ -52,7 +52,7 @@ public final class LCOVParser {
         fileCoverage = new ErlangFileCoverage();
         fileCoverage.setFilePath(fileName);
       }
-      if (line.indexOf("**************") > -1) {
+      if (line.contains("**************")) {
         started = true;
       }
       if (started && line.matches(".*?\\|.*")) {
@@ -60,7 +60,7 @@ public final class LCOVParser {
         if (!StringUtils.isBlank(lineData[0].trim())) {
           String executionCount = lineData[0].trim()
                   .replaceAll(COVERAGE_DATA_REGEX, "$2");
-          fileCoverage.addLine(lineNumber, Integer.valueOf(executionCount).intValue());
+          fileCoverage.addLine(lineNumber, Integer.valueOf(executionCount));
         }
         lineNumber++;
       }

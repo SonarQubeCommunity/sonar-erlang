@@ -17,28 +17,25 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.erlang.checks;
+package org.sonar.plugins.erlang.eunit;
 
-
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
-import org.junit.Test;
-
-import org.sonar.squidbridge.api.SourceFile;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
-public class FixmeCommentCheckTest {
+import org.junit.Test;
+
+public class EunitXmlPOJOTest {
+
 
   @Test
-  public void test() {
-    FixmeCommentCheck check = new FixmeCommentCheck();
-    SourceFile file = TestHelper.scanSingleFile(new File(
-      "src/test/resources/checks/fixme.erl"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(4).withMessage("Take the required action to fix the issue indicated by this comment.")
-      .next().atLine(6).withMessage("Take the required action to fix the issue indicated by this comment.")
-      .next().atLine(9).withMessage("Take the required action to fix the issue indicated by this comment.")
-      .noMore();
+  public void shouldSaveErrorsAndFailuresInXML() throws URISyntaxException, IOException {
+    XmlMapper mapper = new XmlMapper();
+    File xml = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/TEST-erlcount_tests.xml");
+    EunitTestsuite testsuite = mapper.readValue(xml, EunitTestsuite.class);
+    System.out.println(testsuite);
   }
 
 }

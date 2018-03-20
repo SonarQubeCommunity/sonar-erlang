@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,65 +13,76 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang.eunit;
 
-import org.hamcrest.Matchers;
+import java.io.File;
+import java.nio.file.Files;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
+import org.sonar.api.batch.measure.MetricFinder;
+import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.Settings;
+import org.sonar.api.config.internal.MapSettings;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.resources.Project;
-import org.sonar.api.resources.Resource;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.ProjectUtil;
-import org.sonar.plugins.erlang.core.Erlang;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class EunitXmlSensorTest {
 
-  private SensorContext context;
+  private File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
+  private Settings settings;
+  private SensorContextTester context;
 
   @Before
-  public void setup() throws URISyntaxException {
-    Project project = new Project("dummy");
+  public void setup() throws Exception {
+    settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
+    context = SensorContextTester.create(testModuleBasedir);
+    settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+    settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+    context.setSettings(settings);
 
-    context = ProjectUtil.mockContext();
-    Settings settings = new Settings(new PropertyDefinitions(ErlangPlugin.class));
-    settings.setProperty(ErlangPlugin.REBAR_CONFIG_FILENAME_KEY, ErlangPlugin.REBAR_DEFAULT_CONFIG_FILENAME);
+    addFile(context, "test/erlcount_tests.erl");
+    addFile(context, ".eunit/TEST-erlcount_tests.xml");
+    MetricFinder metricFinder = mock(MetricFinder.class);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.TESTS_KEY)).thenReturn(CoreMetrics.TESTS);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.SKIPPED_TESTS_KEY)).thenReturn(CoreMetrics.SKIPPED_TESTS);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.TEST_ERRORS_KEY)).thenReturn(CoreMetrics.TEST_ERRORS);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.TEST_FAILURES_KEY)).thenReturn(CoreMetrics.TEST_FAILURES);
+    when(metricFinder.<Long>findByKey(CoreMetrics.TEST_EXECUTION_TIME_KEY)).thenReturn(CoreMetrics.TEST_EXECUTION_TIME);
+    when(metricFinder.<Double>findByKey(CoreMetrics.TEST_SUCCESS_DENSITY_KEY)).thenReturn(CoreMetrics.TEST_SUCCESS_DENSITY);
+    new EunitXmlSensor(metricFinder).execute(context);
+  }
 
-    FileSystem fileSystem = ProjectUtil.createFileSystem(
-            "org/sonar/plugins/erlang/erlcount/",
-            null,
-            Arrays.asList(
-                    new File("org/sonar/plugins/erlang/erlcount/test/erlcount_eunit.erl"),
-                    new File("org/sonar/plugins/erlang/erlcount/test/erlcount_tests.erl"))
-    );
+  private void addFile(SensorContextTester context, String path) throws Exception {
+    DefaultInputFile dif = new TestInputFileBuilder("test", path)
+            .setLanguage("erlang")
+            .setType(InputFile.Type.TEST)
+            .setModuleBaseDir(testModuleBasedir.toPath())
+            .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
+            .build();
 
-    new EunitXmlSensor(new Erlang(settings), fileSystem, settings).analyse(project, context);
+    context.fileSystem().add(dif);
   }
 
   @Test
-  public void shouldSaveErrorsAndFailuresInXML() throws URISyntaxException {
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TESTS), eq(7.0));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.SKIPPED_TESTS), eq(0.0));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_ERRORS), eq(0.0));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_FAILURES), eq(1.0));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_EXECUTION_TIME), doubleThat(Matchers.greaterThan(1.0)));
-    verify(context, times(2)).saveMeasure((Resource) anyObject(), eq(CoreMetrics.TEST_SUCCESS_DENSITY), eq(85.71));
+  public void shouldSaveErrorsAndFailuresInXML() {
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TESTS_KEY).value()).isEqualTo(7);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.SKIPPED_TESTS_KEY).value()).isEqualTo(0);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_ERRORS_KEY).value()).isEqualTo(0);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_FAILURES_KEY).value()).isEqualTo(1);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_EXECUTION_TIME_KEY).value()).isEqualTo(133L);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_SUCCESS_DENSITY_KEY).value()).isEqualTo(1/7.0 );
   }
-
 }

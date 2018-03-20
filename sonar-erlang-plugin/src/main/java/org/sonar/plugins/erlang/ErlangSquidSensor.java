@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012 Tamas Kende
+ * Copyright (C) 2012-2017 Tamas Kende
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,33 +13,33 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.erlang;
 
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.batch.fs.FilePredicate;
+import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.TextRange;
+import org.sonar.api.batch.measure.MetricFinder;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.Checks;
+import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.SensorDescriptor;
+import org.sonar.api.batch.sensor.issue.NewIssue;
+import org.sonar.api.batch.sensor.issue.NewIssueLocation;
+import org.sonar.api.batch.sensor.measure.NewMeasure;
 import org.sonar.squidbridge.AstScanner;
 
 import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.api.batch.Sensor;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.component.ResourcePerspectives;
-import org.sonar.api.issue.Issuable;
-import org.sonar.api.issue.Issue;
+import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.measures.PersistenceMode;
-import org.sonar.api.measures.RangeDistributionBuilder;
-import org.sonar.api.resources.File;
-import org.sonar.api.resources.Project;
+import org.sonar.api.ce.measure.RangeDistributionBuilder;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.erlang.api.ErlangMetric;
@@ -59,6 +59,7 @@ import org.sonar.squidbridge.indexer.QueryByParent;
 import org.sonar.squidbridge.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -71,105 +72,155 @@ public class ErlangSquidSensor implements Sensor {
   private static final Number[] FILES_DISTRIB_BOTTOM_LIMITS = {0, 5, 10, 20, 30, 60, 90};
 
   private final Checks<Object> checks;
+  private final MetricFinder metricFinder;
 
-  private SensorContext context;
-  private AstScanner<LexerlessGrammar> scanner;
-  private FileSystem fileSystem;
-  private final FilePredicate mainFilePredicate;
-  private ResourcePerspectives resourcePerspectives;
+  private AstScanner scanner;
 
-  public ErlangSquidSensor(CheckFactory checkFactory, FileSystem fileSystem, ResourcePerspectives resourcePerspectives) {
+  public ErlangSquidSensor(CheckFactory checkFactory, MetricFinder metricFinder) {
     this.checks = checkFactory
             .create(CheckList.REPOSITORY_KEY)
-            .addAnnotatedChecks(CheckList.getChecks());
-    this.fileSystem = fileSystem;
-    this.mainFilePredicate = fileSystem.predicates().and(
-            fileSystem.predicates().hasType(InputFile.Type.MAIN),
-            fileSystem.predicates().hasLanguage(Erlang.KEY));
-    this.resourcePerspectives = resourcePerspectives;
+            .addAnnotatedChecks((Iterable<?>) CheckList.getChecks());
+    this.metricFinder = metricFinder;
   }
 
   @Override
-  public boolean shouldExecuteOnProject(Project project) {
-    return fileSystem.hasFiles(mainFilePredicate);
+  public void describe(SensorDescriptor descriptor) {
+    descriptor
+      .onlyOnLanguage(Erlang.KEY)
+      .name("Erlang EUnit Squid Sensor");
   }
 
   @Override
-  public void analyse(Project project, SensorContext context) {
-    this.context = context;
-
+  public void execute(SensorContext context) {
+    FileSystem fileSystem = context.fileSystem();
     List<SquidAstVisitor<LexerlessGrammar>> visitors = new ArrayList<SquidAstVisitor<LexerlessGrammar>>((Collection) checks.all());
+    visitors.add(new ErlangHighlighter(context));
+    visitors.add(new ErlangCpdVisitor(context));
     this.scanner = ErlangAstScanner.create(fileSystem.encoding(), visitors.toArray(new SquidAstVisitor[visitors.size()]));
 
-    scanner.scanFiles(Lists.newArrayList(fileSystem.files(mainFilePredicate)));
+    FilePredicates p = fileSystem.predicates();
+    Iterable<java.io.File> inputFiles = fileSystem.files(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Erlang.KEY)));
+    scanner.scanFiles(Lists.newArrayList(inputFiles));
 
-    save(scanner.getIndex().search(new QueryByType(SourceFile.class)));
+    save(context, scanner.getIndex().search(new QueryByType(SourceFile.class)));
   }
 
-  private void save(Collection<SourceCode> squidSourceFiles) {
+  private void save(SensorContext context, Collection<SourceCode> squidSourceFiles) {
+    FileSystem fileSystem = context.fileSystem();
     for (SourceCode squidSourceFile : squidSourceFiles) {
       SourceFile squidFile = (SourceFile) squidSourceFile;
 
       InputFile inputFile = fileSystem.inputFile(fileSystem.predicates().hasAbsolutePath(squidFile.getKey()));
 
       if (inputFile != null) {
-        File sonarFile = File.create(inputFile.relativePath());
-
-        saveFilesComplexityDistribution(sonarFile, squidFile);
-        saveFunctionsComplexityDistribution(sonarFile, squidFile);
-        saveMeasures(sonarFile, squidFile);
-        saveViolations(sonarFile, squidFile);
+        saveFilesComplexityDistribution(context, inputFile, squidFile);
+        saveFunctionsComplexityDistribution(context, inputFile, squidFile);
+        saveMeasures(context, inputFile, squidFile);
+        saveViolations(context, inputFile, squidFile);
       } else {
         LOG.warn("Cannot save analysis information for file {}. Unable to retrieve the associated sonar resource.", squidFile.getKey());
       }
     }
   }
 
-  private void saveMeasures(File sonarFile, SourceFile squidFile) {
-    context.saveMeasure(sonarFile, CoreMetrics.FILES, squidFile.getDouble(ErlangMetric.FILES));
-    context.saveMeasure(sonarFile, CoreMetrics.LINES, squidFile.getDouble(ErlangMetric.LINES));
-    context.saveMeasure(sonarFile, CoreMetrics.NCLOC, squidFile.getDouble(ErlangMetric.LINES_OF_CODE));
-    context.saveMeasure(sonarFile, CoreMetrics.FUNCTIONS, squidFile.getDouble(ErlangMetric.FUNCTIONS));
-    context.saveMeasure(sonarFile, CoreMetrics.STATEMENTS, squidFile.getDouble(ErlangMetric.STATEMENTS));
-    context.saveMeasure(sonarFile, CoreMetrics.COMPLEXITY, squidFile.getDouble(ErlangMetric.COMPLEXITY));
-    context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile.getDouble(ErlangMetric.COMMENT_LINES));
-    context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_API, squidFile.getDouble(ErlangMetric.PUBLIC_API));
-    double publicUndocApi = squidFile.getDouble(ErlangMetric.PUBLIC_API) - squidFile.getDouble(ErlangMetric.PUBLIC_DOC_API);
-    context.saveMeasure(sonarFile, CoreMetrics.PUBLIC_UNDOCUMENTED_API, publicUndocApi);
+  private void saveMeasures(SensorContext context, InputFile sonarFile, SourceFile squidFile) {
+    NewMeasure<Serializable> m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.FILES_KEY))
+            .on(sonarFile)
+            .withValue(squidFile.getInt(ErlangMetric.FILES))
+            .save();
+
+    m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.LINES_KEY))
+            .on(sonarFile)
+            .withValue(squidFile.getInt(ErlangMetric.LINES))
+            .save();
+
+    m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.NCLOC_KEY))
+            .on(sonarFile)
+            .withValue(squidFile.getInt(ErlangMetric.LINES_OF_CODE))
+            .save();
+
+    m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.FUNCTIONS_KEY))
+            .on(sonarFile)
+            .withValue(squidFile.getInt(ErlangMetric.FUNCTIONS))
+            .save();
+
+    m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.STATEMENTS_KEY))
+            .on(sonarFile)
+            .withValue(squidFile.getInt(ErlangMetric.STATEMENTS))
+            .save();
+
+    m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.COMPLEXITY_KEY))
+            .on(sonarFile)
+            .withValue(squidFile.getInt(ErlangMetric.COMPLEXITY))
+            .save();
+
+    m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.COMMENT_LINES_KEY))
+            .on(sonarFile)
+            .withValue(squidFile.getInt(ErlangMetric.COMMENT_LINES))
+            .save();
+
+    m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.PUBLIC_API_KEY))
+            .on(sonarFile)
+            .withValue(squidFile.getInt(ErlangMetric.PUBLIC_API))
+            .save();
+
+    int publicUndocApi = squidFile.getInt(ErlangMetric.PUBLIC_API) - squidFile.getInt(ErlangMetric.PUBLIC_DOC_API);
+    m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.PUBLIC_UNDOCUMENTED_API_KEY))
+            .on(sonarFile)
+            .withValue(publicUndocApi)
+            .save();
   }
 
-  private void saveFunctionsComplexityDistribution(File sonarFile, SourceFile squidFile) {
+  private void saveFunctionsComplexityDistribution(SensorContext context, InputFile sonarFile, SourceFile squidFile) {
     Collection<SourceCode> squidFunctionsInFile = scanner.getIndex().search(
       new QueryByParent(squidFile), new QueryByType(SourceFunction.class));
-    RangeDistributionBuilder complexityDistribution = new RangeDistributionBuilder(
-      CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION, FUNCTIONS_DISTRIB_BOTTOM_LIMITS);
+    RangeDistributionBuilder complexityDistribution = new RangeDistributionBuilder(FUNCTIONS_DISTRIB_BOTTOM_LIMITS);
     for (SourceCode squidFunction : squidFunctionsInFile) {
       complexityDistribution.add(squidFunction.getDouble(ErlangMetric.COMPLEXITY));
     }
-    context.saveMeasure(sonarFile, complexityDistribution.build().setPersistenceMode(
-      PersistenceMode.MEMORY));
+    NewMeasure<Serializable> m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION_KEY))
+            .on(sonarFile)
+            .withValue(complexityDistribution.build())
+            .save();
   }
 
-  private void saveFilesComplexityDistribution(File sonarFile, SourceFile squidFile) {
-    RangeDistributionBuilder complexityDistribution = new RangeDistributionBuilder(
-      CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION, FILES_DISTRIB_BOTTOM_LIMITS);
+  private void saveFilesComplexityDistribution(SensorContext context, InputFile sonarFile, SourceFile squidFile) {
+    RangeDistributionBuilder complexityDistribution = new RangeDistributionBuilder(FILES_DISTRIB_BOTTOM_LIMITS);
     complexityDistribution.add(squidFile.getDouble(ErlangMetric.COMPLEXITY));
-    context.saveMeasure(sonarFile, complexityDistribution.build().setPersistenceMode(
-      PersistenceMode.MEMORY));
+    NewMeasure<Serializable> m = context.newMeasure();
+    m.forMetric(metricFinder.findByKey(CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION_KEY))
+            .on(sonarFile)
+            .withValue(complexityDistribution.build())
+            .save();
   }
 
-  private void saveViolations(File sonarFile, SourceFile squidFile) {
+  private void saveViolations(SensorContext context, InputFile sonarFile, SourceFile squidFile) {
     Collection<CheckMessage> messages = squidFile.getCheckMessages();
     if (messages != null) {
       for (CheckMessage message : messages) {
         RuleKey ruleKey = checks.ruleKey(message.getCheck());
-        Issuable issuable = resourcePerspectives.as(Issuable.class, sonarFile);
-        Issue issue = issuable.newIssueBuilder()
-          .ruleKey(ruleKey)
-          .line(message.getLine())
-          .message(message.formatDefaultMessage())
-          .build();
-        issuable.addIssue(issue);
+        TextRange range = sonarFile.selectLine(message.getLine());
+        NewIssue issue = context
+                .newIssue()
+                .forRule(ruleKey);
+
+        NewIssueLocation location = issue.newLocation()
+                .on(sonarFile)
+                .at(range)
+                .message(message.formatDefaultMessage());
+
+        issue.at(location);
+        issue.save();
       }
     }
   }
@@ -178,5 +229,4 @@ public class ErlangSquidSensor implements Sensor {
   public String toString() {
     return getClass().getSimpleName();
   }
-
 }
