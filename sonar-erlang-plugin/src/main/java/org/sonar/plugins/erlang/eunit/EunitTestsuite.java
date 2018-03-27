@@ -19,6 +19,7 @@
  */
 package org.sonar.plugins.erlang.eunit;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -27,7 +28,8 @@ import org.sonar.api.batch.fs.InputFile;
 import java.util.ArrayList;
 import java.util.List;
 
-@JacksonXmlRootElement(localName = "testuite")
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JacksonXmlRootElement(localName = "testsuite")
 public class EunitTestsuite {
   @JacksonXmlProperty(isAttribute = true)
   private int errors;
@@ -45,7 +47,7 @@ public class EunitTestsuite {
   private float time;
 
   @JacksonXmlProperty(isAttribute = true)
-  private String name;
+  private String name = "";
 
   @JacksonXmlProperty(localName = "testcase")
   @JacksonXmlElementWrapper(useWrapping = false)
