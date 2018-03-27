@@ -26,7 +26,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.sonar.api.batch.fs.InputFile;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -49,19 +48,6 @@ public class EunitTestsuite {
 
   @JacksonXmlProperty(isAttribute = true)
   private String name = "";
-
-  @JacksonXmlProperty(localName = "testcase")
-  @JacksonXmlElementWrapper(useWrapping = false)
-  private List<EunitTestCase> indexByClassname;
-
-  public EunitTestsuite() {
-    this.indexByClassname = new ArrayList<>();
-  }
-
-
-  public List<EunitTestCase> getIndexByClassname() {
-    return indexByClassname;
-  }
 
   public String getModule() {
     return name.replaceAll(".*'(.*?)'.*", "$1");
