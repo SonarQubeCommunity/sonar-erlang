@@ -61,7 +61,6 @@ public class EunitXmlSensorTest {
     when(metricFinder.<Integer>findByKey(CoreMetrics.TEST_ERRORS_KEY)).thenReturn(CoreMetrics.TEST_ERRORS);
     when(metricFinder.<Integer>findByKey(CoreMetrics.TEST_FAILURES_KEY)).thenReturn(CoreMetrics.TEST_FAILURES);
     when(metricFinder.<Long>findByKey(CoreMetrics.TEST_EXECUTION_TIME_KEY)).thenReturn(CoreMetrics.TEST_EXECUTION_TIME);
-    when(metricFinder.<Double>findByKey(CoreMetrics.TEST_SUCCESS_DENSITY_KEY)).thenReturn(CoreMetrics.TEST_SUCCESS_DENSITY);
     new EunitXmlSensor(metricFinder).execute(context);
   }
 
@@ -83,6 +82,5 @@ public class EunitXmlSensorTest {
     assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_ERRORS_KEY).value()).isEqualTo(0);
     assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_FAILURES_KEY).value()).isEqualTo(1);
     assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_EXECUTION_TIME_KEY).value()).isEqualTo(133L);
-    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_SUCCESS_DENSITY_KEY).value()).isEqualTo(1/7.0 );
   }
 }

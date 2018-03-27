@@ -96,8 +96,6 @@ public class EunitXmlSensor implements Sensor {
         saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_FAILURES_KEY, testReport.getFailures());
         saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_ERRORS_KEY, testReport.getErrors());
         saveLongMeasure(context, metricFinder, file, CoreMetrics.TEST_EXECUTION_TIME_KEY, testReport.getTimeInMs());
-        double successDensity = ((double) testReport.getErrors() + testReport.getFailures()) / testReport.getTests();
-        saveDoubleMeasure(context, metricFinder, file, CoreMetrics.TEST_SUCCESS_DENSITY_KEY, successDensity);
       }
     }
   }
