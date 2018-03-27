@@ -69,6 +69,12 @@ public class EunitXmlSensor implements Sensor {
       } catch (IOException e) {
         LOG.error("Something went wrong during parsing xml report", e);
       }
+      try {
+        EunitTestsuites suites = mapper.readValue(file, EunitTestsuites.class);
+        ret.addAll(suites.getTestsuites());
+      } catch (IOException e) {
+        // intentionally left empty
+      }
     }
     return ret;
   }
