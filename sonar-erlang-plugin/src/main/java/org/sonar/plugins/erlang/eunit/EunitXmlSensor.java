@@ -79,9 +79,7 @@ public class EunitXmlSensor implements Sensor {
     FileSystem fileSystem = context.fileSystem();
     File reportsDir = new File(context.fileSystem().baseDir().getPath(),
             settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
-    FilePredicate testFilePredicate = fileSystem.predicates().and(
-            fileSystem.predicates().hasType(InputFile.Type.TEST),
-            fileSystem.predicates().hasLanguage(Erlang.KEY));
+    FilePredicate testFilePredicate = fileSystem.predicates().hasLanguage(Erlang.KEY);
 
     LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
 
