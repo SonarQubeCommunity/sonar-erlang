@@ -25,6 +25,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.sonar.api.batch.fs.InputFile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +67,10 @@ public class EunitTestsuite {
     return name.replaceAll(".*'(.*?)'.*", "$1");
   }
 
+  public String getApp() {
+    return name.replaceAll("file \"(.*?)\\.app\"", "$1");
+  }
+
   public int getErrors() {
     return errors;
   }
@@ -88,7 +93,8 @@ public class EunitTestsuite {
 
   public static EunitTestsuite find(InputFile file, List<EunitTestsuite> testReports) {
     for (EunitTestsuite testReport : testReports) {
-      if (file.absolutePath().endsWith(testReport.getModule() + ".erl")) {
+      if (file.absolutePath().endsWith(File.separator + testReport.getModule() + ".erl")
+              || file.absolutePath().endsWith(File.separator + testReport.getApp() + ".erl")) {
         return testReport;
       }
     }
