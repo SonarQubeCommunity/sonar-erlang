@@ -19,6 +19,7 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.fs.InputFile;
@@ -87,7 +88,7 @@ public class DialyzerReportParser {
         RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
         ActiveRule rule = context.activeRules().find(ruleKey);
         if (rule != null) {
-            String filePattern = "**/"+fileName;
+            String filePattern = "**/" + FilenameUtils.getName(fileName);
             InputFile inputFile = context.fileSystem().inputFile(
                     context.fileSystem().predicates().matchesPathPattern(filePattern));
             if (inputFile != null) {
