@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012-2017 Tamas Kende
+ * Copyright (C) 2012-2018 Tamas Kende; Denes Hegedus (Cursor Insight Ltd.)
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -69,6 +69,12 @@ public class EunitXmlSensor implements Sensor {
       } catch (IOException e) {
         LOG.error("Something went wrong during parsing xml report", e);
       }
+      try {
+        EunitTestsuites suites = mapper.readValue(file, EunitTestsuites.class);
+        ret.addAll(suites.getTestsuites());
+      } catch (IOException e) {
+        // intentionally left empty
+      }
     }
     return ret;
   }
@@ -79,9 +85,7 @@ public class EunitXmlSensor implements Sensor {
     FileSystem fileSystem = context.fileSystem();
     File reportsDir = new File(context.fileSystem().baseDir().getPath(),
             settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
-    FilePredicate testFilePredicate = fileSystem.predicates().and(
-            fileSystem.predicates().hasType(InputFile.Type.TEST),
-            fileSystem.predicates().hasLanguage(Erlang.KEY));
+    FilePredicate testFilePredicate = fileSystem.predicates().hasLanguage(Erlang.KEY);
 
     LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
 
@@ -96,8 +100,6 @@ public class EunitXmlSensor implements Sensor {
         saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_FAILURES_KEY, testReport.getFailures());
         saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_ERRORS_KEY, testReport.getErrors());
         saveLongMeasure(context, metricFinder, file, CoreMetrics.TEST_EXECUTION_TIME_KEY, testReport.getTimeInMs());
-        double successDensity = ((double) testReport.getErrors() + testReport.getFailures()) / testReport.getTests();
-        saveDoubleMeasure(context, metricFinder, file, CoreMetrics.TEST_SUCCESS_DENSITY_KEY, successDensity);
       }
     }
   }

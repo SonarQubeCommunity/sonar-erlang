@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+  <rule>
+    <key>X001</key>
+    <name><![CDATA[Undefined function calls]]></name>
+    <internalKey>undefined_function_calls</internalKey>
+    <description>
+      <![CDATA[Undefined function calls]]>
+    </description>
+    <messages>
+      <message>Warning: ~s:~s/~s calls undefined function ~s:~s/~s (Xref)</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>X002</key>
+    <name><![CDATA[Undefined functions]]></name>
+    <internalKey>undefined_functions</internalKey>
+    <description>
+      <![CDATA[Undefined functions]]>
+    </description>
+    <messages>
+      <message>Warning: ~s:~s/~s is undefined function (Xref)</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>X003</key>
+    <name><![CDATA[Locals not used]]></name>
+    <internalKey>locals_not_used</internalKey>
+    <description>
+      <![CDATA[Locals not used]]>
+    </description>
+    <messages>
+      <message>Warning: ~s:~s/~s is unused local function (Xref)</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>X004</key>
+    <name><![CDATA[Exports not used]]></name>
+    <internalKey>exports_not_used</internalKey>
+    <description>
+      <![CDATA[Exports not used]]>
+    </description>
+    <messages>
+      <message>Warning: ~s:~s/~s is unused export (Xref)</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>X005</key>
+    <name><![CDATA[Deprecated function calls]]></name>
+    <internalKey>deprecated_function_calls</internalKey>
+    <description>
+      <![CDATA[Deprecated function calls]]>
+    </description>
+    <messages>
+      <message>Warning: ~s:~s/~s calls deprecated function ~s:~s/~s (Xref)</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>X006</key>
+    <name><![CDATA[Deprecated functions]]></name>
+    <internalKey>deprecated_functions</internalKey>
+    <description>
+      <![CDATA[Deprecated functions]]>
+    </description>
+    <messages>
+      <message>Warning: ~s:~s/~s is deprecated function (Xref)</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>X007</key>
+    <name><![CDATA[Xref other]]></name>
+    <internalKey>xref_other</internalKey>
+    <description>
+      <![CDATA[Xref other]]>
+    </description>
+    <messages>
+      <message>Warning: ~s:~s/~s - ~s xref check: ~s (Xref)</message>
+    </messages>
+  </rule>
+</rules>

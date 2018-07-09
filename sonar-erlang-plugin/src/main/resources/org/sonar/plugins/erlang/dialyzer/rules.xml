@@ -31,9 +31,7 @@
       <![CDATA[bin_construction]]>
     </description>
     <messages>
-      <message>Binary construction will fail since the ~s field ~s in
-        segment ~s has type ~s
-      </message>
+      <message>Binary construction will fail since the ~s field ~s in segment ~s has type ~s</message>
     </messages>
   </rule>
   <rule>
@@ -77,9 +75,7 @@
       <![CDATA[fun_app_args]]>
     </description>
     <messages>
-      <message>Fun application with arguments ~s will fail since the
-        function has type ~s
-      </message>
+      <message>Fun application with arguments ~s will fail since the function has type ~s</message>
     </messages>
   </rule>
   <rule>
@@ -90,9 +86,7 @@
       <![CDATA[fun_app_no_fun]]>
     </description>
     <messages>
-      <message>Fun application will fail since ~s :: ~s is not a function
-        of arity ~w
-      </message>
+      <message>Fun application will fail since ~s :: ~s is not a function of arity ~w</message>
     </messages>
   </rule>
   <rule>
@@ -129,9 +123,7 @@
       <![CDATA[guard_fail_pat]]>
     </description>
     <messages>
-      <message>Clause guard cannot succeed. The ~s was matched against the
-        type ~s
-      </message>
+      <message>Clause guard cannot succeed. The ~s was matched against the type ~s</message>
     </messages>
   </rule>
   <rule>
@@ -142,9 +134,7 @@
       <![CDATA[improper_list_constr]]>
     </description>
     <messages>
-      <message>Cons will produce an improper list since its 2nd argument is
-        ~s
-      </message>
+      <message>Cons will produce an improper list since its 2nd argument is ~s</message>
     </messages>
   </rule>
   <rule>
@@ -173,12 +163,8 @@
       <![CDATA[record_constr]]>
     </description>
     <messages>
-      <message>Record construction ~s violates the declared type of field
-        ~s
-      </message>
-      <message>Record construction violates the declared type for #~w{}
-        since ~s cannot be of type ~s
-      </message>
+      <message>Record construction ~s violates the declared type of field ~s</message>
+      <message>Record construction violates the declared type for #~w{} since ~s cannot be of type ~s</message>
     </messages>
   </rule>
   <rule>
@@ -200,9 +186,7 @@
       <![CDATA[record_match]]>
     </description>
     <messages>
-      <message>Matching of ~s tagged with a record name violates the
-        declared type of ~s
-      </message>
+      <message>Matching of ~s tagged with a record name violates the declared type of ~s</message>
     </messages>
   </rule>
   <rule>
@@ -214,9 +198,7 @@
     </description>
     <messages>
       <message>The ~s can never match the type ~s</message>
-      <message>The ~s can never match since previous clauses completely
-        covered the type ~s
-      </message>
+      <message>The ~s can never match since previous clauses completely covered the type ~s</message>
     </messages>
   </rule>
   <rule>
@@ -227,9 +209,7 @@
       <![CDATA[unmatched_return]]>
     </description>
     <messages>
-      <message>Expression produces a value of type ~s, but this value is
-        unmatched
-      </message>
+      <message>Expression produces a value of type ~s, but this value is unmatched</message>
     </messages>
   </rule>
   <rule>
@@ -252,9 +232,7 @@
       <![CDATA[contract_diff]]>
     </description>
     <messages>
-      <message>Type specification ~w:~w~s is not equal to the success
-        typing: ~w:~w~s
-      </message>
+      <message>Type specification ~w:~w~s is not equal to the success typing: ~w:~w~s</message>
     </messages>
   </rule>
   <rule>
@@ -265,9 +243,7 @@
       <![CDATA[contract_subtype]]>
     </description>
     <messages>
-      <message>Type specification ~w:~w~s is a subtype of the success
-        typing: ~w:~w~s
-      </message>
+      <message>Type specification ~w:~w~s is a subtype of the success typing: ~w:~w~s</message>
     </messages>
   </rule>
   <rule>
@@ -278,9 +254,7 @@
       <![CDATA[contract_supertype]]>
     </description>
     <messages>
-      <message>Type specification ~w:~w~s is a supertype of the success
-        typing: ~w:~w~s
-      </message>
+      <message>Type specification ~w:~w~s is a supertype of the success typing: ~w:~w~s</message>
     </messages>
   </rule>
   <rule>
@@ -291,9 +265,7 @@
       <![CDATA[contract_range]]>
     </description>
     <messages>
-      <message>The contract ~w:~w~s cannot be right because the inferred
-        return for ~w~s on line ~w is ~s
-      </message>
+      <message>The contract ~w:~w~s cannot be right because the inferred return for ~w~s on line ~w is ~s</message>
     </messages>
   </rule>
   <rule>
@@ -304,9 +276,7 @@
       <![CDATA[invalid_contract]]>
     </description>
     <messages>
-      <message>Invalid type specification for function ~w:~w/~w. The
-        success typing is ~s
-      </message>
+      <message>Invalid type specification for function ~w:~w/~w. The success typing is ~s</message>
     </messages>
   </rule>
   <rule>
@@ -317,10 +287,7 @@
       <![CDATA[extra_range]]>
     </description>
     <messages>
-      <message>The specification for ~w:~w/~w states that the function
-        might also return ~s but the inferred return
-        is ~s
-      </message>
+      <message>The specification for ~w:~w/~w states that the function might also return ~s but the inferred return is ~s</message>
     </messages>
   </rule>
   <rule>
@@ -331,10 +298,7 @@
       <![CDATA[overlapping_contract]]>
     </description>
     <messages>
-      <message>Overloaded contract has overlapping domains; such contracts
-        are currently unsupported and are simply
-        ignored
-      </message>
+      <message>Overloaded contract has overlapping domains; such contracts are currently unsupported and are simply ignored</message>
     </messages>
   </rule>
   <rule>
@@ -378,9 +342,7 @@
       <![CDATA[opaque_eq]]>
     </description>
     <messages>
-      <message>Attempt to test for equality between a term of type ~s and a
-        term of opaque type ~s
-      </message>
+      <message>Attempt to test for equality between a term of type ~s and a term of opaque type ~s</message>
     </messages>
   </rule>
   <rule>
@@ -402,9 +364,7 @@
       <![CDATA[opaque_match]]>
     </description>
     <messages>
-      <message>The attempt to match a term of type ~s against the ~s breaks
-        the opaqueness of ~s
-      </message>
+      <message>The attempt to match a term of type ~s against the ~s breaks the opaqueness of ~s</message>
     </messages>
   </rule>
   <rule>
@@ -415,9 +375,7 @@
       <![CDATA[opaque_neq]]>
     </description>
     <messages>
-      <message>Attempt to test for inequality between a term of type ~s and
-        a term of opaque type ~s
-      </message>
+      <message>Attempt to test for inequality between a term of type ~s and a term of opaque type ~s</message>
     </messages>
   </rule>
   <rule>
@@ -450,10 +408,7 @@
       <![CDATA[callback_type_mismatch]]>
     </description>
     <messages>
-      <message>The inferred return type of ~w/~w (~s) has nothing in common
-        with ~s, which is the expected return
-        type for the callback of ~w behaviour
-      </message>
+      <message>The inferred return type of ~w/~w (~s) has nothing in common with ~s, which is the expected return type for the callback of ~w behaviour</message>
     </messages>
   </rule>
   <rule>
@@ -464,10 +419,7 @@
       <![CDATA[callback_arg_type_mismatch]]>
     </description>
     <messages>
-      <message>The inferred type for the ~s argument of ~w/~w (~s) is not a
-        supertype of ~s, which is expected type
-        for this argument in the callback of the ~w behaviour
-      </message>
+      <message>The inferred type for the ~s argument of ~w/~w (~s) is not a supertype of ~s, which is expected type for this argument in the callback of the ~w behaviour</message>
     </messages>
   </rule>
   <rule>
@@ -478,10 +430,7 @@
       <![CDATA[callback_spec_type_mismatch]]>
     </description>
     <messages>
-      <message>The return type ~s in the specification of ~w/~w is not a
-        subtype of ~s, which is the expected return type for the callback of
-        ~w behaviour
-      </message>
+      <message>The return type ~s in the specification of ~w/~w is not a subtype of ~s, which is the expected return type for the callback of ~w behaviour</message>
     </messages>
   </rule>
   <rule>
@@ -492,10 +441,7 @@
       <![CDATA[callback_spec_arg_type_mismatch]]>
     </description>
     <messages>
-      <message>The specified type for the ~s argument of ~w/~w (~s) is not
-        a supertype of ~s, which is expected type for this argument in the
-        callback of the ~w behaviour
-      </message>
+      <message>The specified type for the ~s argument of ~w/~w (~s) is not a supertype of ~s, which is expected type for this argument in the callback of the ~w behaviour</message>
     </messages>
   </rule>
   <rule>

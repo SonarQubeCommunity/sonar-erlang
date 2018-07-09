@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012-2017 Tamas Kende
+ * Copyright (C) 2012-2018 Tamas Kende; Denes Hegedus (Cursor Insight Ltd.)
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -30,6 +30,8 @@ import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
 import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
+import org.sonar.plugins.erlang.xref.XrefRuleDefinition;
+import org.sonar.plugins.erlang.xref.XrefSensor;
 
 @Properties({
   @Property(
@@ -49,6 +51,12 @@ import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
     defaultValue = ErlangPlugin.DIALYZER_DEFAULT_FILENAME,
     name = "Dialyzer Default Filename",
     description = "Filename of the dialyzer output located in the eunit folder",
+    global = true, project = true),
+
+  @Property(key = ErlangPlugin.XREF_FILENAME_KEY,
+    defaultValue = ErlangPlugin.XREF_DEFAULT_FILENAME,
+    name = "Xref Default Filename",
+    description = "Filename of the xref output located in the eunit folder",
     global = true, project = true),
 
   @Property(key = ErlangPlugin.COVERDATA_FILENAME_KEY,
@@ -71,6 +79,9 @@ public class ErlangPlugin implements Plugin {
   public static final String DIALYZER_FILENAME_KEY = "sonar.erlang.dialyzer.filename";
   public static final String DIALYZER_DEFAULT_FILENAME = "dialyzer.log";
 
+  public static final String XREF_FILENAME_KEY = "sonar.erlang.xref.filename";
+  public static final String XREF_DEFAULT_FILENAME = "xref.log";
+
   public static final String COVERDATA_FILENAME_KEY = "sonar.erlang.coverdata.filename";
   public static final String COVERDATA_DEFAULT_FILENAME = "eunit.coverdata";
 
@@ -92,6 +103,7 @@ public class ErlangPlugin implements Plugin {
 
             ErlangChecksRuleDefinition.class,
             DialyzerRuleDefinition.class,
+            XrefRuleDefinition.class,
             ErlangProfile.class,
 
             EunitXmlSensor.class,
@@ -99,6 +111,7 @@ public class ErlangPlugin implements Plugin {
             CoverCoverageSensor.class,
 
             DialyzerSensor.class,
+            XrefSensor.class,
 
             PropertyDefinition.builder(FILE_SUFFIXES_KEY)
                     .defaultValue(EXTENSION)

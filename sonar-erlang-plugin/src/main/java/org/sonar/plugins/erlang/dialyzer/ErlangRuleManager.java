@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012-2017 Tamas Kende
+ * Copyright (C) 2012-2018 Tamas Kende; Denes Hegedus (Cursor Insight Ltd.)
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -29,12 +29,12 @@ public class ErlangRuleManager  {
   private static final String OTHER_RULES_KEY = "OTHER_RULES";
   public static final String UNUSED_NAMES_KEY = "UNUSED_NAMES";
 
-  ErlangRuleManager(String rulesPath) {
+  public ErlangRuleManager(String rulesPath) {
     rules = new ErlangXmlRuleParser().parse(ErlangRuleManager.class
       .getResourceAsStream(rulesPath));
   }
 
-  String getRuleKeyByMessage(String message) {
+  public String getRuleKeyByMessage(String message) {
     for (ErlangRule rule : rules) {
       if (rule.hasMessage(message)) {
         return rule.getRule().getKey();

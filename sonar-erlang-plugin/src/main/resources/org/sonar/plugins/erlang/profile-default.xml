@@ -212,5 +212,40 @@
       <key>D042</key>
       <priority>MAJOR</priority>
     </rule>
+    <rule>
+      <repositoryKey>xref</repositoryKey>
+      <key>X001</key>
+      <priority>MAJOR</priority>
+    </rule>
+    <rule>
+      <repositoryKey>xref</repositoryKey>
+      <key>X002</key>
+      <priority>MAJOR</priority>
+    </rule>
+    <rule>
+      <repositoryKey>xref</repositoryKey>
+      <key>X003</key>
+      <priority>MAJOR</priority>
+    </rule>
+    <rule>
+      <repositoryKey>xref</repositoryKey>
+      <key>X004</key>
+      <priority>MAJOR</priority>
+    </rule>
+    <rule>
+      <repositoryKey>xref</repositoryKey>
+      <key>X005</key>
+      <priority>MAJOR</priority>
+    </rule>
+    <rule>
+      <repositoryKey>xref</repositoryKey>
+      <key>X006</key>
+      <priority>MAJOR</priority>
+    </rule>
+    <rule>
+      <repositoryKey>xref</repositoryKey>
+      <key>X007</key>
+      <priority>MAJOR</priority>
+    </rule>
   </rules>
 </profile>
