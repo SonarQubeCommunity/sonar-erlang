@@ -1,6 +1,6 @@
 /*
  * SonarQube Erlang Plugin
- * Copyright (C) 2012-2017 Tamas Kende
+ * Copyright (C) 2012-2018 Tamas Kende; Denes Hegedus (Cursor Insight Ltd.)
  * kende.tamas@gmail.com
  *
  * This program is free software; you can redistribute it and/or
