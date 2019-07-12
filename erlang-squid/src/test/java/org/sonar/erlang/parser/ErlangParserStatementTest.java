@@ -89,6 +89,7 @@ public class ErlangParserStatementTest {
     assertThat(b.rule(ErlangGrammarImpl.statements))
       .matches(code("try Exprs of Pattern when GuardSeq -> Body after AfterBody end"))
       .matches(code("try Exprs catch ExpressionPattern -> ExpressionBody after AfterBody end"))
+      .matches(code("try Exprs catch ExpressionPattern:ExceptionBody:Stacktrace -> ExpressionBody after AfterBody end"))
       .matches(code("try Exprs after AfterBody end"))
       .matches(code("try", "{ok,Bin} = file:read(F, 1024*1024),", "binary_to_term(Bin)", "after",
         "file:close(F)", "end"))
