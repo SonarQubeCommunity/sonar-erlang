@@ -766,7 +766,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     b.rule(catchPatternStatements).is(catchPatternStatement, b.zeroOrMore(semi, catchPatternStatement));
     b.rule(catchPatternStatement).is(catchPattern, b.optional(guardSequenceStart), arrow, statements);
     b.rule(pattern).is(assignmentExpression);
-    b.rule(catchPattern).is(b.optional(atomOrIdentifier, colon), expression);
+    b.rule(catchPattern).is(b.optional(atomOrIdentifier, colon), expression, b.optional(colon, identifier));
 
     b.rule(guardSequenceStart).is(whenKeyword, guardSequence);
 

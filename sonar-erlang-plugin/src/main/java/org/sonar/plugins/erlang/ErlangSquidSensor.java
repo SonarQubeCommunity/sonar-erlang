@@ -125,18 +125,6 @@ public class ErlangSquidSensor implements Sensor {
 
   private void saveMeasures(SensorContext context, InputFile sonarFile, SourceFile squidFile) {
     NewMeasure<Serializable> m = context.newMeasure();
-    m.forMetric(metricFinder.findByKey(CoreMetrics.FILES_KEY))
-            .on(sonarFile)
-            .withValue(squidFile.getInt(ErlangMetric.FILES))
-            .save();
-
-    m = context.newMeasure();
-    m.forMetric(metricFinder.findByKey(CoreMetrics.LINES_KEY))
-            .on(sonarFile)
-            .withValue(squidFile.getInt(ErlangMetric.LINES))
-            .save();
-
-    m = context.newMeasure();
     m.forMetric(metricFinder.findByKey(CoreMetrics.NCLOC_KEY))
             .on(sonarFile)
             .withValue(squidFile.getInt(ErlangMetric.LINES_OF_CODE))
