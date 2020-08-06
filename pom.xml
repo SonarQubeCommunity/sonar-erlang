@@ -62,7 +62,7 @@
 
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
-    <sonar.version>6.7</sonar.version>
+    <sonar.version>7.9</sonar.version>
     <sslr.version>1.21</sslr.version>
   </properties>
 
@@ -200,50 +200,15 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings
-          only. It has no influence on the Maven build itself. -->
         <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
           <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.sonar</groupId>
-                    <artifactId>sonar-packaging-maven-plugin</artifactId>
-                    <version>1.17</version>
-                    <extensions>true</extensions>
-                    <goals>
-                      <goal>check-dependencies</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>
-                      com.mycila.maven-license-plugin
-                    </groupId>
-                    <artifactId>
-                      maven-license-plugin
-                    </artifactId>
-                    <versionRange>
-                      [1.9.0,)
-                    </versionRange>
-                    <goals>
-                      <goal>check</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
+            <compilerArgs>
+              <arg>-Xlint:unchecked</arg>
+              <arg>-Xlint:deprecation</arg>
+            </compilerArgs>
           </configuration>
         </plugin>
       </plugins>
