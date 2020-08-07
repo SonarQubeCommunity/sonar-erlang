@@ -22,7 +22,7 @@ package org.sonar.plugins.erlang.xref;
 import com.google.common.base.Charsets;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
 public class XrefRuleDefinition implements RulesDefinition {
 
@@ -38,7 +38,7 @@ public class XrefRuleDefinition implements RulesDefinition {
 
   @Override
   public void define(Context context) {
-    NewRepository repository = context.createRepository(REPOSITORY_KEY, Erlang.KEY).setName(REPOSITORY_NAME);
+    NewRepository repository = context.createRepository(REPOSITORY_KEY, ErlangLanguage.KEY).setName(REPOSITORY_NAME);
     xmlLoader.load(repository, getClass().getResourceAsStream(XREF_PATH), Charsets.UTF_8.name());
     repository.done();
   }

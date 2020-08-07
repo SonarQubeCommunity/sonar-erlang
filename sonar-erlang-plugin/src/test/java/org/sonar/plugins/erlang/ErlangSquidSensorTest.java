@@ -33,7 +33,7 @@ import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.fest.assertions.Assertions.assertThat;
@@ -71,7 +71,7 @@ public class ErlangSquidSensorTest {
 
   private void addFile(SensorContextTester context, String path) throws IOException {
     DefaultInputFile file = new TestInputFileBuilder("test", path)
-            .setLanguage(Erlang.KEY)
+            .setLanguage(ErlangLanguage.KEY)
             .setType(InputFile.Type.MAIN)
             .setModuleBaseDir(context.fileSystem().baseDirPath())
             .setCharset(UTF_8)

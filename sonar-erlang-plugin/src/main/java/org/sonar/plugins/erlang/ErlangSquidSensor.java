@@ -44,7 +44,7 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.erlang.ErlangAstScanner;
 import org.sonar.erlang.api.ErlangMetric;
 import org.sonar.erlang.checks.CheckList;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
 import org.sonar.squidbridge.api.CheckMessage;
 
@@ -86,7 +86,7 @@ public class ErlangSquidSensor implements Sensor {
   @Override
   public void describe(SensorDescriptor descriptor) {
     descriptor
-      .onlyOnLanguage(Erlang.KEY)
+      .onlyOnLanguage(ErlangLanguage.KEY)
       .name("Erlang EUnit Squid Sensor");
   }
 
@@ -99,7 +99,7 @@ public class ErlangSquidSensor implements Sensor {
     this.scanner = ErlangAstScanner.create(fileSystem.encoding(), visitors.toArray(new SquidAstVisitor[visitors.size()]));
 
     FilePredicates p = fileSystem.predicates();
-    Iterable<java.io.File> inputFiles = fileSystem.files(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Erlang.KEY)));
+    Iterable<java.io.File> inputFiles = fileSystem.files(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(ErlangLanguage.KEY)));
     scanner.scanFiles(Lists.newArrayList(inputFiles));
 
     save(context, scanner.getIndex().search(new QueryByType(SourceFile.class)));

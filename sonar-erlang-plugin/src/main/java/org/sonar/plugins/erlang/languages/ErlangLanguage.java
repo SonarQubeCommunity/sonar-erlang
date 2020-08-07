@@ -17,41 +17,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.xref;
+package org.sonar.plugins.erlang.languages;
 
-import org.sonar.api.batch.sensor.Sensor;
-import org.sonar.api.batch.sensor.SensorContext;
-import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.plugins.erlang.languages.ErlangLanguage;
-import org.sonar.plugins.erlang.dialyzer.ErlangRuleManager;
+import org.apache.commons.lang.StringUtils;
+import org.sonar.api.config.Configuration;
+import org.sonar.api.resources.AbstractLanguage;
+import org.sonar.plugins.erlang.settings.ErlangLanguageProperties;
 
-/**
- * Calls the xref report parser saves violations to sonar
- *
- * @author tkende
- */
-public class XrefSensor implements Sensor {
+public class ErlangLanguage extends AbstractLanguage {
 
-  private ErlangRuleManager xrefRuleManager;
+  public static final String NAME = "Erlang";
+  public static final String KEY = "erlang";
 
-  public XrefSensor() {
-    xrefRuleManager = new ErlangRuleManager(XrefRuleDefinition.XREF_PATH);
+  private final Configuration config;
+
+  public ErlangLanguage(Configuration config) {
+    super(KEY, NAME);
+    this.config = config;
   }
 
   @Override
-  public String toString() {
-    return getClass().getSimpleName();
+  public String[] getFileSuffixes() {
+    String[] suffixes = config.getStringArray(ErlangLanguageProperties.FILE_SUFFIXES_KEY);
+    if (suffixes == null || suffixes.length == 0) {
+      suffixes = StringUtils.split(ErlangLanguageProperties.FILE_SUFFIXES_DEFAULT_VALUE, ",");
+    }
+    return suffixes;
   }
 
-  @Override
-  public void describe(SensorDescriptor descriptor) {
-    descriptor
-            .onlyOnLanguage(ErlangLanguage.KEY)
-            .name("Erlang Xref Sensor");
-  }
-
-  @Override
-  public void execute(SensorContext context) {
-    new XrefReportParser(context).xref(xrefRuleManager);
-  }
 }

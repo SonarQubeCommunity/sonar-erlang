@@ -23,7 +23,7 @@ import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
 /**
  * Calls the dialyzer report parser saves violations to sonar
@@ -46,7 +46,7 @@ public class DialyzerSensor implements Sensor {
   @Override
   public void describe(SensorDescriptor descriptor) {
     descriptor
-            .onlyOnLanguage(Erlang.KEY)
+            .onlyOnLanguage(ErlangLanguage.KEY)
             .name("Erlang Dialyzer Sensor");
   }
 

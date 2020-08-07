@@ -26,7 +26,7 @@ import org.sonar.api.profiles.XMLProfileParser;
 import org.sonar.api.rules.ActiveRule;
 import org.sonar.api.utils.ValidationMessages;
 import org.sonar.erlang.checks.CheckList;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
 import java.util.List;
 
@@ -48,10 +48,10 @@ public class ErlangProfile extends ProfileDefinition {
     /*
      * TODO: is this the best way how we can merge two rule list?
      */
-    RulesProfile ret = RulesProfile.create(PROFILE_NAME, Erlang.KEY);
+    RulesProfile ret = RulesProfile.create(PROFILE_NAME, ErlangLanguage.KEY);
 
     RulesProfile checks = annotationProfileParser.parse(CheckList.REPOSITORY_KEY,
-      CheckList.REPOSITORY_NAME, Erlang.KEY, CheckList.getChecks(), validation);
+      CheckList.REPOSITORY_NAME, ErlangLanguage.KEY, CheckList.getChecks(), validation);
 
     RulesProfile dialyzer = xmlProfileParser.parseResource(getClass().getClassLoader(),
       "org/sonar/plugins/erlang/profile-default.xml", validation);

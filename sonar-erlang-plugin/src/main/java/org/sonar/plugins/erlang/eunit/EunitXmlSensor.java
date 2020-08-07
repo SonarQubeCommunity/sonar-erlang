@@ -32,7 +32,7 @@ import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class EunitXmlSensor implements Sensor {
   @Override
   public void describe(SensorDescriptor descriptor) {
     descriptor
-            .onlyOnLanguage(Erlang.KEY)
+            .onlyOnLanguage(ErlangLanguage.KEY)
             .name("Erlang EUnit report Sensor")
             .onlyOnFileType(InputFile.Type.TEST);
   }
@@ -85,7 +85,7 @@ public class EunitXmlSensor implements Sensor {
     FileSystem fileSystem = context.fileSystem();
     File reportsDir = new File(context.fileSystem().baseDir().getPath(),
             settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
-    FilePredicate testFilePredicate = fileSystem.predicates().hasLanguage(Erlang.KEY);
+    FilePredicate testFilePredicate = fileSystem.predicates().hasLanguage(ErlangLanguage.KEY);
 
     LOG.debug("Parsing Eunit run results in Surefile format from folder {}", reportsDir);
 

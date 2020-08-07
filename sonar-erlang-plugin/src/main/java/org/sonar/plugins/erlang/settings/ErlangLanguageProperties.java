@@ -17,20 +17,32 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.checks;
+package org.sonar.plugins.erlang.settings;
 
-import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.erlang.checks.CheckList;
-import org.sonar.plugins.erlang.languages.ErlangLanguage;
-import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
+import java.util.List;
+import org.sonar.api.config.PropertyDefinition;
+import org.sonar.api.resources.Qualifiers;
 
-public class ErlangChecksRuleDefinition implements RulesDefinition {
+import static java.util.Arrays.asList;
 
-  @Override
-  public void define(Context context) {
-    NewRepository repository = context.createRepository(CheckList.REPOSITORY_KEY, ErlangLanguage.KEY).setName(CheckList.REPOSITORY_NAME);
-    new AnnotationBasedRulesDefinition(repository, ErlangLanguage.KEY).addRuleClasses(false, CheckList.getChecks());
-    repository.done();
+public class ErlangLanguageProperties {
+
+  public static final String FILE_SUFFIXES_KEY = "sonar.erlang.file.suffixes";
+  public static final String FILE_SUFFIXES_DEFAULT_VALUE = ".erl";
+
+  private ErlangLanguageProperties() {
+    // only statics
+  }
+
+  public static List<PropertyDefinition> getProperties() {
+    return asList(PropertyDefinition.builder(FILE_SUFFIXES_KEY)
+            .multiValues(true)
+            .defaultValue(FILE_SUFFIXES_DEFAULT_VALUE)
+            .category("Erlang")
+            .name("File Suffixes")
+            .description("Comma-separated list of suffixes for files to analyze.")
+            .onQualifiers(Qualifiers.PROJECT)
+            .build());
   }
 
 }

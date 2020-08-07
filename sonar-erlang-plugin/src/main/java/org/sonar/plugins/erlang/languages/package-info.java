@@ -17,31 +17,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.core;
+@ParametersAreNonnullByDefault
+package org.sonar.plugins.erlang.languages;
 
-import org.apache.commons.lang.StringUtils;
-import org.sonar.api.config.Settings;
-import org.sonar.api.resources.AbstractLanguage;
-import org.sonar.plugins.erlang.ErlangPlugin;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class Erlang extends AbstractLanguage {
-
-  public static final String KEY = "erlang";
-
-  private Settings settings;
-
-  public Erlang(Settings settings) {
-    super(KEY, "Erlang");
-    this.settings = settings;
-  }
-
-  @Override
-  public String[] getFileSuffixes() {
-    String[] suffixes = settings.getStringArray(ErlangPlugin.FILE_SUFFIXES_KEY);
-    if (suffixes == null || suffixes.length == 0) {
-      suffixes = StringUtils.split(ErlangPlugin.FILE_SUFFIXES_DEFVALUE, ",");
-    }
-    return suffixes;
-  }
-
-}

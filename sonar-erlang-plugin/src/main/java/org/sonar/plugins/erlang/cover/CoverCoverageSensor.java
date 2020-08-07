@@ -32,7 +32,7 @@ import org.sonar.api.batch.sensor.coverage.CoverageType;
 import org.sonar.api.batch.sensor.coverage.NewCoverage;
 import org.sonar.api.config.Settings;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class CoverCoverageSensor implements Sensor {
   @Override
   public void describe(SensorDescriptor descriptor) {
     descriptor
-            .onlyOnLanguage(Erlang.KEY)
+            .onlyOnLanguage(ErlangLanguage.KEY)
             .name("Erlang Analyser Sensor")
             .onlyOnFileType(InputFile.Type.MAIN);
   }
@@ -111,7 +111,7 @@ public class CoverCoverageSensor implements Sensor {
                                    List<ErlangFileCoverage> coveredFiles) {
 
     FilePredicates p = fileSystem.predicates();
-    Iterable<InputFile> inputFiles = fileSystem.inputFiles(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Erlang.KEY)));
+    Iterable<InputFile> inputFiles = fileSystem.inputFiles(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(ErlangLanguage.KEY)));
     for (InputFile file : inputFiles) {
       try {
         ErlangFileCoverage fileCoverage = getFileCoverage(file, coveredFiles);

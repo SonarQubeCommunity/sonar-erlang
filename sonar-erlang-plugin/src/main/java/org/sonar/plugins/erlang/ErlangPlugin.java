@@ -25,22 +25,16 @@ import org.sonar.api.Plugin;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonar.api.resources.Qualifiers;
 import org.sonar.plugins.erlang.checks.ErlangChecksRuleDefinition;
-import org.sonar.plugins.erlang.core.Erlang;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
 import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
 import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
+import org.sonar.plugins.erlang.settings.ErlangLanguageProperties;
 import org.sonar.plugins.erlang.xref.XrefRuleDefinition;
 import org.sonar.plugins.erlang.xref.XrefSensor;
 
 @Properties({
-  @Property(
-    key = ErlangPlugin.FILE_SUFFIXES_KEY,
-    defaultValue = ErlangPlugin.FILE_SUFFIXES_DEFVALUE,
-    name = "File suffixes",
-    description = "Comma-separated list of suffixes for files to analyze. To not filter, leave the list empty.",
-    global = true, project = true),
-
   @Property(key = ErlangPlugin.EUNIT_FOLDER_KEY,
     defaultValue = ErlangPlugin.EUNIT_DEFAULT_FOLDER,
     name = "Eunit Default Output Folder",
@@ -86,16 +80,16 @@ public class ErlangPlugin implements Plugin {
   public static final String COVERDATA_DEFAULT_FILENAME = "eunit.coverdata";
 
   public static final String NAME = "Erlang";
-  public static final String EXTENSION = ".erl";
-  public static final String FILE_SUFFIXES_KEY = "sonar.erlang.file.suffixes";
-  public static final String FILE_SUFFIXES_DEFVALUE = "erl";
   public static final String REBAR_CONFIG_FILENAME_KEY = "sonar.erlang.rebar.config";
   public static final String REBAR_DEFAULT_CONFIG_FILENAME = "rebar.config";
 
   @Override
   public void define(Context context) {
+    // languages
+    context.addExtension(ErlangLanguage.class);
+    context.addExtension(ErlangLanguageProperties.getProperties());
+
     context.addExtensions(
-            Erlang.class,
             ErlangHighlighter.class,
             ErlangCpdVisitor.class,
 
@@ -111,14 +105,7 @@ public class ErlangPlugin implements Plugin {
             CoverCoverageSensor.class,
 
             DialyzerSensor.class,
-            XrefSensor.class,
-
-            PropertyDefinition.builder(FILE_SUFFIXES_KEY)
-                    .defaultValue(EXTENSION)
-                    .name("File suffixes")
-                    .description("Comma-separated list of suffixes for files to analyze. To not filter, leave the list empty.")
-                    .onQualifiers(Qualifiers.MODULE, Qualifiers.PROJECT)
-                    .build()
+            XrefSensor.class
     );
   }
 }

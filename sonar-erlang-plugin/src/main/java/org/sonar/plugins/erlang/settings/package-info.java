@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 @ParametersAreNonnullByDefault
-package org.sonar.plugins.erlang.core;
+package org.sonar.plugins.erlang.settings;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
