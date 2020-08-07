@@ -11,6 +11,10 @@
 
   <name>Erlang :: Squid</name>
 
+  <properties>
+    <_rootdir>${project.basedir}/..</_rootdir>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.sonarsource.sonarqube</groupId>

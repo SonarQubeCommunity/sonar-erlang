@@ -11,6 +11,10 @@
 
   <name>Erlang :: Checks</name>
 
+  <properties>
+    <_rootdir>${project.basedir}/..</_rootdir>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>

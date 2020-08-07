@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.sonarsource.parent</groupId>
     <artifactId>parent</artifactId>
-    <version>36</version>
+    <version>54</version>
   </parent>
 
   <groupId>org.codehaus.sonar-plugins.erlang</groupId>
@@ -34,6 +34,14 @@
       <id>tamas.kende</id>
       <name>Kende Tamas</name>
     </developer>
+    <developer>
+      <id>hegedenes</id>
+      <name>Denes Hegedus</name>
+    </developer>
+    <developer>
+      <id>arthesy</id>
+      <name>Andris Raugulis</name>
+    </developer>
   </developers>
 
   <modules>
@@ -55,15 +63,10 @@
   </issueManagement>
 
   <properties>
-    <license.title>SonarQube Erlang Plugin</license.title>
-    <license.mailto>kende.tamas@gmail.com</license.mailto>
-    <license.owner>Tamas Kende; Denes Hegedus (Cursor Insight Ltd.)</license.owner>
-    <license.years>2012-2018</license.years>
-
-    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
-
+    <_rootdir>${project.basedir}</_rootdir>
     <sonar.version>7.9</sonar.version>
     <sslr.version>1.21</sslr.version>
+    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
   </properties>
 
   <dependencyManagement>
@@ -198,6 +201,15 @@
   </dependencyManagement>
 
   <build>
+    <plugins>
+        <plugin>
+	  <groupId>com.mycila</groupId>
+	  <artifactId>license-maven-plugin</artifactId>
+	  <configuration>
+	    <header>${_rootdir}/GNU-LGPL-v3.txt</header>
+	  </configuration>
+	</plugin>
+    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>

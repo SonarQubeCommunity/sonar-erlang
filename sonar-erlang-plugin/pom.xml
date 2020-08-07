@@ -23,6 +23,7 @@
   </scm>
 
   <properties>
+    <_rootdir>${project.basedir}/..</_rootdir>
     <sonar.pluginKey>erlang</sonar.pluginKey>
     <sonar.pluginName>Erlang</sonar.pluginName>
     <sonar.pluginClass>org.sonar.plugins.erlang.ErlangPlugin</sonar.pluginClass>
