@@ -79,8 +79,8 @@ public class EunitTestsuite {
 
   public static EunitTestsuite find(InputFile file, List<EunitTestsuite> testReports) {
     for (EunitTestsuite testReport : testReports) {
-      if (file.absolutePath().endsWith(File.separator + testReport.getModule() + ".erl")
-              || file.absolutePath().endsWith(File.separator + testReport.getApp() + ".erl")) {
+      if (file.absolutePath().endsWith("/" + testReport.getModule() + ".erl")
+              || file.absolutePath().endsWith("/" + testReport.getApp() + ".erl")) {
         return testReport;
       }
     }
