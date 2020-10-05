@@ -1,3 +1,5 @@
+![Build](https://github.com/evolution-gaming/sonar-erlang/workflows/Build/badge.svg?branch=master)
+
 # About
 
 SonarQube server Erlang language plugin.
@@ -13,5 +15,3 @@ A sample project is available on GitHub: https://github.com/SonarSource/sonar-sc
 ### Run an Analysis with other Analyzers
 Maven and Ant can also be used to launch analysis on Erlang projects.
 
-### Build status
-`TODO`
