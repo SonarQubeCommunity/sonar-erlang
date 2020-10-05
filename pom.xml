@@ -11,7 +11,7 @@
 
     <groupId>org.codehaus.sonar-plugins.erlang</groupId>
     <artifactId>erlang</artifactId>
-    <version>1.5</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Erlang</name>
