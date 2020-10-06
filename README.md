@@ -14,12 +14,15 @@ The plugin enables analysis of Erlang within SonarQube.
 ### Run an Analysis with the SonarQube Scanner (recommended method)
 To run an analysis of your Erlang project, use the SonarQube Scanner.
 A sample project is available on GitHub: https://github.com/SonarSource/sonar-scanning-examples/tree/master/sonarqube-scanner
+
 ### Run an Analysis with other Analyzers
 Maven and Ant can also be used to launch analysis on Erlang projects.
 
+The plugin has been tested to work with SonarQube Community Version `7.9.4` 
+
 ## Development
 
-The project uses Maven and JDK version 8 and above.
+The project uses `Maven 3` and `JDK 11` and above.
 
 ### Build
 
