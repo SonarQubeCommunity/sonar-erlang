@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.codehaus.sonar-plugins.erlang</groupId>
+    <groupId>com.evolution.sonarqube.erlang</groupId>
     <artifactId>erlang</artifactId>
     <version>1.4-SNAPSHOT</version>
   </parent>

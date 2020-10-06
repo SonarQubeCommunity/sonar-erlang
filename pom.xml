@@ -9,7 +9,7 @@
         <version>54</version>
     </parent>
 
-    <groupId>org.codehaus.sonar-plugins.erlang</groupId>
+    <groupId>com.evolution.sonarqube.erlang</groupId>
     <artifactId>erlang</artifactId>
     <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -19,8 +19,8 @@
     <url/>
     <inceptionYear>2012</inceptionYear>
     <organization>
-        <name>Tamas Kende</name>
-        <url>mailto:kende.tamas@gmail.com</url>
+        <name>Evolution</name>
+        <url>https://www.evolution.com</url>
     </organization>
     <licenses>
         <license>
@@ -73,6 +73,7 @@
         <sslr.version>1.21</sslr.version>
         <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
         <sonar.projectKey>evolution-gaming_sonar-erlang</sonar.projectKey>
+        <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
         <sonar.organization>evolution-gaming</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
