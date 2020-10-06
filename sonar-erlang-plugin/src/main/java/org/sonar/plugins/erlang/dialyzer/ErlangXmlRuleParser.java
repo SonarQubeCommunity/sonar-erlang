@@ -26,6 +26,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.XMLConstants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -40,6 +41,8 @@ final class ErlangXmlRuleParser {
     RuleHandler a = new RuleHandler();
     try {
       saxParser = factory.newSAXParser();
+      saxParser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+      saxParser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
       saxParser.parse(input, a);
     } catch (ParserConfigurationException e) {
       LOG.error("Error in configuration", e);
