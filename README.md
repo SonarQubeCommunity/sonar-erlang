@@ -1,4 +1,6 @@
-# Erlang Plugin
+# Erlang Plugin OUTDATED
+# For a more recent version please visit https://github.com/evolution-gaming/sonar-erlang
+
 [![Nemo Quality Gate status](https://nemo.sonarqube.org/api/badges/gate?key=org.codehaus.sonar-plugins.erlang%3Aerlang)](https://nemo.sonarqube.org/overview?id=org.codehaus.sonar-plugins.erlang%3Aerlang)
 
 Download and Versions information: http://update.sonarsource.org/plugins/erlang-confluence.html
