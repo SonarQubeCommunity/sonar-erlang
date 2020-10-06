@@ -1,4 +1,6 @@
 ![Build](https://github.com/evolution-gaming/sonar-erlang/workflows/Build/badge.svg?branch=master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=evolution-gaming_sonar-erlang&metric=alert_status)](https://sonarcloud.io/dashboard?id=evolution-gaming_sonar-erlang)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=evolution-gaming_sonar-erlang&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=evolution-gaming_sonar-erlang)
 
 # About
 
@@ -24,7 +26,7 @@ The project uses Maven and JDK version 8 and above.
 Build the release plugin JAR with Maven
 
 ```shell script
-mvn package
+mvn clean package
 ```
 
 You will find the built JAR in `sonar-erlang-plugin/target/sonar-erlang-plugin.jar`
@@ -36,3 +38,7 @@ Run all tests with
 ```shell script
 mvn test
 ```
+
+### Contributing
+
+`TODO`
