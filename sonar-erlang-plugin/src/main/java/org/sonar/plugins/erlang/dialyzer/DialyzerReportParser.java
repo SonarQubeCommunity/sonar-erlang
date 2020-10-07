@@ -101,7 +101,7 @@ public class DialyzerReportParser {
     } catch (FileNotFoundException e) {
       LOG.warn("Dialyzer file not found at: {}, have you ran dialyzer before analysis?", dialyzerFileName);
     } catch (IOException e) {
-      LOG.error("Error while trying to parse dialyzer report at: {}", dialyzerFileName);
+      LOG.error("Error while trying to parse dialyzer report at: {}", dialyzerFileName, e);
     }
   }
 

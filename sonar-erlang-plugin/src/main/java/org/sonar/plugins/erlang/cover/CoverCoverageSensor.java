@@ -78,7 +78,7 @@ public class CoverCoverageSensor implements Sensor {
       List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile);
       analyseCoveredFiles(fileSystem, context, coveredFiles);
     } catch (IOException e) {
-      LOG.error("Cannot parse cover data file: {}", coverDataFile.getAbsolutePath());
+      LOG.error("Cannot parse cover data file: {}", coverDataFile.getAbsolutePath(), e);
     }
   }
 
@@ -147,7 +147,7 @@ public class CoverCoverageSensor implements Sensor {
         }*/
 
       } catch (Exception e) {
-        LOG.error("Problem while calculating coverage for {}", file.absolutePath());
+        LOG.error("Problem while calculating coverage for {}", file.absolutePath(), e);
       }
     }
   }

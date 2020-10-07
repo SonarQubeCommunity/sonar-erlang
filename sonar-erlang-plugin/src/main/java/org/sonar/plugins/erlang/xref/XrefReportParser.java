@@ -94,9 +94,9 @@ public class XrefReportParser {
       }
       breader.close();
     } catch (FileNotFoundException e) {
-      LOG.warn("Xref file not found at: {} have you ran xref before analysis?", reportFileName);
+      LOG.warn("Xref file not found at: {} have you ran xref before analysis?", reportFileName, e);
     } catch (IOException e) {
-      LOG.error("Error while trying to parse xref report at {}.", reportFileName);
+      LOG.error("Error while trying to parse xref report at {}.", reportFileName, e);
     }
   }
 
