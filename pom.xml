@@ -15,7 +15,7 @@
 
   <name>Erlang</name>
   <description>Parent pom of SonarQube erlang plugin</description>
-  <url />
+  <url/>
   <inceptionYear>2012</inceptionYear>
   <organization>
     <name>Tamas Kende</name>
@@ -177,7 +177,7 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
-        <version>1.5.6</version>
+        <version>1.7.30</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -220,7 +220,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore />
+                    <ignore/>
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -239,7 +239,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore />
+                    <ignore/>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
