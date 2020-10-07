@@ -40,73 +40,73 @@ import java.util.regex.Pattern;
  */
 public class XrefReportParser {
 
-    private static final String XREF_VIOLATION_ROW_REGEX = "Warning: ([^ :]*):([^/]*)/([0-9]+) .*";
-    private static final String REPO_KEY = XrefRuleDefinition.REPOSITORY_KEY;
-    private static final Logger LOG = LoggerFactory.getLogger(XrefReportParser.class);
-    private final SensorContext context;
+  private static final String XREF_VIOLATION_ROW_REGEX = "Warning: ([^ :]*):([^/]*)/([0-9]+) .*";
+  private static final String REPO_KEY = XrefRuleDefinition.REPOSITORY_KEY;
+  private static final Logger LOG = LoggerFactory.getLogger(XrefReportParser.class);
+  private final SensorContext context;
 
-    XrefReportParser(SensorContext context) {
-        this.context = context;
-    }
+  XrefReportParser(SensorContext context) {
+    this.context = context;
+  }
 
-    public void xref(ErlangRuleManager ruleManager) {
+  public void xref(ErlangRuleManager ruleManager) {
     /*
       Read xref results
      */
-        Configuration configuration;
-        configuration = context.config();
+    Configuration configuration;
+    configuration = context.config();
 
-        String reportFileName = ErlangPlugin.XREF_DEFAULT_FILENAME;
-        try {
-            File reportsDir = new File(context.fileSystem().baseDir().getPath(),
-                    configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+    String reportFileName = ErlangPlugin.XREF_DEFAULT_FILENAME;
+    try {
+      File reportsDir = new File(context.fileSystem().baseDir().getPath(),
+              configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
-            reportFileName = configuration.get(ErlangPlugin.XREF_FILENAME_KEY).orElse(ErlangPlugin.XREF_DEFAULT_FILENAME);
-            File file = new File(reportsDir, reportFileName);
+      reportFileName = configuration.get(ErlangPlugin.XREF_FILENAME_KEY).orElse(ErlangPlugin.XREF_DEFAULT_FILENAME);
+      File file = new File(reportsDir, reportFileName);
 
-            FileInputStream fstream = new FileInputStream(file);
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader xrefOutput = new BufferedReader(new InputStreamReader(in));
-            BufferedReader breader = new BufferedReader(xrefOutput);
+      FileInputStream fstream = new FileInputStream(file);
+      DataInputStream in = new DataInputStream(fstream);
+      BufferedReader xrefOutput = new BufferedReader(new InputStreamReader(in));
+      BufferedReader breader = new BufferedReader(xrefOutput);
 
-            String strLine;
-            Pattern pattern = Pattern.compile(XREF_VIOLATION_ROW_REGEX);
-            while ((strLine = breader.readLine()) != null) {
-                Matcher matcher = pattern.matcher(strLine);
-                if (!matcher.matches()) {
-                    continue;
-                }
-
-                String fileName = matcher.group(1);
-
-                String key = ruleManager.getRuleKeyByMessage(strLine);
-                RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
-                ActiveRule rule = context.activeRules().find(ruleKey);
-                if (rule != null) {
-                    String filePattern = "**/" + fileName + ".erl";
-                    InputFile inputFile = context.fileSystem().inputFile(
-                            context.fileSystem().predicates().matchesPathPattern(filePattern));
-                    if (inputFile != null) {
-                        NewIssue issue = getNewIssue(strLine, ruleKey, inputFile);
-                        issue.save();
-                    }
-                }
-            }
-            breader.close();
-        } catch (FileNotFoundException e) {
-            LOG.warn("Xref file not found at: {} have you ran xref before analysis?", reportFileName);
-        } catch (IOException e) {
-            LOG.error("Error while trying to parse xref report at {}.", reportFileName);
+      String strLine;
+      Pattern pattern = Pattern.compile(XREF_VIOLATION_ROW_REGEX);
+      while ((strLine = breader.readLine()) != null) {
+        Matcher matcher = pattern.matcher(strLine);
+        if (!matcher.matches()) {
+          continue;
         }
-    }
 
-    private NewIssue getNewIssue(String message, RuleKey ruleKey, InputFile inputFile) {
-        NewIssue issue = context.newIssue().forRule(ruleKey);
-        NewIssueLocation location = issue.newLocation()
-                .on(inputFile)
-                .message(message);
+        String fileName = matcher.group(1);
 
-        issue.at(location);
-        return issue;
+        String key = ruleManager.getRuleKeyByMessage(strLine);
+        RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
+        ActiveRule rule = context.activeRules().find(ruleKey);
+        if (rule != null) {
+          String filePattern = "**/" + fileName + ".erl";
+          InputFile inputFile = context.fileSystem().inputFile(
+                  context.fileSystem().predicates().matchesPathPattern(filePattern));
+          if (inputFile != null) {
+            NewIssue issue = getNewIssue(strLine, ruleKey, inputFile);
+            issue.save();
+          }
+        }
+      }
+      breader.close();
+    } catch (FileNotFoundException e) {
+      LOG.warn("Xref file not found at: {} have you ran xref before analysis?", reportFileName);
+    } catch (IOException e) {
+      LOG.error("Error while trying to parse xref report at {}.", reportFileName);
     }
+  }
+
+  private NewIssue getNewIssue(String message, RuleKey ruleKey, InputFile inputFile) {
+    NewIssue issue = context.newIssue().forRule(ruleKey);
+    NewIssueLocation location = issue.newLocation()
+            .on(inputFile)
+            .message(message);
+
+    issue.at(location);
+    return issue;
+  }
 }

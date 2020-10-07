@@ -40,45 +40,45 @@ import static org.mockito.Mockito.when;
 
 public class EunitXmlSensorTest {
 
-    private final File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
-    private SensorContextTester context;
+  private final File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
+  private SensorContextTester context;
 
-    @Before
-    public void setup() throws Exception {
-        MapSettings settingsMap = new MapSettings(new PropertyDefinitions(ErlangPlugin.class))
-                .setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER)
-                .setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
-        context = SensorContextTester.create(testModuleBasedir);
-        context.setSettings(settingsMap);
+  @Before
+  public void setup() throws Exception {
+    MapSettings settingsMap = new MapSettings(new PropertyDefinitions(ErlangPlugin.class))
+            .setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER)
+            .setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+    context = SensorContextTester.create(testModuleBasedir);
+    context.setSettings(settingsMap);
 
-        addFile(context, "test/erlcount_tests.erl");
-        addFile(context, ".eunit/TEST-erlcount_tests.xml");
-        MetricFinder metricFinder = mock(MetricFinder.class);
-        when(metricFinder.<Integer>findByKey(CoreMetrics.TESTS_KEY)).thenReturn(CoreMetrics.TESTS);
-        when(metricFinder.<Integer>findByKey(CoreMetrics.SKIPPED_TESTS_KEY)).thenReturn(CoreMetrics.SKIPPED_TESTS);
-        when(metricFinder.<Integer>findByKey(CoreMetrics.TEST_ERRORS_KEY)).thenReturn(CoreMetrics.TEST_ERRORS);
-        when(metricFinder.<Integer>findByKey(CoreMetrics.TEST_FAILURES_KEY)).thenReturn(CoreMetrics.TEST_FAILURES);
-        when(metricFinder.<Long>findByKey(CoreMetrics.TEST_EXECUTION_TIME_KEY)).thenReturn(CoreMetrics.TEST_EXECUTION_TIME);
-        new EunitXmlSensor(metricFinder).execute(context);
-    }
+    addFile(context, "test/erlcount_tests.erl");
+    addFile(context, ".eunit/TEST-erlcount_tests.xml");
+    MetricFinder metricFinder = mock(MetricFinder.class);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.TESTS_KEY)).thenReturn(CoreMetrics.TESTS);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.SKIPPED_TESTS_KEY)).thenReturn(CoreMetrics.SKIPPED_TESTS);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.TEST_ERRORS_KEY)).thenReturn(CoreMetrics.TEST_ERRORS);
+    when(metricFinder.<Integer>findByKey(CoreMetrics.TEST_FAILURES_KEY)).thenReturn(CoreMetrics.TEST_FAILURES);
+    when(metricFinder.<Long>findByKey(CoreMetrics.TEST_EXECUTION_TIME_KEY)).thenReturn(CoreMetrics.TEST_EXECUTION_TIME);
+    new EunitXmlSensor(metricFinder).execute(context);
+  }
 
-    private void addFile(SensorContextTester context, String path) throws Exception {
-        DefaultInputFile dif = new TestInputFileBuilder("test", path)
-                .setLanguage("erlang")
-                .setType(InputFile.Type.TEST)
-                .setModuleBaseDir(testModuleBasedir.toPath())
-                .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
-                .build();
+  private void addFile(SensorContextTester context, String path) throws Exception {
+    DefaultInputFile dif = new TestInputFileBuilder("test", path)
+            .setLanguage("erlang")
+            .setType(InputFile.Type.TEST)
+            .setModuleBaseDir(testModuleBasedir.toPath())
+            .initMetadata(new String(Files.readAllBytes(testModuleBasedir.toPath().resolve(path))))
+            .build();
 
-        context.fileSystem().add(dif);
-    }
+    context.fileSystem().add(dif);
+  }
 
-    @Test
-    public void shouldSaveErrorsAndFailuresInXML() {
-        assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TESTS_KEY).value()).isEqualTo(7);
-        assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.SKIPPED_TESTS_KEY).value()).isEqualTo(0);
-        assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_ERRORS_KEY).value()).isEqualTo(0);
-        assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_FAILURES_KEY).value()).isEqualTo(1);
-        assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_EXECUTION_TIME_KEY).value()).isEqualTo(133L);
-    }
+  @Test
+  public void shouldSaveErrorsAndFailuresInXML() {
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TESTS_KEY).value()).isEqualTo(7);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.SKIPPED_TESTS_KEY).value()).isEqualTo(0);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_ERRORS_KEY).value()).isEqualTo(0);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_FAILURES_KEY).value()).isEqualTo(1);
+    assertThat(context.measure("test:test/erlcount_tests.erl", CoreMetrics.TEST_EXECUTION_TIME_KEY).value()).isEqualTo(133L);
+  }
 }

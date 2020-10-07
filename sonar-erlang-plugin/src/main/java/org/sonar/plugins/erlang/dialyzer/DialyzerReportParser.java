@@ -76,8 +76,8 @@ public class DialyzerReportParser {
       Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
       while ((strLine = breader.readLine()) != null) {
         Matcher matcher = pattern.matcher(strLine);
-        if (!matcher.matches()){
-            continue;
+        if (!matcher.matches()) {
+          continue;
         }
 
         String fileName = matcher.group(1);
@@ -88,13 +88,13 @@ public class DialyzerReportParser {
         RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
         ActiveRule rule = context.activeRules().find(ruleKey);
         if (rule != null) {
-            String filePattern = "**/" + FilenameUtils.getName(fileName);
-            InputFile inputFile = context.fileSystem().inputFile(
-                    context.fileSystem().predicates().matchesPathPattern(filePattern));
-            if (inputFile != null) {
-                NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
-                issue.save();
-            }
+          String filePattern = "**/" + FilenameUtils.getName(fileName);
+          InputFile inputFile = context.fileSystem().inputFile(
+                  context.fileSystem().predicates().matchesPathPattern(filePattern));
+          if (inputFile != null) {
+            NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
+            issue.save();
+          }
         }
       }
       breader.close();
