@@ -26,7 +26,7 @@ import org.sonar.api.batch.rule.ActiveRule;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
-import org.sonar.api.config.Settings;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.dialyzer.ErlangRuleManager;
@@ -45,7 +45,6 @@ public class XrefReportParser {
   private static final Logger LOG = LoggerFactory.getLogger(XrefReportParser.class);
   private final SensorContext context;
 
-
   XrefReportParser(SensorContext context) {
     this.context = context;
   }
@@ -54,14 +53,15 @@ public class XrefReportParser {
     /*
       Read xref results
      */
-    Settings settings = context.settings();
-    String reportFileName = null;
+    Configuration configuration;
+    configuration = context.config();
 
+    String reportFileName = ErlangPlugin.XREF_DEFAULT_FILENAME;
     try {
       File reportsDir = new File(context.fileSystem().baseDir().getPath(),
-              settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
+              configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
-      reportFileName = settings.getString(ErlangPlugin.XREF_FILENAME_KEY);
+      reportFileName = configuration.get(ErlangPlugin.XREF_FILENAME_KEY).orElse(ErlangPlugin.XREF_DEFAULT_FILENAME);
       File file = new File(reportsDir, reportFileName);
 
       FileInputStream fstream = new FileInputStream(file);
@@ -73,8 +73,8 @@ public class XrefReportParser {
       Pattern pattern = Pattern.compile(XREF_VIOLATION_ROW_REGEX);
       while ((strLine = breader.readLine()) != null) {
         Matcher matcher = pattern.matcher(strLine);
-        if (!matcher.matches()){
-            continue;
+        if (!matcher.matches()) {
+          continue;
         }
 
         String fileName = matcher.group(1);
@@ -83,20 +83,20 @@ public class XrefReportParser {
         RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
         ActiveRule rule = context.activeRules().find(ruleKey);
         if (rule != null) {
-            String filePattern = "**/" + fileName + ".erl";
-            InputFile inputFile = context.fileSystem().inputFile(
-                    context.fileSystem().predicates().matchesPathPattern(filePattern));
-            if (inputFile != null) {
-                NewIssue issue = getNewIssue(strLine, ruleKey, inputFile);
-                issue.save();
-            }
+          String filePattern = "**/" + fileName + ".erl";
+          InputFile inputFile = context.fileSystem().inputFile(
+                  context.fileSystem().predicates().matchesPathPattern(filePattern));
+          if (inputFile != null) {
+            NewIssue issue = getNewIssue(strLine, ruleKey, inputFile);
+            issue.save();
+          }
         }
       }
       breader.close();
     } catch (FileNotFoundException e) {
-      LOG.warn("Xref file not found at: " + reportFileName + ", have you ran xref before analysis?", e);
+      LOG.warn("Xref file not found at: {} have you ran xref before analysis?", reportFileName, e);
     } catch (IOException e) {
-      LOG.error("Error while trying to parse xref report at: " + reportFileName, e);
+      LOG.error("Error while trying to parse xref report at {}.", reportFileName, e);
     }
   }
 

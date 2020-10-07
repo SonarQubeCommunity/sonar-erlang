@@ -22,15 +22,14 @@ package org.sonar.plugins.erlang.cover;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.fs.FilePredicates;
-import org.sonar.api.batch.sensor.Sensor;
-import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
-import org.sonar.api.batch.sensor.SensorDescriptor;
+import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.batch.sensor.coverage.CoverageType;
 import org.sonar.api.batch.sensor.coverage.NewCoverage;
-import org.sonar.api.config.Settings;
+import org.sonar.api.config.Configuration;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
@@ -39,7 +38,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 
 public class CoverCoverageSensor implements Sensor {
 
@@ -55,18 +54,22 @@ public class CoverCoverageSensor implements Sensor {
 
   @Override
   public void execute(SensorContext context) {
-    Settings settings = context.settings();
+    Configuration configuration = context.config();
     File reportsDir = new File(context.fileSystem().baseDir().getPath(),
-            settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
+            configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
-    String coverDataFilename = settings.getString(ErlangPlugin.COVERDATA_FILENAME_KEY);
+    Optional<String> coverDataFilename = configuration.get(ErlangPlugin.COVERDATA_FILENAME_KEY);
 
-    File coverDataFile = new File(reportsDir, coverDataFilename);
-
-    if (coverDataFile.exists()) {
-      parseCoverdataFile(context.fileSystem(), context, coverDataFile);
+    if (!coverDataFilename.isPresent()) {
+      LOG.warn("Missing cover data file name in configuration");
     } else {
-      parseCoverHtmlOutput(context.fileSystem(), context, reportsDir);
+      File coverDataFile = new File(reportsDir, coverDataFilename.get());
+
+      if (coverDataFile.exists()) {
+        parseCoverdataFile(context.fileSystem(), context, coverDataFile);
+      } else {
+        parseCoverHtmlOutput(context.fileSystem(), context, reportsDir);
+      }
     }
   }
 
@@ -75,7 +78,7 @@ public class CoverCoverageSensor implements Sensor {
       List<ErlangFileCoverage> coveredFiles = CoverDataFileParser.parse(coverDataFile);
       analyseCoveredFiles(fileSystem, context, coveredFiles);
     } catch (IOException e) {
-      LOG.error("Cannot parse coverdata file: " + coverDataFile.getAbsolutePath(), e);
+      LOG.error("Cannot parse cover data file: {}", coverDataFile.getAbsolutePath(), e);
     }
   }
 
@@ -94,7 +97,7 @@ public class CoverCoverageSensor implements Sensor {
       if (!file.matches(".*\\.COVER.html")) {
         continue;
       }
-      String reportsFolder = getTestReportsFolder(context.settings());
+      String reportsFolder = getTestReportsFolder(context.config());
       coveredFiles.add(analyseHtml(fileSystem, reportsFolder, file));
     }
     analyseCoveredFiles(fileSystem, context, coveredFiles);
@@ -144,7 +147,7 @@ public class CoverCoverageSensor implements Sensor {
         }*/
 
       } catch (Exception e) {
-        LOG.error("Problem while calculating coverage for " + file.absolutePath(), e);
+        LOG.error("Problem while calculating coverage for {}", file.absolutePath(), e);
       }
     }
   }
@@ -159,8 +162,8 @@ public class CoverCoverageSensor implements Sensor {
     return null;
   }
 
-  private String getTestReportsFolder(Settings settings) {
-    return settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY);
+  private String getTestReportsFolder(Configuration configuration) {
+    return configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER);
   }
 
   @Override

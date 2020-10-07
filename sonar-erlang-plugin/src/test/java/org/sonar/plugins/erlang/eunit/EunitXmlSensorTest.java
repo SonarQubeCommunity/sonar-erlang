@@ -30,7 +30,6 @@ import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.measure.MetricFinder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
-import org.sonar.api.config.Settings;
 import org.sonar.api.config.internal.MapSettings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.plugins.erlang.ErlangPlugin;
@@ -41,17 +40,16 @@ import static org.mockito.Mockito.when;
 
 public class EunitXmlSensorTest {
 
-  private File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
-  private Settings settings;
+  private final File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
   private SensorContextTester context;
 
   @Before
   public void setup() throws Exception {
-    settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
+    MapSettings settingsMap = new MapSettings(new PropertyDefinitions(ErlangPlugin.class))
+            .setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER)
+            .setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
     context = SensorContextTester.create(testModuleBasedir);
-    settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
-    settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
-    context.setSettings(settings);
+    context.setSettings(settingsMap);
 
     addFile(context, "test/erlcount_tests.erl");
     addFile(context, ".eunit/TEST-erlcount_tests.xml");

@@ -28,7 +28,7 @@ import org.sonar.api.batch.rule.ActiveRule;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
-import org.sonar.api.config.Settings;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
@@ -57,14 +57,14 @@ public class DialyzerReportParser {
     /*
       Read dialyzer results
      */
-    Settings settings = context.settings();
+    Configuration configuration = context.config();
     String dialyzerFileName = null;
 
     try {
       File reportsDir = new File(context.fileSystem().baseDir().getPath(),
-              settings.getString(ErlangPlugin.EUNIT_FOLDER_KEY));
+              configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
-      dialyzerFileName = settings.getString(ErlangPlugin.DIALYZER_FILENAME_KEY);
+      dialyzerFileName = configuration.get(ErlangPlugin.DIALYZER_FILENAME_KEY).orElse(ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
       File file = new File(reportsDir, dialyzerFileName);
 
       FileInputStream fstream = new FileInputStream(file);
@@ -76,8 +76,8 @@ public class DialyzerReportParser {
       Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
       while ((strLine = breader.readLine()) != null) {
         Matcher matcher = pattern.matcher(strLine);
-        if (!matcher.matches()){
-            continue;
+        if (!matcher.matches()) {
+          continue;
         }
 
         String fileName = matcher.group(1);
@@ -88,25 +88,25 @@ public class DialyzerReportParser {
         RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
         ActiveRule rule = context.activeRules().find(ruleKey);
         if (rule != null) {
-            String filePattern = "**/" + FilenameUtils.getName(fileName);
-            InputFile inputFile = context.fileSystem().inputFile(
-                    context.fileSystem().predicates().matchesPathPattern(filePattern));
-            if (inputFile != null) {
-                NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
-                issue.save();
-            }
+          String filePattern = "**/" + FilenameUtils.getName(fileName);
+          InputFile inputFile = context.fileSystem().inputFile(
+                  context.fileSystem().predicates().matchesPathPattern(filePattern));
+          if (inputFile != null) {
+            NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
+            issue.save();
+          }
         }
       }
       breader.close();
     } catch (FileNotFoundException e) {
-      LOG.warn("Dialyser file not found at: " + dialyzerFileName + ", have you ran dialyzer before analysis?", e);
+      LOG.warn("Dialyzer file not found at: {}, have you ran dialyzer before analysis?", dialyzerFileName);
     } catch (IOException e) {
-      LOG.error("Error while trying to parse dialyzer report at: " + dialyzerFileName, e);
+      LOG.error("Error while trying to parse dialyzer report at: {}", dialyzerFileName, e);
     }
   }
 
   private NewIssue getNewIssue(String line, String message, RuleKey ruleKey, InputFile inputFile) {
-    TextRange range = inputFile.selectLine(Integer.valueOf(line));
+    TextRange range = inputFile.selectLine(Integer.parseInt(line));
     NewIssue issue = context.newIssue().forRule(ruleKey);
     NewIssueLocation location = issue.newLocation()
             .on(inputFile)

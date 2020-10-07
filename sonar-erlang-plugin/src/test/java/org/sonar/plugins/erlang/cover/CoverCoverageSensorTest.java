@@ -29,17 +29,15 @@ import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
-import org.sonar.api.config.Settings;
 import org.sonar.api.config.internal.MapSettings;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class CoverCoverageSensorTest {
-
-  private Settings settings;
+  private MapSettings settings;
   private SensorContextTester context;
-  private File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
+  private final File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
 
   @Before
   public void setup() {
@@ -78,7 +76,7 @@ public class CoverCoverageSensorTest {
 
     new CoverCoverageSensor().execute(context);
     context.lineHits("test:src/erlcount_lib.erl", 1);
-    assertThat(context.lineHits("test:src/erlcount_lib.erl",  7)).isEqualTo(2);
+    assertThat(context.lineHits("test:src/erlcount_lib.erl", 7)).isEqualTo(2);
     assertThat(context.lineHits("test:src/erlcount_lib.erl", 10)).isEqualTo(12);
   }
 
