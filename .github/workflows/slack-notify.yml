@@ -5,11 +5,11 @@ jobs:
     name: Slack Notification
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
     - name: Slack Notification
-      uses: rtCamp/action-slack-notify@master
+      uses: cemkiy/action-slacker@master
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_CHANNEL: cvi-bots
-        SLACK_USERNAME: CVI Github
-        SLACK_ICON_EMOJI: ":github:"
+      with:
+        channel: '#cvi-bots'
+        icon_url: ':github:'
+        username: 'CVI Github'
