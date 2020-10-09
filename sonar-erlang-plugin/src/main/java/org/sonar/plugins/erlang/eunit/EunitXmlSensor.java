@@ -20,8 +20,8 @@
 package org.sonar.plugins.erlang.eunit;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
@@ -41,12 +41,12 @@ import java.util.List;
 
 public class EunitXmlSensor implements Sensor {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EunitXmlSensor.class);
-    private final MetricFinder metricFinder;
+  private static final Logger LOG = Loggers.get(EunitXmlSensor.class);
+  private final MetricFinder metricFinder;
 
-    public EunitXmlSensor(MetricFinder metricFinder) {
-        this.metricFinder = metricFinder;
-    }
+  public EunitXmlSensor(MetricFinder metricFinder) {
+    this.metricFinder = metricFinder;
+  }
 
     @Override
     public void describe(SensorDescriptor descriptor) {
@@ -106,20 +106,20 @@ public class EunitXmlSensor implements Sensor {
         });
     }
 
-    private void saveIntegerMeasure(SensorContext context, MetricFinder metricFinder, InputFile file,
-                                    String metric, Integer value) {
-        context.newMeasure().forMetric(metricFinder.findByKey(metric)).on(file).withValue(value).save();
-    }
+  private void saveIntegerMeasure(SensorContext context, MetricFinder metricFinder, InputFile file,
+                                  String metric, Integer value) {
+    context.newMeasure().forMetric(metricFinder.findByKey(metric)).on(file).withValue(value).save();
+  }
 
-    private void saveLongMeasure(SensorContext context, MetricFinder metricFinder, InputFile file,
-                                 String metric, Long value) {
-        context.newMeasure().forMetric(metricFinder.findByKey(metric)).on(file).withValue(value).save();
-    }
+  private void saveLongMeasure(SensorContext context, MetricFinder metricFinder, InputFile file,
+                               String metric, Long value) {
+    context.newMeasure().forMetric(metricFinder.findByKey(metric)).on(file).withValue(value).save();
+  }
 
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 
 }

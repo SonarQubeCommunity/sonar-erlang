@@ -19,8 +19,8 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,7 +33,7 @@ import java.util.List;
 
 final class ErlangXmlRuleParser {
 
-  private static final Logger LOG = LoggerFactory.getLogger("ErlangXmlRuleParser");
+  private static final Logger LOG = Loggers.get("ErlangXmlRuleParser");
 
   List<ErlangRule> parse(InputStream input) {
     SAXParserFactory factory = SAXParserFactory.newInstance();

@@ -76,8 +76,6 @@
                 <include>org.sonarsource.sslr:sslr-toolkit</include>
                 <include>org.codehaus.sonar:sonar-colorizer</include>
                 <include>org.codehaus.sonar:sonar-channel</include>
-                <include>org.slf4j:slf4j-api</include>
-                <include>org.slf4j:jcl-over-slf4j</include>
                 <include>ch.qos.logback:logback-classic</include>
                 <include>ch.qos.logback:logback-core</include>
                 <include>commons-io:commons-io</include>

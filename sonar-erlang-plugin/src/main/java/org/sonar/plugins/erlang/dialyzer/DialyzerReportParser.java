@@ -20,8 +20,6 @@
 package org.sonar.plugins.erlang.dialyzer;
 
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.TextRange;
 import org.sonar.api.batch.rule.ActiveRule;
@@ -30,6 +28,8 @@ import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.config.Configuration;
 import org.sonar.api.rule.RuleKey;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
 import java.io.*;
@@ -45,7 +45,7 @@ public class DialyzerReportParser {
 
   private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?):([0-9]+):(.*)";
   private static final String REPO_KEY = DialyzerRuleDefinition.REPOSITORY_KEY;
-  private static final Logger LOG = LoggerFactory.getLogger(DialyzerReportParser.class);
+  private static final Logger LOG = Loggers.get(DialyzerReportParser.class);
   private final SensorContext context;
 
 
