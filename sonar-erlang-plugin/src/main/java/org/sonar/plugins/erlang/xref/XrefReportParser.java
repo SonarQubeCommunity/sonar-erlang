@@ -19,8 +19,8 @@
  */
 package org.sonar.plugins.erlang.xref;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.ActiveRule;
 import org.sonar.api.batch.sensor.SensorContext;
@@ -42,7 +42,7 @@ public class XrefReportParser {
 
   private static final String XREF_VIOLATION_ROW_REGEX = "Warning: ([^ :]*):([^/]*)/([0-9]+) .*";
   private static final String REPO_KEY = XrefRuleDefinition.REPOSITORY_KEY;
-  private static final Logger LOG = LoggerFactory.getLogger(XrefReportParser.class);
+  private static final Logger LOG = Loggers.get(XrefReportParser.class);
   private final SensorContext context;
 
   XrefReportParser(SensorContext context) {

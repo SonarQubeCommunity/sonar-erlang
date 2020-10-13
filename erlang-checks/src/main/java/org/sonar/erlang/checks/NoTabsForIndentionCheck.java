@@ -26,8 +26,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -40,7 +40,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleConstantRemediation("1min")
 public class NoTabsForIndentionCheck extends SquidCheck<LexerlessGrammar> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(NoTabsForIndentionCheck.class);
+  private static final Logger LOG = Loggers.get(NoTabsForIndentionCheck.class);
 
   @Override
   public void visitFile(AstNode astNode) {

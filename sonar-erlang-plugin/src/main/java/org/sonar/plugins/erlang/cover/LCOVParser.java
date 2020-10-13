@@ -21,8 +21,9 @@ package org.sonar.plugins.erlang.cover;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,7 @@ import java.util.List;
 final class LCOVParser {
 
   private static final String COVERAGE_DATA_REGEX = "(.*?)([0-9]+)(\\.*|.*?)";
-  private static final Logger LOG = LoggerFactory.getLogger(LCOVParser.class);
+  private static final Logger LOG = Loggers.get(LCOVParser.class);
 
   ErlangFileCoverage parseFile(File file) {
     List<String> lines = new LinkedList<>();

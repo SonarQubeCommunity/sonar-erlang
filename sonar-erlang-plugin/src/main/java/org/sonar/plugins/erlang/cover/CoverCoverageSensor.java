@@ -19,8 +19,8 @@
  */
 package org.sonar.plugins.erlang.cover;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
@@ -42,7 +42,7 @@ import java.util.Optional;
 
 public class CoverCoverageSensor implements Sensor {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CoverCoverageSensor.class);
+  private static final Logger LOG = Loggers.get(CoverCoverageSensor.class);
 
   @Override
   public void describe(SensorDescriptor descriptor) {

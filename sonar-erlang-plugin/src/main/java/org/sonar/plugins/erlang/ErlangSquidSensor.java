@@ -20,8 +20,8 @@
 package org.sonar.plugins.erlang;
 
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
@@ -66,7 +66,7 @@ import java.util.List;
 
 public class ErlangSquidSensor implements Sensor {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ErlangSquidSensor.class);
+  private static final Logger LOG = Loggers.get(ErlangSquidSensor.class);
 
   private static final Number[] FUNCTIONS_DISTRIB_BOTTOM_LIMITS = {1, 2, 4, 6, 8, 10, 12, 20, 30};
   private static final Number[] FILES_DISTRIB_BOTTOM_LIMITS = {0, 5, 10, 20, 30, 60, 90};
