@@ -76,6 +76,7 @@
         <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
         <sonar.organization>evolution-gaming</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+	<sonar.coverage.jacoco.xmlReportPaths>${_rootdir}/sonar-erlang-plugin/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
@@ -205,6 +206,26 @@
                     <header>${_rootdir}/GNU-LGPL-v3.txt</header>
                 </configuration>
             </plugin>
+	    <plugin>
+                <groupId>org.jacoco</groupId>
+		<artifactId>jacoco-maven-plugin</artifactId>
+		<version>0.8.6</version>
+		<executions>
+		    <execution>
+                        <id>default-prepare-agent</id>
+			<goals>
+			    <goal>prepare-agent</goal>
+			</goals>
+		    </execution>
+		    <execution>
+                        <id>default-report-aggregate</id>
+			<goals>
+			    <goal>report-aggregate</goal>
+			</goals>
+			<phase>verify</phase>
+		    </execution>
+		</executions>
+	    </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
