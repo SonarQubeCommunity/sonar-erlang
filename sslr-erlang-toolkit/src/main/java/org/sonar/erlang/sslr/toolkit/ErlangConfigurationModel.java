@@ -22,8 +22,8 @@ package org.sonar.erlang.sslr.toolkit;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.impl.Parser;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonar.colorizer.CDocTokenizer;
 import org.sonar.colorizer.CppDocTokenizer;
 import org.sonar.colorizer.JavadocTokenizer;
@@ -44,7 +44,7 @@ import java.util.List;
 
 public class ErlangConfigurationModel extends AbstractConfigurationModel {
 
-  private static final Logger LOG = Loggers.get(ErlangConfigurationModel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ErlangConfigurationModel.class);
   private static final String CHARSET_PROPERTY_KEY = "sonar.sourceEncoding";
   private static final String END_TAG = "</span>";
 
