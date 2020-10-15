@@ -89,10 +89,10 @@ public class ErlangConfigurationModel extends AbstractConfigurationModel {
     String propertyValue = System.getProperty(propertyKey);
 
     if (propertyValue == null) {
-      LOG.info("The property \"" + propertyKey + "\" is not set, using the default value \"" + defaultValue + "\".");
+      LOG.info("The property \"{}\" is not set, using the default value \"{}}\".", propertyKey,  defaultValue);
       return defaultValue;
     } else {
-      LOG.info("The property \"" + propertyKey + "\" is set, using its value \"" + propertyValue + "\".");
+      LOG.info("The property \"{}\" is set, using its value \"{}\".", propertyKey, propertyValue);
       return propertyValue;
     }
   }
