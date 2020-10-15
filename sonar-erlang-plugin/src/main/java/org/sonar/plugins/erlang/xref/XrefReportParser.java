@@ -32,6 +32,8 @@ import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.dialyzer.ErlangRuleManager;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,35 +66,34 @@ public class XrefReportParser {
       reportFileName = configuration.get(ErlangPlugin.XREF_FILENAME_KEY).orElse(ErlangPlugin.XREF_DEFAULT_FILENAME);
       File file = new File(reportsDir, reportFileName);
 
-      FileInputStream fstream = new FileInputStream(file);
+      InputStream fstream = Files.newInputStream(file.toPath());
       DataInputStream in = new DataInputStream(fstream);
-      BufferedReader xrefOutput = new BufferedReader(new InputStreamReader(in));
-      BufferedReader breader = new BufferedReader(xrefOutput);
+      try (BufferedReader breader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
-      String strLine;
-      Pattern pattern = Pattern.compile(XREF_VIOLATION_ROW_REGEX);
-      while ((strLine = breader.readLine()) != null) {
-        Matcher matcher = pattern.matcher(strLine);
-        if (!matcher.matches()) {
-          continue;
-        }
+        String strLine;
+        Pattern pattern = Pattern.compile(XREF_VIOLATION_ROW_REGEX);
+        while ((strLine = breader.readLine()) != null) {
+          Matcher matcher = pattern.matcher(strLine);
+          if (!matcher.matches()) {
+            continue;
+          }
 
-        String fileName = matcher.group(1);
+          String fileName = matcher.group(1);
 
-        String key = ruleManager.getRuleKeyByMessage(strLine);
-        RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
-        ActiveRule rule = context.activeRules().find(ruleKey);
-        if (rule != null) {
-          String filePattern = "**/" + fileName + ".erl";
-          InputFile inputFile = context.fileSystem().inputFile(
-                  context.fileSystem().predicates().matchesPathPattern(filePattern));
-          if (inputFile != null) {
-            NewIssue issue = getNewIssue(strLine, ruleKey, inputFile);
-            issue.save();
+          String key = ruleManager.getRuleKeyByMessage(strLine);
+          RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
+          ActiveRule rule = context.activeRules().find(ruleKey);
+          if (rule != null) {
+            String filePattern = "**/" + fileName + ".erl";
+            InputFile inputFile = context.fileSystem().inputFile(
+                    context.fileSystem().predicates().matchesPathPattern(filePattern));
+            if (inputFile != null) {
+              NewIssue issue = getNewIssue(strLine, ruleKey, inputFile);
+              issue.save();
+            }
           }
         }
       }
-      breader.close();
     } catch (FileNotFoundException e) {
       LOG.warn("Xref file not found at: {} have you ran xref before analysis?", reportFileName, e);
     } catch (IOException e) {

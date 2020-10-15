@@ -33,6 +33,8 @@ import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,37 +69,36 @@ public class DialyzerReportParser {
       dialyzerFileName = configuration.get(ErlangPlugin.DIALYZER_FILENAME_KEY).orElse(ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
       File file = new File(reportsDir, dialyzerFileName);
 
-      FileInputStream fstream = new FileInputStream(file);
+      InputStream fstream = Files.newInputStream(file.toPath());
       DataInputStream in = new DataInputStream(fstream);
-      BufferedReader dialyzerOutput = new BufferedReader(new InputStreamReader(in));
-      BufferedReader breader = new BufferedReader(dialyzerOutput);
+      try (BufferedReader breader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
-      String strLine;
-      Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
-      while ((strLine = breader.readLine()) != null) {
-        Matcher matcher = pattern.matcher(strLine);
-        if (!matcher.matches()) {
-          continue;
-        }
+        String strLine;
+        Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
+        while ((strLine = breader.readLine()) != null) {
+          Matcher matcher = pattern.matcher(strLine);
+          if (!matcher.matches()) {
+            continue;
+          }
 
-        String fileName = matcher.group(1);
-        String lineNumber = matcher.group(2);
-        String comment = matcher.group(3).trim();
+          String fileName = matcher.group(1);
+          String lineNumber = matcher.group(2);
+          String comment = matcher.group(3).trim();
 
-        String key = dialyzerRuleManager.getRuleKeyByMessage(comment);
-        RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
-        ActiveRule rule = context.activeRules().find(ruleKey);
-        if (rule != null) {
-          String filePattern = "**/" + FilenameUtils.getName(fileName);
-          InputFile inputFile = context.fileSystem().inputFile(
-                  context.fileSystem().predicates().matchesPathPattern(filePattern));
-          if (inputFile != null) {
-            NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
-            issue.save();
+          String key = dialyzerRuleManager.getRuleKeyByMessage(comment);
+          RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
+          ActiveRule rule = context.activeRules().find(ruleKey);
+          if (rule != null) {
+            String filePattern = "**/" + FilenameUtils.getName(fileName);
+            InputFile inputFile = context.fileSystem().inputFile(
+                    context.fileSystem().predicates().matchesPathPattern(filePattern));
+            if (inputFile != null) {
+              NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
+              issue.save();
+            }
           }
         }
       }
-      breader.close();
     } catch (FileNotFoundException e) {
       LOG.warn("Dialyzer file not found at: {}, have you ran dialyzer before analysis?", dialyzerFileName);
     } catch (IOException e) {
