@@ -20,7 +20,6 @@
 package org.sonar.plugins.erlang.dialyzer;
 
 import org.sonar.api.batch.sensor.Sensor;
-import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;

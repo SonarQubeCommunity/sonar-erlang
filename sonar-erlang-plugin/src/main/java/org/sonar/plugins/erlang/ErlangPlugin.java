@@ -22,8 +22,6 @@ package org.sonar.plugins.erlang;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.api.Plugin;
-import org.sonar.api.config.PropertyDefinition;
-import org.sonar.api.resources.Qualifiers;
 import org.sonar.plugins.erlang.checks.ErlangChecksRuleDefinition;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;
 import org.sonar.plugins.erlang.cover.CoverCoverageSensor;

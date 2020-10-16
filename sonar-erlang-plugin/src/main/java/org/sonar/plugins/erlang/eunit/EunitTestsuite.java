@@ -20,12 +20,10 @@
 package org.sonar.plugins.erlang.eunit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import org.sonar.api.batch.fs.InputFile;
 
-import java.io.File;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
