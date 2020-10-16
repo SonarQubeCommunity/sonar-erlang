@@ -19,15 +19,13 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ErlangRuleManager  {
 
-  private List<ErlangRule> rules = new ArrayList<ErlangRule>();
+  private final List<ErlangRule> rules;
 
   private static final String OTHER_RULES_KEY = "OTHER_RULES";
-  public static final String UNUSED_NAMES_KEY = "UNUSED_NAMES";
 
   public ErlangRuleManager(String rulesPath) {
     rules = new ErlangXmlRuleParser().parse(ErlangRuleManager.class

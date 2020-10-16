@@ -45,7 +45,7 @@ public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar
     ErlangGrammarImpl.rcurlybrace, ErlangGrammarImpl.rparenthesis);
   List<ErlangGrammarImpl> noSpaceAfter = ImmutableList.of(ErlangGrammarImpl.lbracket,
     ErlangGrammarImpl.lcurlybrace, ErlangGrammarImpl.lparenthesis);
-  List<Integer> failedLines = new ArrayList<Integer>();
+  List<Integer> failedLines = new ArrayList<>();
 
   private int numOfViolations = 0;
 
