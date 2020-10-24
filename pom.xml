@@ -15,7 +15,7 @@
 
   <name>Erlang</name>
   <description>Parent pom of SonarQube erlang plugin</description>
-  <url />
+  <url/>
   <inceptionYear>2012</inceptionYear>
   <organization>
     <name>Tamas Kende</name>
@@ -63,7 +63,7 @@
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
     <sonar.version>6.7</sonar.version>
-    <sslr.version>1.21</sslr.version>
+    <sslr.version>1.22</sslr.version>
   </properties>
 
   <dependencyManagement>
@@ -147,7 +147,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>18.0</version>
+        <version>r03</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -220,7 +220,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore />
+                    <ignore/>
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -239,7 +239,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore />
+                    <ignore/>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
