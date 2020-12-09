@@ -21,9 +21,6 @@ package org.sonar.plugins.erlang.eunit;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
-import com.google.common.collect.Lists;
-
-import java.util.List;
 
 public final class EunitTestCase {
   @JacksonXmlProperty(isAttribute = true)

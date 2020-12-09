@@ -53,8 +53,7 @@ public class NoTrailingWhitespaceCheck extends SquidCheck<LexerlessGrammar> {
   }
 
   private void checkFileIndention(File source) throws FileNotFoundException {
-    Scanner scanner = new Scanner(new FileInputStream(source));
-    try {
+    try (Scanner scanner = new Scanner(new FileInputStream(source))) {
       int lineNumber = 1;
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
@@ -63,8 +62,6 @@ public class NoTrailingWhitespaceCheck extends SquidCheck<LexerlessGrammar> {
         }
         lineNumber++;
       }
-    } finally {
-      scanner.close();
     }
   }
 

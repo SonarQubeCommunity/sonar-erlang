@@ -33,7 +33,6 @@ import org.sonar.colorizer.Tokenizer;
 import org.sonar.erlang.ErlangConfiguration;
 import org.sonar.erlang.api.ErlangKeyword;
 import org.sonar.erlang.parser.ErlangGrammarImpl;
-import org.sonar.sslr.parser.LexerlessGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
 import org.sonar.sslr.toolkit.AbstractConfigurationModel;
 import org.sonar.sslr.toolkit.ConfigurationProperty;
@@ -50,7 +49,7 @@ public class ErlangConfigurationModel extends AbstractConfigurationModel {
 
   @VisibleForTesting
   ConfigurationProperty charsetProperty = new ConfigurationProperty("Charset",
-    CHARSET_PROPERTY_KEY, getPropertyOrDefaultValue(CHARSET_PROPERTY_KEY, "UTF-8"),
+    CHARSET_PROPERTY_KEY, getPropertyOrDefaultValue(),
     Validators.charsetValidator());
 
   @Override
@@ -60,7 +59,7 @@ public class ErlangConfigurationModel extends AbstractConfigurationModel {
 
   @Override
   public Parser doGetParser() {
-    return new ParserAdapter<LexerlessGrammar>(getCharset(), ErlangGrammarImpl.createGrammar());
+    return new ParserAdapter<>(getCharset(), ErlangGrammarImpl.createGrammar());
   }
 
   @Override
@@ -84,15 +83,14 @@ public class ErlangConfigurationModel extends AbstractConfigurationModel {
   }
 
   @VisibleForTesting
-  static String getPropertyOrDefaultValue(String propertyKey,
-                                          String defaultValue) {
-    String propertyValue = System.getProperty(propertyKey);
+  static String getPropertyOrDefaultValue() {
+    String propertyValue = System.getProperty(ErlangConfigurationModel.CHARSET_PROPERTY_KEY);
 
     if (propertyValue == null) {
-      LOG.info("The property \"{}\" is not set, using the default value \"{}}\".", propertyKey,  defaultValue);
-      return defaultValue;
+      LOG.info("The property \"{}\" is not set, using the default value \"{}}\".", ErlangConfigurationModel.CHARSET_PROPERTY_KEY, "UTF-8");
+      return "UTF-8";
     } else {
-      LOG.info("The property \"{}\" is set, using its value \"{}\".", propertyKey, propertyValue);
+      LOG.info("The property \"{}\" is set, using its value \"{}\".", ErlangConfigurationModel.CHARSET_PROPERTY_KEY, propertyValue);
       return propertyValue;
     }
   }

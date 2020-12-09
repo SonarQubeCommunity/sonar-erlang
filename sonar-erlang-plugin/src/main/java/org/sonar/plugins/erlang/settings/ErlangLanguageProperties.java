@@ -19,6 +19,7 @@
  */
 package org.sonar.plugins.erlang.settings;
 
+import java.util.Collections;
 import java.util.List;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonar.api.resources.Qualifiers;
@@ -35,7 +36,7 @@ public class ErlangLanguageProperties {
   }
 
   public static List<PropertyDefinition> getProperties() {
-    return asList(PropertyDefinition.builder(FILE_SUFFIXES_KEY)
+    return Collections.singletonList(PropertyDefinition.builder(FILE_SUFFIXES_KEY)
             .multiValues(true)
             .defaultValue(FILE_SUFFIXES_DEFAULT_VALUE)
             .category("Erlang")

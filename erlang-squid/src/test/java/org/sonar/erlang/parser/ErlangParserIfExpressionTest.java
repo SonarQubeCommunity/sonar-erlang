@@ -22,7 +22,6 @@ package org.sonar.erlang.parser;
 import org.junit.Before;
 import org.junit.Test;
 import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 

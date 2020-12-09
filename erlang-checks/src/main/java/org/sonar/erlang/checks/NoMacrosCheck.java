@@ -19,14 +19,7 @@
  */
 package org.sonar.erlang.checks;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -36,36 +29,36 @@ import org.sonar.squidbridge.annotations.NoSqale;
 import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Rule(key = "NoMacros", priority = Priority.MAJOR)
 @BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 @NoSqale
 public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
 
   @RuleProperty(key = "skipDefineInFlowControl", defaultValue = "true",
-    description = "Set it false if you want to check macros in flow controls.")
+          description = "Set it false if you want to check macros in flow controls.")
   private boolean skipDefineInFlowControl = true;
 
   @RuleProperty(key = "allowLiteralMacros", defaultValue = "true",
-    description = "Set it to false if you want to have warnings on macros like: -define(TIMEOUT, 1000).")
+          description = "Set it to false if you want to have warnings on macros like: -define(TIMEOUT, 1000).")
   private boolean allowLiteralMacros = true;
 
   @RuleProperty(key = "ignoredMacroNames", defaultValue = "",
-    description = "Comma separated list of ignored macro names.")
+          description = "Comma separated list of ignored macro names.")
   private String ignoredMacroNames = "";
 
-  private List<String> ignoreList = new ArrayList<String>();
-
-  Function<String, String> trimItems = new Function<String, String>() {
-    @Override
-    public String apply(String arg0) {
-      return arg0.trim();
-    }
-  };
+  private final List<String> ignoreList = new ArrayList<>();
 
   @Override
   public void init() {
     subscribeTo(ErlangGrammarImpl.defineAttr);
-    ignoreList.addAll(Lists.transform(Arrays.asList(ignoredMacroNames.split(",")), trimItems));
+    ignoreList.addAll(Arrays.stream(ignoredMacroNames.split(","))
+            .map(String::trim)
+            .collect(Collectors.toList()));
   }
 
   @Override
@@ -80,7 +73,7 @@ public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
   }
 
   private boolean isNotLiteralMacro(AstNode astNode) {
-    return (astNode.hasDescendant(ErlangGrammarImpl.funcDecl) && allowLiteralMacros) || (!allowLiteralMacros);
+    return astNode.hasDescendant(ErlangGrammarImpl.funcDecl) || !allowLiteralMacros;
   }
 
   private boolean hasFlowControlParent(AstNode astNode) {
@@ -89,8 +82,8 @@ public class NoMacrosCheck extends SquidCheck<LexerlessGrammar> {
 
   private String getMacroName(AstNode astNode) {
     AstNode token = (astNode.getFirstChild(ErlangGrammarImpl.funcDecl) != null) ? astNode.getFirstChild(ErlangGrammarImpl.funcDecl).getFirstChild(ErlangGrammarImpl.literal)
-      : astNode
-      .getFirstChild(ErlangGrammarImpl.primaryExpression);
+            : astNode
+            .getFirstChild(ErlangGrammarImpl.primaryExpression);
     return token.getTokenOriginalValue();
   }
 

@@ -48,7 +48,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
   @RuleProperty(key = "maxBlankLinesOutsideFunctions", defaultValue = "2")
   public int maxBlankLinesOutsideFunctions = 2;
 
-  private List<Integer> checkedLines = new ArrayList<Integer>();
+  private final List<Integer> checkedLines = new ArrayList<>();
   private boolean isInsideFunction = false;
 
   @Override
@@ -79,7 +79,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
       if (checkBlankLines(token, previousLine)) {
         getContext().createLineViolation(this,
           "Too many blank lines found, the threshold is {0}.",
-          token.getLine(), getMaxFor(token));
+          token.getLine(), getMaxFor());
       }
       checkedLines.add(token.getLine());
     }
@@ -90,7 +90,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
     return line1 - line2 - 1 > comp;
   }
 
-  private int getMaxFor(Token token) {
+  private int getMaxFor() {
     return (isInsideFunction) ? maxBlankLinesInsideFunctions : maxBlankLinesOutsideFunctions;
   }
 
@@ -106,7 +106,7 @@ public class MultipleBlankLinesCheck extends SquidCheck<LexerlessGrammar> implem
   }
 
   private boolean checkBlankLines(Token token, int previousLine) {
-    int compTo = getMaxFor(token);
+    int compTo = getMaxFor();
 
     boolean check = compare(token.getLine(), previousLine, compTo);
     if (check && token.hasTrivia()) {

@@ -19,7 +19,6 @@
  */
 package org.sonar.erlang.parser;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.sonar.sslr.parser.LexerlessGrammar;
 

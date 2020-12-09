@@ -42,7 +42,7 @@ public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar>
   List<ErlangGrammarImpl> operators = ImmutableList.of(ErlangGrammarImpl.matchop,
     ErlangGrammarImpl.star, ErlangGrammarImpl.div, ErlangGrammarImpl.plus,
     ErlangGrammarImpl.minus);
-  List<Integer> failedLines = new ArrayList<Integer>();
+  List<Integer> failedLines = new ArrayList<>();
 
   private int numOfViolations = 0;
 

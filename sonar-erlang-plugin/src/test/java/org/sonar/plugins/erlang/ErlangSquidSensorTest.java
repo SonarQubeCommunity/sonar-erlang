@@ -58,13 +58,6 @@ public class ErlangSquidSensorTest {
     when(metricFinder.<Integer>findByKey(CoreMetrics.STATEMENTS_KEY)).thenReturn(CoreMetrics.STATEMENTS);
     when(metricFinder.<Integer>findByKey(CoreMetrics.COMPLEXITY_KEY)).thenReturn(CoreMetrics.COMPLEXITY);
     when(metricFinder.<Integer>findByKey(CoreMetrics.COMMENT_LINES_KEY)).thenReturn(CoreMetrics.COMMENT_LINES);
-    when(metricFinder.<Integer>findByKey(CoreMetrics.PUBLIC_API_KEY)).thenReturn(CoreMetrics.PUBLIC_API);
-    when(metricFinder.<Integer>findByKey(CoreMetrics.PUBLIC_UNDOCUMENTED_API_KEY))
-            .thenReturn(CoreMetrics.PUBLIC_UNDOCUMENTED_API);
-    when(metricFinder.<String>findByKey(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION_KEY))
-            .thenReturn(CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION);
-    when(metricFinder.<String>findByKey(CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION_KEY))
-            .thenReturn(CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION);
 
     sensor = new ErlangSquidSensor(new CheckFactory(mock(ActiveRules.class)), metricFinder);
   }
