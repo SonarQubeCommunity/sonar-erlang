@@ -18,42 +18,49 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
+
 package org.sonar.plugins.erlang.cover;
 
-import com.ericsson.otp.erlang.OtpErlangDecodeException;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
-
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.sonar.plugins.erlang.ProjectUtil;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CoverDataFileParserTest {
 
+  private File coverDataTestFile;
+
+  @Before
+  public void setUp() {
+    coverDataTestFile = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/eunit.coverdata");
+  }
+
   @Test
-  public void test() throws IOException, URISyntaxException, OtpErlangDecodeException {
-    List<ErlangFileCoverage> coverageResult = CoverDataFileParser.parse(new File(ProjectUtil.class.getResource("/org/sonar/plugins/erlang/erlcount/.eunit/eunit.coverdata").toURI()));
+  public void parseTest() throws IOException {
+    List<ErlangFileCoverage> coverageResult = CoverDataFileParser.parse(coverDataTestFile);
     assertThat(coverageResult.get(0), Matchers.notNullValue());
-    ErlangFileCoverage cov = getResultOfModule("erlcount_lib.erl", coverageResult);
-    assertThat(cov.getCoveredLines(), Matchers.equalTo(19));
-    assertThat(cov.getLinesToCover(), Matchers.equalTo(21));
-    assertThat(cov.getUncoveredLines(), Matchers.equalTo(2));
+
+    ErlangFileCoverage moduleCoverage = getCoverageResultForModule("erlcount_lib.erl", coverageResult);
+
+    assertThat(moduleCoverage, Matchers.notNullValue());
+    assertThat(moduleCoverage.getCoveredLines(), Matchers.equalTo(19));
+    assertThat(moduleCoverage.getLinesToCover(), Matchers.equalTo(21));
+    assertThat(moduleCoverage.getUncoveredLines(), Matchers.equalTo(2));
   }
 
-  private ErlangFileCoverage getResultOfModule(String module, List<ErlangFileCoverage> cov) {
-    for (ErlangFileCoverage erlangFileCoverage : cov) {
-      if (module.equals(erlangFileCoverage.getFilePath())) {
-        return erlangFileCoverage;
-      }
-    }
-    return null;
+  private ErlangFileCoverage getCoverageResultForModule(String module, List<ErlangFileCoverage> cov) {
+    return cov
+            .stream()
+            .filter(erlangFileCoverage ->
+                    erlangFileCoverage.getFilePath().equals(module))
+            .collect(Collectors.toList())
+            .get(0);
   }
-
 }
-*/
+

@@ -20,11 +20,11 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import java.util.List;
-
 import org.junit.Test;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
+
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.sonar.api.server.rule.RulesDefinition.Repository;
@@ -39,11 +39,12 @@ public class DialyzerRuleDefinitionTest {
 
     Repository repository = context.repository(DialyzerRuleDefinition.REPOSITORY_KEY);
 
+    assert repository != null;
     assertThat(repository.name()).isEqualTo(DialyzerRuleDefinition.REPOSITORY_NAME);
 
     List<RulesDefinition.Rule> rules = repository.rules();
 
-    assertThat(rules.size()).isEqualTo(41);
+    assertThat(rules.size()).isEqualTo(7);
   }
 
 }

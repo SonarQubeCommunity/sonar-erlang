@@ -28,7 +28,9 @@ import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
+import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
+import org.sonar.api.batch.sensor.internal.DefaultSensorDescriptor;
 import org.sonar.api.config.PropertyDefinitions;
 import org.sonar.api.config.internal.MapSettings;
 import org.sonar.plugins.erlang.ErlangPlugin;
@@ -79,6 +81,14 @@ public class CoverCoverageSensorTest {
     context.lineHits("test:src/erlcount_lib.erl", 1);
     assertThat(context.lineHits("test:src/erlcount_lib.erl", 7)).isEqualTo(2);
     assertThat(context.lineHits("test:src/erlcount_lib.erl", 10)).isEqualTo(12);
+  }
+
+  @Test
+  public void testDescribe() {
+    CoverCoverageSensor coverCoverageSensor = new CoverCoverageSensor();
+    SensorDescriptor descriptor = new DefaultSensorDescriptor();
+    coverCoverageSensor.describe(descriptor);
+    assertThat(descriptor).isNotNull();
   }
 
 }

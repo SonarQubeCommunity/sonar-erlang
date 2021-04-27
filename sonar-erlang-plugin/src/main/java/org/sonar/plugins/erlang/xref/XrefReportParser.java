@@ -20,8 +20,6 @@
  */
 package org.sonar.plugins.erlang.xref;
 
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.ActiveRule;
 import org.sonar.api.batch.sensor.SensorContext;
@@ -29,6 +27,8 @@ import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.config.Configuration;
 import org.sonar.api.rule.RuleKey;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.dialyzer.ErlangRuleManager;
 
@@ -47,28 +47,30 @@ public class XrefReportParser {
   private static final String REPO_KEY = XrefRuleDefinition.REPOSITORY_KEY;
   private static final Logger LOG = Loggers.get(XrefReportParser.class);
   private final SensorContext context;
+  private final Configuration configuration;
 
   XrefReportParser(SensorContext context) {
+
     this.context = context;
+    this.configuration = context.config();
   }
 
+  /**
+   * Parse xref report results using a set of rules
+   *
+   * @param ruleManager set of Erlang rules
+   */
   public void xref(ErlangRuleManager ruleManager) {
-    /*
-      Read xref results
-     */
-    Configuration configuration;
-    configuration = context.config();
-
     String reportFileName = ErlangPlugin.XREF_DEFAULT_FILENAME;
     try {
       File reportsDir = new File(context.fileSystem().baseDir().getPath(),
               configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
 
       reportFileName = configuration.get(ErlangPlugin.XREF_FILENAME_KEY).orElse(ErlangPlugin.XREF_DEFAULT_FILENAME);
-      File file = new File(reportsDir, reportFileName);
 
-      InputStream fstream = Files.newInputStream(file.toPath());
-      DataInputStream in = new DataInputStream(fstream);
+      File file = new File(reportsDir, reportFileName);
+      DataInputStream in = new DataInputStream(Files.newInputStream(file.toPath()));
+
       try (BufferedReader breader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
         String strLine;
@@ -100,6 +102,24 @@ public class XrefReportParser {
     } catch (IOException e) {
       LOG.error("Error while trying to parse xref report at {}.", reportFileName, e);
     }
+  }
+
+  /**
+   * Get the xref report target directory key.
+   *
+   * @return repository key
+   */
+  public static String getRepoKey() {
+    return REPO_KEY;
+  }
+
+  /**
+   * Get current xref report parser configuration
+   *
+   * @return configuration
+   */
+  public Configuration getConfiguration() {
+    return this.configuration;
   }
 
   private NewIssue getNewIssue(String message, RuleKey ruleKey, InputFile inputFile) {

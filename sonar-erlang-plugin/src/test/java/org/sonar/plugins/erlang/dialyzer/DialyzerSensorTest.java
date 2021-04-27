@@ -18,50 +18,59 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
+
 package org.sonar.plugins.erlang.dialyzer;
 
-import java.io.File;
-import java.nio.file.Files;
-
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
+import org.sonar.api.batch.rule.internal.NewActiveRule;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.config.PropertyDefinitions;
-import org.sonar.api.config.Settings;
 import org.sonar.api.config.internal.MapSettings;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.erlang.ErlangPlugin;
+
+import java.io.File;
+import java.nio.file.Files;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class DialyzerSensorTest {
 
-  private File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
-  private Settings settings;
+  MapSettings settings;
+  private final File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
   private SensorContextTester context;
 
   @Before
   public void setup() {
     settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
     context = SensorContextTester.create(testModuleBasedir);
-    ActiveRules rules = (new ActiveRulesBuilder())
-            .create(RuleKey.of(DialyzerRuleDefinition.REPOSITORY_KEY, "D019"))
+
+    NewActiveRule rule1 = new NewActiveRule.Builder()
+            .setRuleKey(RuleKey.of(DialyzerRuleDefinition.REPOSITORY_KEY, "D019"))
             .setName("unused_fun")
-            .activate()
-            .create(RuleKey.of(DialyzerRuleDefinition.REPOSITORY_KEY, "D041"))
-            .setName("callback_missing")
-            .activate()
             .build();
+    NewActiveRule rule2 = new NewActiveRule.Builder()
+            .setRuleKey(RuleKey.of(DialyzerRuleDefinition.REPOSITORY_KEY, "D041"))
+            .setName("callback_missing")
+            .build();
+
+    ActiveRules rules = new ActiveRulesBuilder()
+            .addRule(rule1)
+            .addRule(rule2)
+            .build();
+
     context.setActiveRules(rules);
+
   }
 
-  private void addFile(SensorContextTester context, String path) throws Exception{
+  private void addFile(SensorContextTester context, String path) throws Exception {
     DefaultInputFile dif = new TestInputFileBuilder("test", path)
             .setLanguage("erlang")
             .setType(InputFile.Type.MAIN)
@@ -72,7 +81,7 @@ public class DialyzerSensorTest {
     context.fileSystem().add(dif);
   }
 
-  @Test
+  @Ignore("Verify that Dialyzer sensor actually works.")
   public void checkDialyzerSensor() throws Exception {
     settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
@@ -87,4 +96,4 @@ public class DialyzerSensorTest {
   }
 
 }
-*/
+

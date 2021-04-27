@@ -20,38 +20,31 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.sonar.api.batch.sensor.Sensor;
-import org.sonar.api.batch.sensor.SensorContext;
-import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.plugins.erlang.languages.ErlangLanguage;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.sonar.api.rules.Rule;
 
-/**
- * Calls the dialyzer report parser saves violations to sonar
- *
- * @author tkende
- */
-public class DialyzerSensor implements Sensor {
+public class ErlangRuleTest {
+  ErlangRule erlangRule;
 
-  private final ErlangRuleManager dialyzerRuleManager;
-
-  public DialyzerSensor() {
-    dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
+  @Before
+  public void setUp() {
+    erlangRule = new ErlangRule();
   }
 
-  @Override
-  public String toString() {
-    return getClass().getSimpleName();
+  @Test
+  public void testGetRule() {
+    Rule rule = erlangRule.getRule();
+
+    Assert.assertNotNull(rule);
   }
 
-  @Override
-  public void describe(SensorDescriptor descriptor) {
-    descriptor
-            .onlyOnLanguage(ErlangLanguage.KEY)
-            .name("Erlang Dialyzer Sensor");
+  @Test
+  public void testRuleMessageAdd() {
+    erlangRule.addMessage("test message");
+
+    Assert.assertTrue(erlangRule.hasMessage("test message"));
   }
 
-  @Override
-  public void execute(SensorContext context) {
-    new DialyzerReportParser(context).dialyzer(dialyzerRuleManager);
-  }
 }

@@ -20,23 +20,10 @@
  */
 package org.sonar.plugins.erlang.cover;
 
-import com.ericsson.otp.erlang.OtpErlangAtom;
-import com.ericsson.otp.erlang.OtpErlangDecodeException;
-import com.ericsson.otp.erlang.OtpErlangException;
-import com.ericsson.otp.erlang.OtpErlangLong;
-import com.ericsson.otp.erlang.OtpErlangObject;
-import com.ericsson.otp.erlang.OtpErlangRangeException;
-import com.ericsson.otp.erlang.OtpErlangTuple;
-import com.ericsson.otp.erlang.OtpInputStream;
+import com.ericsson.otp.erlang.*;
 import com.google.common.base.Preconditions;
-import com.google.common.io.Closeables;
 
-import java.io.BufferedInputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,9 +49,9 @@ import java.util.List;
  */
 class CoverDataFileParser {
 
-  private static OtpErlangAtom SIZE_ATOM = new OtpErlangAtom("$size");
-  private static OtpErlangAtom BUMP_ATOM = new OtpErlangAtom("bump");
-  private static OtpErlangAtom FILE_ATOM = new OtpErlangAtom("file");
+  private static final OtpErlangAtom SIZE_ATOM = new OtpErlangAtom("$size");
+  private static final OtpErlangAtom BUMP_ATOM = new OtpErlangAtom("bump");
+  private static final OtpErlangAtom FILE_ATOM = new OtpErlangAtom("file");
 
   /**
    * Do not instantiate CoverCoverageParser.
@@ -73,16 +60,8 @@ class CoverDataFileParser {
   }
 
   static List<ErlangFileCoverage> parse(File inFile) throws IOException {
-    InputStream fin = new FileInputStream(inFile);
-    try {
-      InputStream in = new BufferedInputStream(fin);
-      try {
-        return parse(in);
-      } finally {
-        Closeables.closeQuietly(in);
-      }
-    } finally {
-      Closeables.closeQuietly(fin);
+    try (InputStream in = new BufferedInputStream(new FileInputStream(inFile))) {
+      return parse(in);
     }
   }
 
@@ -98,7 +77,6 @@ class CoverDataFileParser {
         if (term instanceof OtpErlangTuple) {
           OtpErlangTuple tuple = (OtpErlangTuple) term;
           if (tuple.arity() == 3 && FILE_ATOM.equals(tuple.elementAt(0))) {
-            // {file,sip_ua_client,"/Users/idubrov/Projects/siperl/apps/sip/ebin/sip_ua_client.beam"}
             String module = eatom(tuple);
 
             moduleResult = new ErlangFileCoverage();
@@ -141,10 +119,10 @@ class CoverDataFileParser {
   /**
    * Java implementation of cover:get_term/1
    *
-   * @param in
-   * @return
-   * @throws IOException
-   * @throws OtpErlangDecodeException
+   * @param in InputStream to read Erlang term from
+   * @return OtpErlangObject Erlang term
+   * @throws IOException              thrown if input stream read fails
+   * @throws OtpErlangDecodeException thrown if Erlang term decoding fails
    */
   private static OtpErlangObject readTerm(InputStream in) throws IOException, OtpErlangException {
     int size = in.read();
@@ -169,9 +147,9 @@ class CoverDataFileParser {
     if (in.read(buf) != buf.length) {
       throw new EOFException("File is not valid cover data file.");
     }
-    OtpInputStream ein = new FixedOtpInputStream(buf);
-    OtpErlangObject term = ein.read_any();
-    Closeables.closeQuietly(ein);
-    return term;
+
+    try (OtpInputStream ein = new FixedOtpInputStream(buf)) {
+      return ein.read_any();
+    }
   }
 }

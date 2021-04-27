@@ -20,43 +20,46 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.sonar.api.rules.Rule;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
-public class ErlangRule {
-  private final List<String> messages = new ArrayList<>();
-  private final Rule sonarRule = Rule.create();
+public class ErlangXmlRuleParserTest {
+  private final File dialyzerRuleFile = new File("src/test/resources/org/sonar/plugins/erlang/dialyzer/rules.xml");
 
-  ErlangRule() {
-    super();
+  @Test
+  public void testParseSuccess() {
+    try {
+      InputStream in = new FileInputStream(dialyzerRuleFile);
+
+      ErlangXmlRuleParser parser = new ErlangXmlRuleParser();
+      List<ErlangRule> rules = parser.parse(in);
+
+      Rule rule = rules.get(0).getRule();
+
+      Assert.assertEquals(
+              "X001",
+              rule.getKey()
+      );
+
+      Assert.assertEquals(
+              "Undefined function calls",
+              rule.getName()
+      );
+
+      Assert.assertEquals(
+              "Undefined function calls",
+              rule.getDescription()
+      );
+
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
   }
-
-  boolean hasMessage(String message) {
-    return messages.contains(message);
-  }
-
-  /**
-   * Add a message to the rule
-   *
-   * @param message String
-   */
-  void addMessage(String message) {
-    messages.add(message);
-  }
-
-  public Rule getRule() {
-    return sonarRule;
-  }
-
-  /**
-   * Get the rule's current messages
-   *
-   * @return list of messages
-   */
-  public List<String> getMessages() {
-    return messages;
-  }
-
 }

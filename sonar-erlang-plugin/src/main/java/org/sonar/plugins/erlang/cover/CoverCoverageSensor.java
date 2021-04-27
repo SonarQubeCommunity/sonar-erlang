@@ -20,17 +20,16 @@
  */
 package org.sonar.plugins.erlang.cover;
 
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.batch.fs.FilePredicates;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.batch.sensor.coverage.CoverageType;
 import org.sonar.api.batch.sensor.coverage.NewCoverage;
 import org.sonar.api.config.Configuration;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
@@ -40,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CoverCoverageSensor implements Sensor {
 
@@ -121,50 +121,36 @@ public class CoverCoverageSensor implements Sensor {
         ErlangFileCoverage fileCoverage = getFileCoverage(file, coveredFiles);
 
         if (fileCoverage != null) {
-          NewCoverage coverage = sensorContext.newCoverage()
-                  .ofType(CoverageType.UNIT)
-                  .onFile(file);
-          Map<Integer, Integer> hits = fileCoverage.getLineCoverageData();
-          for (Map.Entry<Integer, Integer> entry : hits.entrySet()) {
-            coverage.lineHits(entry.getKey(), entry.getValue());
-          }
+          NewCoverage coverage = getNewCoverageForFile(file, sensorContext, fileCoverage);
           coverage.save();
-        } /*else {
-
-          // colour all lines as not executed
-          for (int x = 1; x < sensorContext.getMeasure(sonarFile, CoreMetrics.LINES)
-                  .getIntValue(); x++) {
-            lineHitsData.add(x, 0);
-          }
-
-          // use non comment lines of code for coverage calculation
-          Measure ncloc = sensorContext.getMeasure(sonarFile, CoreMetrics.NCLOC);
-          sensorContext.saveMeasure(sonarFile, lineHitsData.build());
-          sensorContext.saveMeasure(sonarFile, CoreMetrics.LINES_TO_COVER, ncloc
-                  .getValue());
-          sensorContext.saveMeasure(sonarFile, CoreMetrics.UNCOVERED_LINES, ncloc
-                  .getValue());
-
-        }*/
+        }
 
       } catch (Exception e) {
-        LOG.error("Problem while calculating coverage for {}", file.absolutePath(), e);
+        LOG.error("Problem while calculating coverage for {}", file.filename(), e);
       }
     }
   }
 
   private ErlangFileCoverage getFileCoverage(InputFile input, List<ErlangFileCoverage> coverages) {
-    for (ErlangFileCoverage file : coverages) {
-      if (file.getFilePath().equals(input.absolutePath())
-              || input.absolutePath().endsWith(file.getFilePath())) {
-        return file;
-      }
-    }
-    return null;
+    return coverages
+            .stream()
+            .filter(erlangFileCoverage -> erlangFileCoverage.getFilePath().endsWith(input.filename()))
+            .collect(Collectors.toList())
+            .get(0);
   }
 
   private String getTestReportsFolder(Configuration configuration) {
     return configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+  }
+
+  private NewCoverage getNewCoverageForFile(InputFile inputFile, SensorContext sensorContext, ErlangFileCoverage erlangFileCoverage) {
+    NewCoverage coverage = sensorContext.newCoverage().onFile(inputFile);
+    Map<Integer, Integer> hits = erlangFileCoverage.getLineCoverageData();
+    for (Map.Entry<Integer, Integer> entry : hits.entrySet()) {
+      coverage.lineHits(entry.getKey(), entry.getValue());
+    }
+
+    return coverage;
   }
 
   @Override

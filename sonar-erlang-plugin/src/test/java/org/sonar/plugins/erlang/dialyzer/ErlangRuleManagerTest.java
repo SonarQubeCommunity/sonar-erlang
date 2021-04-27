@@ -20,38 +20,29 @@
  */
 package org.sonar.plugins.erlang.dialyzer;
 
-import org.sonar.api.batch.sensor.Sensor;
-import org.sonar.api.batch.sensor.SensorContext;
-import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.plugins.erlang.languages.ErlangLanguage;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-/**
- * Calls the dialyzer report parser saves violations to sonar
- *
- * @author tkende
- */
-public class DialyzerSensor implements Sensor {
+public class ErlangRuleManagerTest {
+  ErlangRuleManager ruleManager;
 
-  private final ErlangRuleManager dialyzerRuleManager;
-
-  public DialyzerSensor() {
-    dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
+  @Before
+  public void setUp() {
+    ruleManager = new ErlangRuleManager("/org/sonar/plugins/erlang/dialyzer/rules.xml");
   }
 
-  @Override
-  public String toString() {
-    return getClass().getSimpleName();
+  @Test
+  public void testGetRuleKeyByMessageIfExists() {
+    Assert.assertEquals(
+            "X001",
+            ruleManager.getRuleKeyByMessage("Warning: .*?:.*?/.*? calls undefined function .*?:.*?/.*? \\(Xref\\)")
+    );
   }
 
-  @Override
-  public void describe(SensorDescriptor descriptor) {
-    descriptor
-            .onlyOnLanguage(ErlangLanguage.KEY)
-            .name("Erlang Dialyzer Sensor");
-  }
-
-  @Override
-  public void execute(SensorContext context) {
-    new DialyzerReportParser(context).dialyzer(dialyzerRuleManager);
+  @Test
+  public void testGetRuleKeyByMessageOtherRules() {
+    Assert.assertEquals("OTHER_RULES",
+            ruleManager.getRuleKeyByMessage("some nonexistent message"));
   }
 }
