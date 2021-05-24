@@ -11,7 +11,7 @@
 
     <groupId>com.evolution.sonarqube.erlang</groupId>
     <artifactId>erlang</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4</version>
     <packaging>pom</packaging>
 
     <name>Erlang</name>
@@ -69,7 +69,7 @@
 
     <properties>
         <_rootdir>${project.basedir}</_rootdir>
-        <sonar.version>7.9</sonar.version>
+        <sonar.version>8.9.0</sonar.version>
         <sslr.version>1.21</sslr.version>
         <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
         <sonar.projectKey>evolution-gaming_sonar-erlang</sonar.projectKey>
