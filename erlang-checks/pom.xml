@@ -4,8 +4,7 @@
   <parent>
     <groupId>com.evolution.sonarqube.erlang</groupId>
     <artifactId>erlang</artifactId>
-    <version>1.4-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <version>1.4</version>
   </parent>
 
   <artifactId>erlang-checks</artifactId>
