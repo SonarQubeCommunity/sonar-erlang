@@ -43,7 +43,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class DialyzerSensorTest {
 
-  MapSettings settings;
+  private MapSettings settings;
   private final File testModuleBasedir = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/");
   private SensorContextTester context;
 
@@ -81,7 +81,7 @@ public class DialyzerSensorTest {
     context.fileSystem().add(dif);
   }
 
-  @Ignore("Verify that Dialyzer sensor actually works.")
+  @Ignore("https://github.com/evolution-gaming/sonar-erlang/issues/24")
   public void checkDialyzerSensor() throws Exception {
     settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);

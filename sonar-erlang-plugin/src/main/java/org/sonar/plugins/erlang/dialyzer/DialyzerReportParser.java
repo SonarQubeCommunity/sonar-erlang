@@ -61,49 +61,59 @@ public class DialyzerReportParser {
       Read dialyzer results
      */
     Configuration configuration = context.config();
-    String dialyzerFileName = null;
 
-    try {
-      File reportsDir = new File(context.fileSystem().baseDir().getPath(),
-              configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+    File reportsDir = new File(context.fileSystem().baseDir().getPath(),
+        configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+    String dialyzerFileName = configuration.get(ErlangPlugin.DIALYZER_FILENAME_KEY).orElse(ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
+    File dialyzerLogFile = new File(reportsDir, dialyzerFileName);
 
-      dialyzerFileName = configuration.get(ErlangPlugin.DIALYZER_FILENAME_KEY).orElse(ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
-      File file = new File(reportsDir, dialyzerFileName);
+    if (dialyzerLogFile.exists()) {
+      try {
+        parseDialyzerLogFile(context, dialyzerLogFile, dialyzerRuleManager);
+      } catch (IOException e) {
+        LOG.error("Error while trying to parse Dialyzer log file at: {}", dialyzerLogFile.getPath());
+      }
+    } else {
+      LOG.warn("Could not find Dialyzer log file at: {} , skipping...", dialyzerLogFile.getPath());
+    }
+  }
 
-      InputStream fstream = Files.newInputStream(file.toPath());
-      DataInputStream in = new DataInputStream(fstream);
-      try (BufferedReader breader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+  private void parseDialyzerLogFile(SensorContext context, File dialyzerLogFile, ErlangRuleManager dialyzerRuleManager) throws IOException {
+    InputStream fstream = Files.newInputStream(dialyzerLogFile.toPath());
+    DataInputStream in = new DataInputStream(fstream);
 
-        String strLine;
-        Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
-        while ((strLine = breader.readLine()) != null) {
-          Matcher matcher = pattern.matcher(strLine);
-          if (!matcher.matches()) {
-            continue;
-          }
+    try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+      String strLine;
+      Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
 
-          String fileName = matcher.group(1);
-          String lineNumber = matcher.group(2);
-          String comment = matcher.group(3).trim();
+      while ((strLine = bufferedReader.readLine()) != null) {
+        Matcher matcher = pattern.matcher(strLine);
 
-          String key = dialyzerRuleManager.getRuleKeyByMessage(comment);
-          RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
-          ActiveRule rule = context.activeRules().find(ruleKey);
-          if (rule != null) {
-            String filePattern = "**/" + FilenameUtils.getName(fileName);
-            InputFile inputFile = context.fileSystem().inputFile(
-                    context.fileSystem().predicates().matchesPathPattern(filePattern));
-            if (inputFile != null) {
-              NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
-              issue.save();
-            }
+        if (!matcher.matches()) continue;
+
+        String fileName = matcher.group(1);
+        String lineNumber = matcher.group(2);
+        String comment = matcher.group(3).trim();
+
+        String key = dialyzerRuleManager.getRuleKeyByMessage(comment);
+
+        RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
+        ActiveRule rule = context.activeRules().find(ruleKey);
+        if (rule != null) {
+
+          String filePattern = "**/" + FilenameUtils.getName(fileName);
+          InputFile inputFile = context.fileSystem().inputFile(
+              context.fileSystem().predicates().matchesPathPattern(filePattern));
+          if (inputFile != null) {
+            NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
+            issue.save();
           }
         }
       }
     } catch (FileNotFoundException e) {
-      LOG.warn("Dialyzer file not found at: {}, have you ran dialyzer before analysis?", dialyzerFileName);
+      LOG.warn("Dialyzer file not found at: {}, have you ran dialyzer before analysis?", dialyzerLogFile.getPath());
     } catch (IOException e) {
-      LOG.error("Error while trying to parse dialyzer report at: {}", dialyzerFileName, e);
+      LOG.error("Error while trying to parse dialyzer report at: {}", dialyzerLogFile.getPath(), e);
     }
   }
 
@@ -111,9 +121,9 @@ public class DialyzerReportParser {
     TextRange range = inputFile.selectLine(Integer.parseInt(line));
     NewIssue issue = context.newIssue().forRule(ruleKey);
     NewIssueLocation location = issue.newLocation()
-            .on(inputFile)
-            .at(range)
-            .message(message);
+        .on(inputFile)
+        .at(range)
+        .message(message);
 
     issue.at(location);
     return issue;

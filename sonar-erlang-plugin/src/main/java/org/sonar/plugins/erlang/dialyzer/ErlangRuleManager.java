@@ -33,6 +33,7 @@ public class ErlangRuleManager  {
       .getResourceAsStream(rulesPath));
   }
 
+  // TODO: https://github.com/evolution-gaming/sonar-erlang/issues/24
   public String getRuleKeyByMessage(String message) {
     for (ErlangRule rule : rules) {
       if (rule.hasMessage(message)) {
