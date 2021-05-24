@@ -21,7 +21,7 @@ init([]) ->
         60000,
         worker,
         [erlcount_dispatch]}]}}.
-        
+
 %% Specification defined, but it is also commented
 -spec erlcount_sup:minus2(integer()) -> integer(). %TODO
 minus2(X) ->
@@ -29,4 +29,4 @@ minus2(X) ->
 
 -spec add(integer(),integer()) -> integer(). %ToDo
 add(Q, Z) ->
-   minus2(Q+Z).    
+   minus2(Q+Z).
