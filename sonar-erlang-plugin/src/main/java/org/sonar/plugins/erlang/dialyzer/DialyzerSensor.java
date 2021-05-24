@@ -52,6 +52,6 @@ public class DialyzerSensor implements Sensor {
 
   @Override
   public void execute(SensorContext context) {
-    new DialyzerReportParser(context).dialyzer(dialyzerRuleManager);
+    new DialyzerReportParser(context).parse(dialyzerRuleManager);
   }
 }
