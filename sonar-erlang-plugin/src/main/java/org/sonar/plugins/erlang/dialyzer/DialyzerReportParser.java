@@ -56,10 +56,12 @@ public class DialyzerReportParser {
     this.context = context;
   }
 
-  public void dialyzer(ErlangRuleManager dialyzerRuleManager) {
-    /*
-      Read dialyzer results
-     */
+  /**
+   * Parse Dialyzer report using a set of rules
+   *
+   * @param dialyzerRuleManager set of Erlang rules
+   */
+  public void parse(ErlangRuleManager dialyzerRuleManager) {
     Configuration configuration = context.config();
 
     File reportsDir = new File(context.fileSystem().baseDir().getPath(),

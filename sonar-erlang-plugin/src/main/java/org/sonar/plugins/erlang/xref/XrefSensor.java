@@ -53,6 +53,6 @@ public class XrefSensor implements Sensor {
 
   @Override
   public void execute(SensorContext context) {
-    new XrefReportParser(context).xref(xrefRuleManager);
+    new XrefReportParser(context).parse(xrefRuleManager);
   }
 }
