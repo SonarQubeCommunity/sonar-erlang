@@ -18,7 +18,7 @@ A sample project is available on GitHub: https://github.com/SonarSource/sonar-sc
 ### Run an Analysis with other Analyzers
 Maven and Ant can also be used to launch analysis on Erlang projects.
 
-The plugin has been tested to work with SonarQube Community Version `7.9.4` 
+The plugin has been tested to work with SonarQube Community Version `8.9.0` 
 
 ## Development
 
@@ -36,11 +36,40 @@ You will find the built JAR in `sonar-erlang-plugin/target/sonar-erlang-plugin.j
 
 ### Test
 
-Run all tests with
+Run all unit tests with
 
 ```shell script
 mvn test
 ```
+
+### Integration testing
+
+First, you can bring up a local SonarQube server instance using `docker` by running
+
+```shell script
+docker compose up -d
+```
+
+This will run a SonarQube instance in Docker and mount necessary volumes.
+
+To install the built plugin jar, you must copy it to the following path like so after `mvn package`:
+
+```shell script
+cp ./sonar-erlang-plugin/target/sonar-erlang-plugin.jar ./sonar/extensions/plugins/sonar-erlang-plugin.jar
+```
+
+After that, access the server's dashboard (usually `localhost:9000`) with initial credentials `admin:admin`
+Then, restart the server instance and accept the loaded plugin.
+
+Now, create a new project with the project key `Erlang::erlcount` and save the access token.
+
+Finally, navigate to the sample project in [sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount](./sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount) and run the `sonar-scanner` CLI:
+
+```shell
+sonar-scanner -Dsonar.login=<YOUR-TOKEN>
+```
+
+Once the scan is complete, you can view the results of the analysis in the dashboard, or fetch the metrics using the web API.
 
 ### Contributing
 

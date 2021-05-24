@@ -25,7 +25,7 @@ import java.util.Map;
 
 final class ErlangFileCoverage {
 
-  private Map<Integer, Integer> lineCoverageData = new HashMap<>();
+  private final Map<Integer, Integer> lineCoverageData = new HashMap<>();
   private String filePath;
 
   Map<Integer, Integer> getLineCoverageData() {
@@ -47,13 +47,7 @@ final class ErlangFileCoverage {
 
   // Covered Executable Line Count
   int getCoveredLines() {
-    int lines = 0;
-    for (Map.Entry<Integer, Integer> entry : lineCoverageData.entrySet()) {
-      if (entry.getValue() > 0) {
-        lines++;
-      }
-    }
-    return lines;
+    return (int) lineCoverageData.entrySet().stream().filter(entry -> entry.getValue() > 0).count();
   }
 
   void addLine(int lineNumber, int executionCount) {

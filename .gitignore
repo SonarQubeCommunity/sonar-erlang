@@ -3,6 +3,9 @@ target/
 
 # SonarQube
 .sonar/
+sonar/data/web/
+sonar/data/es7/
+sonar/data/logs/
 
 # IntelliJ IDEA
 *.iws
