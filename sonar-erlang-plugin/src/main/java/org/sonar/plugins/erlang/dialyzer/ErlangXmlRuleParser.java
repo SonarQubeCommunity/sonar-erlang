@@ -39,12 +39,12 @@ final class ErlangXmlRuleParser {
   List<ErlangRule> parse(InputStream input) {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     SAXParser saxParser;
-    RuleHandler a = new RuleHandler();
+    RuleHandler ruleHandler = new RuleHandler();
     try {
       saxParser = factory.newSAXParser();
       saxParser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
       saxParser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-      saxParser.parse(input, a);
+      saxParser.parse(input, ruleHandler);
     } catch (ParserConfigurationException e) {
       LOG.error("Error in configuration", e);
     } catch (SAXException e) {
@@ -53,6 +53,6 @@ final class ErlangXmlRuleParser {
       LOG.error("Error while reading the file", e);
     }
 
-    return a.getRules();
+    return ruleHandler.getRules();
   }
 }

@@ -7,18 +7,45 @@
 SonarQube server Erlang language plugin.
 
 ## Description / Features
+
 The plugin enables analysis of Erlang within SonarQube.
 
 ## Usage
 
 ### Run an Analysis with the SonarQube Scanner (recommended method)
+
 To run an analysis of your Erlang project, use the SonarQube Scanner.
 A sample project is available on GitHub: https://github.com/SonarSource/sonar-scanning-examples/tree/master/sonarqube-scanner
 
 ### Run an Analysis with other Analyzers
+
 Maven and Ant can also be used to launch analysis on Erlang projects.
 
 The plugin has been tested to work with SonarQube Community Version `8.9.0` 
+
+### Configuration
+
+All available keys are available in SonarQube  dashboard administration or in [ErlangPlugin.java](sonar-erlang-plugin/src/main/java/org/sonar/plugins/erlang/ErlangPlugin.java)
+
+#### EUnit report import
+
+`sonar.erlang.eunit.reportsfolder` - sets the Eunit reports folder, `.eunit` by default.
+
+`sonar.erlang.eunit.coverdata.filename` - sets the Eunit coverage report file name, `eunit.coverdata` by default.
+
+#### Common Test report import
+
+`sonar.erlang.ct.coverdata.filename` - sets the Common Test coverage file name, `all.coverdata` by default in project root. The easiest way to export this file is to use a [cover spec file](https://erlang.org/doc/apps/common_test/cover_chapter.html#the-cover-specification-file).
+
+You can see an example of such a file [HERE](sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/config/test.cover.spec).
+
+Check out how to configure Common Test for coverage in the [sample Makefile](sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/Makefile).
+
+#### Dialyzer and Xref
+
+[See issue about Dialyzer](https://github.com/evolution-gaming/sonar-erlang/issues/24)
+
+`sonar.erlang.xref.filename` - sets Xref report file name, located in Eunit report folder. `xref.log` by default.
 
 ## Development
 
@@ -73,4 +100,5 @@ Once the scan is complete, you can view the results of the analysis in the dashb
 
 ### Contributing
 
-`TODO`
+Simply create a new GitHub Issue in 2 categories: suggestion, or a bug report.
+If possible, include any useful data like logs, examples, code etc.
