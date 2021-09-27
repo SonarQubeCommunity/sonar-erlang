@@ -49,7 +49,7 @@ public class DialyzerSensorTest {
 
   @Before
   public void setup() {
-    settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
+    settings = new MapSettings();
     context = SensorContextTester.create(testModuleBasedir);
 
     NewActiveRule rule1 = new NewActiveRule.Builder()

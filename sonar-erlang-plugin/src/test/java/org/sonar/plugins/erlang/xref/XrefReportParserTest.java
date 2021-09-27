@@ -38,7 +38,7 @@ public class XrefReportParserTest {
 
   @Before
   public void setUp() {
-    MapSettings settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
+    MapSettings settings = new MapSettings();
     settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, "sonar.erlang.eunit.reportsfolder");
     settings.setProperty(ErlangPlugin.XREF_FILENAME_KEY, "sonar.erlang.xref.filename");
     sensorContext = SensorContextTester.create(testModuleBasedir).setSettings(settings);

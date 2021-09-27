@@ -46,7 +46,7 @@ public class EunitXmlSensorTest {
 
   @Before
   public void setup() throws Exception {
-    MapSettings settingsMap = new MapSettings(new PropertyDefinitions(ErlangPlugin.class))
+    MapSettings settingsMap = new MapSettings()
             .setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER)
             .setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
     context = SensorContextTester.create(testModuleBasedir);

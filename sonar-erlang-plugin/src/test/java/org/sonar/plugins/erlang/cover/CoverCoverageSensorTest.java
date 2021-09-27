@@ -44,7 +44,7 @@ public class CoverCoverageSensorTest {
 
   @Before
   public void setup() {
-    settings = new MapSettings(new PropertyDefinitions(ErlangPlugin.class));
+    settings = new MapSettings();
     context = SensorContextTester.create(testModuleBasedir);
   }
 

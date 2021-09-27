@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.evolution.sonarqube.erlang</groupId>
     <artifactId>erlang</artifactId>
-    <version>1.4</version>
+    <version>1.5-SNAPSHOT</version>
   </parent>
 
   <artifactId>sonar-erlang-plugin</artifactId>
@@ -45,6 +45,11 @@
       <groupId>org.sonarsource.sonarqube</groupId>
       <artifactId>sonar-plugin-api</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.sonarsource.sonarqube</groupId>
+      <artifactId>sonar-plugin-api-impl</artifactId>
+      <scope>test</scope>
     </dependency>
     <!-- 3 shadow dependencies at https://github.com/SonarSource/sonarqube/blob/master/sonar-plugin-api/build.gradle -->
     <dependency>
