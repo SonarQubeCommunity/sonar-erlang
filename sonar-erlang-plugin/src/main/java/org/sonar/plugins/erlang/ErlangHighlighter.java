@@ -35,7 +35,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 import javax.annotation.Nullable;
 
 /**
- * Created by tkende on 2017. 02. 26..
+ * Created by tkende on 2017. 02. 26.
  */
 public class ErlangHighlighter extends SquidAstVisitor<LexerlessGrammar> implements AstAndTokenVisitor {
 
@@ -72,7 +72,9 @@ public class ErlangHighlighter extends SquidAstVisitor<LexerlessGrammar> impleme
     public void visitFile(@Nullable AstNode astNode) {
         newHighlighting = context.newHighlighting();
         InputFile inputFile = context.fileSystem().inputFile(context.fileSystem().predicates().is(getContext().getFile().getAbsoluteFile()));
-        newHighlighting.onFile(inputFile);
+        if (inputFile != null) {
+            newHighlighting.onFile(inputFile);
+        }
     }
 
     @Override

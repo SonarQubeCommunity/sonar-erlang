@@ -36,7 +36,7 @@ public final class EunitTestCase {
   @JacksonXmlProperty(localName = "system-out")
   private String systemOut;
 
-  class Failure {
+  static class Failure {
     @JacksonXmlProperty(isAttribute = true)
     private String type;
     @JacksonXmlText(value = true)

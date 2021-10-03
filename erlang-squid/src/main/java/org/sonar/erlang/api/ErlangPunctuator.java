@@ -33,7 +33,7 @@ public enum ErlangPunctuator implements TokenType {
 
   private final String value;
 
-  private ErlangPunctuator(String word) {
+  ErlangPunctuator(String word) {
     this.value = word;
   }
 

@@ -27,7 +27,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangRecordDefinitionTest {
-  private LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
+  private final LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
 
   @Test
   public void recordDefinitions() {
@@ -74,7 +74,6 @@ public class ErlangRecordDefinitionTest {
         "ref = undefined     :: reference() | undefined})."))
       .matches("-record(fun_var, {'fun' :: fun((_) -> erl_types:erl_type()), deps :: [dep()], origin :: integer()}).")
       .matches((code("-record(cat, {}).")));
-    ;
   }
 
   private static String code(String... lines) {

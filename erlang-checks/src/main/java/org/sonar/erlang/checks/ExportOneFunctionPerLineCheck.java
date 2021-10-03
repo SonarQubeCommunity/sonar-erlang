@@ -56,7 +56,7 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> 
 
   @Override
   public void visitNode(AstNode node) {
-    /**
+    /*
      * Get exported func arities in this export
      */
     List<AstNode> funcArities = node.getFirstChild(ErlangGrammarImpl.funcExport)
@@ -64,7 +64,7 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> 
     for (AstNode arityNode : funcArities) {
       String funcArity = getArity(arityNode);
       if (previousFuncArity != null) {
-        /**
+        /*
          * If the exported arity is not in the same line but they has
          * the same name
          */
@@ -76,7 +76,7 @@ public class ExportOneFunctionPerLineCheck extends SquidCheck<LexerlessGrammar> 
               "The exported method with arity: {0} is in different line, but it has the same name as the previous arity: {1}.",
               arityNode.getTokenLine(), funcArity, previousFuncArity);
         }
-        /**
+        /*
          * If exported arity is in the same line but has different name
          */
         if (previousLineNum == arityNode.getTokenLine()

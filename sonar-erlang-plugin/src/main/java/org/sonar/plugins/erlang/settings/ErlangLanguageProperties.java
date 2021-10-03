@@ -25,8 +25,6 @@ import java.util.List;
 import org.sonar.api.config.PropertyDefinition;
 import org.sonar.api.resources.Qualifiers;
 
-import static java.util.Arrays.asList;
-
 public class ErlangLanguageProperties {
 
   public static final String FILE_SUFFIXES_KEY = "sonar.erlang.file.suffixes";

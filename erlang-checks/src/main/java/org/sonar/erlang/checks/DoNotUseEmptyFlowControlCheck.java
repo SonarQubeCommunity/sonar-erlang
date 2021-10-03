@@ -40,7 +40,7 @@ import java.util.Objects;
 @SqaleConstantRemediation("5min")
 public class DoNotUseEmptyFlowControlCheck extends SquidCheck<LexerlessGrammar> {
 
-  List<ErlangGrammarImpl> flowControls = ImmutableList.of(
+   final List<ErlangGrammarImpl> flowControls = ImmutableList.of(
     ErlangGrammarImpl.ifdefAttr,
     ErlangGrammarImpl.ifndefAttr,
     ErlangGrammarImpl.elseAttr,

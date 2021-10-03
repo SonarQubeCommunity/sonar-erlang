@@ -32,7 +32,7 @@ public enum ErlangKeyword implements TokenType {
 
   private final String value;
 
-  private ErlangKeyword(String value) {
+  ErlangKeyword(String value) {
     this.value = value;
   }
 

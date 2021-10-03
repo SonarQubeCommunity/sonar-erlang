@@ -34,7 +34,7 @@ import org.sonar.squidbridge.SquidAstVisitor;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 /**
- * Created by tkende on 2017. 02. 26..
+ * Created by tkende on 2017. 02. 26.
  */
 public class ErlangCpdVisitor extends SquidAstVisitor<LexerlessGrammar> implements AstAndTokenVisitor {
 
@@ -64,7 +64,9 @@ public class ErlangCpdVisitor extends SquidAstVisitor<LexerlessGrammar> implemen
     public void visitFile(@Nullable AstNode astNode) {
         newCpdTokens = context.newCpdTokens();
         InputFile inputFile = context.fileSystem().inputFile(context.fileSystem().predicates().is(getContext().getFile().getAbsoluteFile()));
-        newCpdTokens.onFile(inputFile);
+        if (inputFile != null) {
+            newCpdTokens.onFile(inputFile);
+        }
     }
 
     @Override

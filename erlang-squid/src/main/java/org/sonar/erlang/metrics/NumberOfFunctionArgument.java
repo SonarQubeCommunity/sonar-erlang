@@ -32,7 +32,7 @@ import java.util.List;
 
 public class NumberOfFunctionArgument extends SquidCheck<LexerlessGrammar> {
 
-  List<ErlangGrammarImpl> nonArg = ImmutableList.of(ErlangGrammarImpl.lparenthesis,
+  final List<ErlangGrammarImpl> nonArg = ImmutableList.of(ErlangGrammarImpl.lparenthesis,
     ErlangGrammarImpl.rparenthesis, ErlangGrammarImpl.comma);
 
   @Override

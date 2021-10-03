@@ -35,18 +35,18 @@ import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(key = "NoSpaceAfterBeforeBrackets", priority = Priority.MAJOR)
-/**
+/*
  * The rule generates a lot of false positives (record calls, etc). It is deactivated by default.
  */
 //@BelongsToProfile(title = CheckList.REPOSITORY_NAME, priority = Priority.MAJOR)
 @SqaleConstantRemediation("1min")
 public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar> {
 
-  List<ErlangGrammarImpl> noSpaceBefore = ImmutableList.of(ErlangGrammarImpl.rbracket,
+  final List<ErlangGrammarImpl> noSpaceBefore = ImmutableList.of(ErlangGrammarImpl.rbracket,
     ErlangGrammarImpl.rcurlybrace, ErlangGrammarImpl.rparenthesis);
-  List<ErlangGrammarImpl> noSpaceAfter = ImmutableList.of(ErlangGrammarImpl.lbracket,
+  final List<ErlangGrammarImpl> noSpaceAfter = ImmutableList.of(ErlangGrammarImpl.lbracket,
     ErlangGrammarImpl.lcurlybrace, ErlangGrammarImpl.lparenthesis);
-  List<Integer> failedLines = new ArrayList<>();
+  final List<Integer> failedLines = new ArrayList<>();
 
   private int numOfViolations = 0;
 
@@ -72,7 +72,7 @@ public class NoSpaceAfterBeforeBracketsCheck extends SquidCheck<LexerlessGrammar
   }
 
   private int check(AstNode ast, Token compTo, boolean previous) {
-    /**
+    /*
      * Ignore linebreaks
      */
     if (ast.getToken().getLine() != compTo.getLine()) {

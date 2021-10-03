@@ -658,8 +658,8 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       b.firstOf(ifExpression, funExpression, caseExpression, tryExpression, receiveExpression, blockExpression, guardedPattern))
       .skipIfOneChild();
 
-    /**
-     * It can be a record ref (originaly a.b['a']) as well
+    /*
+      It can be a record ref (originaly a.b['a']) as well
      */
     b.rule(callExpression).is(
       b.firstOf(

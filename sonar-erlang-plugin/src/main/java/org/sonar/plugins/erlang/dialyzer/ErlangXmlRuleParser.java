@@ -41,6 +41,9 @@ final class ErlangXmlRuleParser {
     SAXParser saxParser;
     RuleHandler ruleHandler = new RuleHandler();
     try {
+      factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+      factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+      factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
       saxParser = factory.newSAXParser();
       saxParser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
       saxParser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");

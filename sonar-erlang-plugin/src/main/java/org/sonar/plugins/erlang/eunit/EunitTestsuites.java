@@ -33,7 +33,7 @@ import java.util.List;
 public class EunitTestsuites {
     @JacksonXmlProperty(localName = "testsuite")
     @JacksonXmlElementWrapper(useWrapping = false)
-    private List<EunitTestsuite> testsuites;
+    private final List<EunitTestsuite> testsuites;
 
     public EunitTestsuites() {
         this.testsuites = new ArrayList<>();

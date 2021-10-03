@@ -40,10 +40,10 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleConstantRemediation("2min")
 public class SpaceAfterBeforeOperatorsCheck extends SquidCheck<LexerlessGrammar> {
 
-  List<ErlangGrammarImpl> operators = ImmutableList.of(ErlangGrammarImpl.matchop,
+  final List<ErlangGrammarImpl> operators = ImmutableList.of(ErlangGrammarImpl.matchop,
     ErlangGrammarImpl.star, ErlangGrammarImpl.div, ErlangGrammarImpl.plus,
     ErlangGrammarImpl.minus);
-  List<Integer> failedLines = new ArrayList<>();
+  final List<Integer> failedLines = new ArrayList<>();
 
   private int numOfViolations = 0;
 

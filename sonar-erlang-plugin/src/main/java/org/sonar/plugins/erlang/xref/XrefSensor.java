@@ -33,7 +33,7 @@ import org.sonar.plugins.erlang.dialyzer.ErlangRuleManager;
  */
 public class XrefSensor implements Sensor {
 
-  private ErlangRuleManager xrefRuleManager;
+  private final ErlangRuleManager xrefRuleManager;
 
   public XrefSensor() {
     xrefRuleManager = new ErlangRuleManager(XrefRuleDefinition.XREF_PATH);

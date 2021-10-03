@@ -35,14 +35,14 @@ import org.sonar.squidbridge.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 
 public class TestHelper {
 
   public static AstScanner<LexerlessGrammar> scanFiles(List<File> files, SquidCheck<LexerlessGrammar> check) {
-    AstScanner<LexerlessGrammar> scanner = ErlangAstScanner.create(Charset.forName("UTF-8"), check);
+    AstScanner<LexerlessGrammar> scanner = ErlangAstScanner.create(StandardCharsets.UTF_8, check);
     scanner.scanFiles(files);
     return scanner;
   }

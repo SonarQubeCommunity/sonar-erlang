@@ -63,7 +63,7 @@ public class PublicDocumentedApiCounter extends SquidAstVisitor<LexerlessGrammar
             .getToken().getTrivia();
           if (!comments.isEmpty()) {
             for (Trivia trivia : comments) {
-              /**
+              /*
                * Try to filter out those comments what has only
                * one repeated char
                */

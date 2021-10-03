@@ -24,7 +24,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import org.junit.Test;
 
@@ -32,7 +31,7 @@ public class EunitXmlPOJOTest {
 
 
   @Test
-  public void shouldSaveErrorsAndFailuresInXML() throws URISyntaxException, IOException {
+  public void shouldSaveErrorsAndFailuresInXML() throws IOException {
     XmlMapper mapper = new XmlMapper();
     File xml = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/TEST-erlcount_tests.xml");
     EunitTestsuite testsuite = mapper.readValue(xml, EunitTestsuite.class);

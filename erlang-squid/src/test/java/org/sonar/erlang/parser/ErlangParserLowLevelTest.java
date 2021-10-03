@@ -27,7 +27,7 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserLowLevelTest {
 
-  private LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
+  private final LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
 
   @Test
   public void lexInlineComment() {

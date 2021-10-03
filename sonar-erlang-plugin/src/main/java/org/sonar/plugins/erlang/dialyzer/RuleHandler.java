@@ -24,14 +24,13 @@ import org.apache.commons.lang.StringUtils;
 import org.sonar.api.rules.RuleParam;
 import org.sonar.api.rules.RulePriority;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RuleHandler extends DefaultHandler {
-  private List<ErlangRule> rules = new ArrayList<>();
+  private final List<ErlangRule> rules = new ArrayList<>();
   private String tmpValue = "";
   private Object tmpRule;
   private RuleParam param;
@@ -42,8 +41,7 @@ public class RuleHandler extends DefaultHandler {
   }
 
   @Override
-  public void startElement(String s, String s1, String elementName, Attributes attributes)
-    throws SAXException {
+  public void startElement(String s, String s1, String elementName, Attributes attributes) {
     if ("rule".equals(elementName)) {
       rules.add(new ErlangRule());
       tmpRule = rules.get(rules.size() - 1);
@@ -61,7 +59,7 @@ public class RuleHandler extends DefaultHandler {
   }
 
   @Override
-  public void endElement(String s, String s1, String element) throws SAXException {
+  public void endElement(String s, String s1, String element) {
     if (StringUtils.equalsIgnoreCase("name", element)) {
       ((ErlangRule) tmpRule).getRule().setName(StringUtils.trim(tmpValue));
     } else if (StringUtils.equalsIgnoreCase("description", element)) {
@@ -84,7 +82,7 @@ public class RuleHandler extends DefaultHandler {
   }
 
   @Override
-  public void characters(char[] ac, int i, int j) throws SAXException {
+  public void characters(char[] ac, int i, int j) {
     tmpValue = tmpValue + new String(ac, i, j);
   }
 

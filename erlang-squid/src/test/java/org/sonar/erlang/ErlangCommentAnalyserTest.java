@@ -31,7 +31,7 @@ public class ErlangCommentAnalyserTest {
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private ErlangCommentAnalyser analyser = new ErlangCommentAnalyser();
+  private final ErlangCommentAnalyser analyser = new ErlangCommentAnalyser();
 
   @Test
   public void content() {

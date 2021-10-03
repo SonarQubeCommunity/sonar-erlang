@@ -37,13 +37,12 @@ import static org.mockito.Mockito.*;
 
 public class ErlangHighlighterTest {
 
-  private SensorContextTester context;
   private final File testModuleBasedir = new File("src/test/resources/");
   ErlangHighlighter erlangHighlighter;
 
   @Before
   public void setUp() {
-    context = SensorContextTester.create(testModuleBasedir.getAbsoluteFile());
+    SensorContextTester context = SensorContextTester.create(testModuleBasedir.getAbsoluteFile());
     erlangHighlighter = new ErlangHighlighter(context);
   }
 

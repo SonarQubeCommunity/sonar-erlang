@@ -33,7 +33,7 @@ import java.net.URISyntaxException;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangRealCodeTest {
-  private LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
+  private final LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
 
   @Test
   public void realLife2() throws IOException, URISyntaxException {
@@ -65,7 +65,7 @@ public class ErlangRealCodeTest {
     File file = new File(ErlangRealCodeTest.class.getClassLoader().getResource(fileName)
       .toURI());
     BufferedReader reader = Files.newReader(file, Charsets.UTF_8);
-    String line = null;
+    String line;
     while ((line = reader.readLine()) != null) {
       text.append(line).append("\n");
     }

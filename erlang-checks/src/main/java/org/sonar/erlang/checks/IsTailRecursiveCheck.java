@@ -60,20 +60,20 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
     if (node.getType().equals(ErlangGrammarImpl.functionDeclaration)) {
       actualArity = getArity(node.getFirstChild(ErlangGrammarImpl.functionClause));
     } else if (node.getType().equals(ErlangGrammarImpl.callExpression)
-      /**
+      /*
       * Not in a module attribute
       */
       && node.getFirstAncestor(ErlangGrammarImpl.defineAttr) == null
-      /**
+      /*
        * Recursive call
        */
       && getArityFromCall(node).equals(actualArity)
-      /**
+      /*
        * where we have not record a non tail recursive call so far
        */
       && node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine() != lastClauseLine) {
 
-      /**
+      /*
        * Not a standalone statement
        */
       if (!node.getParent().getType().equals(ErlangGrammarImpl.expression)
@@ -83,13 +83,12 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
         return;
       }
 
-      /**
+      /*
        * Not last call
        */
       if (!checkIsLastStatement(node.getFirstAncestor(ErlangGrammarImpl.statement))) {
         getContext().createLineViolation(this, "Function is not tail recursive.", node);
         lastClauseLine = node.getFirstAncestor(ErlangGrammarImpl.functionClause).getTokenLine();
-        return;
       }
 
     }
@@ -107,7 +106,7 @@ public class IsTailRecursiveCheck extends SquidCheck<LexerlessGrammar> {
   }
 
   private String getArityFromCall(AstNode ast) {
-    /**
+    /*
      * This method exists in squid/BranchesOfRecursion
      */
     // It has a colon, so it is a module:function call

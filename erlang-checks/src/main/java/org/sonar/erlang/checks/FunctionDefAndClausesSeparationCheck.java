@@ -63,18 +63,16 @@ public class FunctionDefAndClausesSeparationCheck extends SquidCheck<LexerlessGr
   @Override
   public void visitNode(AstNode ast) {
     if (!ast.getToken().isGeneratedCode()) {
-      /**
+      /*
        * Check the definition first
        */
       if (ast.getType().equals(ErlangGrammarImpl.functionDeclaration)) {
-        if (previousDefinition == null) {
-          previousDefinition = ast;
-        } else {
+        if (previousDefinition != null) {
           check(ast, previousDefinition, allowedBlankLinesBetweenDefinitions);
-          previousDefinition = ast;
         }
+        previousDefinition = ast;
       }
-      /**
+      /*
        * Check the clauses
        */
       if (ast.getChildren(ErlangGrammarImpl.functionClause).size() > 1) {

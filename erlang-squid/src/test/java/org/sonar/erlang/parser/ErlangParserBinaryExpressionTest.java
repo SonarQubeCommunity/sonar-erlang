@@ -27,7 +27,7 @@ import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserBinaryExpressionTest {
 
-  private LexerlessGrammarBuilder b = ErlangGrammarImpl.createGrammarBuilder();
+  private final LexerlessGrammarBuilder b = ErlangGrammarImpl.createGrammarBuilder();
 
   @Test
   public void binaryExpressions() {

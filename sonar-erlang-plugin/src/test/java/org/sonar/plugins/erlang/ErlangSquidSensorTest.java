@@ -44,14 +44,13 @@ import static org.mockito.Mockito.when;
 public class ErlangSquidSensorTest {
 
   private SensorContextTester context;
-  private File testModuleBasedir = new File("src/test/resources/");
-  private MetricFinder metricFinder;
+  private final File testModuleBasedir = new File("src/test/resources/");
   private ErlangSquidSensor sensor;
 
   @Before
   public void setup() {
     context = SensorContextTester.create(testModuleBasedir.getAbsoluteFile());
-    metricFinder = mock(MetricFinder.class);
+    MetricFinder metricFinder = mock(MetricFinder.class);
     when(metricFinder.<Integer>findByKey(CoreMetrics.FILES_KEY)).thenReturn(CoreMetrics.FILES);
     when(metricFinder.<Integer>findByKey(CoreMetrics.LINES_KEY)).thenReturn(CoreMetrics.LINES);
     when(metricFinder.<Integer>findByKey(CoreMetrics.NCLOC_KEY)).thenReturn(CoreMetrics.NCLOC);

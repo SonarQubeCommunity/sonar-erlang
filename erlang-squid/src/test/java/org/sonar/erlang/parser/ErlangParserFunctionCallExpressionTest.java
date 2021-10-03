@@ -26,7 +26,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserFunctionCallExpressionTest {
-  private LexerlessGrammar g = ErlangGrammarImpl.createGrammar();
+  private final LexerlessGrammar g = ErlangGrammarImpl.createGrammar();
 
   @Test
   public void functionCallExpressions() {

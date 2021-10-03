@@ -24,14 +24,11 @@ import com.google.common.base.Joiner;
 import org.junit.Test;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
 public class ErlangParserModulesTest {
 
-  private LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
+  private final LexerlessGrammar b = ErlangGrammarImpl.createGrammar();
 
   @Test
   public void realLife() {
@@ -41,29 +38,29 @@ public class ErlangParserModulesTest {
   }
 
   @Test
-  public void tuple() throws IOException, URISyntaxException {
+  public void tuple() {
     assertThat(b.getRootRule()).matches(code("-module(m).", "dodo(A) ->", "{a, node()}."));
   }
 
   @Test
-  public void returnWithNumber() throws IOException, URISyntaxException {
+  public void returnWithNumber() {
     assertThat(b.getRootRule()).matches(code("-module(m).", "dodo(A) ->", "1."));
   }
 
   @Test
-  public void returnWithCalc() throws IOException, URISyntaxException {
+  public void returnWithCalc() {
     assertThat(b.getRootRule()).matches(code("-module(m).", "dodo(A) ->", "{a, A + 2}."));
   }
 
   @Test
-  public void returnWithCalcCase() throws IOException, URISyntaxException {
+  public void returnWithCalcCase() {
     assertThat(b.getRootRule())
       .matches(code("-module(m).", "dodo(A) ->", "case A of", "0->",
         "{a, (A + 2), <<0>>} end."));
   }
 
   @Test
-  public void caseTuple() throws IOException, URISyntaxException {
+  public void caseTuple() {
     assertThat(b.getRootRule())
       .matches(code("-module(m).", "dodo(A) ->", "case A of",
         "{aborted, {already_exists, user}} -> ok end."))
@@ -154,12 +151,12 @@ public class ErlangParserModulesTest {
   }
 
   @Test
-  public void emptyArgFuncCall() throws IOException, URISyntaxException {
+  public void emptyArgFuncCall() {
     assertThat(b.getRootRule()).matches(code("-module(m).", "dodo(A) ->", "integer()."));
   }
 
   @Test
-  public void recordSet() throws IOException, URISyntaxException {
+  public void recordSet() {
     assertThat(b.getRootRule()).matches(code("-module(m).", "dodo(A) ->", "#msg{to=void, no=3}."));
   }
 
@@ -202,13 +199,13 @@ public class ErlangParserModulesTest {
   }
 
   @Test
-  public void exports() throws IOException, URISyntaxException {
+  public void exports() {
     assertThat(b.getRootRule()).matches(code("-module(m).", "-export([dodo/1]).", "-export([dodo/2]).", "-export([]).",
       "dodo(A) ->", "{a, node()}."));
   }
 
   @Test
-  public void typeTest() throws IOException, URISyntaxException {
+  public void typeTest() {
 
     assertThat(b.getRootRule()).matches(code("-module(m).", "-export([dodo/1]).", "-type my_type() :: atom() | integer().",
       "dodo(A) ->", "{a, node()}."))
