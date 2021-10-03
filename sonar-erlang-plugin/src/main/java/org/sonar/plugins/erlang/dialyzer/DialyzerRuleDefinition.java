@@ -24,6 +24,7 @@ import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class DialyzerRuleDefinition implements RulesDefinition {
@@ -32,16 +33,14 @@ public class DialyzerRuleDefinition implements RulesDefinition {
   public static final String REPOSITORY_KEY = "dialyzer";
   public static final String DIALYZER_PATH = "/org/sonar/plugins/erlang/dialyzer/rules.xml";
 
-  private final RulesDefinitionXmlLoader xmlLoader;
-
-  public DialyzerRuleDefinition(RulesDefinitionXmlLoader xmlLoader) {
-    this.xmlLoader = xmlLoader;
-  }
-
   @Override
   public void define(Context context) {
     NewRepository repository = context.createRepository(REPOSITORY_KEY, ErlangLanguage.KEY).setName(REPOSITORY_NAME);
-    xmlLoader.load(repository, getClass().getResourceAsStream(DIALYZER_PATH), StandardCharsets.UTF_8);
+    InputStream rulesXml = this.getClass().getResourceAsStream(DIALYZER_PATH);
+    if (rulesXml != null) {
+      RulesDefinitionXmlLoader rulesLoader = new RulesDefinitionXmlLoader();
+      rulesLoader.load(repository, rulesXml, StandardCharsets.UTF_8);
+    }
     repository.done();
   }
 

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 @ParametersAreNonnullByDefault
-package org.sonar.plugins.erlang.checks;
+package org.sonar.plugins.erlang.rules;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

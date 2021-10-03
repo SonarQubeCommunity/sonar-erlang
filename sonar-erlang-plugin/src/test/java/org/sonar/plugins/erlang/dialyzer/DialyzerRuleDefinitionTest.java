@@ -22,7 +22,6 @@ package org.sonar.plugins.erlang.dialyzer;
 
 import org.junit.Test;
 import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.api.server.rule.RulesDefinitionXmlLoader;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class DialyzerRuleDefinitionTest {
   @Test
   public void test() {
     RulesDefinition.Context context = new RulesDefinition.Context();
-    DialyzerRuleDefinition ruleDefinition = new DialyzerRuleDefinition(new RulesDefinitionXmlLoader());
+    DialyzerRuleDefinition ruleDefinition = new DialyzerRuleDefinition();
     ruleDefinition.define(context);
 
     Repository repository = context.repository(DialyzerRuleDefinition.REPOSITORY_KEY);
@@ -44,7 +43,7 @@ public class DialyzerRuleDefinitionTest {
 
     List<RulesDefinition.Rule> rules = repository.rules();
 
-    assertThat(rules.size()).isEqualTo(7);
+    assertThat(rules.size()).isEqualTo(41);
   }
 
 }

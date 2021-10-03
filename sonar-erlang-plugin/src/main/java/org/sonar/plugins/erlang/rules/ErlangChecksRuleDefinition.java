@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.checks;
+package org.sonar.plugins.erlang.rules;
 
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.erlang.checks.CheckList;

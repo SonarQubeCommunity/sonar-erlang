@@ -23,12 +23,13 @@ package org.sonar.plugins.erlang;
 import org.sonar.api.Plugin;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
-import org.sonar.plugins.erlang.checks.ErlangChecksRuleDefinition;
+import org.sonar.plugins.erlang.rules.ErlangChecksRuleDefinition;
 import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
 import org.sonar.plugins.erlang.dialyzer.DialyzerSensor;
 import org.sonar.plugins.erlang.eunit.EunitXmlSensor;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;
+import org.sonar.plugins.erlang.languages.ErlangQualityProfile;
 import org.sonar.plugins.erlang.settings.ErlangLanguageProperties;
 import org.sonar.plugins.erlang.xref.XrefRuleDefinition;
 import org.sonar.plugins.erlang.xref.XrefSensor;
@@ -106,7 +107,7 @@ public class ErlangPlugin implements Plugin {
         ErlangChecksRuleDefinition.class,
         DialyzerRuleDefinition.class,
         XrefRuleDefinition.class,
-        ErlangProfile.class,
+        ErlangQualityProfile.class,
 
         EunitXmlSensor.class,
 
