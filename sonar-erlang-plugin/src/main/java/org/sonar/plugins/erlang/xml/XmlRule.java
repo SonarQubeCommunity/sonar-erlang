@@ -18,45 +18,58 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.dialyzer;
+package org.sonar.plugins.erlang.xml;
 
 import org.sonar.api.rules.Rule;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-public class ErlangRule {
-  private final List<String> messages = new ArrayList<>();
+public class XmlRule {
+  private final List<Map.Entry<String, Pattern>> messages = new ArrayList<>();
   private final Rule sonarRule = Rule.create();
 
-  ErlangRule() {
+  XmlRule() {
     super();
   }
 
   boolean hasMessage(String message) {
-    return messages.contains(message);
+    for (Map.Entry<String, Pattern> pair : messages) {
+      Pattern p = pair.getValue();
+      if (p != null) {
+        if (p.matcher(message).matches()) {
+          return true;
+        }
+      }
+      String m = pair.getKey();
+      if (m.equals(message)) {
+        return true;
+      }
+    }
+    return false;
   }
 
-  /**
-   * Add a message to the rule
-   *
-   * @param message String
-   */
   void addMessage(String message) {
-    messages.add(message);
+    String rxmessage = message.replaceAll("~[ws]", ".*?");
+    rxmessage = rxmessage.replaceAll("([\\{\\}\\[\\]\\(\\)])", "\\\\$1");
+    if (message.equals(rxmessage)) {
+      messages.add(new AbstractMap.SimpleEntry<>(message, null));
+    } else {
+      Pattern pattern = Pattern.compile("^" + rxmessage + "$");
+      messages.add(new AbstractMap.SimpleEntry<>(message, pattern));
+    }
   }
 
   public Rule getRule() {
     return sonarRule;
   }
 
-  /**
-   * Get the rule's current messages
-   *
-   * @return list of messages
-   */
   public List<String> getMessages() {
-    return messages;
+    return messages.stream().map(pair -> pair.getKey()).collect(Collectors.toList());
   }
 
 }

@@ -24,6 +24,7 @@ import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;
+import org.sonar.plugins.erlang.xml.XmlRuleManager;
 
 /**
  * Calls the dialyzer report parser saves violations to sonar
@@ -32,10 +33,10 @@ import org.sonar.plugins.erlang.languages.ErlangLanguage;
  */
 public class DialyzerSensor implements Sensor {
 
-  private final ErlangRuleManager dialyzerRuleManager;
+  private final XmlRuleManager dialyzerRuleManager;
 
   public DialyzerSensor() {
-    dialyzerRuleManager = new ErlangRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
+    dialyzerRuleManager = new XmlRuleManager(DialyzerRuleDefinition.DIALYZER_PATH);
   }
 
   @Override

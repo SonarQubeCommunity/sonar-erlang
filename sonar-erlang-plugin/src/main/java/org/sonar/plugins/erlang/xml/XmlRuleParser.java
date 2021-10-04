@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.dialyzer;
+package org.sonar.plugins.erlang.xml;
 
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -32,14 +32,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-final class ErlangXmlRuleParser {
+final class XmlRuleParser {
 
-  private static final Logger LOG = Loggers.get(ErlangXmlRuleParser.class);
+  private static final Logger LOG = Loggers.get(XmlRuleParser.class);
 
-  List<ErlangRule> parse(InputStream input) {
+  List<XmlRule> parse(InputStream input) {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     SAXParser saxParser;
-    RuleHandler ruleHandler = new RuleHandler();
+    XmlRuleHandler ruleHandler = new XmlRuleHandler();
     try {
       factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
       factory.setFeature("http://xml.org/sax/features/external-general-entities", false);

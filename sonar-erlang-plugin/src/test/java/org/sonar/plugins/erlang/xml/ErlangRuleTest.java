@@ -18,29 +18,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.dialyzer;
+package org.sonar.plugins.erlang.xml;
 
-import java.util.List;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.sonar.api.rules.Rule;
 
-public class ErlangRuleManager  {
+public class ErlangRuleTest {
+  XmlRule erlangRule;
 
-  private final List<ErlangRule> rules;
-
-  private static final String OTHER_RULES_KEY = "OTHER_RULES";
-
-  public ErlangRuleManager(String rulesPath) {
-    rules = new ErlangXmlRuleParser().parse(ErlangRuleManager.class
-      .getResourceAsStream(rulesPath));
+  @Before
+  public void setUp() {
+    erlangRule = new XmlRule();
   }
 
-  // TODO: https://github.com/evolution-gaming/sonar-erlang/issues/24
-  public String getRuleKeyByMessage(String message) {
-    for (ErlangRule rule : rules) {
-      if (rule.hasMessage(message)) {
-        return rule.getRule().getKey();
-      }
-    }
-    return OTHER_RULES_KEY;
+  @Test
+  public void testGetRule() {
+    Rule rule = erlangRule.getRule();
+
+    Assert.assertNotNull(rule);
+  }
+
+  @Test
+  public void testRuleMessageAdd() {
+    erlangRule.addMessage("test message");
+
+    Assert.assertTrue(erlangRule.hasMessage("test message"));
   }
 
 }

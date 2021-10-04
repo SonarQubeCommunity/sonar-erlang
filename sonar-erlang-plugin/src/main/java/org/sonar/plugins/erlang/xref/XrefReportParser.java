@@ -30,7 +30,7 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
-import org.sonar.plugins.erlang.dialyzer.ErlangRuleManager;
+import org.sonar.plugins.erlang.xml.XmlRuleManager;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +59,7 @@ public class XrefReportParser {
    *
    * @param ruleManager set of Erlang rules
    */
-  public void parse(ErlangRuleManager ruleManager) {
+  public void parse(XmlRuleManager ruleManager) {
     File reportsDir = new File(context.fileSystem().baseDir().getPath(),
         configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
     String reportFileName = configuration.get(ErlangPlugin.XREF_FILENAME_KEY).orElse(ErlangPlugin.XREF_DEFAULT_FILENAME);
@@ -96,7 +96,7 @@ public class XrefReportParser {
     return this.configuration;
   }
 
-  private void parseXrefReportFile(SensorContext context, File xrefReportFile, ErlangRuleManager ruleManager) throws IOException {
+  private void parseXrefReportFile(SensorContext context, File xrefReportFile, XmlRuleManager ruleManager) throws IOException {
     DataInputStream in = new DataInputStream(Files.newInputStream(xrefReportFile.toPath()));
 
     try (BufferedReader breader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {

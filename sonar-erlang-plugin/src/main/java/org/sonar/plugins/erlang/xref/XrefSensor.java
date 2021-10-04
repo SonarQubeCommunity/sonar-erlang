@@ -24,7 +24,7 @@ import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;
-import org.sonar.plugins.erlang.dialyzer.ErlangRuleManager;
+import org.sonar.plugins.erlang.xml.XmlRuleManager;
 
 /**
  * Calls the xref report parser saves violations to sonar
@@ -33,10 +33,10 @@ import org.sonar.plugins.erlang.dialyzer.ErlangRuleManager;
  */
 public class XrefSensor implements Sensor {
 
-  private final ErlangRuleManager xrefRuleManager;
+  private final XmlRuleManager xrefRuleManager;
 
   public XrefSensor() {
-    xrefRuleManager = new ErlangRuleManager(XrefRuleDefinition.XREF_PATH);
+    xrefRuleManager = new XmlRuleManager(XrefRuleDefinition.XREF_PATH);
   }
 
   @Override

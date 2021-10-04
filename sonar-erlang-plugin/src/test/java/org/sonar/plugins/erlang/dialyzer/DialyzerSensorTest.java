@@ -81,7 +81,7 @@ public class DialyzerSensorTest {
     context.fileSystem().add(dif);
   }
 
-  @Ignore("https://github.com/evolution-gaming/sonar-erlang/issues/24")
+  @Test
   public void checkDialyzerSensor() throws Exception {
     settings.setProperty(ErlangPlugin.EUNIT_FOLDER_KEY, ErlangPlugin.EUNIT_DEFAULT_FOLDER);
     settings.setProperty(ErlangPlugin.DIALYZER_FILENAME_KEY, ErlangPlugin.DIALYZER_DEFAULT_FILENAME);

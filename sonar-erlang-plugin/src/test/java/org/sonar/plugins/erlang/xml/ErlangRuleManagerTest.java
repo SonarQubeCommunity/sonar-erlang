@@ -18,48 +18,31 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.dialyzer;
+package org.sonar.plugins.erlang.xml;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.sonar.api.rules.Rule;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.List;
+public class ErlangRuleManagerTest {
+  XmlRuleManager ruleManager;
 
-public class ErlangXmlRuleParserTest {
-  private final File dialyzerRuleFile = new File("src/test/resources/org/sonar/plugins/erlang/dialyzer/rules.xml");
+  @Before
+  public void setUp() {
+    ruleManager = new XmlRuleManager("/org/sonar/plugins/erlang/dialyzer/rules.xml");
+  }
 
   @Test
-  public void testParseSuccess() {
-    try {
-      InputStream in = new FileInputStream(dialyzerRuleFile);
+  public void testGetRuleKeyByMessageIfExists() {
+    Assert.assertEquals(
+            "D019",
+            ruleManager.getRuleKeyByMessage("Function will never be called")
+    );
+  }
 
-      ErlangXmlRuleParser parser = new ErlangXmlRuleParser();
-      List<ErlangRule> rules = parser.parse(in);
-
-      Rule rule = rules.get(0).getRule();
-
-      Assert.assertEquals(
-              "X001",
-              rule.getKey()
-      );
-
-      Assert.assertEquals(
-              "Undefined function calls",
-              rule.getName()
-      );
-
-      Assert.assertEquals(
-              "Undefined function calls",
-              rule.getDescription()
-      );
-
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
+  @Test
+  public void testGetRuleKeyByMessageOtherRules() {
+    Assert.assertEquals("OTHER_RULES",
+            ruleManager.getRuleKeyByMessage("some nonexistent message"));
   }
 }

@@ -32,6 +32,7 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.xml.XmlRuleManager;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -61,7 +62,7 @@ public class DialyzerReportParser {
    *
    * @param dialyzerRuleManager set of Erlang rules
    */
-  public void parse(ErlangRuleManager dialyzerRuleManager) {
+  public void parse(XmlRuleManager dialyzerRuleManager) {
     Configuration configuration = context.config();
 
     File reportsDir = new File(context.fileSystem().baseDir().getPath(),
@@ -80,7 +81,7 @@ public class DialyzerReportParser {
     }
   }
 
-  private void parseDialyzerLogFile(SensorContext context, File dialyzerLogFile, ErlangRuleManager dialyzerRuleManager) throws IOException {
+  private void parseDialyzerLogFile(SensorContext context, File dialyzerLogFile, XmlRuleManager dialyzerRuleManager) throws IOException {
     InputStream fstream = Files.newInputStream(dialyzerLogFile.toPath());
     DataInputStream in = new DataInputStream(fstream);
 
