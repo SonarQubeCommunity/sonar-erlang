@@ -85,26 +85,25 @@ public class EunitXmlSensor implements Sensor {
         Configuration configuration = context.config();
         FileSystem fileSystem = context.fileSystem();
 
-        configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).ifPresent(eUnitReportFolder -> {
-            File reportsDir = new File(context.fileSystem().baseDir().getPath(), eUnitReportFolder);
-            FilePredicate testFilePredicate = fileSystem.predicates().hasLanguage(ErlangLanguage.KEY);
+        File reportsDir = new File(context.fileSystem().baseDir().getPath(),
+                configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
+        FilePredicate testFilePredicate = fileSystem.predicates().hasLanguage(ErlangLanguage.KEY);
 
-            LOG.debug("Parsing Eunit run results in Surefire format from folder {}", reportsDir);
+        LOG.debug("Parsing Eunit run results in Surefire format from folder {}", reportsDir);
 
-            List<EunitTestsuite> testReports = parseEunitXmls(context);
+        List<EunitTestsuite> testReports = parseEunitXmls(context);
 
-            Iterable<InputFile> inputFiles = fileSystem.inputFiles(testFilePredicate);
-            for (InputFile file : inputFiles) {
-                EunitTestsuite testReport = EunitTestsuite.find(file, testReports);
-                if (testReport != null) {
-                    saveIntegerMeasure(context, metricFinder, file, CoreMetrics.SKIPPED_TESTS_KEY, testReport.getSkipped());
-                    saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TESTS_KEY, testReport.getTests());
-                    saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_FAILURES_KEY, testReport.getFailures());
-                    saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_ERRORS_KEY, testReport.getErrors());
-                    saveLongMeasure(context, metricFinder, file, CoreMetrics.TEST_EXECUTION_TIME_KEY, testReport.getTimeInMs());
-                }
+        Iterable<InputFile> inputFiles = fileSystem.inputFiles(testFilePredicate);
+        for (InputFile file : inputFiles) {
+            EunitTestsuite testReport = EunitTestsuite.find(file, testReports);
+            if (testReport != null) {
+                saveIntegerMeasure(context, metricFinder, file, CoreMetrics.SKIPPED_TESTS_KEY, testReport.getSkipped());
+                saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TESTS_KEY, testReport.getTests());
+                saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_FAILURES_KEY, testReport.getFailures());
+                saveIntegerMeasure(context, metricFinder, file, CoreMetrics.TEST_ERRORS_KEY, testReport.getErrors());
+                saveLongMeasure(context, metricFinder, file, CoreMetrics.TEST_EXECUTION_TIME_KEY, testReport.getTimeInMs());
             }
-        });
+        }
     }
 
   private void saveIntegerMeasure(SensorContext context, MetricFinder metricFinder, InputFile file,

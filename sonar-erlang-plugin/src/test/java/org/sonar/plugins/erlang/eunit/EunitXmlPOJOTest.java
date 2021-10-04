@@ -27,15 +27,22 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class EunitXmlPOJOTest {
-
-
   @Test
-  public void shouldSaveErrorsAndFailuresInXML() throws IOException {
+  public void test1() throws IOException {
     XmlMapper mapper = new XmlMapper();
     File xml = new File("src/test/resources/org/sonar/plugins/erlang/erlcount/.eunit/TEST-erlcount_tests.xml");
     EunitTestsuite testsuite = mapper.readValue(xml, EunitTestsuite.class);
-    System.out.println(testsuite);
+
+    assertThat(testsuite.getTests()).isEqualTo(7);
+    assertThat(testsuite.getErrors()).isEqualTo(0);
+    assertThat(testsuite.getFailures()).isEqualTo(1);
+    assertThat(testsuite.getApp()).isEqualTo("module 'erlcount_tests'");
+    assertThat(testsuite.getModule()).isEqualTo("erlcount_tests");
+    assertThat(testsuite.getSkipped()).isEqualTo(0);
+    assertThat(testsuite.getTimeInMs()).isEqualTo(133);
   }
 
 }
