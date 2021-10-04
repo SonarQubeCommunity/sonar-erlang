@@ -20,17 +20,12 @@
  */
 package org.sonar.erlang;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 public class ErlangCommentAnalyserTest {
-
-  @Rule
-  public ExpectedException thrown = ExpectedException.none();
-
   private final ErlangCommentAnalyser analyser = new ErlangCommentAnalyser();
 
   @Test
@@ -48,8 +43,7 @@ public class ErlangCommentAnalyserTest {
 
   @Test
   public void unknown_type_of_comment() {
-    thrown.expect(IllegalArgumentException.class);
-    analyser.getContents("");
+    assertThrows(IllegalArgumentException.class, () -> analyser.getContents(""));
   }
 
 }
