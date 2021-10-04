@@ -260,12 +260,6 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
     return b;
   }
 
-  /**
-   * Lexical
-   *
-   * @param b
-   */
-
   private static void lexical(LexerlessGrammarBuilder b) {
     b.rule(eof).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
 
