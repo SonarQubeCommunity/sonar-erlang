@@ -28,6 +28,7 @@ import org.sonar.api.utils.log.Loggers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ final class LCOVParser {
   ErlangFileCoverage parseFile(File file) {
     List<String> lines = new LinkedList<>();
     try {
-      lines = FileUtils.readLines(file);
+      lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
     } catch (IOException e) {
       LOG.debug("Cound not read content from file: " + file.getName(), e);
     }
