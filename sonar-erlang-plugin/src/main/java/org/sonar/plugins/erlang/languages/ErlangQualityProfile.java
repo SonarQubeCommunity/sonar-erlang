@@ -56,7 +56,7 @@ public class ErlangQualityProfile implements BuiltInQualityProfilesDefinition {
     rulesRepository = rulesContext.repository(DialyzerRuleDefinition.REPOSITORY_KEY);
     if (rulesRepository != null && rulesRepository.rules() != null) {
       for (RulesDefinition.Rule rule : rulesRepository.rules()) {
-          profile.activateRule(rulesRepository.name(), rule.key());
+          profile.activateRule(rulesRepository.key(), rule.key());
       }
     }
 
@@ -66,7 +66,7 @@ public class ErlangQualityProfile implements BuiltInQualityProfilesDefinition {
     rulesRepository = rulesContext.repository(XrefRuleDefinition.REPOSITORY_KEY);
     if (rulesRepository != null && rulesRepository.rules() != null) {
       for (RulesDefinition.Rule rule : rulesRepository.rules()) {
-        profile.activateRule(rulesRepository.name(), rule.key());
+        profile.activateRule(rulesRepository.key(), rule.key());
       }
     }
 
