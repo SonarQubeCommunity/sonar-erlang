@@ -143,7 +143,7 @@ public class CoverCoverageSensor implements Sensor {
         .stream()
         .filter(erlangFileCoverage -> erlangFileCoverage.getFilePath().endsWith(input.filename()))
         .collect(Collectors.toList())
-        .get(0);
+        .stream().findFirst().orElse(null);
   }
 
   private String getEunitTestReportsFolder(Configuration configuration) {
