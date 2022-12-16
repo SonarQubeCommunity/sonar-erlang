@@ -545,7 +545,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       b.zeroOrMore(
         b.firstOf(
           // in defines a record might have an identifier to access a field
-          b.sequence(numbersign, primaryExpression, b.optional(".", identifier)),
+          b.sequence(numbersign, primaryExpression, b.optional(".", atomOrIdentifier)),
           b.sequence(macroLiteral, b.optional(".", primaryExpression)))
       )
       ).skipIfOneChild();
