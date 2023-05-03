@@ -18,28 +18,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.languages;
+@ParametersAreNonnullByDefault
+package org.sonar.plugins.erlang.xref;
 
-import org.junit.Test;
-import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-public class ErlangQualityProfileTest {
-
-  @Test
-  public void should_create_sonar_way_profile() {
-
-    ErlangQualityProfile profileDef = new ErlangQualityProfile();
-    BuiltInQualityProfilesDefinition.Context context = new BuiltInQualityProfilesDefinition.Context();
-    profileDef.define(context);
-
-    BuiltInQualityProfilesDefinition.BuiltInQualityProfile profile = context.profile(ErlangLanguage.KEY, "Sonar way");
-    assertThat(profile).isNotNull();
-
-    assertThat(profile.language()).isEqualTo("erlang");
-    assertThat(profile.name()).isEqualTo("Sonar way");
-    assertThat(profile.rules().size()).isEqualTo(100);
-  }
-
-}

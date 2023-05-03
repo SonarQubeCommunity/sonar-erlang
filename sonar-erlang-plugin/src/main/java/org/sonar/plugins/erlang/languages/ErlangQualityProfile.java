@@ -27,6 +27,7 @@ import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.erlang.checks.CheckList;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
+import org.sonar.plugins.erlang.elvis.ElvisRuleDefinition;
 import org.sonar.plugins.erlang.xref.XrefRuleDefinition;
 
 public class ErlangQualityProfile implements BuiltInQualityProfilesDefinition {
@@ -57,6 +58,16 @@ public class ErlangQualityProfile implements BuiltInQualityProfilesDefinition {
     if (rulesRepository != null && rulesRepository.rules() != null) {
       for (RulesDefinition.Rule rule : rulesRepository.rules()) {
           profile.activateRule(rulesRepository.key(), rule.key());
+      }
+    }
+
+    // add Elvis rules
+    rulesContext = new RulesDefinition.Context();
+    new ElvisRuleDefinition().define(rulesContext);
+    rulesRepository = rulesContext.repository(ElvisRuleDefinition.REPOSITORY_KEY);
+    if (rulesRepository != null && rulesRepository.rules() != null) {
+      for (RulesDefinition.Rule rule : rulesRepository.rules()) {
+        profile.activateRule(rulesRepository.key(), rule.key());
       }
     }
 

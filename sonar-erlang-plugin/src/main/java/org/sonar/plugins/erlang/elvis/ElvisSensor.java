@@ -18,28 +18,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.languages;
+package org.sonar.plugins.erlang.elvis;
 
-import org.junit.Test;
-import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
+import org.sonar.api.batch.sensor.Sensor;
+import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.SensorDescriptor;
+import org.sonar.plugins.erlang.languages.ErlangLanguage;
+import org.sonar.plugins.erlang.xml.XmlRuleManager;
 
-import static org.fest.assertions.Assertions.assertThat;
+/**
+ * Calls the elvis report parser.
+ */
+public class ElvisSensor implements Sensor {
 
-public class ErlangQualityProfileTest {
+  private final XmlRuleManager elvisRuleManager;
 
-  @Test
-  public void should_create_sonar_way_profile() {
-
-    ErlangQualityProfile profileDef = new ErlangQualityProfile();
-    BuiltInQualityProfilesDefinition.Context context = new BuiltInQualityProfilesDefinition.Context();
-    profileDef.define(context);
-
-    BuiltInQualityProfilesDefinition.BuiltInQualityProfile profile = context.profile(ErlangLanguage.KEY, "Sonar way");
-    assertThat(profile).isNotNull();
-
-    assertThat(profile.language()).isEqualTo("erlang");
-    assertThat(profile.name()).isEqualTo("Sonar way");
-    assertThat(profile.rules().size()).isEqualTo(100);
+  public ElvisSensor() {
+    elvisRuleManager = new XmlRuleManager(ElvisRuleDefinition.ELVIS_PATH);
   }
 
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
+
+  @Override
+  public void describe(SensorDescriptor descriptor) {
+    descriptor
+            .onlyOnLanguage(ErlangLanguage.KEY)
+            .name("Erlang Elvis Sensor");
+  }
+
+  @Override
+  public void execute(SensorContext context) {
+    new ElvisReportParser(context).parse(elvisRuleManager);
+  }
 }
