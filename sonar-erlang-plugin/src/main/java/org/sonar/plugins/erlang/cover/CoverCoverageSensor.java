@@ -31,6 +31,7 @@ import org.sonar.api.config.Configuration;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.ErlangUtils;
 import org.sonar.plugins.erlang.languages.ErlangLanguage;
 
 import java.io.File;
@@ -62,8 +63,8 @@ public class CoverCoverageSensor implements Sensor {
     String commonTestCoverDataFileName = getCommonTestCoverageFileName(configuration);
 
     File eunitReportsDir = new File(context.fileSystem().baseDir().getPath(), getEunitTestReportsFolder(configuration));
-    File eunitCoverDataFile = new File(eunitReportsDir, eunitCoverDataFileName);
-    File commonTestCoverDataFile = new File(context.fileSystem().baseDir().getPath(), commonTestCoverDataFileName);
+    File eunitCoverDataFile = ErlangUtils.findFile(context, eunitCoverDataFileName);
+    File commonTestCoverDataFile = ErlangUtils.findFile(context, commonTestCoverDataFileName);
 
     // We run the same cover parsing for CommonTest, sensor will save max values for coverage metrics
     if (commonTestCoverDataFile.exists()) {

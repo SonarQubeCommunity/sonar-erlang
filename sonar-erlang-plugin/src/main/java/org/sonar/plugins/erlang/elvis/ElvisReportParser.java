@@ -32,6 +32,7 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.ErlangUtils;
 import org.sonar.plugins.erlang.xml.XmlRuleManager;
 
 import java.io.*;
@@ -62,10 +63,8 @@ public class ElvisReportParser {
    * @param ruleManager set of Erlang rules
    */
   public void parse(XmlRuleManager ruleManager) {
-    File reportsDir = new File(context.fileSystem().baseDir().getPath(),
-        configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
     String reportFileName = configuration.get(ErlangPlugin.ELVIS_FILENAME_KEY).orElse(ErlangPlugin.ELVIS_DEFAULT_FILENAME);
-    File elvisReportFile = new File(reportsDir, reportFileName);
+    File elvisReportFile = ErlangUtils.findFile(context, reportFileName);
 
     if (elvisReportFile.exists()) {
       try {

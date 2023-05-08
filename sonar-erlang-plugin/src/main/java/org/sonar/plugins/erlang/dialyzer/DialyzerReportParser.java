@@ -32,6 +32,7 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.ErlangUtils;
 import org.sonar.plugins.erlang.xml.XmlRuleManager;
 
 import java.io.*;
@@ -65,10 +66,8 @@ public class DialyzerReportParser {
   public void parse(XmlRuleManager dialyzerRuleManager) {
     Configuration configuration = context.config();
 
-    File reportsDir = new File(context.fileSystem().baseDir().getPath(),
-        configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
     String dialyzerFileName = configuration.get(ErlangPlugin.DIALYZER_FILENAME_KEY).orElse(ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
-    File dialyzerLogFile = new File(reportsDir, dialyzerFileName);
+    File dialyzerLogFile = ErlangUtils.findFile(context, dialyzerFileName);
 
     if (dialyzerLogFile.exists()) {
       try {
