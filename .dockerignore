@@ -1,0 +1,3 @@
+# Ignore Sonar Server's locally mounted directories -- including the one that
+# contains the built plugin
+sonar/

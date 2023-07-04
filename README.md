@@ -21,7 +21,7 @@ A sample project is available on GitHub: https://github.com/SonarSource/sonar-sc
 
 Maven and Ant can also be used to launch analysis on Erlang projects.
 
-The plugin has been tested to work with SonarQube Community Version `8.9.0` 
+The plugin has been tested to work with SonarQube Community Version `9.9.1` .
 
 ### Configuration
 
@@ -97,6 +97,20 @@ sonar-scanner -Dsonar.login=<YOUR-TOKEN>
 ```
 
 Once the scan is complete, you can view the results of the analysis in the dashboard, or fetch the metrics using the web API.
+
+### Docker build
+
+A basic `Dockerfile` is provided to build the plugin without installing JDK and Maven.  To make integration test processes easier it is directly written into `./sonar/extensions/plugins`:
+
+```shell
+docker build --target export -o- . | tar xv -C ./sonar/extensions/plugins/
+```
+
+You can easily debug and inspect the entire build process without using the final `export` target.  This command produces an image containing all the temporary build artifacts and outcomes of the build process:
+
+```shell
+docker build . -t sonar-erlang-build
+```
 
 ### Contributing
 

@@ -3,9 +3,11 @@ target/
 
 # SonarQube
 .sonar/
-sonar/data/web/
 sonar/data/es7/
 sonar/data/logs/
+sonar/data/sonar.mv.db
+sonar/data/web/
+sonar/extensions/plugins/sonar-erlang-plugin.jar
 
 # IntelliJ IDEA
 *.iws
