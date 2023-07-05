@@ -41,11 +41,19 @@ You can see an example of such a file [HERE](sonar-erlang-plugin/src/test/resour
 
 Check out how to configure Common Test for coverage in the [sample Makefile](sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/Makefile).
 
-#### Dialyzer and Xref
+#### Dialyzer
+
+`sonar.erlang.dialyzer.filename` - sets Dialyzer report file name.
 
 [See issue about Dialyzer](https://github.com/evolution-gaming/sonar-erlang/issues/24)
 
+#### Xref
+
 `sonar.erlang.xref.filename` - sets Xref report file name, located in Eunit report folder. `xref.log` by default.
+
+#### Elvis
+
+`sonar.erlang.elvis.filename` - sets [Elvis](https://github.com/inaka/elvis) report file name.
 
 ## Development
 
