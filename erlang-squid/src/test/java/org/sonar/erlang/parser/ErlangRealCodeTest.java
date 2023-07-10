@@ -65,6 +65,11 @@ public class ErlangRealCodeTest {
     assertThat(b.getRootRule()).matches((readFromFile("macro_test.erl")));
   }
 
+  @Test
+  public void parseMapComprehension() throws IOException, URISyntaxException {
+    assertThat(b.getRootRule()).matches((readFromFile("map_comprehension.erl")));
+  }
+
   private String readFromFile(String fileName) throws IOException, URISyntaxException {
     StringBuilder text = new StringBuilder();
     File file = new File(ErlangRealCodeTest.class.getClassLoader().getResource(fileName)
