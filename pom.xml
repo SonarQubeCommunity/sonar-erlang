@@ -69,7 +69,8 @@
 
     <properties>
         <_rootdir>${project.basedir}</_rootdir>
-        <sonar.version>9.0.0.45539</sonar.version>
+        <sonar.version>9.9.0.65466</sonar.version>
+        <sonar.api.plugin.version>9.14.0.375</sonar.api.plugin.version>
         <sslr.version>1.24.0.633</sslr.version>
         <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
         <sonar.projectKey>evolution-gaming_sonar-erlang</sonar.projectKey>
@@ -94,9 +95,9 @@
             </dependency>
             <!-- sonarqube -->
             <dependency>
-                <groupId>org.sonarsource.sonarqube</groupId>
+                <groupId>org.sonarsource.api.plugin</groupId>
                 <artifactId>sonar-plugin-api</artifactId>
-                <version>${sonar.version}</version>
+                <version>${sonar.api.plugin.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.sonarsource.sonarqube</groupId>

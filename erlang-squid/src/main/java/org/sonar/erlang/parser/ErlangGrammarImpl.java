@@ -206,7 +206,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
   macroLiteralVarName,
   stringLiterals,
   stringConcatenation,
-  guardedPattern, atomOrIdentifier, moduleAttrTags, mapCreate, mapUpdate, mapCreateUpdate, map;
+  guardedPattern, atomOrIdentifier, moduleAttrTags, mapCreate, mapUpdate, mapCreateUpdate, mapComprehension, map;
 
   public static final String EXP = "([Ee][-]?+[0-9_]++)";
   public static final String ESCAPE_SEQUENCE =
@@ -545,7 +545,7 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       b.zeroOrMore(
         b.firstOf(
           // in defines a record might have an identifier to access a field
-          b.sequence(numbersign, primaryExpression, b.optional(".", identifier)),
+          b.sequence(numbersign, primaryExpression, b.optional(".", atomOrIdentifier)),
           b.sequence(macroLiteral, b.optional(".", primaryExpression)))
       )
       ).skipIfOneChild();
@@ -587,8 +587,30 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
       rcurlybrace
     );
 
+    // Match map comprehensions.
+    //
+    // https://www.erlang.org/blog/otp-26-highlights/#map-comprehensions
+    //
+    // e.g.
+    //
+    // ```
+    // #{I => I*I || I <- lists:seq(1, 5)}.
+    // ```
+    b.rule(mapComprehension).is(
+      numbersign,
+      lcurlybrace,
+      expression,
+      mapA,
+      expression,
+      listcomp,
+      qualifier,
+      b.zeroOrMore(comma, qualifier),
+      rcurlybrace
+    );
+
     b.rule(map).is(
       b.firstOf(
+        mapComprehension,
         mapUpdate,
         mapCreate,
         recordCreate
@@ -603,8 +625,15 @@ public enum ErlangGrammarImpl implements GrammarRuleKey {
         b.sequence(expression, listcomp, qualifier, b.zeroOrMore(comma, qualifier)),
         b.sequence(expression, b.zeroOrMore(b.firstOf(comma, expression)), b.optional(pipe, expression)))),
       rbracket);
-    // this does not work
-    b.rule(qualifier).is(b.firstOf(b.sequence(expression, arrowback, expression), expression));
+
+    // should be refactored as well
+    b.rule(qualifier).is(
+      b.firstOf(
+        b.sequence(expression, mapU, expression),
+        b.sequence(expression, arrowback, expression),
+        expression
+      )
+    );
 
     b.rule(macroLiteral).is(
       b.firstOf(

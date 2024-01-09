@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules>
+  <rule>
+    <key>E001</key>
+    <name><![CDATA[Line length]]></name>
+    <internalKey>line_length</internalKey>
+    <description>
+      <![CDATA[Line length]]>
+    </description>
+    <messages>
+      <message>line_length</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E002</key>
+    <name><![CDATA[No tabs]]></name>
+    <internalKey>no_tabs</internalKey>
+    <description>
+      <![CDATA[No tabs]]>
+    </description>
+    <messages>
+      <message>no_tabs</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E003</key>
+    <name><![CDATA[No spaces]]></name>
+    <internalKey>no_spaces</internalKey>
+    <description>
+      <![CDATA[No spaces]]>
+    </description>
+    <messages>
+      <message>no_spaces</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E004</key>
+    <name><![CDATA[No trailing whitespace]]></name>
+    <internalKey>no_trailing_whitespace</internalKey>
+    <description>
+      <![CDATA[No trailing whitespace]]>
+    </description>
+    <messages>
+      <message>no_trailing_whitespace</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E005</key>
+    <name><![CDATA[Invalid macro name]]></name>
+    <internalKey>invalid_macro_name</internalKey>
+    <description>
+      <![CDATA[Invalid macro name]]>
+    </description>
+    <messages>
+      <message>invalid_macro_name</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E006</key>
+    <name><![CDATA[Macro as module name]]></name>
+    <internalKey>macro_as_module_name</internalKey>
+    <description>
+      <![CDATA[Macro as module name]]>
+    </description>
+    <messages>
+      <message>macro_as_module_name</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E007</key>
+    <name><![CDATA[Macro as function name]]></name>
+    <internalKey>macro_as_function_name</internalKey>
+    <description>
+      <![CDATA[Macro as function name]]>
+    </description>
+    <messages>
+      <message>macro_as_function_name</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E008</key>
+    <name><![CDATA[Operator space]]></name>
+    <internalKey>operator_space</internalKey>
+    <description>
+      <![CDATA[Operator space]]>
+    </description>
+    <messages>
+      <message>operator_space</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E009</key>
+    <name><![CDATA[Nesting level]]></name>
+    <internalKey>nesting_level</internalKey>
+    <description>
+      <![CDATA[Nesting level]]>
+    </description>
+    <messages>
+      <message>nesting_level</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E010</key>
+    <name><![CDATA[God modules]]></name>
+    <internalKey>god_modules</internalKey>
+    <description>
+      <![CDATA[God modules]]>
+    </description>
+    <messages>
+      <message>god_modules</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E011</key>
+    <name><![CDATA[No if expression]]></name>
+    <internalKey>no_if_expression</internalKey>
+    <description>
+      <![CDATA[No if expression]]>
+    </description>
+    <messages>
+      <message>no_if_expression</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E012</key>
+    <name><![CDATA[Invalid dynamic call]]></name>
+    <internalKey>invalid_dynamic_call</internalKey>
+    <description>
+      <![CDATA[Invalid dynamic call]]>
+    </description>
+    <messages>
+      <message>invalid_dynamic_call</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E013</key>
+    <name><![CDATA[Used ignored var]]></name>
+    <internalKey>used_ignored_var</internalKey>
+    <description>
+      <![CDATA[Used ignored var]]>
+    </description>
+    <messages>
+      <message>used_ignored_var</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E014</key>
+    <name><![CDATA[No behavior info]]></name>
+    <internalKey>no_behavior_info</internalKey>
+    <description>
+      <![CDATA[No behavior info]]>
+    </description>
+    <messages>
+      <message>no_behavior_info</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E015</key>
+    <name><![CDATA[Function naming convention]]></name>
+    <internalKey>function_naming_convention</internalKey>
+    <description>
+      <![CDATA[Function naming convention]]>
+    </description>
+    <messages>
+      <message>function_naming_convention</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E016</key>
+    <name><![CDATA[Variable naming convention]]></name>
+    <internalKey>variable_naming_convention</internalKey>
+    <description>
+      <![CDATA[Variable naming convention]]>
+    </description>
+    <messages>
+      <message>variable_naming_convention</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E017</key>
+    <name><![CDATA[Module naming convention]]></name>
+    <internalKey>module_naming_convention</internalKey>
+    <description>
+      <![CDATA[Module naming convention]]>
+    </description>
+    <messages>
+      <message>module_naming_convention</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E018</key>
+    <name><![CDATA[State record missing]]></name>
+    <internalKey>state_record_missing</internalKey>
+    <description>
+      <![CDATA[State record missing]]>
+    </description>
+    <messages>
+      <message>state_record_missing</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E019</key>
+    <name><![CDATA[State type missing]]></name>
+    <internalKey>state_type_missing</internalKey>
+    <description>
+      <![CDATA[State type missing]]>
+    </description>
+    <messages>
+      <message>state_type_missing</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E020</key>
+    <name><![CDATA[No spec with records]]></name>
+    <internalKey>no_spec_with_records</internalKey>
+    <description>
+      <![CDATA[No spec with records]]>
+    </description>
+    <messages>
+      <message>no_spec_with_records</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E021</key>
+    <name><![CDATA[Don't repeat yourself]]></name>
+    <internalKey>dont_repeat_yourself</internalKey>
+    <description>
+      <![CDATA[Dont repeat yourself]]>
+    </description>
+    <messages>
+      <message>dont_repeat_yourself</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E022</key>
+    <name><![CDATA[Max module length]]></name>
+    <internalKey>max_module_length</internalKey>
+    <description>
+      <![CDATA[Max module length]]>
+    </description>
+    <messages>
+      <message>max_module_length</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E023</key>
+    <name><![CDATA[Max function length]]></name>
+    <internalKey>max_function_length</internalKey>
+    <description>
+      <![CDATA[Max function length]]>
+    </description>
+    <messages>
+      <message>max_function_length</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E024</key>
+    <name><![CDATA[No call]]></name>
+    <internalKey>no_call</internalKey>
+    <description>
+      <![CDATA[No call]]>
+    </description>
+    <messages>
+      <message>no_call</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E025</key>
+    <name><![CDATA[No debug call]]></name>
+    <internalKey>no_debug_call</internalKey>
+    <description>
+      <![CDATA[No debug call]]>
+    </description>
+    <messages>
+      <message>no_debug_call</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E026</key>
+    <name><![CDATA[No common caveats call]]></name>
+    <internalKey>no_common_caveats_call</internalKey>
+    <description>
+      <![CDATA[No common caveats call]]>
+    </description>
+    <messages>
+      <message>no_common_caveats_call</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E027</key>
+    <name><![CDATA[No nested try catch]]></name>
+    <internalKey>no_nested_try_catch</internalKey>
+    <description>
+      <![CDATA[No nested try catch]]>
+    </description>
+    <messages>
+      <message>no_nested_try_catch</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E028</key>
+    <name><![CDATA[No seqbind]]></name>
+    <internalKey>no_seqbind</internalKey>
+    <description>
+      <![CDATA[No seqbind]]>
+    </description>
+    <messages>
+      <message>no_seqbind</message>
+    </messages>
+  </rule>
+  <rule>
+    <key>E029</key>
+    <name><![CDATA[No useless seqbind]]></name>
+    <internalKey>no_useless_seqbind</internalKey>
+    <description>
+      <![CDATA[No useless seqbind]]>
+    </description>
+    <messages>
+      <message>no_useless_seqbind</message>
+    </messages>
+  </rule>
+</rules>

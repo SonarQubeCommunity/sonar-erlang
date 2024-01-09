@@ -23,6 +23,8 @@ package org.sonar.plugins.erlang;
 import org.sonar.api.Plugin;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
+import org.sonar.plugins.erlang.elvis.ElvisRuleDefinition;
+import org.sonar.plugins.erlang.elvis.ElvisSensor;
 import org.sonar.plugins.erlang.rules.ErlangChecksRuleDefinition;
 import org.sonar.plugins.erlang.cover.CoverCoverageSensor;
 import org.sonar.plugins.erlang.dialyzer.DialyzerRuleDefinition;
@@ -52,6 +54,12 @@ import org.sonar.plugins.erlang.xref.XrefSensor;
         name = "Xref Default Filename",
         description = "Filename of the xref output located in the eunit folder",
         global = true, project = true),
+
+    @Property(key = ErlangPlugin.ELVIS_FILENAME_KEY,
+            defaultValue = ErlangPlugin.ELVIS_DEFAULT_FILENAME,
+            name = "Elvis Default Filename",
+            description = "Filename of the elvis output located in the eunit folder",
+            global = true, project = true),
 
     @Property(key = ErlangPlugin.EUNIT_COVERDATA_FILENAME_KEY,
         defaultValue = ErlangPlugin.EUNIT_COVERDATA_DEFAULT_FILENAME,
@@ -88,6 +96,9 @@ public class ErlangPlugin implements Plugin {
   public static final String XREF_FILENAME_KEY = "sonar.erlang.xref.filename";
   public static final String XREF_DEFAULT_FILENAME = "xref.log";
 
+  public static final String ELVIS_FILENAME_KEY = "sonar.erlang.elvis.filename";
+  public static final String ELVIS_DEFAULT_FILENAME = "elvis.log";
+
   public static final String NAME = "Erlang";
   public static final String REBAR_CONFIG_FILENAME_KEY = "sonar.erlang.rebar.config";
   public static final String REBAR_DEFAULT_CONFIG_FILENAME = "rebar.config";
@@ -106,6 +117,7 @@ public class ErlangPlugin implements Plugin {
 
         ErlangChecksRuleDefinition.class,
         DialyzerRuleDefinition.class,
+        ElvisRuleDefinition.class,
         XrefRuleDefinition.class,
         ErlangQualityProfile.class,
 
@@ -114,6 +126,7 @@ public class ErlangPlugin implements Plugin {
         CoverCoverageSensor.class,
 
         DialyzerSensor.class,
+        ElvisSensor.class,
         XrefSensor.class
     );
   }

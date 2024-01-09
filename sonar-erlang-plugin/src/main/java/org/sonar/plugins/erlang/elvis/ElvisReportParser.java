@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.dialyzer;
+package org.sonar.plugins.erlang.elvis;
 
 import org.apache.commons.io.FilenameUtils;
 import org.sonar.api.batch.fs.InputFile;
@@ -42,51 +42,68 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Read and parse generated dialyzer report
- *
- * @author tkende
+ * Read and parse generated elvis report
  */
-public class DialyzerReportParser {
+public class ElvisReportParser {
 
-  private static final String DIALYZER_VIOLATION_ROW_REGEX = "(.*?):([0-9]+):(.*)";
-  private static final String REPO_KEY = DialyzerRuleDefinition.REPOSITORY_KEY;
-  private static final Logger LOG = Loggers.get(DialyzerReportParser.class);
+  private static final String ELVIS_VIOLATION_ROW_REGEX = "([^ :]*):([^ :]*):([^ :]*):(.*)";
+  private static final String REPO_KEY = ElvisRuleDefinition.REPOSITORY_KEY;
+  private static final Logger LOG = Loggers.get(ElvisReportParser.class);
   private final SensorContext context;
+  private final Configuration configuration;
 
-
-  DialyzerReportParser(SensorContext context) {
+  ElvisReportParser(SensorContext context) {
     this.context = context;
+    this.configuration = context.config();
   }
 
   /**
-   * Parse Dialyzer report using a set of rules
+   * Parse elvis report results using a set of rules
    *
-   * @param dialyzerRuleManager set of Erlang rules
+   * @param ruleManager set of Erlang rules
    */
-  public void parse(XmlRuleManager dialyzerRuleManager) {
-    Configuration configuration = context.config();
+  public void parse(XmlRuleManager ruleManager) {
+    String reportFileName = configuration.get(ErlangPlugin.ELVIS_FILENAME_KEY).orElse(ErlangPlugin.ELVIS_DEFAULT_FILENAME);
+    File elvisReportFile = ErlangUtils.findFile(context, reportFileName);
 
-    String dialyzerFileName = configuration.get(ErlangPlugin.DIALYZER_FILENAME_KEY).orElse(ErlangPlugin.DIALYZER_DEFAULT_FILENAME);
-    File dialyzerLogFile = ErlangUtils.findFile(context, dialyzerFileName);
-
-    if (dialyzerLogFile.exists()) {
+    if (elvisReportFile.exists()) {
       try {
-        parseDialyzerLogFile(context, dialyzerLogFile, dialyzerRuleManager);
+        parseElvisLogFile(context, elvisReportFile, ruleManager);
+      } catch (FileNotFoundException e) {
+        LOG.warn("Elvis file not found at: {} have you ran elvis before analysis?", reportFileName, e);
       } catch (IOException e) {
-        LOG.error("Error while trying to parse Dialyzer log file at: {}", dialyzerLogFile.getPath());
+        LOG.error("Error while trying to parse elvis report at {}.", reportFileName, e);
       }
     } else {
-      LOG.warn("Could not find Dialyzer log file at: {} , skipping...", dialyzerLogFile.getPath());
+      LOG.warn("Could not find Elvis report file at: {} , skipping...", elvisReportFile.getPath());
     }
   }
 
-  private void parseDialyzerLogFile(SensorContext context, File dialyzerLogFile, XmlRuleManager dialyzerRuleManager) throws IOException {
-    InputStream fstream = Files.newInputStream(dialyzerLogFile.toPath());
+  /**
+   * Get the elvis report target directory key.
+   *
+   * @return repository key
+   */
+  public static String getRepoKey() {
+    return REPO_KEY;
+  }
+
+  /**
+   * Get current elvis report parser configuration
+   *
+   * @return configuration
+   */
+  public Configuration getConfiguration() {
+    return this.configuration;
+  }
+
+  private void parseElvisLogFile(SensorContext context, File elvisLogFile, XmlRuleManager elvisRuleManager) throws IOException {
+    InputStream fstream = Files.newInputStream(elvisLogFile.toPath());
     DataInputStream in = new DataInputStream(fstream);
 
     try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
       String strLine;
-      Pattern pattern = Pattern.compile(DIALYZER_VIOLATION_ROW_REGEX);
+      Pattern pattern = Pattern.compile(ELVIS_VIOLATION_ROW_REGEX);
 
       while ((strLine = bufferedReader.readLine()) != null) {
         Matcher matcher = pattern.matcher(strLine);
@@ -95,9 +112,10 @@ public class DialyzerReportParser {
 
         String fileName = matcher.group(1);
         String lineNumber = matcher.group(2);
-        String comment = matcher.group(3).trim();
+        String ruleName = matcher.group(3);
+        String comment = matcher.group(4).trim();
 
-        String key = dialyzerRuleManager.getRuleKeyByMessage(comment);
+        String key = elvisRuleManager.getRuleKeyByMessage(ruleName);
 
         RuleKey ruleKey = RuleKey.of(REPO_KEY, key);
         ActiveRule rule = context.activeRules().find(ruleKey);
@@ -105,7 +123,7 @@ public class DialyzerReportParser {
 
           String filePattern = "**/" + FilenameUtils.getName(fileName);
           InputFile inputFile = context.fileSystem().inputFile(
-              context.fileSystem().predicates().matchesPathPattern(filePattern));
+                  context.fileSystem().predicates().matchesPathPattern(filePattern));
           if (inputFile != null) {
             NewIssue issue = getNewIssue(lineNumber, comment, ruleKey, inputFile);
             issue.save();
@@ -113,9 +131,9 @@ public class DialyzerReportParser {
         }
       }
     } catch (FileNotFoundException e) {
-      LOG.warn("Dialyzer file not found at: {}, have you ran dialyzer before analysis?", dialyzerLogFile.getPath());
+      LOG.warn("Elvis file not found at: {}, have you ran elvis before analysis?", elvisLogFile.getPath());
     } catch (IOException e) {
-      LOG.error("Error while trying to parse dialyzer report at: {}", dialyzerLogFile.getPath(), e);
+      LOG.error("Error while trying to parse elvis report at: {}", elvisLogFile.getPath(), e);
     }
   }
 
@@ -123,9 +141,9 @@ public class DialyzerReportParser {
     TextRange range = inputFile.selectLine(Integer.parseInt(line));
     NewIssue issue = context.newIssue().forRule(ruleKey);
     NewIssueLocation location = issue.newLocation()
-        .on(inputFile)
-        .at(range)
-        .message(message);
+            .on(inputFile)
+            .at(range)
+            .message(message);
 
     issue.at(location);
     return issue;

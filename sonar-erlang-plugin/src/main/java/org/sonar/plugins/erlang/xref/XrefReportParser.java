@@ -30,6 +30,7 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.plugins.erlang.ErlangPlugin;
+import org.sonar.plugins.erlang.ErlangUtils;
 import org.sonar.plugins.erlang.xml.XmlRuleManager;
 
 import java.io.*;
@@ -60,10 +61,8 @@ public class XrefReportParser {
    * @param ruleManager set of Erlang rules
    */
   public void parse(XmlRuleManager ruleManager) {
-    File reportsDir = new File(context.fileSystem().baseDir().getPath(),
-        configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER));
     String reportFileName = configuration.get(ErlangPlugin.XREF_FILENAME_KEY).orElse(ErlangPlugin.XREF_DEFAULT_FILENAME);
-    File xrefReportFile = new File(reportsDir, reportFileName);
+    File xrefReportFile = ErlangUtils.findFile(context, reportFileName);
 
     if (xrefReportFile.exists()) {
       try {

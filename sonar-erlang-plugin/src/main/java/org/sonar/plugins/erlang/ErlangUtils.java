@@ -18,28 +18,30 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.sonar.plugins.erlang.languages;
+package org.sonar.plugins.erlang;
 
-import org.junit.Test;
-import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition;
+import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.config.Configuration;
 
-import static org.fest.assertions.Assertions.assertThat;
+import java.io.File;
 
-public class ErlangQualityProfileTest {
+public class ErlangUtils {
 
-  @Test
-  public void should_create_sonar_way_profile() {
+    public static File findFile(SensorContext context, String fileName) {
+        Configuration configuration = context.config();
+        String basePath = context.fileSystem().baseDir().getPath();
 
-    ErlangQualityProfile profileDef = new ErlangQualityProfile();
-    BuiltInQualityProfilesDefinition.Context context = new BuiltInQualityProfilesDefinition.Context();
-    profileDef.define(context);
+        // Try to find it in the eunit folder first
+        String eunitFolder = configuration.get(ErlangPlugin.EUNIT_FOLDER_KEY).orElse(ErlangPlugin.EUNIT_DEFAULT_FOLDER);
+        File eunitReportsDir = new File(basePath, eunitFolder);
+        File file = new File(eunitReportsDir, fileName);
 
-    BuiltInQualityProfilesDefinition.BuiltInQualityProfile profile = context.profile(ErlangLanguage.KEY, "Sonar way");
-    assertThat(profile).isNotNull();
-
-    assertThat(profile.language()).isEqualTo("erlang");
-    assertThat(profile.name()).isEqualTo("Sonar way");
-    assertThat(profile.rules().size()).isEqualTo(100);
-  }
+        if (file.exists()) {
+            return file;
+        } else {
+            // Try a path from the base directory
+            return new File(basePath, fileName);
+        }
+    }
 
 }

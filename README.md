@@ -21,7 +21,7 @@ A sample project is available on GitHub: https://github.com/SonarSource/sonar-sc
 
 Maven and Ant can also be used to launch analysis on Erlang projects.
 
-The plugin has been tested to work with SonarQube Community Version `8.9.0` 
+The plugin has been tested to work with SonarQube Community Version `9.9.1` .
 
 ### Configuration
 
@@ -41,11 +41,19 @@ You can see an example of such a file [HERE](sonar-erlang-plugin/src/test/resour
 
 Check out how to configure Common Test for coverage in the [sample Makefile](sonar-erlang-plugin/src/test/resources/org/sonar/plugins/erlang/erlcount/Makefile).
 
-#### Dialyzer and Xref
+#### Dialyzer
+
+`sonar.erlang.dialyzer.filename` - sets Dialyzer report file name.
 
 [See issue about Dialyzer](https://github.com/evolution-gaming/sonar-erlang/issues/24)
 
+#### Xref
+
 `sonar.erlang.xref.filename` - sets Xref report file name, located in Eunit report folder. `xref.log` by default.
+
+#### Elvis
+
+`sonar.erlang.elvis.filename` - sets [Elvis](https://github.com/inaka/elvis) report file name.
 
 ## Development
 
@@ -97,6 +105,20 @@ sonar-scanner -Dsonar.login=<YOUR-TOKEN>
 ```
 
 Once the scan is complete, you can view the results of the analysis in the dashboard, or fetch the metrics using the web API.
+
+### Docker build
+
+A basic `Dockerfile` is provided to build the plugin without installing JDK and Maven.  To make integration test processes easier it is directly written into `./sonar/extensions/plugins`:
+
+```shell
+docker build --target export -o- . | tar xv -C ./sonar/extensions/plugins/
+```
+
+You can easily debug and inspect the entire build process without using the final `export` target.  This command produces an image containing all the temporary build artifacts and outcomes of the build process:
+
+```shell
+docker build . -t sonar-erlang-build
+```
 
 ### Contributing
 
